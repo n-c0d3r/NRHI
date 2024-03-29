@@ -9,6 +9,9 @@ include(NCPP/ConfigureCompiler)
 #####################################################################################
 #   Options
 #####################################################################################
+# NRHI variable dynamic linking options
+option(NRHI_VARIABLE_DYNAMIC_LINKING "If checked, NRHI will use pointers for some indicated dynamic linked global variables" ON)
+
 # NRHI driver options
 option(NRHI_DRIVER_DIRECTX_12 "If checked, NRHI will use Directx12 driver" OFF)
 option(NRHI_DRIVER_DIRECTX_11 "If checked, NRHI will use Directx11 driver" ON)
@@ -19,23 +22,23 @@ option(NRHI_DRIVER_OPENGL "If checked, NRHI will use OpenGL driver" OFF)
 # Compute driver count
 set(NRHI_DRIVER_COUNT 0)
 if(NRHI_DRIVER_DIRECTX_12)
-    NCPP_SetGlobal(NRHI_DRIVER_INDEX_DIRECTX_12 ${NRHI_DRIVER_COUNT}L)
+    NCPP_SetGlobal(NRHI_DRIVER_INDEX_DIRECTX_12 ${NRHI_DRIVER_COUNT})
     math(EXPR NRHI_DRIVER_COUNT "${NRHI_DRIVER_COUNT} + 1")
 endif()
 if(NRHI_DRIVER_DIRECTX_11)
-    NCPP_SetGlobal(NRHI_DRIVER_INDEX_DIRECTX_11 ${NRHI_DRIVER_COUNT}L)
+    NCPP_SetGlobal(NRHI_DRIVER_INDEX_DIRECTX_11 ${NRHI_DRIVER_COUNT})
     math(EXPR NRHI_DRIVER_COUNT "${NRHI_DRIVER_COUNT} + 1")
 endif()
 if(NRHI_DRIVER_VULKAN)
-    NCPP_SetGlobal(NRHI_DRIVER_INDEX_VULKAN ${NRHI_DRIVER_COUNT}L)
+    NCPP_SetGlobal(NRHI_DRIVER_INDEX_VULKAN ${NRHI_DRIVER_COUNT})
     math(EXPR NRHI_DRIVER_COUNT "${NRHI_DRIVER_COUNT} + 1")
 endif()
 if(NRHI_DRIVER_METAL)
-    NCPP_SetGlobal(NRHI_DRIVER_INDEX_METAL ${NRHI_DRIVER_COUNT}L)
+    NCPP_SetGlobal(NRHI_DRIVER_INDEX_METAL ${NRHI_DRIVER_COUNT})
     math(EXPR NRHI_DRIVER_COUNT "${NRHI_DRIVER_COUNT} + 1")
 endif()
 if(NRHI_DRIVER_OPENGL)
-    NCPP_SetGlobal(NRHI_DRIVER_INDEX_OPENGL ${NRHI_DRIVER_COUNT}L)
+    NCPP_SetGlobal(NRHI_DRIVER_INDEX_OPENGL ${NRHI_DRIVER_COUNT})
     math(EXPR NRHI_DRIVER_COUNT "${NRHI_DRIVER_COUNT} + 1")
 endif()
 NCPP_ApplyGlobal(NRHI_DRIVER_COUNT)

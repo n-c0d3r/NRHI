@@ -7,6 +7,12 @@ using namespace nrhi;
 
 NCPP_ENTRY_POINT() {
 
+    F_init_desc desc = {
+    };
+
+    init(desc);
+    release();
+
     NCPP_INFO()
         << "Hello "
         << E_log_color::V_FOREGROUND_BRIGHT_MAGNETA
