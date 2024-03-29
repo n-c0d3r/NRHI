@@ -73,11 +73,35 @@ namespace nrhi {
 
     NRHI_USING_NLIB_NAMESPACES();
 
-    struct F_init_desc {
-        ncpp::i32 driver_index = 0;
+
+
+#ifdef NRHI_VARIABLE_DYNAMIC_LINKING
+    struct F_dynamic_variable_links {
+
+#ifdef NRHI_DRIVER_MULTIPLE
+        ncpp::i32* driver_index_p = 0;
+#endif
+
     };
 
-    void init(const F_init_desc& desc);
-    void release();
+    inline F_dynamic_variable_links export_dynamic_variable_links(){
+
+        F_dynamic_variable_links result;
+
+#ifdef NRHI_DRIVER_MULTIPLE
+        result.driver_index_p = NRHI_GET_POINTER_SAFE_LINKED_VARIABLE(internal::driver_index);
+#endif
+
+        return result;
+    }
+    inline void import_dynamic_variable_links(const F_dynamic_variable_links& links){
+
+#ifdef NRHI_DRIVER_MULTIPLE
+        NRHI_LINK_SAFE_LINKED_VARIABLE(internal::driver_index, links.driver_index_p);
+#endif
+
+        try_update_map_enums();
+    }
+#endif
 
 }

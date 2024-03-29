@@ -12,14 +12,9 @@ namespace nrhi {
 
 
 
-    void init(const F_init_desc& desc){
-
-        try_set_driver_index(desc.driver_index);
+    void try_update_map_enums(){
 
         NRHI_ENUM_TRY_UPDATE_MAP(E_format);
-
-    }
-    void release(){
 
     }
 

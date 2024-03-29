@@ -103,6 +103,7 @@ namespace nrhi {}
     __VA_ARGS__ Name;                                            \
     __VA_ARGS__* Name##___nrhi_linked_p = &Name;
 #define NRHI_GET_SAFE_LINKED_VARIABLE(Name) (*(Name##___nrhi_linked_p))
+#define NRHI_GET_POINTER_SAFE_LINKED_VARIABLE(Name) (Name##___nrhi_linked_p)
 #define NRHI_LINK_SAFE_LINKED_VARIABLE(Name, ...) Name##___nrhi_linked_p = __VA_ARGS__
 #else
 #define NRHI_DECLARE_SAFE_LINKED_VARIABLE(Name, ...) \
@@ -110,6 +111,7 @@ namespace nrhi {}
 #define NRHI_DEFINE_SAFE_LINKED_VARIABLE(Name, ...) \
     __VA_ARGS__ Name;
 #define NRHI_GET_SAFE_LINKED_VARIABLE(Name) (Name)
+#define NRHI_GET_POINTER_SAFE_LINKED_VARIABLE(Name) (&(Name))
 #define NRHI_LINK_SAFE_LINKED_VARIABLE(Name, ...)
 #endif
 
@@ -135,11 +137,15 @@ namespace nrhi {}
 
 namespace nrhi {
 
+    void try_update_map_enums();
+
+
+
 #ifdef NRHI_DRIVER_MULTIPLE
     namespace internal {
         NRHI_DECLARE_SAFE_LINKED_VARIABLE(driver_index, ncpp::i32);
     }
-    NCPP_FORCE_INLINE ncpp::b8 try_set_driver_index(ncpp::i32 new_driver_index) noexcept {
+    inline ncpp::b8 try_set_driver_index(ncpp::i32 new_driver_index) noexcept {
 
         if(new_driver_index >= NRHI_DRIVER_COUNT)
             return false;
@@ -147,6 +153,8 @@ namespace nrhi {
         auto& driver_index = NRHI_GET_SAFE_LINKED_VARIABLE(nrhi::internal::driver_index);
 
         driver_index = new_driver_index;
+
+        try_update_map_enums();
 
         return true;
     }
@@ -158,9 +166,14 @@ namespace nrhi {
     namespace internal {
         constexpr ncpp::i32 driver_index = 0;
     }
-    constexpr ncpp::b8 try_set_driver_index(ncpp::i32 new_driver_index) {
+    inline ncpp::b8 try_set_driver_index(ncpp::i32 new_driver_index) {
 
-        return (new_driver_index == internal::driver_index);
+        if (new_driver_index != internal::driver_index)
+            return false;
+
+        try_update_map_enums();
+
+        return true;
     }
     constexpr ncpp::i32 driver_index() {
 

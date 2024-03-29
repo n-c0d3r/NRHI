@@ -26,8 +26,7 @@ function(NRHI_DXGI_ImplementFormats)
         TARGET_HPP_FILE_PATH "${NRHI_FORMAT_ENUM_HPP_FILE_PATH}"
         TARGET_CPP_FILE_PATH "${NRHI_FORMAT_ENUM_CPP_FILE_PATH}"
         VALUES
-            UNKNOWN 1
-            UNKNOWN2 2
+            UNKNOWN 0
     )
 
 endfunction()

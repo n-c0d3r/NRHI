@@ -15,6 +15,7 @@ function(NRHI_EnumHelper_CreateEnum)
     set(driverIndex ${NRHI_DRIVER_INDEX_${PARGS_DRIVER_UPPER_CASE_NAME}})
 
     set(TARGET_UPDATE_MAP_BODY_FILE_PATH "${targetCPPFilePathParsed}.update_map_body")
+    set(TARGET_MAX_VALUE_COUNT_DIV_STEP_FILE_PATH "${targetCPPFilePathParsed}.max_value_count_div_step")
 
 
 
@@ -47,10 +48,12 @@ function(NRHI_EnumHelper_CreateEnum)
         set(hppFileContent "#pragma once \n")
         set(cppFileContent "#include \"${targetHPPFilePathParsed}\" \n")
         set(updateMapBodyContent "")
+        set(maxValueCountDivStep "0")
     else()
         file(READ "${PARGS_TARGET_HPP_FILE_PATH}" hppFileContent)
         file(READ "${PARGS_TARGET_CPP_FILE_PATH}" cppFileContent)
         file(READ "${TARGET_UPDATE_MAP_BODY_FILE_PATH}" updateMapBodyContent)
+        file(READ "${TARGET_MAX_VALUE_COUNT_DIV_STEP_FILE_PATH}" maxValueCountDivStep)
     endif()
 
 
@@ -72,7 +75,7 @@ function(NRHI_EnumHelper_CreateEnum)
             "
         )
 
-        if(NRHI_DRIVER_MULTIPLE)
+        if(${NRHI_DRIVER_MULTIPLE})
             set(
                 hppFileContent
                 "${hppFileContent}
@@ -133,8 +136,8 @@ function(NRHI_EnumHelper_CreateEnum)
             set(safeSemicolon ";")
         endif()
 
-        if(NRHI_DRIVER_MULTIPLE)
-            if(driverIndex EQUAL 0)
+        if(${NRHI_DRIVER_MULTIPLE})
+            if(${nameIndexDivStep} GREATER_EQUAL ${maxValueCountDivStep})
                 set(
                     hppFileContent
                     "${hppFileContent}
@@ -146,7 +149,7 @@ function(NRHI_EnumHelper_CreateEnum)
             set(
                 hppFileContent
                 "${hppFileContent}
-                    ${name} : ${driverValue} ${safeComma}
+                    ${name} = ${driverValue} ${safeComma}
                 "
             )
         endif()
@@ -178,8 +181,8 @@ function(NRHI_EnumHelper_CreateEnum)
             set(safeSemicolon ";")
         endif()
 
-        if(NRHI_DRIVER_MULTIPLE)
-            if(driverIndex EQUAL 0)
+        if(${NRHI_DRIVER_MULTIPLE})
+            if(${nameIndexDivStep} GREATER_EQUAL ${maxValueCountDivStep})
                 set(
                     cppFileContent
                     "${cppFileContent}
@@ -193,8 +196,15 @@ function(NRHI_EnumHelper_CreateEnum)
 
 
 
+    # Update maxValueCountDivStep
+    if(${valueCountDivStep} GREATER ${maxValueCountDivStep})
+        set(maxValueCountDivStep ${valueCountDivStep})
+    endif()
+
+
+
     # Define update map mode
-    if(NRHI_DRIVER_MULTIPLE)
+    if(${NRHI_DRIVER_MULTIPLE})
         if(${driverIndex} EQUAL 0)
             set(
                 updateMapBodyContent
@@ -234,7 +244,7 @@ function(NRHI_EnumHelper_CreateEnum)
                 set(safeSemicolon ";")
             endif()
 
-            if(NRHI_DRIVER_MULTIPLE)
+            if(${NRHI_DRIVER_MULTIPLE})
                 set(
                     updateMapBodyContent
                     "${updateMapBodyContent}
@@ -257,7 +267,7 @@ function(NRHI_EnumHelper_CreateEnum)
 
     # Add file footers
     if(${driverIndex} EQUAL ${NRHI_DRIVER_LAST_INDEX})
-        if(NRHI_DRIVER_MULTIPLE)
+        if(${NRHI_DRIVER_MULTIPLE})
             set(
                 cppFileContent
                 "${cppFileContent}
@@ -282,7 +292,7 @@ function(NRHI_EnumHelper_CreateEnum)
             "
         )
 
-        if(NRHI_DRIVER_MULTIPLE)
+        if(${NRHI_DRIVER_MULTIPLE})
             set(
                 hppFileContent
                 "${hppFileContent}
@@ -325,5 +335,6 @@ function(NRHI_EnumHelper_CreateEnum)
     file(WRITE "${PARGS_TARGET_HPP_FILE_PATH}" "${hppFileContent}")
     file(WRITE "${PARGS_TARGET_CPP_FILE_PATH}" "${cppFileContent}")
     file(WRITE "${TARGET_UPDATE_MAP_BODY_FILE_PATH}" "${updateMapBodyContent}")
+    file(WRITE "${TARGET_MAX_VALUE_COUNT_DIV_STEP_FILE_PATH}" "${maxValueCountDivStep}")
 
 endfunction()
