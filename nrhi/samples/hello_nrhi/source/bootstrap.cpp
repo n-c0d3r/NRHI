@@ -7,7 +7,7 @@ using namespace nrhi;
 
 NCPP_ENTRY_POINT() {
 
-    auto format = (ncpp::i32)(E_format::UNKNOWN);
+    auto format = (ncpp::i32)(E_format::NONE);
 
     NCPP_INFO()
         << "Hello "

@@ -50,6 +50,7 @@ namespace nrhi { }
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/format.hpp>
+#include <nrhi/resource_flag.hpp>
 
 #pragma endregion
 

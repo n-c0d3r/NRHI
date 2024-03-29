@@ -15,6 +15,7 @@ namespace nrhi {
     void try_update_map_enums(){
 
         NRHI_ENUM_TRY_UPDATE_MAP(E_format);
+        NRHI_ENUM_TRY_UPDATE_MAP(E_resource_flag);
 
     }
 
