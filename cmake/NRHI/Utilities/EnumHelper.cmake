@@ -141,7 +141,7 @@ function(NRHI_EnumHelper_CreateEnum)
                 set(
                     hppFileContent
                     "${hppFileContent}
-                    static ${PARGS_NAME} ${name};
+                    static NRHI_API ${PARGS_NAME} ${name};
                     "
                 )
             endif()

@@ -6,7 +6,7 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_MULTIPLE
     namespace internal {
-        NRHI_DEFINE_SAFE_LINKED_VARIABLE(driver_index, ncpp::i32);
+        ncpp::i32 driver_index = 0;
     }
 #endif
 

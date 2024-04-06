@@ -94,6 +94,51 @@ namespace nrhi {}
 #pragma region Macros
 
 ////////////////////////////////////////////////////////////////////////////////////
+//  DLL macros
+////////////////////////////////////////////////////////////////////////////////////
+
+#ifdef NRHI_DLL
+
+    #ifdef NRHI_DLL_IMPLEMENTATION
+
+        #ifdef EA_COMPILER_MSVC
+            #define NRHI_API      __declspec(dllexport)
+            #define NRHI_LOCAL
+        #elif defined(__CYGWIN__)
+            #define NRHI_API      __attribute__((dllexport))
+            #define NRHI_LOCAL
+        #elif (defined(__GNUC__) && (__GNUC__ >= 4))
+            #define NRHI_API      __attribute__ ((visibility("default")))
+            #define NRHI_LOCAL    __attribute__ ((visibility("hidden")))
+        #else
+            #error "Unknown compiler"
+        #endif
+
+    #else
+
+        #ifdef EA_COMPILER_MSVC
+            #define NRHI_API      __declspec(dllimport)
+            #define NRHI_LOCAL
+        #elif defined(__CYGWIN__)
+            #define NRHI_API      __attribute__((dllimport))
+            #define NRHI_LOCAL
+        #elif (defined(__GNUC__) && (__GNUC__ >= 4))
+            #define NRHI_API      __attribute__ ((visibility("default")))
+            #define NRHI_LOCAL    __attribute__ ((visibility("hidden")))
+        #else
+            #error "Unknown compiler"
+        #endif
+
+    #endif
+
+#else
+
+    #define NRHI_API
+    #define NRHI_LOCAL
+
+#endif
+
+////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
@@ -105,26 +150,6 @@ namespace nrhi {}
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
-
-#ifdef NRHI_VARIABLE_DYNAMIC_LINKING
-#define NRHI_DECLARE_SAFE_LINKED_VARIABLE(Name, ...) \
-    extern __VA_ARGS__ Name;                                            \
-    extern __VA_ARGS__* Name##___nrhi_linked_p;
-#define NRHI_DEFINE_SAFE_LINKED_VARIABLE(Name, ...) \
-    __VA_ARGS__ Name;                                            \
-    __VA_ARGS__* Name##___nrhi_linked_p = &Name;
-#define NRHI_GET_SAFE_LINKED_VARIABLE(Name) (*(Name##___nrhi_linked_p))
-#define NRHI_GET_POINTER_SAFE_LINKED_VARIABLE(Name) (Name##___nrhi_linked_p)
-#define NRHI_LINK_SAFE_LINKED_VARIABLE(Name, ...) Name##___nrhi_linked_p = __VA_ARGS__
-#else
-#define NRHI_DECLARE_SAFE_LINKED_VARIABLE(Name, ...) \
-    extern __VA_ARGS__ Name;
-#define NRHI_DEFINE_SAFE_LINKED_VARIABLE(Name, ...) \
-    __VA_ARGS__ Name;
-#define NRHI_GET_SAFE_LINKED_VARIABLE(Name) (Name)
-#define NRHI_GET_POINTER_SAFE_LINKED_VARIABLE(Name) (&(Name))
-#define NRHI_LINK_SAFE_LINKED_VARIABLE(Name, ...)
-#endif
 
 #define NRHI_ENUM_TRY_UPDATE_MAP(...) NCPP_EXPAND(__VA_ARGS__##___nrhi_enum_internal::try_update_map())
 
@@ -148,22 +173,20 @@ namespace nrhi {}
 
 namespace nrhi {
 
-    void try_update_map_enums();
+    NRHI_API void try_update_map_enums();
 
 
 
 #ifdef NRHI_DRIVER_MULTIPLE
     namespace internal {
-        NRHI_DECLARE_SAFE_LINKED_VARIABLE(driver_index, ncpp::i32);
+        extern NRHI_API ncpp::i32 driver_index;
     }
     inline ncpp::b8 try_set_driver_index(ncpp::i32 new_driver_index) noexcept {
 
         if(new_driver_index >= NRHI_DRIVER_COUNT)
             return false;
 
-        auto& driver_index = NRHI_GET_SAFE_LINKED_VARIABLE(nrhi::internal::driver_index);
-
-        driver_index = new_driver_index;
+        internal::driver_index = new_driver_index;
 
         try_update_map_enums();
 
@@ -171,7 +194,7 @@ namespace nrhi {
     }
     NCPP_FORCE_INLINE ncpp::i32 driver_index() noexcept {
 
-        return NRHI_GET_SAFE_LINKED_VARIABLE(nrhi::internal::driver_index);
+        return internal::driver_index;
     }
 #else
     namespace internal {

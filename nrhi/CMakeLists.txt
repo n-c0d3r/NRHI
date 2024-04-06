@@ -9,8 +9,8 @@ include(NCPP/ConfigureCompiler)
 #####################################################################################
 #   Options
 #####################################################################################
-# NRHI variable dynamic linking options
-option(NRHI_VARIABLE_DYNAMIC_LINKING "If checked, NRHI will use pointers for some indicated dynamic linked global variables" ON)
+# NRHI linking options
+option(NRHI_DLL "Build NRHI á DLL or not" ON)
 
 # NRHI driver options
 option(NRHI_DRIVER_DIRECTX_12 "If checked, NRHI will use Directx12 driver" OFF)
@@ -133,7 +133,12 @@ source_group(TREE "${CMAKE_CURRENT_BINARY_DIR}/generated_files" PREFIX generated
 #####################################################################################
 # Create nrhi target
 #####################################################################################
-add_library(nrhi STATIC
+if(${NRHI_DLL})
+    set(nrhiLinkingMode "SHARED")
+else()
+    set(nrhiLinkingMode "STATIC")
+endif()
+add_library(nrhi ${nrhiLinkingMode}
     ${source_files}
     ${generated_files}
 )
@@ -182,6 +187,13 @@ if(APPLE)
     target_link_libraries(nrhi
         PRIVATE
             ${COCOA_LIBRARY}
+    )
+endif()
+
+if(${NRHI_DLL})
+    target_compile_definitions(nrhi
+            PRIVATE
+            -DNRHI_DLL_IMPLEMENTATION
     )
 endif()
 

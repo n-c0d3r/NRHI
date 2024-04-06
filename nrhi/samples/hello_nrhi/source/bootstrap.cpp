@@ -7,6 +7,8 @@ using namespace nrhi;
 
 NCPP_ENTRY_POINT() {
 
+    try_set_driver_index(0);
+
     auto format = (ncpp::i32)(E_format::NONE);
 
     NCPP_INFO()
