@@ -152,6 +152,17 @@ namespace nrhi {}
 ////////////////////////////////////////////////////////////////////////////////////
 
 #define NRHI_ENUM_TRY_UPDATE_MAP(...) NCPP_EXPAND(__VA_ARGS__##___nrhi_enum_internal::try_update_map())
+#define NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(...) NCPP_EXPAND(__VA_ARGS__##___nrhi_function_class_internal::try_update_map())
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+#ifdef NRHI_DRIVER_MULTIPLE
+    #define NRHI_DRIVER_FORWARD_FUNC_P(...) (__VA_ARGS__)
+#else
+    #define NRHI_DRIVER_FORWARD_FUNC_P(...) (&(__VA_ARGS__))
+#endif
 
 #pragma endregion
 
@@ -173,24 +184,34 @@ namespace nrhi {}
 
 namespace nrhi {
 
-    NRHI_API void try_update_map_enums();
+    NRHI_USING_NLIB_NAMESPACES();
+
+
+
+    namespace internal {
+
+        NRHI_API void try_update_map_enums();
+        NRHI_API void try_update_map_functions();
+        NRHI_API void try_update_map();
+
+    }
 
 
 
 #ifdef NRHI_DRIVER_MULTIPLE
     namespace internal {
         extern NRHI_API ncpp::i32 driver_index;
-    }
-    inline ncpp::b8 try_set_driver_index(ncpp::i32 new_driver_index) noexcept {
+        inline ncpp::b8 try_set_driver_index(ncpp::i32 new_driver_index) noexcept {
 
-        if(new_driver_index >= NRHI_DRIVER_COUNT)
-            return false;
+            if(new_driver_index >= NRHI_DRIVER_COUNT)
+                return false;
 
-        internal::driver_index = new_driver_index;
+            internal::driver_index = new_driver_index;
 
-        try_update_map_enums();
+            internal::try_update_map();
 
-        return true;
+            return true;
+        }
     }
     NCPP_FORCE_INLINE ncpp::i32 driver_index() noexcept {
 
@@ -199,15 +220,15 @@ namespace nrhi {
 #else
     namespace internal {
         constexpr ncpp::i32 driver_index = 0;
-    }
-    inline ncpp::b8 try_set_driver_index(ncpp::i32 new_driver_index) {
+        inline ncpp::b8 try_set_driver_index(ncpp::i32 new_driver_index) {
 
-        if (new_driver_index != internal::driver_index)
-            return false;
+            if (new_driver_index != internal::driver_index)
+                return false;
 
-        try_update_map_enums();
+            internal::try_update_map();
 
-        return true;
+            return true;
+        }
     }
     constexpr ncpp::i32 driver_index() {
 

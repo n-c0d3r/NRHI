@@ -7,9 +7,13 @@ using namespace nrhi;
 
 NCPP_ENTRY_POINT() {
 
-    try_set_driver_index(0);
+    nrhi::initialize_system();
+    NCPP_DEFER(nrhi::release_system());
 
-    auto format = (ncpp::i32)(E_format::NONE);
+    auto adapters = H_adapter::enumerate_adapters();
+    NCPP_ASSERT(adapters.size());
+
+    auto device = H_device::create(adapters[0]);
 
     NCPP_INFO()
         << "Hello "

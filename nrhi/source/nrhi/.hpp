@@ -51,6 +51,9 @@ namespace nrhi { }
 
 #include <nrhi/format.hpp>
 #include <nrhi/resource_flag.hpp>
+#include <nrhi/system.hpp>
+#include <nrhi/device.hpp>
+#include <nrhi/adapter.hpp>
 
 #pragma endregion
 
@@ -73,5 +76,8 @@ namespace nrhi { }
 namespace nrhi {
 
     NRHI_USING_NLIB_NAMESPACES();
+
+    NRHI_API void initialize_system(u32 driver_index = 0);
+    NRHI_API void release_system();
 
 }

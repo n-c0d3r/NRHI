@@ -1,11 +1,11 @@
 
-function(NRHI_EnumHelper_CreateEnum)
+function(NRHI_FunctionHelper_CreateFunctionClass)
 
     cmake_parse_arguments(
         PARGS
         ""
-        "NAMESPACE;NAME;DRIVER_UPPER_CASE_NAME;TARGET_HPP_FILE_PATH;TARGET_CPP_FILE_PATH;TYPE"
-        "VALUES"
+        "NAMESPACE;NAME;DRIVER_UPPER_CASE_NAME;DRIVER_SPECIFIC_NAME;TARGET_HPP_FILE_PATH;TARGET_CPP_FILE_PATH"
+        "VALUES;INCLUDES;ADDITIONAL_CODE"
         ${ARGN}
     )
 
@@ -16,6 +16,7 @@ function(NRHI_EnumHelper_CreateEnum)
 
     set(TARGET_UPDATE_MAP_BODY_FILE_PATH "${targetCPPFilePathParsed}.update_map_body")
     set(TARGET_MAX_VALUE_COUNT_DIV_STEP_FILE_PATH "${targetCPPFilePathParsed}.max_value_count_div_step")
+    set(TARGET_INCLUDES_FILE_PATH "${targetCPPFilePathParsed}.includes")
 
 
 
@@ -36,25 +37,38 @@ function(NRHI_EnumHelper_CreateEnum)
 
 
 
-    # Check for type
-    if(NOT PARGS_TYPE)
-        set(PARGS_TYPE "ncpp::i32")
-    endif()
-
-
-
     # Prepare or read files
     if(${driverIndex} EQUAL 0)
         set(hppFileContent "#pragma once \n")
         set(cppFileContent "#include \"${targetHPPFilePathParsed}\" \n")
         set(updateMapBodyContent "")
         set(maxValueCountDivStep "0")
+        set(includesFileContent "#pragma once \n")
     else()
         file(READ "${PARGS_TARGET_HPP_FILE_PATH}" hppFileContent)
         file(READ "${PARGS_TARGET_CPP_FILE_PATH}" cppFileContent)
         file(READ "${TARGET_UPDATE_MAP_BODY_FILE_PATH}" updateMapBodyContent)
         file(READ "${TARGET_MAX_VALUE_COUNT_DIV_STEP_FILE_PATH}" maxValueCountDivStep)
+        file(READ "${TARGET_INCLUDES_FILE_PATH}" includesFileContent)
     endif()
+
+
+
+    # Generate includes file
+    foreach(includePath ${PARGS_INCLUDES})
+        set(includesFileContent
+            "${includesFileContent}
+                #include ${includePath}
+            "
+        )
+    endforeach()
+    foreach(code "${PARGS_ADDITIONAL_CODE}")
+        set(includesFileContent
+            "${includesFileContent}
+            ${code}
+            "
+        )
+    endforeach()
 
 
 
@@ -64,6 +78,7 @@ function(NRHI_EnumHelper_CreateEnum)
             hppFileContent
             "${hppFileContent}
                 #include <nrhi/prerequisites.hpp>
+                #include \"${TARGET_INCLUDES_FILE_PATH}\"
 
                 namespace ${PARGS_NAMESPACE} {
             "
@@ -79,14 +94,7 @@ function(NRHI_EnumHelper_CreateEnum)
             set(
                 hppFileContent
                 "${hppFileContent}
-                    struct ${PARGS_NAME} {
-
-                        ${PARGS_TYPE} value___nrhi_internal___ = 0;
-
-                        NCPP_FORCE_INLINE operator ${PARGS_TYPE} () const noexcept {
-
-                            return value___nrhi_internal___;
-                        }
+                    struct NRHI_API ${PARGS_NAME} {
 
                         static void update_map();
                 "
@@ -95,7 +103,7 @@ function(NRHI_EnumHelper_CreateEnum)
             set(
                 hppFileContent
                 "${hppFileContent}
-                    enum class ${PARGS_NAME} : ${PARGS_TYPE} {
+                    struct NRHI_API ${PARGS_NAME} : public ${PARGS_DRIVER_SPECIFIC_NAME} {
 
 
                 "
@@ -113,86 +121,90 @@ function(NRHI_EnumHelper_CreateEnum)
     # Declare values
     math(EXPR valueCountDivStep "${valueCount} / ${step}")
     math(EXPR valueCountDivStepMinus1 "${valueCountDivStep} - 1")
-    foreach(indexPlus1 RANGE 1 ${valueCount} ${step})
-        math(EXPR nameIndex "${indexPlus1} - 1")
-        math(EXPR driverValueIndex "${nameIndex} + 1")
-        if(PARGS_ENABLE_MASK_MODE)
-            math(EXPR abstractValueIndex "${driverValueIndex} + 1")
-        endif()
+    if(${valueCount})
+        foreach(indexPlus1 RANGE 1 ${valueCount} ${step})
+            math(EXPR nameIndex "${indexPlus1} - 1")
+            math(EXPR funcTypeValueIndex "${nameIndex} + 1")
 
-        list(GET PARGS_VALUES ${nameIndex} name)
-        list(GET PARGS_VALUES ${driverValueIndex} driverValue)
-        if(PARGS_ENABLE_MASK_MODE)
-            list(GET PARGS_VALUES ${abstractValueIndex} abstractValue)
-        endif()
+            list(GET PARGS_VALUES ${nameIndex} name)
+            list(GET PARGS_VALUES ${funcTypeValueIndex} funcTypeValue)
 
-        math(EXPR nameIndexDivStep "${nameIndex} / ${step}")
+            math(EXPR nameIndexDivStep "${nameIndex} / ${step}")
 
-        if(${nameIndexDivStep} EQUAL ${valueCountDivStepMinus1})
-            set(safeComma "")
-            set(safeSemicolon "")
-        else()
-            set(safeComma ",")
-            set(safeSemicolon ";")
-        endif()
+            if(${nameIndexDivStep} EQUAL ${valueCountDivStepMinus1})
+                set(safeComma "")
+                set(safeSemicolon "")
+            else()
+                set(safeComma ",")
+                set(safeSemicolon ";")
+            endif()
 
-        if(${NRHI_DRIVER_MULTIPLE})
-            if(${nameIndexDivStep} GREATER_EQUAL ${maxValueCountDivStep})
+            if(${NRHI_DRIVER_MULTIPLE})
+                if(${nameIndexDivStep} GREATER_EQUAL ${maxValueCountDivStep})
+                    set(
+                        hppFileContent
+                        "${hppFileContent}
+                            public:
+                            using F_${name} = ${funcTypeValue};
+                        "
+                    )
+                    set(
+                        hppFileContent
+                        "${hppFileContent}
+                        static F_${name}* ${name};
+                        "
+                    )
+                endif()
+            else()
                 set(
                     hppFileContent
                     "${hppFileContent}
-                    static NRHI_API ${PARGS_NAME} ${name};
+                        using F_${name} = ${funcTypeValue};
+                    "
+                )
+                set(
+                    hppFileContent
+                    "${hppFileContent}
                     "
                 )
             endif()
-        else()
-            set(
-                hppFileContent
-                "${hppFileContent}
-                    ${name} = ${driverValue} ${safeComma}
-                "
-            )
-        endif()
-    endforeach()
+        endforeach()
+    endif()
 
 
 
     # Define values
-    foreach(indexPlus1 RANGE 1 ${valueCount} ${step})
-        math(EXPR nameIndex "${indexPlus1} - 1")
-        math(EXPR driverValueIndex "${nameIndex} + 1")
-        if(PARGS_ENABLE_MASK_MODE)
-            math(EXPR abstractValueIndex "${driverValueIndex} + 1")
-        endif()
+    if(${valueCount})
+        foreach(indexPlus1 RANGE 1 ${valueCount} ${step})
+            math(EXPR nameIndex "${indexPlus1} - 1")
+            math(EXPR funcTypeValueIndex "${nameIndex} + 1")
 
-        list(GET PARGS_VALUES ${nameIndex} name)
-        list(GET PARGS_VALUES ${driverValueIndex} driverValue)
-        if(PARGS_ENABLE_MASK_MODE)
-            list(GET PARGS_VALUES ${abstractValueIndex} abstractValue)
-        endif()
+            list(GET PARGS_VALUES ${nameIndex} name)
+            list(GET PARGS_VALUES ${funcTypeValueIndex} funcTypeValue)
 
-        math(EXPR nameIndexDivStep "${nameIndex} / ${step}")
+            math(EXPR nameIndexDivStep "${nameIndex} / ${step}")
 
-        if(${nameIndexDivStep} EQUAL ${valueCountDivStepMinus1})
-            set(safeComma "")
-            set(safeSemicolon "")
-        else()
-            set(safeComma ",")
-            set(safeSemicolon ";")
-        endif()
-
-        if(${NRHI_DRIVER_MULTIPLE})
-            if(${nameIndexDivStep} GREATER_EQUAL ${maxValueCountDivStep})
-                set(
-                    cppFileContent
-                    "${cppFileContent}
-                    ${PARGS_NAME} ${PARGS_NAME}::${name} = ${PARGS_NAME}{(${PARGS_TYPE})${driverValue}};
-                    "
-                )
+            if(${nameIndexDivStep} EQUAL ${valueCountDivStepMinus1})
+                set(safeComma "")
+                set(safeSemicolon "")
+            else()
+                set(safeComma ",")
+                set(safeSemicolon ";")
             endif()
-        else()
-        endif()
-    endforeach()
+
+            if(${NRHI_DRIVER_MULTIPLE})
+                if(${nameIndexDivStep} GREATER_EQUAL ${maxValueCountDivStep})
+                    set(
+                        cppFileContent
+                        "${cppFileContent}
+                        ${PARGS_NAME}::F_${name}* ${PARGS_NAME}::${name} = 0;
+                        "
+                    )
+                endif()
+            else()
+            endif()
+        endforeach()
+    endif()
 
 
 
@@ -221,39 +233,35 @@ function(NRHI_EnumHelper_CreateEnum)
             )
         endif()
 
-        foreach(indexPlus1 RANGE 1 ${valueCount} ${step})
-            math(EXPR nameIndex "${indexPlus1} - 1")
-            math(EXPR driverValueIndex "${nameIndex} + 1")
-            if(PARGS_ENABLE_MASK_MODE)
-                math(EXPR abstractValueIndex "${driverValueIndex} + 1")
-            endif()
+        if(${valueCount})
+            foreach(indexPlus1 RANGE 1 ${valueCount} ${step})
+                math(EXPR nameIndex "${indexPlus1} - 1")
+                math(EXPR funcTypeValueIndex "${nameIndex} + 1")
 
-            list(GET PARGS_VALUES ${nameIndex} name)
-            list(GET PARGS_VALUES ${driverValueIndex} driverValue)
-            if(PARGS_ENABLE_MASK_MODE)
-                list(GET PARGS_VALUES ${abstractValueIndex} abstractValue)
-            endif()
+                list(GET PARGS_VALUES ${nameIndex} name)
+                list(GET PARGS_VALUES ${funcTypeValueIndex} funcTypeValue)
 
-            math(EXPR nameIndexDivStep "${nameIndex} / ${step}")
+                math(EXPR nameIndexDivStep "${nameIndex} / ${step}")
 
-            if(${nameIndexDivStep} EQUAL ${valueCountDivStepMinus1})
-                set(safeComma "")
-                set(safeSemicolon "")
-            else()
-                set(safeComma ",")
-                set(safeSemicolon ";")
-            endif()
+                if(${nameIndexDivStep} EQUAL ${valueCountDivStepMinus1})
+                    set(safeComma "")
+                    set(safeSemicolon "")
+                else()
+                    set(safeComma ",")
+                    set(safeSemicolon ";")
+                endif()
 
-            if(${NRHI_DRIVER_MULTIPLE})
-                set(
-                    updateMapBodyContent
-                    "${updateMapBodyContent}
-                    *((${PARGS_NAME}*)(&(${PARGS_NAME}::${name}))) = ${PARGS_NAME}{(${PARGS_TYPE})${driverValue}};
-                    "
-                )
-            else()
-            endif()
-        endforeach()
+                if(${NRHI_DRIVER_MULTIPLE})
+                    set(
+                        updateMapBodyContent
+                        "${updateMapBodyContent}
+                        ${PARGS_NAME}::${name} = &(${PARGS_DRIVER_SPECIFIC_NAME}::${name});
+                        "
+                    )
+                else()
+                endif()
+            endforeach()
+        endif()
 
         set(
             updateMapBodyContent
@@ -296,7 +304,7 @@ function(NRHI_EnumHelper_CreateEnum)
             set(
                 hppFileContent
                 "${hppFileContent}
-                    namespace ${PARGS_NAME}___nrhi_enum_internal {
+                    namespace ${PARGS_NAME}___nrhi_function_class_internal {
                         inline void try_update_map(){
                             ${PARGS_NAME}::update_map();
                         }
@@ -307,7 +315,7 @@ function(NRHI_EnumHelper_CreateEnum)
             set(
                 hppFileContent
                 "${hppFileContent}
-                    namespace ${PARGS_NAME}___nrhi_enum_internal {
+                    namespace ${PARGS_NAME}___nrhi_function_class_internal {
                         inline void try_update_map(){
                         }
                     }
@@ -336,5 +344,6 @@ function(NRHI_EnumHelper_CreateEnum)
     file(WRITE "${PARGS_TARGET_CPP_FILE_PATH}" "${cppFileContent}")
     file(WRITE "${TARGET_UPDATE_MAP_BODY_FILE_PATH}" "${updateMapBodyContent}")
     file(WRITE "${TARGET_MAX_VALUE_COUNT_DIV_STEP_FILE_PATH}" "${maxValueCountDivStep}")
+    file(WRITE "${TARGET_INCLUDES_FILE_PATH}" "${includesFileContent}")
 
 endfunction()

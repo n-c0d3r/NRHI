@@ -63,6 +63,7 @@ endif()
 # Implement drivers
 if(NRHI_DRIVER_DIRECTX_11 OR NRHI_DRIVER_DIRECTX_12)
     include(NRHI/Drivers/DXGI/Implement)
+    NCPP_SetGlobal(NRHI_ENABLE_DXGI ON)
 endif()
 if(NRHI_DRIVER_DIRECTX_12)
     include(NRHI/Drivers/DirectX12/Implement)
@@ -104,19 +105,34 @@ file(GLOB_RECURSE source_files
     "source/*.h"
 )
 
-# Exclude the windows platform files from the list if not using windows
-if(NOT WIN32)
-    list(FILTER source_files EXCLUDE REGEX "source/nrhi/windows/*.*")
+# Exclude the directx11 platform files from the list if not using directx11
+if(NOT NRHI_DRIVER_DIRECTX_11)
+    list(FILTER source_files EXCLUDE REGEX "source/nrhi/directx11/*.*")
 endif()
 
-# Exclude the apple platform files from the list if not using apple platforms
-if(NOT APPLE)
-    list(FILTER source_files EXCLUDE REGEX "source/nrhi/macos/*.*")
+# Exclude the directx12 platform files from the list if not using directx12
+if(NOT NRHI_DRIVER_DIRECTX_12)
+    list(FILTER source_files EXCLUDE REGEX "source/nrhi/directx12/*.*")
 endif()
 
-# Exclude the posix platform files from the list if not using posix
-if(NOT UNIX)
-    list(FILTER source_files EXCLUDE REGEX "source/nrhi/posix/*.*")
+# Exclude the dxgi platform files from the list if not using dxgi
+if(NOT NRHI_ENABLE_DXGI)
+    list(FILTER source_files EXCLUDE REGEX "source/nrhi/dxgi/*.*")
+endif()
+
+# Exclude the vulkan platform files from the list if not using vulkan
+if(NOT NRHI_DRIVER_VULKAN)
+    list(FILTER source_files EXCLUDE REGEX "source/nrhi/vulkan/*.*")
+endif()
+
+# Exclude the metal platform files from the list if not using metal
+if(NOT NRHI_DRIVER_METAL)
+    list(FILTER source_files EXCLUDE REGEX "source/nrhi/metal/*.*")
+endif()
+
+# Exclude the opengl platform files from the list if not using opengl
+if(NOT NRHI_DRIVER_OPENGL)
+    list(FILTER source_files EXCLUDE REGEX "source/nrhi/opengl/*.*")
 endif()
 
 # Create source group
@@ -170,6 +186,25 @@ target_link_libraries(nrhi
         nmath
         nsurface
 )
+
+if(NRHI_DRIVER_DIRECTX_12)
+    target_link_libraries(nrhi
+        PUBLIC
+            d3d12.lib
+    )
+endif()
+if(NRHI_DRIVER_DIRECTX_11)
+    target_link_libraries(nrhi
+        PUBLIC
+            d3d11.lib
+    )
+endif()
+if(NRHI_ENABLE_DXGI)
+    target_link_libraries(nrhi
+        PUBLIC
+            dxgi.lib
+    )
+endif()
 
 # MSVC compile options
 if(MSVC)
