@@ -36,10 +36,10 @@ namespace nrhi {
 
         for (UINT i = 0; factory_p->EnumAdapters(i, &dxgi_adapter_p) != DXGI_ERROR_NOT_FOUND; ++i) {
 
-            auto adapter_p = TU<F_dxgi_adapter>::T_make(i, dxgi_adapter_p);
+            auto adapter_p = TU<F_dxgi_adapter>()(i, dxgi_adapter_p);
 
             keyed_adapter_p_vector_.push_back(
-                F_valid_requirements::T_forward(adapter_p.keyed())
+                NCPP_FOREF_VALID(adapter_p.keyed())
             );
             unique_adapter_p_vector_.push_back(std::move(adapter_p));
         }
