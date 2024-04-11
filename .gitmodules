@@ -4,3 +4,6 @@
 [submodule "submodules/NMath"]
 	path = submodules/NMath
 	url = https://github.com/n-c0d3r/NMath
+[submodule "submodules/NSurface"]
+	path = submodules/NSurface
+	url = https://github.com/n-c0d3r/NSurface
