@@ -24,7 +24,7 @@ NRHI_FunctionHelper_CreateFunctionClass(
             class A_adapter;
         }"
     VALUES
-        "create" "TU_valid<A_device>(TK_valid<A_adapter> adapter_p)"
+        "create" "TU<A_device>(TK_valid<A_adapter> adapter_p)"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX11> Implement device done")

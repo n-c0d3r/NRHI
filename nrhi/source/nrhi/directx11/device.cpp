@@ -51,9 +51,9 @@ namespace nrhi {
 
 
 
-    TU_valid<A_device> HD_directx11_device::create(TK_valid<A_adapter> adapter_p){
+    TU<A_device> HD_directx11_device::create(TK_valid<A_adapter> adapter_p){
 
-        return TU_valid<F_directx11_device>::T_make(adapter_p);
+        return TU<F_directx11_device>::T_make(adapter_p);
     }
 
 }

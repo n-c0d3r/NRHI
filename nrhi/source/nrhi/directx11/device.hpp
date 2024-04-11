@@ -66,7 +66,7 @@ namespace nrhi {
     class NRHI_API HD_directx11_device {
 
     public:
-        static TU_valid<A_device> create(TK_valid<A_adapter> adapter_p);
+        static TU<A_device> create(TK_valid<A_adapter> adapter_p);
 
     };
 

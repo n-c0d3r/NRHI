@@ -17,7 +17,7 @@ namespace nrhi {
 
 
 
-    TG_vector<TU_valid<A_adapter>> HD_dxgi_adapter::unique_adapter_p_vector_;
+    TG_vector<TU<A_adapter>> HD_dxgi_adapter::unique_adapter_p_vector_;
     TG_vector<TK_valid<A_adapter>> HD_dxgi_adapter::keyed_adapter_p_vector_;
 
 
@@ -36,9 +36,11 @@ namespace nrhi {
 
         for (UINT i = 0; factory_p->EnumAdapters(i, &dxgi_adapter_p) != DXGI_ERROR_NOT_FOUND; ++i) {
 
-            auto adapter_p = TU_valid<F_dxgi_adapter>::T_make(i, dxgi_adapter_p);
+            auto adapter_p = TU<F_dxgi_adapter>::T_make(i, dxgi_adapter_p);
 
-            keyed_adapter_p_vector_.push_back(adapter_p.keyed());
+            keyed_adapter_p_vector_.push_back(
+                F_valid_requirements::T_forward(adapter_p.keyed())
+            );
             unique_adapter_p_vector_.push_back(std::move(adapter_p));
         }
 

@@ -80,7 +80,7 @@ namespace nrhi {
 
 
     private:
-        static TG_vector<TU_valid<A_adapter>> unique_adapter_p_vector_;
+        static TG_vector<TU<A_adapter>> unique_adapter_p_vector_;
         static TG_vector<TK_valid<A_adapter>> keyed_adapter_p_vector_;
 
 

@@ -1,6 +1,3 @@
-[submodule "submodules/NSurface"]
-	path = submodules/NSurface
-	url = https://github.com/Abytek/NSurface
 [submodule "submodules/NCPP"]
 	path = submodules/NCPP
 	url = https://github.com/n-c0d3r/NCPP
