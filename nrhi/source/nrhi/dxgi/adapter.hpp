@@ -86,7 +86,7 @@ namespace nrhi {
 
 
     public:
-        static TG_vector<TK_valid<A_adapter>> enumerate_adapters();
+        static TG_vector<TK_valid<A_adapter>> adapters();
 
 
 

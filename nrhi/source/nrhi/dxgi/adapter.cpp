@@ -22,7 +22,7 @@ namespace nrhi {
 
 
 
-    TG_vector<TK_valid<A_adapter>> HD_dxgi_adapter::enumerate_adapters() {
+    TG_vector<TK_valid<A_adapter>> HD_dxgi_adapter::adapters() {
 
         return keyed_adapter_p_vector_;
     }

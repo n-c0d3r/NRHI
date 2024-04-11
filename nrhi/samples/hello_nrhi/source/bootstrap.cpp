@@ -10,7 +10,7 @@ NCPP_ENTRY_POINT() {
     nrhi::initialize_system();
     NCPP_DEFER(nrhi::release_system());
 
-    auto adapters = H_adapter::enumerate_adapters();
+    auto adapters = H_adapter::adapters();
     NCPP_ASSERT(adapters.size());
 
     auto device = H_device::create(adapters[0]);
