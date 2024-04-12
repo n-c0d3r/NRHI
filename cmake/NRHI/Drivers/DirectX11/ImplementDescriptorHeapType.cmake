@@ -17,10 +17,7 @@ NRHI_EnumHelper_CreateEnum(
     TARGET_HPP_FILE_PATH "${NRHI_DESCRIPTOR_HEAP_TYPE_ENUM_HPP_FILE_PATH}"
     TARGET_CPP_FILE_PATH "${NRHI_DESCRIPTOR_HEAP_TYPE_ENUM_CPP_FILE_PATH}"
     VALUES
-        CBV_SRV_UAV 0
-        SAMPLER 1
-        RTV 2
-        DSV 3
+        MANAGED 0x4
 )
 
 message(STATUS "<NRHI::Drivers::DirectX11> Implement descriptor heap type done")
