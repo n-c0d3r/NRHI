@@ -79,6 +79,7 @@ namespace nrhi {
             NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_adapter);
             NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_command_queue);
             NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_command_list);
+            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_swapchain);
 
         }
         void try_update_map(){

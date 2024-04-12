@@ -5,6 +5,7 @@ include(NRHI/Drivers/DirectX11/ImplementDevice)
 include(NRHI/Drivers/DirectX11/ImplementSystem)
 include(NRHI/Drivers/DirectX11/ImplementCommandQueue)
 include(NRHI/Drivers/DirectX11/ImplementCommandList)
+include(NRHI/Drivers/DirectX11/ImplementSwapChain)
 include(NRHI/Drivers/DXGI/AdapterHelper)
 
 

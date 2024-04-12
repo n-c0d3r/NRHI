@@ -57,6 +57,7 @@ namespace nrhi { }
 #include <nrhi/adapter.hpp>
 #include <nrhi/command_queue.hpp>
 #include <nrhi/command_list.hpp>
+#include <nrhi/swapchain.hpp>
 
 #pragma endregion
 

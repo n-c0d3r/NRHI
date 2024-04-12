@@ -26,6 +26,7 @@ function(NRHI_DXGI_ImplementFormats)
         TARGET_CPP_FILE_PATH "${NRHI_FORMAT_ENUM_CPP_FILE_PATH}"
         VALUES
             NONE DXGI_FORMAT_UNKNOWN
+            R8G8B8A8_UNORM DXGI_FORMAT_R8G8B8A8_UNORM
     )
 
 endfunction()
