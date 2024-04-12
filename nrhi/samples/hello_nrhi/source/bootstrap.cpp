@@ -15,10 +15,6 @@ NCPP_ENTRY_POINT() {
         << NRHI_VERSION_STR
         << E_log_color::RESET;
 
-    auto resource_heap_type = E_resource_heap_type::GREAD_GWRITE;
-    auto descriptor_heap_type = E_descriptor_heap_type::MANAGED;
-    auto descriptor_bind_class = E_descriptor_bind_class::SRV;
-
 
 
     // initialize nrhi and deferrered release it

@@ -9,6 +9,7 @@ include(NRHI/Drivers/DirectX11/ImplementDescriptorHeapType)
 include(NRHI/Drivers/DirectX11/ImplementDescriptorRangeType)
 include(NRHI/Drivers/DirectX11/ImplementRootParamType)
 include(NRHI/Drivers/DirectX11/ImplementShaderVisibility)
+include(NRHI/Drivers/DirectX11/ImplementBindFlag)
 
 
 

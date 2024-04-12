@@ -75,6 +75,7 @@ namespace nrhi {
             NRHI_ENUM_TRY_UPDATE_MAP(E_descriptor_range_type);
             NRHI_ENUM_TRY_UPDATE_MAP(E_root_param_type);
             NRHI_ENUM_TRY_UPDATE_MAP(E_shader_visibility);
+            NRHI_ENUM_TRY_UPDATE_MAP(E_bind_flag);
 
         }
         void try_update_map_functions(){

@@ -43,6 +43,7 @@ namespace nrhi {
         }
 
         NCPP_ASSERT(SUCCEEDED(hr)) << "can't create d3d11 device";
+
     }
     F_directx11_device::~F_directx11_device(){
 

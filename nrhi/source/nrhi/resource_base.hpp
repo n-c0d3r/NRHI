@@ -35,10 +35,16 @@
 
 namespace nrhi {
 
-    struct F_resource_desc {
+    struct F_managed_buffer_desc {
+    };
 
+    struct F_managed_texture_1d_desc {
+    };
 
+    struct F_managed_texture_2d_desc {
+    };
 
+    struct F_managed_texture_3d_desc {
     };
 
 }

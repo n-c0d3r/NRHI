@@ -34,12 +34,19 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/descriptor_range_type.hpp>
+#include <nrhi/descriptor_heap_type.hpp>
 
 #pragma endregion
 
 
 
 namespace nrhi {
+
+    class A_device;
+    class A_descriptor_heap;
+    class A_resource;
+
+
 
     struct F_descriptor_range_desc {
 
@@ -53,6 +60,60 @@ namespace nrhi {
     struct F_descriptor_table_desc {
 
         TG_span<F_descriptor_range_desc> range_descs;
+
+    };
+
+
+
+    struct F_descriptor_heap_desc {
+
+        E_descriptor_heap_type type;
+
+    };
+
+
+
+    struct F_descriptor_handle {
+
+        union {
+
+            TK<A_resource> managed_resource_p;
+
+            struct {
+
+                u64 cpu_handle;
+                u64 gpu_handle;
+                TK<A_descriptor_heap> heap_p;
+
+            };
+
+        };
+
+    };
+
+    using F_constant_buffer_view = F_descriptor_handle;
+    using F_shader_resource_view = F_descriptor_handle;
+    using F_unordered_access_view = F_descriptor_handle;
+
+
+
+    class NRHI_API A_descriptor_heap {
+
+    private:
+        TK_valid<A_device> device_p_;
+        F_descriptor_heap_desc desc_;
+
+    public:
+        NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
+        NCPP_FORCE_INLINE const F_descriptor_heap_desc& desc() const noexcept { return desc_; }
+
+
+
+    protected:
+        A_descriptor_heap(TK_valid<A_device> device_p, const F_descriptor_heap_desc& desc);
+
+    public:
+        virtual ~A_descriptor_heap();
 
     };
 
