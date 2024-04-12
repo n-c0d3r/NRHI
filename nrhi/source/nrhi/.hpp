@@ -52,6 +52,9 @@ namespace nrhi { }
 #include <nrhi/format.hpp>
 #include <nrhi/resource_flag.hpp>
 #include <nrhi/command_list_type.hpp>
+#include <nrhi/resource_heap_type.hpp>
+#include <nrhi/descriptor_heap_type.hpp>
+#include <nrhi/descriptor_bind_slot.hpp>
 #include <nrhi/system.hpp>
 #include <nrhi/device.hpp>
 #include <nrhi/adapter.hpp>

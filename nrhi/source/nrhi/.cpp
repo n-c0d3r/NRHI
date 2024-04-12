@@ -70,6 +70,9 @@ namespace nrhi {
             NRHI_ENUM_TRY_UPDATE_MAP(E_format);
             NRHI_ENUM_TRY_UPDATE_MAP(E_resource_flag);
             NRHI_ENUM_TRY_UPDATE_MAP(E_command_list_type);
+            NRHI_ENUM_TRY_UPDATE_MAP(E_resource_heap_type);
+            NRHI_ENUM_TRY_UPDATE_MAP(E_descriptor_heap_type);
+            NRHI_ENUM_TRY_UPDATE_MAP(E_descriptor_bind_slot);
 
         }
         void try_update_map_functions(){

@@ -15,6 +15,10 @@ NCPP_ENTRY_POINT() {
         << NRHI_VERSION_STR
         << E_log_color::RESET;
 
+    auto resource_heap_type = E_resource_heap_type::GREAD_CWRITE;
+    auto descriptor_heap_type = E_descriptor_heap_type::CBV_SRV_UAV;
+    auto descriptor_bind_slot = E_descriptor_bind_slot::CBV;
+
 
 
     // initialize nrhi and deferrered release it
