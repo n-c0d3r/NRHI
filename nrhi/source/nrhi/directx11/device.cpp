@@ -49,6 +49,20 @@ namespace nrhi {
         d3d11_device_p_->Release();
     }
 
+    ID3D11DeviceContext* F_directx11_device::pop_d3d11_immediate_ctx(){
+
+        NCPP_ASSERT(!is_d3d11_immediate_ctx_obtained_) << "d3d11 immediate ctx was already obtained";
+
+        ID3D11DeviceContext* result = 0;
+        d3d11_device_p_->GetImmediateContext(&result);
+
+        return result;
+    }
+    void F_directx11_device::push_d3d11_immediate_ctx() {
+
+        is_d3d11_immediate_ctx_obtained_ = false;
+    }
+
 
 
     TU<A_device> HD_directx11_device::create(TK_valid<A_adapter> adapter_p){

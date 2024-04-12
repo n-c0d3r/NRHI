@@ -49,6 +49,7 @@ namespace nrhi {
 
     private:
         ID3D11Device* d3d11_device_p_ = 0;
+        b8 is_d3d11_immediate_ctx_obtained_ = false;
 
     public:
         NCPP_FORCE_INLINE ID3D11Device* d3d11_device_p() noexcept { return d3d11_device_p_; }
@@ -59,6 +60,10 @@ namespace nrhi {
         F_directx11_device(TK_valid<A_adapter> adapter_p);
         ~F_directx11_device();
 
+    public:
+        ID3D11DeviceContext* pop_d3d11_immediate_ctx();
+        void push_d3d11_immediate_ctx();
+
     };
 
 
@@ -67,6 +72,8 @@ namespace nrhi {
 
     public:
         static TU<A_device> create(TK_valid<A_adapter> adapter_p);
+
+        static constexpr u32 max_queue_count(A_device*) { return 1; }
 
     };
 
