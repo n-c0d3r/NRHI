@@ -34,6 +34,8 @@ namespace nrhi {
 
     void initialize_system(u32 driver_index) {
 
+        NCPP_ASSERT(!internal::is_system_initialized) << "system was already initialized and currently running";
+
         b8 hr = internal::try_set_driver_index(driver_index);
         NCPP_ASSERT(hr) << "can't set driver index to " << driver_index;
 
