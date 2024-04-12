@@ -38,7 +38,7 @@ function(NRHI_EnumHelper_CreateEnum)
 
     # Check for type
     if(NOT PARGS_TYPE)
-        set(PARGS_TYPE "ncpp::i32")
+        set(PARGS_TYPE "ncpp::u32")
     endif()
 
 

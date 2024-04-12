@@ -67,6 +67,7 @@ namespace nrhi {
 
             NRHI_ENUM_TRY_UPDATE_MAP(E_format);
             NRHI_ENUM_TRY_UPDATE_MAP(E_resource_flag);
+            NRHI_ENUM_TRY_UPDATE_MAP(E_command_list_type);
 
         }
         void try_update_map_functions(){
@@ -74,6 +75,8 @@ namespace nrhi {
             NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_system);
             NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_device);
             NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_adapter);
+            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_command_queue);
+            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_command_list);
 
         }
         void try_update_map(){

@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/dxgi/adapter.hpp
+/** @file nrhi/directx11/command_list.hpp
 *
-*   Implement dxgi adapter.
+*   Implement directx11 command_list.
 */
 
 
@@ -33,7 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/adapter_base.hpp>
+#include <nrhi/command_list_base.hpp>
 
 #pragma endregion
 
@@ -41,58 +41,24 @@
 
 namespace nrhi {
 
-    namespace internal {
-
-        extern NRHI_API IDXGIFactory* dxgi_factory_p;
-
-    }
+    class A_device;
 
 
 
-    class NRHI_API F_dxgi_adapter : public A_adapter {
+    class NRHI_API F_directx11_command_list : public A_command_list {
 
     public:
-        friend class HD_dxgi_adapter;
-
-
-
-    private:
-        IDXGIAdapter* dxgi_adapter_p_;
-
-    public:
-        NCPP_FORCE_INLINE IDXGIAdapter* dxgi_adapter_p() noexcept { return dxgi_adapter_p_; }
-
-
-
-    public:
-        F_dxgi_adapter(u32 index, IDXGIAdapter* dxgi_adapter_p);
-        ~F_dxgi_adapter();
+        F_directx11_command_list(TK_valid<A_device> device_p, const F_command_list_desc& desc);
+        ~F_directx11_command_list();
 
     };
 
 
 
-    class NRHI_API HD_dxgi_adapter {
+    class NRHI_API HD_directx11_command_list {
 
     public:
-        friend class F_dxgi_factory_helper;
-
-
-
-    private:
-        static TG_vector<TU<A_adapter>> unique_adapter_p_vector_;
-        static TG_vector<TK_valid<A_adapter>> keyed_adapter_p_vector_;
-
-
-
-    public:
-        static const TG_vector<TK_valid<A_adapter>>& adapter_p_vector();
-
-
-
-    private:
-        static void initialize_adapters();
-        static void release_adapters();
+        static TU<A_command_list> create(TK_valid<A_device> device_p, const F_command_list_desc& desc);
 
     };
 

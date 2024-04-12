@@ -22,7 +22,7 @@ namespace nrhi {
 
 
 
-    TG_vector<TK_valid<A_adapter>> HD_dxgi_adapter::adapters() {
+    const TG_vector<TK_valid<A_adapter>>& HD_dxgi_adapter::adapter_p_vector() {
 
         return keyed_adapter_p_vector_;
     }
@@ -39,7 +39,7 @@ namespace nrhi {
             auto adapter_p = TU<F_dxgi_adapter>()(i, dxgi_adapter_p);
 
             keyed_adapter_p_vector_.push_back(
-                NCPP_FOREF_VALID(adapter_p.keyed())
+                NCPP_FOREF_VALID(adapter_p)
             );
             unique_adapter_p_vector_.push_back(std::move(adapter_p));
         }

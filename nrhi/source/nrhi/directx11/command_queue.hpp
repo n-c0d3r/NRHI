@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/dxgi/adapter.hpp
+/** @file nrhi/directx11/command_queue.hpp
 *
-*   Implement dxgi adapter.
+*   Implement directx11 command_queue.
 */
 
 
@@ -33,7 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/adapter_base.hpp>
+#include <nrhi/command_queue_base.hpp>
 
 #pragma endregion
 
@@ -41,58 +41,30 @@
 
 namespace nrhi {
 
-    namespace internal {
-
-        extern NRHI_API IDXGIFactory* dxgi_factory_p;
-
-    }
+    class A_device;
+    class A_command_list;
 
 
 
-    class NRHI_API F_dxgi_adapter : public A_adapter {
+    class NRHI_API F_directx11_command_queue : public A_command_queue {
 
     public:
-        friend class HD_dxgi_adapter;
-
-
-
-    private:
-        IDXGIAdapter* dxgi_adapter_p_;
-
-    public:
-        NCPP_FORCE_INLINE IDXGIAdapter* dxgi_adapter_p() noexcept { return dxgi_adapter_p_; }
-
-
-
-    public:
-        F_dxgi_adapter(u32 index, IDXGIAdapter* dxgi_adapter_p);
-        ~F_dxgi_adapter();
+        F_directx11_command_queue(TK_valid<A_device> device_p, const F_command_queue_desc& desc);
+        ~F_directx11_command_queue();
 
     };
 
 
 
-    class NRHI_API HD_dxgi_adapter {
+    class NRHI_API HD_directx11_command_queue {
 
     public:
-        friend class F_dxgi_factory_helper;
+        static TU<A_command_queue> create(TK_valid<A_device> device_p, const F_command_queue_desc& desc);
 
-
-
-    private:
-        static TG_vector<TU<A_adapter>> unique_adapter_p_vector_;
-        static TG_vector<TK_valid<A_adapter>> keyed_adapter_p_vector_;
-
-
-
-    public:
-        static const TG_vector<TK_valid<A_adapter>>& adapter_p_vector();
-
-
-
-    private:
-        static void initialize_adapters();
-        static void release_adapters();
+        static void execute_command_lists(
+            TK_valid<A_command_queue> command_queue_p,
+            TG_span<TK_valid<A_command_list>> command_list_p_span
+        );
 
     };
 

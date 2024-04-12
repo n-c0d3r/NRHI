@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/dxgi/adapter.hpp
+/** @file nrhi/command_queue_base.hpp
 *
-*   Implement dxgi adapter.
+*   Implement command queue base class.
 */
 
 
@@ -33,7 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/adapter_base.hpp>
+#include <nrhi/command_list_type.hpp>
 
 #pragma endregion
 
@@ -41,58 +41,35 @@
 
 namespace nrhi {
 
-    namespace internal {
-
-        extern NRHI_API IDXGIFactory* dxgi_factory_p;
-
-    }
+    class A_device;
 
 
 
-    class NRHI_API F_dxgi_adapter : public A_adapter {
+    struct F_command_queue_desc {
 
-    public:
-        friend class HD_dxgi_adapter;
-
-
-
-    private:
-        IDXGIAdapter* dxgi_adapter_p_;
-
-    public:
-        NCPP_FORCE_INLINE IDXGIAdapter* dxgi_adapter_p() noexcept { return dxgi_adapter_p_; }
-
-
-
-    public:
-        F_dxgi_adapter(u32 index, IDXGIAdapter* dxgi_adapter_p);
-        ~F_dxgi_adapter();
+        E_command_list_type type;
 
     };
 
 
 
-    class NRHI_API HD_dxgi_adapter {
-
-    public:
-        friend class F_dxgi_factory_helper;
-
-
+    class NRHI_API A_command_queue {
 
     private:
-        static TG_vector<TU<A_adapter>> unique_adapter_p_vector_;
-        static TG_vector<TK_valid<A_adapter>> keyed_adapter_p_vector_;
-
-
+        TK_valid<A_device> device_p_;
+        F_command_queue_desc desc_;
 
     public:
-        static const TG_vector<TK_valid<A_adapter>>& adapter_p_vector();
+        NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
+        NCPP_FORCE_INLINE const F_command_queue_desc& desc() const noexcept { return desc_; }
 
 
 
-    private:
-        static void initialize_adapters();
-        static void release_adapters();
+    protected:
+        A_command_queue(TK_valid<A_device> device_p, const F_command_queue_desc& desc);
+
+    public:
+        virtual ~A_command_queue();
 
     };
 

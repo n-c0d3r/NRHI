@@ -28,7 +28,7 @@ function(NRHI_DXGI_ImplementAdapter)
         INCLUDES
             "<nrhi/dxgi/adapter.hpp>"
         VALUES
-            "enumerate_adapters" "TG_vector<TK_valid<A_adapter>>()"
+            "adapter_p_vector" "const TG_vector<TK_valid<A_adapter>>&()"
     )
 
 endfunction()

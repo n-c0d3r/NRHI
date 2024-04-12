@@ -51,9 +51,12 @@ namespace nrhi { }
 
 #include <nrhi/format.hpp>
 #include <nrhi/resource_flag.hpp>
+#include <nrhi/command_list_type.hpp>
 #include <nrhi/system.hpp>
 #include <nrhi/device.hpp>
 #include <nrhi/adapter.hpp>
+#include <nrhi/command_queue.hpp>
+#include <nrhi/command_list.hpp>
 
 #pragma endregion
 

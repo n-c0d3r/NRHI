@@ -3,6 +3,7 @@ message(STATUS "<NRHI::Drivers::DirectX11> Start implementing enums")
 
 include(NRHI/Drivers/DXGI/FormatHelper)
 include(NRHI/Drivers/DirectX11/ImplementResourceFlag)
+include(NRHI/Drivers/DirectX11/ImplementCommandListType)
 
 
 
