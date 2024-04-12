@@ -17,6 +17,7 @@ function(NRHI_FunctionHelper_CreateFunctionClass)
     set(TARGET_UPDATE_MAP_BODY_FILE_PATH "${targetCPPFilePathParsed}.update_map_body")
     set(TARGET_MAX_VALUE_COUNT_DIV_STEP_FILE_PATH "${targetCPPFilePathParsed}.max_value_count_div_step")
     set(TARGET_INCLUDES_FILE_PATH "${targetCPPFilePathParsed}.includes")
+    set(TARGET_PREPARED_VALUE_NAMES_FILE_PATH "${targetCPPFilePathParsed}.prepared_value_names")
 
 
 
@@ -44,13 +45,22 @@ function(NRHI_FunctionHelper_CreateFunctionClass)
         set(updateMapBodyContent "")
         set(maxValueCountDivStep "0")
         set(includesFileContent "#pragma once \n")
+        set(prepared_value_names "")
     else()
         file(READ "${PARGS_TARGET_HPP_FILE_PATH}" hppFileContent)
         file(READ "${PARGS_TARGET_CPP_FILE_PATH}" cppFileContent)
         file(READ "${TARGET_UPDATE_MAP_BODY_FILE_PATH}" updateMapBodyContent)
         file(READ "${TARGET_MAX_VALUE_COUNT_DIV_STEP_FILE_PATH}" maxValueCountDivStep)
         file(READ "${TARGET_INCLUDES_FILE_PATH}" includesFileContent)
+        file(READ "${TARGET_PREPARED_VALUE_NAMES_FILE_PATH}" prepared_value_names)
     endif()
+
+
+
+    # Load prepared value names from file content
+    foreach(pvn ${prepared_value_names})
+        set(prepared_value_names_${pvn} ON)
+    endforeach()
 
 
 
@@ -140,7 +150,9 @@ function(NRHI_FunctionHelper_CreateFunctionClass)
             endif()
 
             if(${NRHI_DRIVER_MULTIPLE})
-                if(${nameIndexDivStep} GREATER_EQUAL ${maxValueCountDivStep})
+                if(NOT prepared_value_names_${name})
+                    set(prepared_value_names "${prepared_value_names};${name}")
+#               if(${nameIndexDivStep} GREATER_EQUAL ${maxValueCountDivStep})
                     set(
                         hppFileContent
                         "${hppFileContent}
@@ -193,7 +205,9 @@ function(NRHI_FunctionHelper_CreateFunctionClass)
             endif()
 
             if(${NRHI_DRIVER_MULTIPLE})
-                if(${nameIndexDivStep} GREATER_EQUAL ${maxValueCountDivStep})
+                if(NOT prepared_value_names_${name})
+#                    set(prepared_value_names "${prepared_value_names};${name}")
+#               if(${nameIndexDivStep} GREATER_EQUAL ${maxValueCountDivStep})
                     set(
                         cppFileContent
                         "${cppFileContent}
@@ -345,5 +359,6 @@ function(NRHI_FunctionHelper_CreateFunctionClass)
     file(WRITE "${TARGET_UPDATE_MAP_BODY_FILE_PATH}" "${updateMapBodyContent}")
     file(WRITE "${TARGET_MAX_VALUE_COUNT_DIV_STEP_FILE_PATH}" "${maxValueCountDivStep}")
     file(WRITE "${TARGET_INCLUDES_FILE_PATH}" "${includesFileContent}")
+    file(WRITE "${TARGET_PREPARED_VALUE_NAMES_FILE_PATH}" "${prepared_value_names}")
 
 endfunction()
