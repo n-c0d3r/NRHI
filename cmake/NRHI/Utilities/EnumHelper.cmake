@@ -144,90 +144,94 @@ function(NRHI_EnumHelper_CreateEnum)
     # Declare values
     math(EXPR valueCountDivStep "${valueCount} / ${step}")
     math(EXPR valueCountDivStepMinus1 "${valueCountDivStep} - 1")
-    foreach(indexPlus1 RANGE 1 ${valueCount} ${step})
-        math(EXPR nameIndex "${indexPlus1} - 1")
-        math(EXPR driverValueIndex "${nameIndex} + 1")
-        if(PARGS_ENABLE_MASK_MODE)
-            math(EXPR abstractValueIndex "${driverValueIndex} + 1")
-        endif()
+    if(${valueCount})
+        foreach(indexPlus1 RANGE 1 ${valueCount} ${step})
+            math(EXPR nameIndex "${indexPlus1} - 1")
+            math(EXPR driverValueIndex "${nameIndex} + 1")
+            if(PARGS_ENABLE_MASK_MODE)
+                math(EXPR abstractValueIndex "${driverValueIndex} + 1")
+            endif()
 
-        list(GET PARGS_VALUES ${nameIndex} name)
-        list(GET PARGS_VALUES ${driverValueIndex} driverValue)
-        if(PARGS_ENABLE_MASK_MODE)
-            list(GET PARGS_VALUES ${abstractValueIndex} abstractValue)
-        endif()
+            list(GET PARGS_VALUES ${nameIndex} name)
+            list(GET PARGS_VALUES ${driverValueIndex} driverValue)
+            if(PARGS_ENABLE_MASK_MODE)
+                list(GET PARGS_VALUES ${abstractValueIndex} abstractValue)
+            endif()
 
-        math(EXPR nameIndexDivStep "${nameIndex} / ${step}")
+            math(EXPR nameIndexDivStep "${nameIndex} / ${step}")
 
-        if(${nameIndexDivStep} EQUAL ${valueCountDivStepMinus1})
-            set(safeComma "")
-            set(safeSemicolon "")
-        else()
-            set(safeComma ",")
-            set(safeSemicolon ";")
-        endif()
+            if(${nameIndexDivStep} EQUAL ${valueCountDivStepMinus1})
+                set(safeComma "")
+                set(safeSemicolon "")
+            else()
+                set(safeComma ",")
+                set(safeSemicolon ";")
+            endif()
 
-        if(${NRHI_DRIVER_MULTIPLE})
-            if(NOT prepared_value_names_${name})
-                set(prepared_value_names "${prepared_value_names};${name}")
-#           if(${nameIndexDivStep} GREATER_EQUAL ${maxValueCountDivStep})
+            if(${NRHI_DRIVER_MULTIPLE})
+                if(NOT prepared_value_names_${name})
+                    set(prepared_value_names "${prepared_value_names};${name}")
+    #           if(${nameIndexDivStep} GREATER_EQUAL ${maxValueCountDivStep})
+                    set(
+                        hppFileContent
+                        "${hppFileContent}
+                        static NRHI_API ${PARGS_NAME} ${name};
+                        "
+                    )
+                endif()
+            else()
                 set(
                     hppFileContent
                     "${hppFileContent}
-                    static NRHI_API ${PARGS_NAME} ${name};
+                        ${name} = ${driverValue} ${safeComma}
                     "
                 )
             endif()
-        else()
-            set(
-                hppFileContent
-                "${hppFileContent}
-                    ${name} = ${driverValue} ${safeComma}
-                "
-            )
-        endif()
-    endforeach()
+        endforeach()
+    endif()
 
 
 
     # Define values
-    foreach(indexPlus1 RANGE 1 ${valueCount} ${step})
-        math(EXPR nameIndex "${indexPlus1} - 1")
-        math(EXPR driverValueIndex "${nameIndex} + 1")
-        if(PARGS_ENABLE_MASK_MODE)
-            math(EXPR abstractValueIndex "${driverValueIndex} + 1")
-        endif()
-
-        list(GET PARGS_VALUES ${nameIndex} name)
-        list(GET PARGS_VALUES ${driverValueIndex} driverValue)
-        if(PARGS_ENABLE_MASK_MODE)
-            list(GET PARGS_VALUES ${abstractValueIndex} abstractValue)
-        endif()
-
-        math(EXPR nameIndexDivStep "${nameIndex} / ${step}")
-
-        if(${nameIndexDivStep} EQUAL ${valueCountDivStepMinus1})
-            set(safeComma "")
-            set(safeSemicolon "")
-        else()
-            set(safeComma ",")
-            set(safeSemicolon ";")
-        endif()
-
-        if(${NRHI_DRIVER_MULTIPLE})
-            if(NOT prepared_value_names_${name})
-#                set(prepared_value_names "${prepared_value_names};${name}")
-#           if(${nameIndexDivStep} GREATER_EQUAL ${maxValueCountDivStep})
-                set(
-                    cppFileContent
-                    "${cppFileContent}
-                    ${PARGS_NAME} ${PARGS_NAME}::${name} = ${PARGS_NAME}{(${PARGS_TYPE})${driverValue}};
-                    "
-                )
+    if(${valueCount})
+        foreach(indexPlus1 RANGE 1 ${valueCount} ${step})
+            math(EXPR nameIndex "${indexPlus1} - 1")
+            math(EXPR driverValueIndex "${nameIndex} + 1")
+            if(PARGS_ENABLE_MASK_MODE)
+                math(EXPR abstractValueIndex "${driverValueIndex} + 1")
             endif()
-        else()
-        endif()
-    endforeach()
+
+            list(GET PARGS_VALUES ${nameIndex} name)
+            list(GET PARGS_VALUES ${driverValueIndex} driverValue)
+            if(PARGS_ENABLE_MASK_MODE)
+                list(GET PARGS_VALUES ${abstractValueIndex} abstractValue)
+            endif()
+
+            math(EXPR nameIndexDivStep "${nameIndex} / ${step}")
+
+            if(${nameIndexDivStep} EQUAL ${valueCountDivStepMinus1})
+                set(safeComma "")
+                set(safeSemicolon "")
+            else()
+                set(safeComma ",")
+                set(safeSemicolon ";")
+            endif()
+
+            if(${NRHI_DRIVER_MULTIPLE})
+                if(NOT prepared_value_names_${name})
+    #                set(prepared_value_names "${prepared_value_names};${name}")
+    #           if(${nameIndexDivStep} GREATER_EQUAL ${maxValueCountDivStep})
+                    set(
+                        cppFileContent
+                        "${cppFileContent}
+                        ${PARGS_NAME} ${PARGS_NAME}::${name} = ${PARGS_NAME}{(${PARGS_TYPE})${driverValue}};
+                        "
+                    )
+                endif()
+            else()
+            endif()
+        endforeach()
+    endif()
 
 
 
