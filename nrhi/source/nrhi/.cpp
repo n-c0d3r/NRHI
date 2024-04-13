@@ -68,19 +68,19 @@ namespace nrhi {
         void try_update_map_enums(){
 
             NRHI_ENUM_TRY_UPDATE_MAP(E_format);
-            NRHI_ENUM_TRY_UPDATE_MAP(E_resource_flag);
             NRHI_ENUM_TRY_UPDATE_MAP(E_command_list_type);
-            NRHI_ENUM_TRY_UPDATE_MAP(E_resource_heap_type);
             NRHI_ENUM_TRY_UPDATE_MAP(E_descriptor_heap_type);
             NRHI_ENUM_TRY_UPDATE_MAP(E_descriptor_range_type);
             NRHI_ENUM_TRY_UPDATE_MAP(E_root_param_type);
             NRHI_ENUM_TRY_UPDATE_MAP(E_shader_visibility);
             NRHI_ENUM_TRY_UPDATE_MAP(E_resource_bind_flag);
-            NRHI_ENUM_TRY_UPDATE_MAP(E_resource_misc_flag);
+            NRHI_ENUM_TRY_UPDATE_MAP(E_resource_structure_type);
+            NRHI_ENUM_TRY_UPDATE_MAP(E_resource_heap_type);
 
         }
         void try_update_map_functions(){
 
+            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_driver);
             NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_system);
             NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_device);
             NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_adapter);
