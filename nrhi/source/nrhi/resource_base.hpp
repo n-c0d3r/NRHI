@@ -93,7 +93,7 @@ namespace nrhi {
 
     struct F_vertex_buffer_view {
 
-        struct F_managed {
+        struct F_diver_non_advanced {
 
             TK<A_resource> managed_resource_p;
             u32 stride;
@@ -101,7 +101,7 @@ namespace nrhi {
 
         };
 
-        struct F_unmanaged {
+        struct F_driver_advanced {
 
             u64 gpu_virtual_address;
             u32 stride;
@@ -111,8 +111,8 @@ namespace nrhi {
 
         union {
 
-            F_managed managed;
-            F_unmanaged unmanaged;
+            F_driver_non_advanced driver_non_advanced;
+            F_driver_advanced driver_advanced;
 
         };
 
@@ -120,7 +120,7 @@ namespace nrhi {
 
     struct F_index_buffer_view {
 
-        struct F_managed {
+        struct F_driver_non_advanced {
 
             TK<A_resource> managed_resource_p;
             E_format format;
@@ -128,7 +128,7 @@ namespace nrhi {
 
         };
 
-        struct F_unmanaged {
+        struct F_driver_advanced {
 
             u64 gpu_virtual_address;
             E_format format;
@@ -138,8 +138,8 @@ namespace nrhi {
 
         union {
 
-            F_managed managed;
-            F_unmanaged unmanaged;
+            F_driver_non_advanced driver_non_advanced;
+            F_driver_advanced driver_advanced;
 
         };
 
@@ -152,17 +152,15 @@ namespace nrhi {
     private:
         TK_valid<A_device> device_p_;
         F_resource_desc desc_;
-        b8 is_managed_;
 
     public:
         NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
         NCPP_FORCE_INLINE const F_resource_desc& desc() const noexcept { return desc_; }
-        NCPP_FORCE_INLINE b8 is_managed() const noexcept { return is_managed_; }
 
 
 
     protected:
-        A_resource(TK_valid<A_device> device_p, const F_resource_desc& desc, b8 is_managed);
+        A_resource(TK_valid<A_device> device_p, const F_resource_desc& desc);
 
     public:
         virtual ~A_resource();

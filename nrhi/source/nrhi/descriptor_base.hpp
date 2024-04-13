@@ -44,7 +44,6 @@ namespace nrhi {
 
     class A_device;
     class A_descriptor_heap;
-    class A_resource;
 
 
 
@@ -70,31 +69,6 @@ namespace nrhi {
         E_descriptor_heap_type type;
 
     };
-
-
-
-    struct F_descriptor {
-
-        union {
-
-            TK<A_resource> managed_resource_p;
-
-            struct {
-
-                u64 cpu_handle;
-                u64 gpu_handle;
-
-            };
-
-        };
-
-        TK<A_descriptor_heap> heap_p; // if heap_p is null, use managed mode;
-
-    };
-
-    using F_constant_buffer_view = F_descriptor;
-    using F_shader_resource_view = F_descriptor;
-    using F_unordered_access_view = F_descriptor;
 
 
 
