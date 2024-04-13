@@ -34,7 +34,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/root_param_type.hpp>
-#include <nrhi/descriptor.hpp>
+#include <nrhi/descriptor_base.hpp>
 
 #pragma endregion
 

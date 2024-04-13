@@ -27,6 +27,7 @@ function(NRHI_DXGI_ImplementFormats)
         VALUES
             NONE DXGI_FORMAT_UNKNOWN
             R8G8B8A8_UNORM DXGI_FORMAT_R8G8B8A8_UNORM
+            R32_UINT DXGI_FORMAT_R32_UINT
     )
 
 endfunction()

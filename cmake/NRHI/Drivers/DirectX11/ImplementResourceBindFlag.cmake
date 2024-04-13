@@ -1,0 +1,30 @@
+
+message(STATUS "<NRHI::Drivers::DirectX11> Start implementing resource bind flag")
+
+include(NRHI/Utilities/EnumHelper)
+
+
+
+NCPP_SetGlobal(NRHI_RESOURCE_BIND_FLAG_ENUM_HPP_FILE_PATH "${NRHI_GENERATED_FILES_DIR}/resource_bind_flag.hpp")
+NCPP_SetGlobal(NRHI_RESOURCE_BIND_FLAG_ENUM_CPP_FILE_PATH "${NRHI_GENERATED_FILES_DIR}/resource_bind_flag.cpp")
+
+
+
+NRHI_EnumHelper_CreateEnum(
+    NAMESPACE "nrhi"
+    NAME "E_resource_bind_flag"
+    DRIVER_UPPER_CASE_NAME "DIRECTX_11"
+    TARGET_HPP_FILE_PATH "${NRHI_RESOURCE_BIND_FLAG_ENUM_HPP_FILE_PATH}"
+    TARGET_CPP_FILE_PATH "${NRHI_RESOURCE_BIND_FLAG_ENUM_CPP_FILE_PATH}"
+    VALUES
+        NONE 0
+        VBV D3D11_BIND_VERTEX_BUFFER
+        IBV D3D11_BIND_INDEX_BUFFER
+        CBV D3D11_BIND_CONSTANT_BUFFER
+        SRV D3D11_BIND_SHADER_RESOURCE
+        UAV D3D11_BIND_UNORDERED_ACCESS
+        RTV D3D11_BIND_RENDER_TARGET
+        DSV D3D11_BIND_DEPTH_STENCIL
+)
+
+message(STATUS "<NRHI::Drivers::DirectX11> Implement resource bind flag done")

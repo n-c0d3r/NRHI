@@ -73,7 +73,7 @@ namespace nrhi {
 
 
 
-    struct F_descriptor_handle {
+    struct F_descriptor {
 
         union {
 
@@ -83,17 +83,18 @@ namespace nrhi {
 
                 u64 cpu_handle;
                 u64 gpu_handle;
-                TK<A_descriptor_heap> heap_p;
 
             };
 
         };
 
+        TK<A_descriptor_heap> heap_p; // if heap_p is null, use managed mode;
+
     };
 
-    using F_constant_buffer_view = F_descriptor_handle;
-    using F_shader_resource_view = F_descriptor_handle;
-    using F_unordered_access_view = F_descriptor_handle;
+    using F_constant_buffer_view = F_descriptor;
+    using F_shader_resource_view = F_descriptor;
+    using F_unordered_access_view = F_descriptor;
 
 
 

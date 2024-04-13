@@ -57,8 +57,9 @@ namespace nrhi { }
 #include <nrhi/descriptor_range_type.hpp>
 #include <nrhi/root_param_type.hpp>
 #include <nrhi/shader_visibility.hpp>
-#include <nrhi/bind_flag.hpp>
-#include <nrhi/descriptor.hpp>
+#include <nrhi/resource_bind_flag.hpp>
+#include <nrhi/resource_misc_flag.hpp>
+#include <nrhi/descriptor_base.hpp>
 #include <nrhi/root_signature_base.hpp>
 #include <nrhi/resource_base.hpp>
 #include <nrhi/system.hpp>
