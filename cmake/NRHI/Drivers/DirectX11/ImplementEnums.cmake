@@ -10,6 +10,7 @@ include(NRHI/Drivers/DirectX11/ImplementShaderVisibility)
 include(NRHI/Drivers/DirectX11/ImplementResourceBindFlag)
 include(NRHI/Drivers/DirectX11/ImplementResourceStructureType)
 include(NRHI/Drivers/DirectX11/ImplementResourceHeapType)
+include(NRHI/Drivers/DirectX11/ImplementResourceViewType)
 
 
 

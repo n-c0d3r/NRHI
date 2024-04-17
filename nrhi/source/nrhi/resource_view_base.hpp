@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/resource_base.hpp
+/** @file nrhi/resource_view_base.hpp
 *
-*   Implement resource base class.
+*   Implement resource view base class.
 */
 
 
@@ -34,6 +34,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/resource_desc.hpp>
+#include <nrhi/resource_view_type.hpp>
 
 #pragma endregion
 
@@ -43,26 +44,33 @@ namespace nrhi {
 
     class A_device;
     class A_resource;
+    class A_resource_view;
 
 
 
-    class NRHI_API A_resource {
+    class NRHI_API A_resource_view {
 
     private:
         TK_valid<A_device> device_p_;
-        F_resource_desc desc_;
+        TK_valid<A_resource> resource_p_;
+        E_resource_view_type type_;
 
     public:
         NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
-        NCPP_FORCE_INLINE const F_resource_desc& desc() const noexcept { return desc_; }
+        NCPP_FORCE_INLINE TK_valid<A_resource> resource_p() noexcept { return resource_p_; }
+        NCPP_FORCE_INLINE E_resource_view_type type() noexcept { return type_; }
 
 
 
     protected:
-        A_resource(TK_valid<A_device> device_p, const F_resource_desc& desc);
+        A_resource_view(
+            TK_valid<A_device> device_p,
+            TK_valid<A_resource> resource_p,
+            E_resource_view_type type
+        );
 
     public:
-        virtual ~A_resource();
+        virtual ~A_resource_view();
 
     };
 

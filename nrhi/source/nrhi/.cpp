@@ -76,6 +76,7 @@ namespace nrhi {
             NRHI_ENUM_TRY_UPDATE_MAP(E_resource_bind_flag);
             NRHI_ENUM_TRY_UPDATE_MAP(E_resource_structure_type);
             NRHI_ENUM_TRY_UPDATE_MAP(E_resource_heap_type);
+            NRHI_ENUM_TRY_UPDATE_MAP(E_resource_view_type);
 
         }
         void try_update_map_functions(){
@@ -87,6 +88,8 @@ namespace nrhi {
             NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_command_queue);
             NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_command_list);
             NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_swapchain);
+            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_resource);
+            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_resource_view);
 
         }
         void try_update_map(){

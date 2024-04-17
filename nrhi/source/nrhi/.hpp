@@ -58,6 +58,7 @@ namespace nrhi { }
 #include <nrhi/resource_bind_flag.hpp>
 #include <nrhi/resource_structure_type.hpp>
 #include <nrhi/resource_heap_type.hpp>
+#include <nrhi/resource_view_type.hpp>
 #include <nrhi/descriptor_base.hpp>
 #include <nrhi/root_signature_base.hpp>
 #include <nrhi/resource_base.hpp>
@@ -68,6 +69,9 @@ namespace nrhi { }
 #include <nrhi/command_queue.hpp>
 #include <nrhi/command_list.hpp>
 #include <nrhi/swapchain.hpp>
+#include <nrhi/resource_view.hpp>
+#include <nrhi/resource.hpp>
+#include <nrhi/buffer.hpp>
 
 #pragma endregion
 

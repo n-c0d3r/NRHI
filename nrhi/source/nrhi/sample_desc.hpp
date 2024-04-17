@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/resource_base.hpp
+/** @file nrhi/sample_desc.hpp
 *
-*   Implement resource base class.
+*   Implement sample desc.
 */
 
 
@@ -29,40 +29,16 @@
 
 #include <nrhi/prerequisites.hpp>
 
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-
-#include <nrhi/resource_desc.hpp>
-
 #pragma endregion
 
 
 
 namespace nrhi {
 
-    class A_device;
-    class A_resource;
+    struct F_sample_desc {
 
-
-
-    class NRHI_API A_resource {
-
-    private:
-        TK_valid<A_device> device_p_;
-        F_resource_desc desc_;
-
-    public:
-        NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
-        NCPP_FORCE_INLINE const F_resource_desc& desc() const noexcept { return desc_; }
-
-
-
-    protected:
-        A_resource(TK_valid<A_device> device_p, const F_resource_desc& desc);
-
-    public:
-        virtual ~A_resource();
+        u32 count = 1;
+        u32 quality = 0;
 
     };
 

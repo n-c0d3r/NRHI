@@ -68,6 +68,15 @@ NCPP_ENTRY_POINT() {
 
 
 
+    U_buffer_handle buffer_p = H_buffer::T_create<F_vector4>({
+        .device_p = NCPP_FOREF_VALID(device_p),
+        .count = 128
+    });
+
+    K_valid_buffer_handle buffer2_p = NCPP_FHANDLE_VALID(buffer_p);
+
+
+
     // run app
     surface_manager.T_run([](F_surface_manager& surface_manager){
     });

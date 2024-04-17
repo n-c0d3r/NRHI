@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/resource_base.hpp
+/** @file nrhi/directx11/resource_view.hpp
 *
-*   Implement resource base class.
+*   Implement directx11 resource view.
 */
 
 
@@ -33,7 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/resource_desc.hpp>
+#include <nrhi/resource_view_base.hpp>
 
 #pragma endregion
 
@@ -46,23 +46,28 @@ namespace nrhi {
 
 
 
-    class NRHI_API A_resource {
-
-    private:
-        TK_valid<A_device> device_p_;
-        F_resource_desc desc_;
+    class NRHI_API F_directx11_resource_view : public A_resource_view {
 
     public:
-        NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
-        NCPP_FORCE_INLINE const F_resource_desc& desc() const noexcept { return desc_; }
+        F_directx11_resource_view(
+            TK_valid<A_device> device_p,
+            TK_valid<A_resource> resource_p,
+            E_resource_view_type type
+        );
+        ~F_directx11_resource_view();
+
+    };
 
 
 
-    protected:
-        A_resource(TK_valid<A_device> device_p, const F_resource_desc& desc);
+    class NRHI_API HD_directx11_resource_view {
 
     public:
-        virtual ~A_resource();
+        static TU<A_resource_view> create_srv(TK_valid<A_device> device_p, TK_valid<A_resource> resource_p);
+        static TU<A_resource_view> create_uav(TK_valid<A_device> device_p, TK_valid<A_resource> resource_p);
+        static TU<A_resource_view> create_rtv(TK_valid<A_device> device_p, TK_valid<A_resource> resource_p);
+        static TU<A_resource_view> create_dsv(TK_valid<A_device> device_p, TK_valid<A_resource> resource_p);
+        static TU<A_resource_view> create_sampler(TK_valid<A_device> device_p, TK_valid<A_resource> resource_p);
 
     };
 

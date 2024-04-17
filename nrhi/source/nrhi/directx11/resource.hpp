@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/resource_base.hpp
+/** @file nrhi/directx11/resource_view.hpp
 *
-*   Implement resource base class.
+*   Implement directx11 resource view.
 */
 
 
@@ -33,7 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/resource_desc.hpp>
+#include <nrhi/resource_base.hpp>
 
 #pragma endregion
 
@@ -42,27 +42,23 @@
 namespace nrhi {
 
     class A_device;
-    class A_resource;
 
 
 
-    class NRHI_API A_resource {
-
-    private:
-        TK_valid<A_device> device_p_;
-        F_resource_desc desc_;
+    class NRHI_API F_directx11_resource : public A_resource {
 
     public:
-        NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
-        NCPP_FORCE_INLINE const F_resource_desc& desc() const noexcept { return desc_; }
+        F_directx11_resource(TK_valid<A_device> device_p, const F_resource_desc& desc);
+        ~F_directx11_resource();
+
+    };
 
 
 
-    protected:
-        A_resource(TK_valid<A_device> device_p, const F_resource_desc& desc);
+    class NRHI_API HD_directx11_resource {
 
     public:
-        virtual ~A_resource();
+        static TU<A_resource> create(TK_valid<A_device> device_p, const F_resource_desc& desc);
 
     };
 
