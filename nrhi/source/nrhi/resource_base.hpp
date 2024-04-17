@@ -36,9 +36,7 @@
 #include <nrhi/format.hpp>
 #include <nrhi/resource_heap_type.hpp>
 #include <nrhi/resource_bind_flag.hpp>
-#include <nrhi/resource_misc_flag.hpp>
-#include <nrhi/resource_dimension.hpp>
-#include <nrhi/resource_rule_flag.hpp>
+#include <nrhi/resource_structure_type.hpp>
 
 #pragma endregion
 
@@ -66,20 +64,10 @@ namespace nrhi {
 
     };
 
-    class NRHI_API H_resource_desc {
 
 
+    struct F_resource_desc {
 
-    };
-
-    class F_resource_desc {
-
-    public:
-        friend class H_resource_desc;
-
-
-
-    private:
         u32 width;
         u32 height;
         union {
@@ -87,27 +75,204 @@ namespace nrhi {
             u32 depth;
         };
 
-        u32 mip_level_count = 1;
-
         union {
             E_format format;
             u32 stride;
         };
 
-        F_sample_desc sample_desc;
+        u32 mip_level_count = 1;
 
-        E_resource_dimension resource_dimension = resource_dimension::NONE;
+        F_sample_desc sample_desc;
 
         E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE;
 
-        // Identify which types of view can be used
-        E_resource_rule_flag rule_flags = E_resource_rule_flag::NONE;
-
-        // Each bind flag is for a managed view
         E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE;
 
-        // For some type of resource such as texture cube,...
-        E_resource_misc_flag misc_flags = E_resource_misc_flag::NONE;
+        E_resource_structure_type structure_type = E_resource_structure_type::NONE;
+
+    };
+
+    class NRHI_API H_resource_desc {
+
+    public:
+        static F_resource_desc create_buffer_desc(
+            u32 width,
+            u32 stride,
+            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE,
+            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE
+        );
+
+    public:
+        struct F_create_buffer_desc_params {
+
+            u32 width;
+            u32 stride;
+            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE;
+            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE;
+
+        };
+        static NCPP_FORCE_INLINE F_resource_desc create_buffer_desc(
+            const F_create_buffer_desc_params& params
+        ) {
+
+            return create_buffer_desc(
+                params.width,
+                params.stride,
+                params.heap_type,
+                params.bind_flags
+            );
+        }
+
+    public:
+        template<typename F_element__>
+        static F_resource_desc T_create_buffer_desc(
+            u32 count,
+            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE,
+            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE
+        ) {
+
+            return create_buffer_desc(
+                sizeof(F_element__) * count,
+                sizeof(F_element__),
+                heap_type,
+                bind_flags
+            );
+        }
+
+    public:
+        template<typename F_element__>
+        struct TF_create_buffer_desc_params {
+
+            u32 count;
+            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE;
+            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE;
+
+        };
+        template<typename F_element__>
+        static NCPP_FORCE_INLINE F_resource_desc T_create_buffer_desc(
+            const TF_create_buffer_desc_params<F_element__>& params
+        ) {
+
+            return T_create_buffer_desc<F_element__>(
+                params.count,
+                params.heap_type,
+                params.bind_flags
+            );
+        }
+
+    public:
+        static F_resource_desc create_texture_1d_desc(
+            u32 width,
+            E_format format = E_format::R8G8B8A8_UNORM,
+            u32 mip_level_count = 1,
+            F_sample_desc sample_desc = F_sample_desc{},
+            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE,
+            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE
+        );
+
+    public:
+        struct F_create_texture_1d_desc_params {
+
+            u32 width;
+            E_format format = E_format::R8G8B8A8_UNORM;
+            u32 mip_level_count = 1;
+            F_sample_desc sample_desc = F_sample_desc{};
+            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE;
+            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE;
+
+        };
+        static NCPP_FORCE_INLINE F_resource_desc create_texture_1d_desc(
+            const F_create_texture_1d_desc_params& params
+        ) {
+
+            return create_texture_1d_desc(
+                params.width,
+                params.format,
+                params.mip_level_count,
+                params.sample_desc,
+                params.heap_type,
+                params.bind_flags
+            );
+        }
+
+    public:
+        static F_resource_desc create_texture_2d_desc(
+            u32 width,
+            u32 height,
+            E_format format = E_format::R8G8B8A8_UNORM,
+            u32 mip_level_count = 1,
+            F_sample_desc sample_desc = F_sample_desc{},
+            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE,
+            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE
+        );
+
+    public:
+        struct F_create_texture_2d_desc_params {
+
+            u32 width;
+            u32 height;
+            E_format format = E_format::R8G8B8A8_UNORM;
+            u32 mip_level_count = 1;
+            F_sample_desc sample_desc = F_sample_desc{};
+            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE;
+            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE;
+
+        };
+        static NCPP_FORCE_INLINE F_resource_desc create_texture_2d_desc(
+            const F_create_texture_2d_desc_params& params
+        ) {
+
+            return create_texture_2d_desc(
+                params.width,
+                params.height,
+                params.format,
+                params.mip_level_count,
+                params.sample_desc,
+                params.heap_type,
+                params.bind_flags
+            );
+        }
+
+    public:
+        static F_resource_desc create_texture_3d_desc(
+            u32 width,
+            u32 height,
+            u32 depth,
+            E_format format = E_format::R8G8B8A8_UNORM,
+            u32 mip_level_count = 1,
+            F_sample_desc sample_desc = F_sample_desc{},
+            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE,
+            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE
+        );
+
+    public:
+        struct F_create_texture_3d_desc_params {
+
+            u32 width;
+            u32 height;
+            u32 depth;
+            E_format format = E_format::R8G8B8A8_UNORM;
+            u32 mip_level_count = 1;
+            F_sample_desc sample_desc = F_sample_desc{};
+            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE;
+            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE;
+
+        };
+        static NCPP_FORCE_INLINE F_resource_desc create_texture_3d_desc(
+            const F_create_texture_3d_desc_params& params
+        ) {
+
+            return create_texture_3d_desc(
+                params.width,
+                params.height,
+                params.depth,
+                params.format,
+                params.mip_level_count,
+                params.sample_desc,
+                params.heap_type,
+                params.bind_flags
+            );
+        }
 
     };
 

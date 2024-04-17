@@ -22,6 +22,7 @@ NRHI_FunctionHelper_CreateFunctionClass(
     ADDITIONAL_CODE
         ""
     VALUES
+        "is_support_descriptor_management" "bool()"
         "is_support_advanced_resource" "bool()"
         "is_support_vertex_buffer" "bool()"
 )
