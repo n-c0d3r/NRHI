@@ -71,8 +71,15 @@ NCPP_ENTRY_POINT() {
     TG_vector<F_vector4> vertices(128);
     U_buffer_handle buffer_p = H_buffer::T_create_from_span<F_vector4>({
         .device_p = NCPP_FOREF_VALID(device_p),
-        .data_span = vertices
+        .data_span = vertices,
+        .bind_flags = E_resource_bind_flag::SRV
     });
+
+    U_srv_handle buffer_srv_p = H_resource_view::create_srv(
+        NCPP_FOREF_VALID(device_p),
+        NCPP_FHANDLE_VALID(buffer_p),
+        {}
+    );
 
 
 

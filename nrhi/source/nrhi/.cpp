@@ -74,7 +74,7 @@ namespace nrhi {
             NRHI_ENUM_TRY_UPDATE_MAP(E_root_param_type);
             NRHI_ENUM_TRY_UPDATE_MAP(E_shader_visibility);
             NRHI_ENUM_TRY_UPDATE_MAP(E_resource_bind_flag);
-            NRHI_ENUM_TRY_UPDATE_MAP(E_resource_structure_type);
+            NRHI_ENUM_TRY_UPDATE_MAP(E_resource_type);
             NRHI_ENUM_TRY_UPDATE_MAP(E_resource_heap_type);
             NRHI_ENUM_TRY_UPDATE_MAP(E_resource_view_type);
 

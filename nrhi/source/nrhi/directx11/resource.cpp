@@ -16,6 +16,19 @@ namespace nrhi {
         initialize_d3d11_resource();
 
     }
+    F_directx11_resource::F_directx11_resource(
+        TK_valid<A_device> device_p,
+        const F_initial_resource_data& initial_data,
+        const F_resource_desc& desc,
+        ID3D11Resource* d3d11_resource_p
+    ) :
+        A_resource(device_p, initial_data, desc),
+        d3d11_resource_p_(d3d11_resource_p)
+    {
+
+        initialize_d3d11_resource();
+
+    }
     F_directx11_resource::~F_directx11_resource() {
 
         d3d11_resource_p_->Release();
@@ -34,9 +47,9 @@ namespace nrhi {
     };
     void F_directx11_resource::initialize_d3d11_resource(){
 
-        NCPP_ASSERT(desc().structure_type != E_resource_structure_type::NONE) << "invalid resource structure type";
+        NCPP_ASSERT(desc().type != E_resource_type::NONE) << "invalid resource structure type";
 
-        initialize_d3d11_resource_func_map_[uint32_t(desc().structure_type)](this);
+        initialize_d3d11_resource_func_map_[uint32_t(desc().type)](this);
     }
     void F_directx11_resource::initialize_d3d11_resource_buffer(F_directx11_resource* resource_p){
 
@@ -62,7 +75,10 @@ namespace nrhi {
                 d3d11_buffer_desc.Usage = D3D11_USAGE_STAGING;
                 break;
         }
-        d3d11_buffer_desc.MiscFlags = 0;
+        if(desc.stride)
+            d3d11_buffer_desc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+        else
+            d3d11_buffer_desc.MiscFlags = 0;
         d3d11_buffer_desc.StructureByteStride = desc.stride;
 
         D3D11_SUBRESOURCE_DATA d3d11_subresource_data;

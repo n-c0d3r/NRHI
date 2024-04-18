@@ -22,6 +22,31 @@ NRHI_FunctionHelper_CreateFunctionClass(
     ADDITIONAL_CODE
         ""
     VALUES
+        "create_srv" "U_srv_handle(
+            TK_valid<A_device> device_p,
+            TK_valid<A_resource> resource_p,
+            const F_resource_view_desc& desc
+        )"
+        "create_uav" "U_uav_handle(
+            TK_valid<A_device> device_p,
+            TK_valid<A_resource> resource_p,
+            const F_resource_view_desc& desc
+        )"
+        "create_rtv" "U_rtv_handle(
+            TK_valid<A_device> device_p,
+            TK_valid<A_resource> resource_p,
+            const F_resource_view_desc& desc
+        )"
+        "create_dsv" "U_dsv_handle(
+            TK_valid<A_device> device_p,
+            TK_valid<A_resource> resource_p,
+            const F_resource_view_desc& desc
+        )"
+        "create_sampler" "U_sampler_handle(
+            TK_valid<A_device> device_p,
+            TK_valid<A_resource> resource_p,
+            const F_resource_view_desc& desc
+        )"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX11> Implement resource view done")

@@ -24,7 +24,7 @@ namespace nrhi {
             .heap_type = heap_type,
             .bind_flags = bind_flags,
 
-            .structure_type = E_resource_structure_type::BUFFER,
+            .type = E_resource_type::BUFFER,
 
         };
     }
@@ -52,7 +52,7 @@ namespace nrhi {
             .heap_type = heap_type,
             .bind_flags = bind_flags,
 
-            .structure_type = E_resource_structure_type::TEXTURE_1D,
+            .type = E_resource_type::TEXTURE_1D,
 
         };
     }
@@ -81,7 +81,7 @@ namespace nrhi {
             .heap_type = heap_type,
             .bind_flags = bind_flags,
 
-            .structure_type = E_resource_structure_type::TEXTURE_2D,
+            .type = E_resource_type::TEXTURE_2D,
 
         };
     }
@@ -111,7 +111,7 @@ namespace nrhi {
             .heap_type = heap_type,
             .bind_flags = bind_flags,
 
-            .structure_type = E_resource_structure_type::TEXTURE_3D,
+            .type = E_resource_type::TEXTURE_3D,
 
         };
     }

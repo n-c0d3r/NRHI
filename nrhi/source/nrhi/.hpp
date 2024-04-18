@@ -56,7 +56,7 @@ namespace nrhi { }
 #include <nrhi/root_param_type.hpp>
 #include <nrhi/shader_visibility.hpp>
 #include <nrhi/resource_bind_flag.hpp>
-#include <nrhi/resource_structure_type.hpp>
+#include <nrhi/resource_type.hpp>
 #include <nrhi/resource_heap_type.hpp>
 #include <nrhi/resource_view_type.hpp>
 #include <nrhi/descriptor_base.hpp>

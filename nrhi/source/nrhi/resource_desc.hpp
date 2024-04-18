@@ -36,7 +36,7 @@
 #include <nrhi/format.hpp>
 #include <nrhi/resource_heap_type.hpp>
 #include <nrhi/resource_bind_flag.hpp>
-#include <nrhi/resource_structure_type.hpp>
+#include <nrhi/resource_type.hpp>
 #include <nrhi/sample_desc.hpp>
 
 #pragma endregion
@@ -84,7 +84,9 @@ namespace nrhi {
 
         E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE;
 
-        E_resource_structure_type structure_type = E_resource_structure_type::NONE;
+        E_resource_type type = E_resource_type::NONE;
+
+        b8 is_create_view = true;
 
     };
 
