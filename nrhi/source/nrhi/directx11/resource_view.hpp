@@ -34,6 +34,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/resource_view_base.hpp>
+#include <nrhi/texture.hpp>
 
 #pragma endregion
 
@@ -89,12 +90,12 @@ namespace nrhi {
         );
         static U_rtv_handle create_rtv(
             TK_valid<A_device> device_p,
-            TK_valid<A_resource> resource_p,
+            K_texture_2d_handle resource_p,
             const F_resource_view_desc& desc
         );
         static U_dsv_handle create_dsv(
             TK_valid<A_device> device_p,
-            TK_valid<A_resource> resource_p,
+            K_texture_2d_handle resource_p,
             const F_resource_view_desc& desc
         );
         static U_sampler_handle create_sampler(

@@ -125,13 +125,14 @@ namespace nrhi {
         template<typename F_element__>
         static F_resource_desc T_create_buffer_desc(
             u32 count,
+            b8 is_support_multiple_elements = true,
             E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE,
             E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE
         ) {
 
             return create_buffer_desc(
                 sizeof(F_element__) * count,
-                sizeof(F_element__),
+                sizeof(F_element__) * sz(is_support_multiple_elements),
                 heap_type,
                 bind_flags
             );
@@ -142,6 +143,7 @@ namespace nrhi {
         struct TF_create_buffer_desc_params {
 
             u32 count;
+            b8 is_support_multiple_elements = true;
             E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE;
             E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE;
 
@@ -153,6 +155,7 @@ namespace nrhi {
 
             return T_create_buffer_desc<F_element__>(
                 params.count,
+                params.is_support_multiple_elements,
                 params.heap_type,
                 params.bind_flags
             );

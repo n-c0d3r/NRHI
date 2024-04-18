@@ -46,11 +46,11 @@ namespace nrhi {
         D3D11_SHADER_RESOURCE_VIEW_DESC d3d11_srv_desc;
         switch (resource_desc.type) {
             case E_resource_type::BUFFER:
+                d3d11_srv_desc.BufferEx.Flags = 0;
                 if(resource_desc.stride) {
                     d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
                     d3d11_srv_desc.BufferEx.FirstElement = desc.mem_offset / resource_desc.stride;
                     d3d11_srv_desc.BufferEx.NumElements = resource_desc.width / resource_desc.stride;
-                    d3d11_srv_desc.BufferEx.Flags = 0;
                 }
                 else{
                     d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
@@ -105,7 +105,7 @@ namespace nrhi {
     }
     U_rtv_handle HD_directx11_resource_view::create_rtv(
         TK_valid<A_device> device_p,
-        TK_valid<A_resource> resource_p,
+        K_texture_2d_handle resource_p,
         const F_resource_view_desc& desc
     ){
 
@@ -113,7 +113,7 @@ namespace nrhi {
     }
     U_dsv_handle HD_directx11_resource_view::create_dsv(
         TK_valid<A_device> device_p,
-        TK_valid<A_resource> resource_p,
+        K_texture_2d_handle resource_p,
         const F_resource_view_desc& desc
     ){
 
