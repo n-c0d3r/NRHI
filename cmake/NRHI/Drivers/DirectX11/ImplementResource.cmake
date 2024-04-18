@@ -22,6 +22,11 @@ NRHI_FunctionHelper_CreateFunctionClass(
     ADDITIONAL_CODE
         ""
     VALUES
+        "create" "TU<A_resource>(
+            TK_valid<A_device> device_p,
+            const F_initial_resource_data& initial_data,
+            const F_resource_desc& desc
+        )"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX11> Implement resource done")

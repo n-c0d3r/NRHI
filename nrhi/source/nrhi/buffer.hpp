@@ -69,6 +69,7 @@ namespace nrhi {
     public:
         static U_buffer_handle create(
             TK_valid<A_device> device_p,
+            F_initial_resource_data initial_data,
             u32 width,
             u32 stride,
             E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE,
@@ -79,6 +80,8 @@ namespace nrhi {
         struct F_create_params {
 
             TK_valid<A_device> device_p;
+
+            F_initial_resource_data initial_data;
 
             u32 width;
             u32 stride;
@@ -92,6 +95,7 @@ namespace nrhi {
 
             return create(
                 params.device_p,
+                params.initial_data,
                 params.width,
                 params.stride,
                 params.heap_type,
@@ -103,6 +107,7 @@ namespace nrhi {
         template<typename F_element__>
         static U_buffer_handle T_create(
             TK_valid<A_device> device_p,
+            F_initial_resource_data initial_data,
             u32 count,
             E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE,
             E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE
@@ -110,6 +115,7 @@ namespace nrhi {
 
             return create(
                 device_p,
+                initial_data,
                 sizeof(F_element__) * count,
                 sizeof(F_element__),
                 heap_type,
@@ -123,6 +129,8 @@ namespace nrhi {
 
             TK_valid<A_device> device_p;
 
+            F_initial_resource_data initial_data;
+
             u32 count;
             E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE;
             E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE;
@@ -135,7 +143,52 @@ namespace nrhi {
 
             return T_create<F_element__>(
                 params.device_p,
+                params.initial_data,
                 params.count,
+                params.heap_type,
+                params.bind_flags
+            );
+        }
+
+    public:
+        template<typename F_element__>
+        static U_buffer_handle T_create_from_span(
+            TK_valid<A_device> device_p,
+            const TG_span<F_element__>& data_span,
+            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE,
+            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE
+        ) {
+
+            return create(
+                device_p,
+                F_initial_resource_data { .system_mem_p = data_span.data() },
+                sizeof(F_element__) * data_span.size(),
+                sizeof(F_element__),
+                heap_type,
+                bind_flags
+            );
+        }
+
+    public:
+        template<typename F_element__>
+        struct TF_create_from_span_params {
+
+            TK_valid<A_device> device_p;
+
+            TG_span<F_element__> data_span;
+
+            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE;
+            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE;
+
+        };
+        template<typename F_element__>
+        static NCPP_FORCE_INLINE U_buffer_handle T_create_from_span(
+            const TF_create_from_span_params<F_element__>& params
+        ) {
+
+            return T_create_from_span<F_element__>(
+                params.device_p,
+                params.data_span,
                 params.heap_type,
                 params.bind_flags
             );

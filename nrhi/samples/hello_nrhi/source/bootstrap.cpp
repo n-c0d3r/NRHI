@@ -68,12 +68,11 @@ NCPP_ENTRY_POINT() {
 
 
 
-    U_buffer_handle buffer_p = H_buffer::T_create<F_vector4>({
+    TG_vector<F_vector4> vertices(128);
+    U_buffer_handle buffer_p = H_buffer::T_create_from_span<F_vector4>({
         .device_p = NCPP_FOREF_VALID(device_p),
-        .count = 128
+        .data_span = vertices
     });
-
-    K_valid_buffer_handle buffer2_p = NCPP_FHANDLE_VALID(buffer_p);
 
 
 

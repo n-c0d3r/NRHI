@@ -51,15 +51,21 @@ namespace nrhi {
     private:
         TK_valid<A_device> device_p_;
         F_resource_desc desc_;
+        F_initial_resource_data initial_data_;
 
     public:
         NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
         NCPP_FORCE_INLINE const F_resource_desc& desc() const noexcept { return desc_; }
+        NCPP_FORCE_INLINE const F_initial_resource_data& initial_data() const noexcept { return initial_data_; }
 
 
 
     protected:
-        A_resource(TK_valid<A_device> device_p, const F_resource_desc& desc);
+        A_resource(
+            TK_valid<A_device> device_p,
+            const F_initial_resource_data& initial_data,
+            const F_resource_desc& desc
+        );
 
     public:
         virtual ~A_resource();

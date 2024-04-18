@@ -7,6 +7,7 @@ namespace nrhi {
 
     U_buffer_handle H_buffer::create(
         TK_valid<A_device> device_p,
+        F_initial_resource_data initial_data,
         u32 width,
         u32 stride,
         E_resource_heap_type heap_type,
@@ -16,6 +17,7 @@ namespace nrhi {
         return {
             H_resource::create(
                 device_p,
+                initial_data,
                 H_resource_desc::create_buffer_desc(
                     width,
                     stride,

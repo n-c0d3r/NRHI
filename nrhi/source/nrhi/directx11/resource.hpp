@@ -44,12 +44,29 @@ namespace nrhi {
     class A_device;
 
 
+#define NRHI_DRIVER_DIRECTX_11_RESOURCE_STRUCTURE_TYPE_COUNT (7)
 
     class NRHI_API F_directx11_resource : public A_resource {
 
+    private:
+        ID3D11Resource* d3d11_resource_p_ = 0;
+
     public:
-        F_directx11_resource(TK_valid<A_device> device_p, const F_resource_desc& desc);
+        NCPP_FORCE_INLINE ID3D11Resource* d3d11_resource_p() noexcept { return d3d11_resource_p_; }
+
+    public:
+        F_directx11_resource(
+            TK_valid<A_device> device_p,
+            const F_initial_resource_data& initial_data,
+            const F_resource_desc& desc
+        );
         ~F_directx11_resource();
+
+    private:
+        using F_initialize_d3d11_resource = void(F_directx11_resource*);
+        static F_initialize_d3d11_resource* initialize_d3d11_resource_func_map_[NRHI_DRIVER_DIRECTX_11_RESOURCE_STRUCTURE_TYPE_COUNT];
+        NCPP_FORCE_INLINE void initialize_d3d11_resource();
+        static void initialize_d3d11_resource_buffer(F_directx11_resource* resource_p);
 
     };
 
@@ -58,7 +75,11 @@ namespace nrhi {
     class NRHI_API HD_directx11_resource {
 
     public:
-        static TU<A_resource> create(TK_valid<A_device> device_p, const F_resource_desc& desc);
+        static TU<A_resource> create(
+            TK_valid<A_device> device_p,
+            const F_initial_resource_data& initial_resource_data,
+            const F_resource_desc& desc
+        );
 
     };
 

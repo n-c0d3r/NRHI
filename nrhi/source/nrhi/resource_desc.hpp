@@ -56,6 +56,8 @@ namespace nrhi {
         u32 system_mem_pitch = 0;
         u32 system_mem_slice_pitch = 0;
 
+        NCPP_FORCE_INLINE b8 is_valid() const noexcept { return system_mem_p; }
+
     };
 
 
