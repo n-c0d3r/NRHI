@@ -88,12 +88,6 @@ NCPP_ENTRY_POINT() {
         .bind_flags = E_resource_bind_flag::SRV
     });
 
-    U_srv_handle cbuffer_srv_p = H_resource_view::create_srv(
-        NCPP_FOREF_VALID(device_p),
-        NCPP_FHANDLE_VALID(cbuffer_p),
-        {}
-    );
-
 
 
     // run app
