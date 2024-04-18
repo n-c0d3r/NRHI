@@ -44,7 +44,8 @@ namespace nrhi {
     }
     F_directx11_swapchain::~F_directx11_swapchain(){
 
-        dxgi_swapchain_p_->Release();
+        if(dxgi_swapchain_p_)
+            dxgi_swapchain_p_->Release();
     }
 
 

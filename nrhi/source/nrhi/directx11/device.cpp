@@ -47,7 +47,8 @@ namespace nrhi {
     }
     F_directx11_device::~F_directx11_device(){
 
-        d3d11_device_p_->Release();
+        if(d3d11_device_p_)
+            d3d11_device_p_->Release();
     }
 
     ID3D11DeviceContext* F_directx11_device::pop_d3d11_immediate_ctx(){

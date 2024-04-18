@@ -20,6 +20,8 @@ namespace nrhi {
     }
     F_directx11_resource_view::~F_directx11_resource_view() {
 
+        if(d3d11_view_p_)
+            d3d11_view_p_->Release();
     }
 
 

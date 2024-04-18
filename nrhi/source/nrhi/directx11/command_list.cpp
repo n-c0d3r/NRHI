@@ -21,6 +21,8 @@ namespace nrhi {
     }
     F_directx11_command_list::~F_directx11_command_list(){
 
+        if(d3d11_device_context_p_)
+            d3d11_device_context_p_->Release();
     }
 
 

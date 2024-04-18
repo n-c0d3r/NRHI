@@ -31,7 +31,8 @@ namespace nrhi {
     }
     F_directx11_resource::~F_directx11_resource() {
 
-        d3d11_resource_p_->Release();
+        if(d3d11_resource_p_)
+            d3d11_resource_p_->Release();
     }
 
     F_directx11_resource::F_initialize_d3d11_resource* F_directx11_resource::initialize_d3d11_resource_func_map_[
