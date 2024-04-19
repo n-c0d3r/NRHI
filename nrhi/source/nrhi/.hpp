@@ -74,6 +74,10 @@ namespace nrhi { }
 #include <nrhi/buffer.hpp>
 #include <nrhi/format_helper.hpp>
 
+#ifdef NRHI_DRIVER_DIRECTX_11
+#include <nrhi/directx11/buffer.hpp>
+#endif
+
 #pragma endregion
 
 

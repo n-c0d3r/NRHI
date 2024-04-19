@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/directx11/resource.hpp
+/** @file nrhi/directx11/buffer.hpp
 *
-*   Implement directx11 resource.
+*   Implement directx11 buffer.
 */
 
 
@@ -33,7 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/resource_base.hpp>
+#include <nrhi/directx11/resource.hpp>
 
 #pragma endregion
 
@@ -45,38 +45,80 @@ namespace nrhi {
 
 
 
-    class NRHI_API F_directx11_resource : public A_resource {
-
-    private:
-        ID3D11Resource* d3d11_resource_p_ = 0;
+    class NRHI_API F_directx11_buffer : public F_directx11_resource {
 
     public:
-        NCPP_FORCE_INLINE ID3D11Resource* d3d11_resource_p() noexcept { return d3d11_resource_p_; }
-
-    public:
-        F_directx11_resource(
+        F_directx11_buffer(
             TK_valid<A_device> device_p,
             const F_initial_resource_data& initial_data,
             const F_resource_desc& desc
         );
-        F_directx11_resource(
+        F_directx11_buffer(
             TK_valid<A_device> device_p,
             const F_initial_resource_data& initial_data,
             const F_resource_desc& desc,
-            ID3D11Resource* d3d11_resource_p
+            ID3D11Buffer* d3d11_buffer_p
         );
-        virtual ~F_directx11_resource();
+        virtual ~F_directx11_buffer();
+
+    private:
+        ID3D11Buffer* create_d3d11_buffer(
+            TK_valid<A_device> device_p,
+            const F_initial_resource_data& initial_data,
+            const F_resource_desc& desc
+        );
 
     };
 
 
 
-    class NRHI_API HD_directx11_resource {
+    class NRHI_API F_directx11_structured_buffer : public F_directx11_buffer {
 
     public:
-        static TU<A_resource> create(
+        F_directx11_structured_buffer(
             TK_valid<A_device> device_p,
-            const F_initial_resource_data& initial_resource_data,
+            const F_initial_resource_data& initial_data,
+            const F_resource_desc& desc
+        );
+        F_directx11_structured_buffer(
+            TK_valid<A_device> device_p,
+            const F_initial_resource_data& initial_data,
+            const F_resource_desc& desc,
+            ID3D11Buffer* d3d11_buffer_p
+        );
+        virtual ~F_directx11_structured_buffer();
+
+    private:
+        ID3D11Buffer* create_d3d11_structured_buffer(
+            TK_valid<A_device> device_p,
+            const F_initial_resource_data& initial_data,
+            const F_resource_desc& desc
+        );
+
+    };
+
+
+
+    class NRHI_API F_directx11_single_elemented_buffer : public F_directx11_buffer {
+
+    public:
+        F_directx11_single_elemented_buffer(
+            TK_valid<A_device> device_p,
+            const F_initial_resource_data& initial_data,
+            const F_resource_desc& desc
+        );
+        F_directx11_single_elemented_buffer(
+            TK_valid<A_device> device_p,
+            const F_initial_resource_data& initial_data,
+            const F_resource_desc& desc,
+            ID3D11Buffer* d3d11_buffer_p
+        );
+        virtual ~F_directx11_single_elemented_buffer();
+
+    private:
+        ID3D11Buffer* create_d3d11_single_elemented_buffer(
+            TK_valid<A_device> device_p,
+            const F_initial_resource_data& initial_data,
             const F_resource_desc& desc
         );
 
