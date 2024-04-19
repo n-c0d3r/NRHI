@@ -26,7 +26,7 @@ namespace nrhi {
         if(u32(format) == 0xFFFFFFFF)
             return 4;
 
-        NCPP_WARNING(
+        NCPP_ASSERT(
             directx11_format_stride_table[u32(format)]
             != 0xFFFFFFFF
         ) << "non supported format";

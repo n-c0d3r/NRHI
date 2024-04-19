@@ -5,7 +5,7 @@ using namespace nrhi;
 
 
 
-NCPP_ENTRY_POINT() {
+int main() {
 
     NCPP_INFO()
         << "Hello "
@@ -69,24 +69,38 @@ NCPP_ENTRY_POINT() {
 
 
     TG_vector<F_vector4> vertices(128);
-    U_buffer_handle vbuffer_p = H_buffer::T_create_structured<F_vector4>({
-        .device_p = NCPP_FOREF_VALID(device_p),
-        .data = vertices,
-        .bind_flags = E_resource_bind_flag::SRV
-    });
-
-    U_srv_handle vbuffer_srv_p = H_resource_view::create_srv(
+    U_buffer_handle vbuffer_p = H_buffer::T_create<F_vector4>(
         NCPP_FOREF_VALID(device_p),
-        NCPP_FHANDLE_VALID(vbuffer_p),
+        vertices,
+        E_resource_bind_flag::VBV
+    );
+
+    TG_vector<u32> indices(128);
+    U_buffer_handle ibuffer_p = H_buffer::T_create<u32>(
+        NCPP_FOREF_VALID(device_p),
+        indices,
+        E_format::R32_UINT,
+        E_resource_bind_flag::IBV
+    );
+
+    TG_vector<F_matrix4x4> buffer2_data(128);
+    U_buffer_handle buffer2_p = H_buffer::T_create_structured<F_matrix4x4>(
+        NCPP_FOREF_VALID(device_p),
+        buffer2_data,
+        E_resource_bind_flag::SRV
+    );
+    U_srv_handle buffer2_srv_p = H_resource_view::create_srv(
+        NCPP_FOREF_VALID(device_p),
+        NCPP_FHANDLE_VALID(buffer2_p),
         {}
     );
 
     F_vector4 cdata;
-    U_buffer_handle cbuffer_p = H_buffer::T_create_single_elemented<F_vector4>({
-        .device_p = NCPP_FOREF_VALID(device_p),
-        .data = &cdata,
-        .bind_flags = E_resource_bind_flag::CBV
-    });
+    U_buffer_handle cbuffer_p = H_buffer::T_create_single_elemented<F_vector4>(
+        NCPP_FOREF_VALID(device_p),
+        &cdata,
+        E_resource_bind_flag::CBV
+    );
 
 
 

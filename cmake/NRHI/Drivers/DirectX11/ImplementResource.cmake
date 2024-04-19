@@ -27,6 +27,21 @@ NRHI_FunctionHelper_CreateFunctionClass(
             const F_initial_resource_data& initial_data,
             const F_resource_desc& desc
         )"
+        "create_buffer" "U_buffer_handle(
+            TK_valid<A_device> device_p,
+            const F_initial_resource_data& initial_resource_data,
+            const F_resource_desc& desc
+        )"
+        "create_structured_buffer" "U_structured_buffer_handle(
+            TK_valid<A_device> device_p,
+            const F_initial_resource_data& initial_resource_data,
+            const F_resource_desc& desc
+        )"
+        "create_single_elemented_buffer" "U_single_elemented_buffer_handle(
+            TK_valid<A_device> device_p,
+            const F_initial_resource_data& initial_resource_data,
+            const F_resource_desc& desc
+        )"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX11> Implement resource done")

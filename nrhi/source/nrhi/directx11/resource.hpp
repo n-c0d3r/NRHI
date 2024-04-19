@@ -34,6 +34,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/resource_base.hpp>
+#include <nrhi/buffer.hpp>
 
 #pragma endregion
 
@@ -75,6 +76,21 @@ namespace nrhi {
 
     public:
         static TU<A_resource> create(
+            TK_valid<A_device> device_p,
+            const F_initial_resource_data& initial_resource_data,
+            const F_resource_desc& desc
+        );
+        static U_buffer_handle create_buffer(
+            TK_valid<A_device> device_p,
+            const F_initial_resource_data& initial_resource_data,
+            const F_resource_desc& desc
+        );
+        static U_buffer_handle create_structured_buffer(
+            TK_valid<A_device> device_p,
+            const F_initial_resource_data& initial_resource_data,
+            const F_resource_desc& desc
+        );
+        static U_buffer_handle create_single_elemented_buffer(
             TK_valid<A_device> device_p,
             const F_initial_resource_data& initial_resource_data,
             const F_resource_desc& desc

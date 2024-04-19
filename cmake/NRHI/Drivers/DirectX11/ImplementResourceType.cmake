@@ -21,11 +21,13 @@ NRHI_EnumHelper_CreateEnum(
         BUFFER 1
         STRUCTURED_BUFFER 2
         SINGLE_ELEMENTED_BUFFER 3
-        TEXTURE_1D 4
-        TEXTURE_1D_ARRAY 5
-        TEXTURE_2D 6
-        TEXTURE_2D_ARRAY 7
-        TEXTURE_3D 8
+        VERTEX_BUFFER 4
+        INDEX_BUFFER 5
+        TEXTURE_1D 6
+        TEXTURE_1D_ARRAY 7
+        TEXTURE_2D 8
+        TEXTURE_2D_ARRAY 9
+        TEXTURE_3D 10
 )
 
 message(STATUS "<NRHI::Drivers::DirectX11> Implement resource type done")
