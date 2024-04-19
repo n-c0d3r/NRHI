@@ -69,10 +69,10 @@ namespace nrhi {
         ~F_directx11_resource();
 
     private:
-        using F_initialize_d3d11_resource = void(F_directx11_resource*);
-        static F_initialize_d3d11_resource* initialize_d3d11_resource_func_map_[NRHI_DRIVER_DIRECTX_11_RESOURCE_STRUCTURE_TYPE_COUNT];
         NCPP_FORCE_INLINE void initialize_d3d11_resource();
-        static void initialize_d3d11_resource_buffer(F_directx11_resource* resource_p);
+        void initialize_d3d11_buffer();
+        void initialize_d3d11_structured_buffer();
+        void initialize_d3d11_single_elemented_buffer();
 
     };
 

@@ -69,9 +69,9 @@ NCPP_ENTRY_POINT() {
 
 
     TG_vector<F_vector4> vertices(128);
-    U_buffer_handle vbuffer_p = H_buffer::T_create_from_span<F_vector4>({
+    U_buffer_handle vbuffer_p = H_buffer::T_create_structured<F_vector4>({
         .device_p = NCPP_FOREF_VALID(device_p),
-        .data_span = vertices,
+        .data = vertices,
         .bind_flags = E_resource_bind_flag::SRV
     });
 
@@ -82,9 +82,9 @@ NCPP_ENTRY_POINT() {
     );
 
     F_vector4 cdata;
-    U_buffer_handle cbuffer_p = H_buffer::T_create_from_single_element<F_vector4>({
+    U_buffer_handle cbuffer_p = H_buffer::T_create_single_elemented<F_vector4>({
         .device_p = NCPP_FOREF_VALID(device_p),
-        .data_element_p = &cdata,
+        .data = &cdata,
         .bind_flags = E_resource_bind_flag::SRV
     });
 

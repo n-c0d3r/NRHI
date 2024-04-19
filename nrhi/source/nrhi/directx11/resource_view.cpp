@@ -1,6 +1,7 @@
 #include <nrhi/directx11/resource_view.hpp>
 #include <nrhi/directx11/resource.hpp>
 #include <nrhi/directx11/device.hpp>
+#include <nrhi/format_helper.hpp>
 
 
 
@@ -44,19 +45,19 @@ namespace nrhi {
         ID3D11View* d3d11_view_p = 0;
 
         D3D11_SHADER_RESOURCE_VIEW_DESC d3d11_srv_desc;
+        memset(&d3d11_srv_desc, 0, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
+        u32 stride_from_format = H_format::stride(resource_desc.format);
         switch (resource_desc.type) {
             case E_resource_type::BUFFER:
-                d3d11_srv_desc.BufferEx.Flags = 0;
-                if(resource_desc.stride) {
-                    d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
-                    d3d11_srv_desc.BufferEx.FirstElement = desc.mem_offset / resource_desc.stride;
-                    d3d11_srv_desc.BufferEx.NumElements = resource_desc.width / resource_desc.stride;
-                }
-                else{
-                    d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
-                    d3d11_srv_desc.Buffer.ElementOffset = 0;
-                    d3d11_srv_desc.Buffer.ElementWidth = resource_desc.width;
-                }
+                d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
+                d3d11_srv_desc.Buffer.FirstElement = desc.mem_offset / stride_from_format;
+                d3d11_srv_desc.Buffer.NumElements = resource_desc.width / stride_from_format;
+                d3d11_srv_desc.Format = DXGI_FORMAT(resource_desc.format);
+                break;
+            case E_resource_type::STRUCTURED_BUFFER:
+                d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
+                d3d11_srv_desc.Buffer.FirstElement = desc.mem_offset / resource_desc.stride;
+                d3d11_srv_desc.Buffer.NumElements = resource_desc.width / resource_desc.stride;
                 d3d11_srv_desc.Format = DXGI_FORMAT_UNKNOWN;
                 break;
             case E_resource_type::TEXTURE_1D:

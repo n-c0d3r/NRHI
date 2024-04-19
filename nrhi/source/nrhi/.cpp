@@ -90,6 +90,7 @@ namespace nrhi {
             NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_swapchain);
             NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_resource);
             NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_resource_view);
+            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_format);
 
         }
         void try_update_map(){

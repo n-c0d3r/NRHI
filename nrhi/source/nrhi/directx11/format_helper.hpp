@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/directx11/driver.hpp
+/** @file nrhi/directx11/format_helper.hpp
 *
-*   Implement directx11 driver.
+*   Implement directx11 format helper.
 */
 
 
@@ -33,7 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/driver_base.hpp>
+#include <nrhi/format.hpp>
 
 #pragma endregion
 
@@ -41,13 +41,10 @@
 
 namespace nrhi {
 
-    class NRHI_API HD_directx11_driver {
+    class NRHI_API HD_directx11_format {
 
     public:
-        static constexpr b8 is_support_descriptor_management() { return false; }
-        static constexpr b8 is_support_advanced_resource() { return false; }
-        static constexpr b8 is_support_direct_constants() { return false; }
-        static constexpr b8 is_support_vertex_buffer() { return true; }
+        static u32 stride(E_format format);
 
     };
 

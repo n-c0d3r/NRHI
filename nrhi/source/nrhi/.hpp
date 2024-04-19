@@ -72,6 +72,7 @@ namespace nrhi { }
 #include <nrhi/resource_view.hpp>
 #include <nrhi/resource.hpp>
 #include <nrhi/buffer.hpp>
+#include <nrhi/format_helper.hpp>
 
 #pragma endregion
 
