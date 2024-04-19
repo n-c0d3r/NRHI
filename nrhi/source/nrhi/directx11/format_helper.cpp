@@ -10,6 +10,8 @@ namespace nrhi {
 
         F_directx11_format_stride_setup() {
 
+            memset(directx11_format_stride_table, 0xFF, sizeof(directx11_format_stride_table));
+
             directx11_format_stride_table[u32(DXGI_FORMAT_UNKNOWN)] = 0;
 
             directx11_format_stride_table[u32(DXGI_FORMAT_R8G8B8A8_UNORM)] = 4;
@@ -23,6 +25,11 @@ namespace nrhi {
 
         if(u32(format) == 0xFFFFFFFF)
             return 4;
+
+        NCPP_ASSERT(
+            directx11_format_stride_table[u32(format)]
+            != 0xFFFFFFFF
+        ) << "non supported format";
 
         return directx11_format_stride_table[u32(format)];
     }
