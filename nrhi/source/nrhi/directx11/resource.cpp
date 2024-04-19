@@ -27,8 +27,6 @@ namespace nrhi {
         d3d11_resource_p_(d3d11_resource_p)
     {
 
-        initialize_d3d11_resource();
-
     }
     F_directx11_resource::~F_directx11_resource() {
 
