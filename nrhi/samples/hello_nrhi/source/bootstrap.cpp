@@ -85,7 +85,7 @@ NCPP_ENTRY_POINT() {
     U_buffer_handle cbuffer_p = H_buffer::T_create_single_elemented<F_vector4>({
         .device_p = NCPP_FOREF_VALID(device_p),
         .data = &cdata,
-        .bind_flags = E_resource_bind_flag::SRV
+        .bind_flags = E_resource_bind_flag::CBV
     });
 
 
