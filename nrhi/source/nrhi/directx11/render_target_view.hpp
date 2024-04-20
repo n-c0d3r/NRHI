@@ -51,7 +51,7 @@ namespace nrhi {
         F_directx11_render_target_view(
             TK_valid<A_device> device_p,
             const F_resource_view_desc& desc,
-            E_resource_view_type overrided_type = E_resource_view_type::SRV
+            E_resource_view_type overrided_type = E_resource_view_type::RTV
         );
         F_directx11_render_target_view(
             TK_valid<A_device> device_p,
