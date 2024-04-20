@@ -101,4 +101,33 @@ namespace nrhi {
 
     };
 
+
+
+    class NRHI_API F_directx11_single_elemented_buffer : public F_directx11_buffer {
+
+    public:
+        F_directx11_single_elemented_buffer(
+            TK_valid<A_device> device_p,
+            const F_initial_resource_data& initial_data,
+            const F_resource_desc& desc,
+            E_resource_type overrided_type = E_resource_type::STRUCTURED_BUFFER
+        );
+        F_directx11_single_elemented_buffer(
+            TK_valid<A_device> device_p,
+            const F_initial_resource_data& initial_data,
+            const F_resource_desc& desc,
+            E_resource_type overrided_type,
+            ID3D11Buffer* d3d11_buffer_p
+        );
+        virtual ~F_directx11_single_elemented_buffer();
+
+    private:
+        static ID3D11Buffer* create_d3d11_single_elemented_buffer(
+            TK_valid<A_device> device_p,
+            const F_initial_resource_data& initial_data,
+            const F_resource_desc& desc
+        );
+
+    };
+
 }

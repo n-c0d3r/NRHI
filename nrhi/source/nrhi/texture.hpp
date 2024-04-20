@@ -92,4 +92,49 @@ namespace nrhi {
     using S_valid_texture_3d_handle = TF_texture_3d_handle<TS_valid<A_resource>>;
     using K_valid_texture_3d_handle = TF_texture_3d_handle<TK_valid<A_resource>>;
 
+
+
+    class H_texture {
+
+    public:
+        static U_texture_1d_handle create_1d(
+            TK_valid<A_device> device_p,
+            F_initial_resource_data initial_data,
+            u32 width,
+            E_format format,
+            u32 mip_level_count = 1,
+            F_sample_desc sample_desc = F_sample_desc{},
+            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
+            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+        );
+
+    public:
+        static U_texture_2d_handle create_2d(
+            TK_valid<A_device> device_p,
+            F_initial_resource_data initial_data,
+            u32 width,
+            u32 height,
+            E_format format,
+            u32 mip_level_count = 1,
+            F_sample_desc sample_desc = F_sample_desc{},
+            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
+            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+        );
+
+    public:
+        static U_texture_3d_handle create_3d(
+            TK_valid<A_device> device_p,
+            F_initial_resource_data initial_data,
+            u32 width,
+            u32 height,
+            u32 depth,
+            E_format format,
+            u32 mip_level_count = 1,
+            F_sample_desc sample_desc = F_sample_desc{},
+            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
+            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+        );
+
+    };
+
 }

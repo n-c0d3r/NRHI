@@ -45,6 +45,8 @@ namespace nrhi {
 
         const auto& resource_desc = resource_p->desc();
 
+        NCPP_ASSERT(resource_desc.can_create_view) << "resource can't be used to create view";
+
         NCPP_ASSERT(
             u32(resource_desc.bind_flags)
             & u32(E_resource_bind_flag::SRV)

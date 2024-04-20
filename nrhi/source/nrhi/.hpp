@@ -74,10 +74,12 @@ namespace nrhi { }
 #include <nrhi/resource_view.hpp>
 #include <nrhi/resource.hpp>
 #include <nrhi/buffer.hpp>
+#include <nrhi/texture.hpp>
 #include <nrhi/format_helper.hpp>
 
 #ifdef NRHI_DRIVER_DIRECTX_11
 #include <nrhi/directx11/buffer.hpp>
+#include <nrhi/directx11/texture.hpp>
 #include <nrhi/directx11/shader_resource_view.hpp>
 #endif
 

@@ -121,6 +121,7 @@ namespace nrhi {
             .depth = 1,
 
             .format = format,
+            .stride = H_format::stride(format),
 
             .mip_level_count = mip_level_count,
             .sample_desc = sample_desc,
@@ -150,6 +151,7 @@ namespace nrhi {
             .depth = 1,
 
             .format = format,
+            .stride = H_format::stride(format),
 
             .mip_level_count = mip_level_count,
             .sample_desc = sample_desc,
@@ -180,6 +182,7 @@ namespace nrhi {
             .depth = depth,
 
             .format = format,
+            .stride = H_format::stride(format),
 
             .mip_level_count = mip_level_count,
             .sample_desc = sample_desc,

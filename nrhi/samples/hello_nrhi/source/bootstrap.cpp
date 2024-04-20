@@ -91,7 +91,7 @@ int main() {
     );
     U_srv_handle buffer2_srv_p = H_resource_view::create_srv(
         NCPP_FOREF_VALID(device_p),
-        F_resource_view_desc {
+        {
             .resource_p = NCPP_FHANDLE_VALID_AS_OREF(buffer2_p)
         }
     );
@@ -101,6 +101,26 @@ int main() {
         NCPP_FOREF_VALID(device_p),
         &cdata,
         E_resource_bind_flag::CBV
+    );
+
+    U_texture_2d_handle texture_2d_p = H_texture::create_2d(
+        NCPP_FOREF_VALID(device_p),
+        {},
+        1024,
+        1024,
+        E_format::R8G8B8A8_UNORM,
+        1,
+        {},
+        flag_combine(
+            E_resource_bind_flag::SRV,
+            E_resource_bind_flag::RTV
+        )
+    );
+    U_srv_handle texture_2d_srv_p = H_resource_view::create_srv(
+        NCPP_FOREF_VALID(device_p),
+        {
+            .resource_p = NCPP_FHANDLE_VALID_AS_OREF(texture_2d_p)
+        }
     );
 
 

@@ -1,6 +1,7 @@
 #include <nrhi/directx11/resource.hpp>
 #include <nrhi/directx11/device.hpp>
 #include <nrhi/directx11/buffer.hpp>
+#include <nrhi/directx11/texture.hpp>
 #include <nrhi/format_helper.hpp>
 
 
@@ -75,7 +76,32 @@ namespace nrhi {
         const F_resource_desc& desc
     ) {
 
-        return { TU<F_directx11_buffer>()(device_p, initial_resource_data, desc) };
+        return { TU<F_directx11_single_elemented_buffer>()(device_p, initial_resource_data, desc) };
+    }
+
+    U_texture_1d_handle HD_directx11_resource::create_texture_1d(
+        TK_valid<A_device> device_p,
+        const F_initial_resource_data& initial_resource_data,
+        const F_resource_desc& desc
+    )  {
+
+        return { TU<F_directx11_texture_1d>()(device_p, initial_resource_data, desc) };
+    }
+    U_texture_2d_handle HD_directx11_resource::create_texture_2d(
+        TK_valid<A_device> device_p,
+        const F_initial_resource_data& initial_resource_data,
+        const F_resource_desc& desc
+    )  {
+
+        return { TU<F_directx11_texture_2d>()(device_p, initial_resource_data, desc) };
+    }
+    U_texture_3d_handle HD_directx11_resource::create_texture_3d(
+        TK_valid<A_device> device_p,
+        const F_initial_resource_data& initial_resource_data,
+        const F_resource_desc& desc
+    )  {
+
+        return { TU<F_directx11_texture_3d>()(device_p, initial_resource_data, desc) };
     }
 
 }
