@@ -91,8 +91,9 @@ int main() {
     );
     U_srv_handle buffer2_srv_p = H_resource_view::create_srv(
         NCPP_FOREF_VALID(device_p),
-        NCPP_FHANDLE_VALID(buffer2_p),
-        {}
+        F_resource_view_desc {
+            .resource_p = NCPP_FHANDLE_VALID_AS_OREF(buffer2_p)
+        }
     );
 
     F_vector4 cdata;

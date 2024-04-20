@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/resource_base.hpp
+/** @file nrhi/resource_view_desc.hpp
 *
-*   Implement resource base class.
+*   Implement resource view desc.
 */
 
 
@@ -33,8 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/resource_desc.hpp>
-#include <nrhi/resource_type.hpp>
+#include <nrhi/resource_view_type.hpp>
 
 #pragma endregion
 
@@ -44,33 +43,20 @@ namespace nrhi {
 
     class A_device;
     class A_resource;
+    class A_resource_view;
 
 
 
-    class NRHI_API A_resource {
+    struct F_resource_view_desc {
 
-    private:
-        TK_valid<A_device> device_p_;
-        F_resource_desc desc_;
-        F_initial_resource_data initial_data_;
+        E_resource_view_type type = E_resource_view_type::NONE;
 
-    public:
-        NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
-        NCPP_FORCE_INLINE const F_resource_desc& desc() const noexcept { return desc_; }
-        NCPP_FORCE_INLINE const F_initial_resource_data& initial_data() const noexcept { return initial_data_; }
+        TK_valid<A_resource> resource_p;
 
-
-
-    protected:
-        A_resource(
-            TK_valid<A_device> device_p,
-            const F_initial_resource_data& initial_data,
-            const F_resource_desc& desc,
-            E_resource_type overrided_type
-        );
-
-    public:
-        virtual ~A_resource();
+        union {
+            sz mem_offset = 0;
+            u32 base_mip_level;
+        };
 
     };
 

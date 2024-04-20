@@ -34,6 +34,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/resource_desc.hpp>
+#include <nrhi/resource_view_desc.hpp>
 #include <nrhi/resource_view_type.hpp>
 
 #pragma endregion
@@ -128,29 +129,14 @@ namespace nrhi {
 
 
 
-    struct F_resource_view_desc {
-
-        union {
-            sz mem_offset = 0;
-            u32 base_mip_level;
-        };
-
-    };
-
-
-
     class NRHI_API A_resource_view {
 
     private:
         TK_valid<A_device> device_p_;
-        TK_valid<A_resource> resource_p_;
-        E_resource_view_type type_;
         F_resource_view_desc desc_;
 
     public:
         NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
-        NCPP_FORCE_INLINE TK_valid<A_resource> resource_p() noexcept { return resource_p_; }
-        NCPP_FORCE_INLINE E_resource_view_type type() noexcept { return type_; }
         NCPP_FORCE_INLINE F_resource_view_desc desc() noexcept { return desc_; }
 
 
@@ -158,9 +144,8 @@ namespace nrhi {
     protected:
         A_resource_view(
             TK_valid<A_device> device_p,
-            TK_valid<A_resource> resource_p,
-            E_resource_view_type type,
-            const F_resource_view_desc& desc
+            const F_resource_view_desc& desc,
+            E_resource_view_type overrided_type
         );
 
     public:

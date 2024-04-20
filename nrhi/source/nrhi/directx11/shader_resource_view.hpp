@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/resource_base.hpp
+/** @file nrhi/directx11/shader_resource_view.hpp
 *
-*   Implement resource base class.
+*   Implement directx11 shader_resource_view.
 */
 
 
@@ -33,8 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/resource_desc.hpp>
-#include <nrhi/resource_type.hpp>
+#include <nrhi/directx11/resource_view.hpp>
 
 #pragma endregion
 
@@ -43,34 +42,30 @@
 namespace nrhi {
 
     class A_device;
-    class A_resource;
 
 
 
-    class NRHI_API A_resource {
+    class NRHI_API F_directx11_shader_resource_view : public F_directx11_resource_view {
+
+    public:
+        F_directx11_shader_resource_view(
+            TK_valid<A_device> device_p,
+            const F_resource_view_desc& desc,
+            E_resource_view_type overrided_type = E_resource_view_type::SRV
+        );
+        F_directx11_shader_resource_view(
+            TK_valid<A_device> device_p,
+            const F_resource_view_desc& desc,
+            E_resource_view_type overrided_type,
+            ID3D11ShaderResourceView* d3d11_shader_resource_view_p
+        );
+        virtual ~F_directx11_shader_resource_view();
 
     private:
-        TK_valid<A_device> device_p_;
-        F_resource_desc desc_;
-        F_initial_resource_data initial_data_;
-
-    public:
-        NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
-        NCPP_FORCE_INLINE const F_resource_desc& desc() const noexcept { return desc_; }
-        NCPP_FORCE_INLINE const F_initial_resource_data& initial_data() const noexcept { return initial_data_; }
-
-
-
-    protected:
-        A_resource(
+        static ID3D11ShaderResourceView* create_d3d11_shader_resource_view(
             TK_valid<A_device> device_p,
-            const F_initial_resource_data& initial_data,
-            const F_resource_desc& desc,
-            E_resource_type overrided_type
+            const F_resource_view_desc& desc
         );
-
-    public:
-        virtual ~A_resource();
 
     };
 

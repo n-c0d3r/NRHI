@@ -58,15 +58,13 @@ namespace nrhi {
     public:
         F_directx11_resource_view(
             TK_valid<A_device> device_p,
-            TK_valid<A_resource> resource_p,
-            E_resource_view_type type,
-            const F_resource_view_desc& desc
+            const F_resource_view_desc& desc,
+            E_resource_view_type overrided_type
         );
         F_directx11_resource_view(
             TK_valid<A_device> device_p,
-            TK_valid<A_resource> resource_p,
-            E_resource_view_type type,
             const F_resource_view_desc& desc,
+            E_resource_view_type overrided_type,
             ID3D11View* d3d11_view_p
         );
         ~F_directx11_resource_view();
@@ -78,29 +76,30 @@ namespace nrhi {
     class NRHI_API HD_directx11_resource_view {
 
     public:
+        static TU<A_resource_view> create(
+            TK_valid<A_device> device_p,
+            const F_resource_view_desc& desc
+        );
+
+    public:
         static U_srv_handle create_srv(
             TK_valid<A_device> device_p,
-            TK_valid<A_resource> resource_p,
             const F_resource_view_desc& desc
         );
         static U_uav_handle create_uav(
             TK_valid<A_device> device_p,
-            TK_valid<A_resource> resource_p,
             const F_resource_view_desc& desc
         );
         static U_rtv_handle create_rtv(
             TK_valid<A_device> device_p,
-            K_texture_2d_handle resource_p,
             const F_resource_view_desc& desc
         );
         static U_dsv_handle create_dsv(
             TK_valid<A_device> device_p,
-            K_texture_2d_handle resource_p,
             const F_resource_view_desc& desc
         );
         static U_sampler_handle create_sampler(
             TK_valid<A_device> device_p,
-            TK_valid<A_resource> resource_p,
             const F_resource_view_desc& desc
         );
 

@@ -62,6 +62,8 @@ namespace nrhi { }
 #include <nrhi/descriptor_base.hpp>
 #include <nrhi/root_signature_base.hpp>
 #include <nrhi/resource_base.hpp>
+#include <nrhi/resource_desc.hpp>
+#include <nrhi/resource_view_desc.hpp>
 #include <nrhi/driver.hpp>
 #include <nrhi/system.hpp>
 #include <nrhi/device.hpp>
@@ -76,6 +78,7 @@ namespace nrhi { }
 
 #ifdef NRHI_DRIVER_DIRECTX_11
 #include <nrhi/directx11/buffer.hpp>
+#include <nrhi/directx11/shader_resource_view.hpp>
 #endif
 
 #pragma endregion

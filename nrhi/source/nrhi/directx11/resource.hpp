@@ -58,12 +58,14 @@ namespace nrhi {
         F_directx11_resource(
             TK_valid<A_device> device_p,
             const F_initial_resource_data& initial_data,
-            const F_resource_desc& desc
+            const F_resource_desc& desc,
+            E_resource_type overrided_type
         );
         F_directx11_resource(
             TK_valid<A_device> device_p,
             const F_initial_resource_data& initial_data,
             const F_resource_desc& desc,
+            E_resource_type overrided_type,
             ID3D11Resource* d3d11_resource_p
         );
         virtual ~F_directx11_resource();
@@ -80,6 +82,8 @@ namespace nrhi {
             const F_initial_resource_data& initial_resource_data,
             const F_resource_desc& desc
         );
+
+    public:
         static U_buffer_handle create_buffer(
             TK_valid<A_device> device_p,
             const F_initial_resource_data& initial_resource_data,

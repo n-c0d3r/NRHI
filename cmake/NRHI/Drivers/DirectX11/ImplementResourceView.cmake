@@ -24,27 +24,22 @@ NRHI_FunctionHelper_CreateFunctionClass(
     VALUES
         "create_srv" "U_srv_handle(
             TK_valid<A_device> device_p,
-            TK_valid<A_resource> resource_p,
             const F_resource_view_desc& desc
         )"
         "create_uav" "U_uav_handle(
             TK_valid<A_device> device_p,
-            TK_valid<A_resource> resource_p,
             const F_resource_view_desc& desc
         )"
         "create_rtv" "U_rtv_handle(
             TK_valid<A_device> device_p,
-            K_texture_2d_handle resource_p,
             const F_resource_view_desc& desc
         )"
         "create_dsv" "U_dsv_handle(
             TK_valid<A_device> device_p,
-            K_texture_2d_handle resource_p,
             const F_resource_view_desc& desc
         )"
         "create_sampler" "U_sampler_handle(
             TK_valid<A_device> device_p,
-            TK_valid<A_resource> resource_p,
             const F_resource_view_desc& desc
         )"
 )

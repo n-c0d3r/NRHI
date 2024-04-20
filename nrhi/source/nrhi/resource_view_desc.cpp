@@ -1,0 +1,1 @@
+#include <nrhi/resource_view_desc.hpp>

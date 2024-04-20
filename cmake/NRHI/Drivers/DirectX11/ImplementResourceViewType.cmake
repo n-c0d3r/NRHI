@@ -17,11 +17,12 @@ NRHI_EnumHelper_CreateEnum(
     TARGET_HPP_FILE_PATH "${NRHI_RESOURCE_VIEW_TYPE_ENUM_HPP_FILE_PATH}"
     TARGET_CPP_FILE_PATH "${NRHI_RESOURCE_VIEW_TYPE_ENUM_CPP_FILE_PATH}"
     VALUES
-        SRV 0
-        UAV 1
-        RTV 2
-        DSV 3
-        SAMPLER 4
+        NONE 0
+        SRV 1
+        UAV 2
+        RTV 3
+        DSV 4
+        SAMPLER 5
 )
 
 message(STATUS "<NRHI::Drivers::DirectX11> Implement resource view type done")

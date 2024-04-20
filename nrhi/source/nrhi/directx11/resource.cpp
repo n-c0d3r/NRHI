@@ -10,18 +10,20 @@ namespace nrhi {
     F_directx11_resource::F_directx11_resource(
         TK_valid<A_device> device_p,
         const F_initial_resource_data& initial_data,
-        const F_resource_desc& desc
+        const F_resource_desc& desc,
+        E_resource_type overrided_type
     ) :
-        A_resource(device_p, initial_data, desc)
+        A_resource(device_p, initial_data, desc, overrided_type)
     {
     }
     F_directx11_resource::F_directx11_resource(
         TK_valid<A_device> device_p,
         const F_initial_resource_data& initial_data,
         const F_resource_desc& desc,
+        E_resource_type overrided_type,
         ID3D11Resource* d3d11_resource_p
     ) :
-        A_resource(device_p, initial_data, desc),
+        A_resource(device_p, initial_data, desc, overrided_type),
         d3d11_resource_p_(d3d11_resource_p)
     {
 
@@ -44,12 +46,13 @@ namespace nrhi {
             case E_resource_type::BUFFER:
                 return TU<F_directx11_buffer>()(device_p, initial_resource_data, desc);
             case E_resource_type::STRUCTURED_BUFFER:
-                return TU<F_directx11_buffer>()(device_p, initial_resource_data, desc);
+                return TU<F_directx11_structured_buffer>()(device_p, initial_resource_data, desc);
             case E_resource_type::SINGLE_ELEMENTED_BUFFER:
                 return TU<F_directx11_buffer>()(device_p, initial_resource_data, desc);
         }
         return null;
     }
+
     U_buffer_handle HD_directx11_resource::create_buffer(
         TK_valid<A_device> device_p,
         const F_initial_resource_data& initial_resource_data,
@@ -64,7 +67,7 @@ namespace nrhi {
         const F_resource_desc& desc
     ) {
 
-        return { TU<F_directx11_buffer>()(device_p, initial_resource_data, desc) };
+        return { TU<F_directx11_structured_buffer>()(device_p, initial_resource_data, desc) };
     }
     U_buffer_handle HD_directx11_resource::create_single_elemented_buffer(
         TK_valid<A_device> device_p,
