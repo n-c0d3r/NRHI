@@ -54,6 +54,9 @@ namespace nrhi {
 
     public:
         NCPP_FORCE_INLINE ID3D11View* d3d11_view_p() noexcept { return d3d11_view_p_; }
+        NCPP_FORCE_INLINE void set_d3d11_view_p(ID3D11View* value) noexcept {
+            d3d11_view_p_ = value;
+        }
 
     public:
         F_directx11_resource_view(

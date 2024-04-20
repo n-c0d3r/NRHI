@@ -65,6 +65,7 @@ int main() {
         F_swapchain_desc {
         }
     );
+    auto back_rtv_p = swapchain_p->back_rtv_p();
 
 
 

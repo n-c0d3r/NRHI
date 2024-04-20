@@ -34,6 +34,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/swapchain_base.hpp>
+#include <nrhi/texture.hpp>
+#include <nrhi/resource_view_base.hpp>
 
 #pragma endregion
 
@@ -43,6 +45,8 @@ namespace nrhi {
 
     class A_command_queue;
     class A_command_list;
+    class A_resource;
+    class A_resource_view;
 
 
 
@@ -63,6 +67,9 @@ namespace nrhi {
             const F_swapchain_desc& desc
         );
         ~F_directx11_swapchain();
+
+    private:
+        void update_d3d11_object_for_back_rtv();
 
     };
 

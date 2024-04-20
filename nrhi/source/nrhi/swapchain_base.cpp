@@ -1,4 +1,6 @@
 #include <nrhi/swapchain_base.hpp>
+#include <nrhi/texture.hpp>
+#include <nrhi/resource_view.hpp>
 
 
 
