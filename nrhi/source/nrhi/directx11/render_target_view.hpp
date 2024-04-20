@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/resource_view_desc.hpp
+/** @file nrhi/directx11/render_target_view.hpp
 *
-*   Implement resource view desc.
+*   Implement directx11 render_target_view.
 */
 
 
@@ -33,7 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/resource_view_type.hpp>
+#include <nrhi/directx11/resource_view.hpp>
 
 #pragma endregion
 
@@ -42,22 +42,30 @@
 namespace nrhi {
 
     class A_device;
-    class A_resource;
-    class A_resource_view;
 
 
 
-    struct F_resource_view_desc {
+    class NRHI_API F_directx11_render_target_view : public F_directx11_resource_view {
 
-        E_resource_view_type type = E_resource_view_type::NONE;
+    public:
+        F_directx11_render_target_view(
+            TK_valid<A_device> device_p,
+            const F_resource_view_desc& desc,
+            E_resource_view_type overrided_type = E_resource_view_type::SRV
+        );
+        F_directx11_render_target_view(
+            TK_valid<A_device> device_p,
+            const F_resource_view_desc& desc,
+            E_resource_view_type overrided_type,
+            ID3D11RenderTargetView* d3d11_render_target_view_p
+        );
+        virtual ~F_directx11_render_target_view();
 
-        TK_valid<A_resource> resource_p;
-
-        union {
-            sz mem_offset = 0;
-            u32 base_mip_level;
-            u32 target_mip_level;
-        };
+    private:
+        static ID3D11RenderTargetView* create_d3d11_render_target_view(
+            TK_valid<A_device> device_p,
+            const F_resource_view_desc& desc
+        );
 
     };
 

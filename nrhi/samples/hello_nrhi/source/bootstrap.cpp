@@ -122,6 +122,12 @@ int main() {
             .resource_p = NCPP_FHANDLE_VALID_AS_OREF(texture_2d_p)
         }
     );
+    U_rtv_handle texture_2d_rtv_p = H_resource_view::create_rtv(
+        NCPP_FOREF_VALID(device_p),
+        {
+            .resource_p = NCPP_FHANDLE_VALID_AS_OREF(texture_2d_p)
+        }
+    );
 
 
 

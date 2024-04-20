@@ -81,6 +81,7 @@ namespace nrhi { }
 #include <nrhi/directx11/buffer.hpp>
 #include <nrhi/directx11/texture.hpp>
 #include <nrhi/directx11/shader_resource_view.hpp>
+#include <nrhi/directx11/render_target_view.hpp>
 #endif
 
 #pragma endregion

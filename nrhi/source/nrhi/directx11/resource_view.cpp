@@ -2,6 +2,7 @@
 #include <nrhi/directx11/resource.hpp>
 #include <nrhi/directx11/device.hpp>
 #include <nrhi/directx11/shader_resource_view.hpp>
+#include <nrhi/directx11/render_target_view.hpp>
 #include <nrhi/format_helper.hpp>
 
 
@@ -46,7 +47,7 @@ namespace nrhi {
         const F_resource_view_desc& desc
     ){
 
-        return {};
+        return { TU<F_directx11_render_target_view>()(device_p, desc) };
     }
     U_dsv_handle HD_directx11_resource_view::create_dsv(
         TK_valid<A_device> device_p,
