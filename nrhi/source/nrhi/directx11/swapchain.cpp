@@ -94,7 +94,7 @@ namespace nrhi {
 
 
         // also update_d3d11_object_for_back_rtv when surface is resized
-        surface_p->T_get_event<F_surface_resize_event>().T_push_back_listener([this](auto& event){
+        surface_resize_handle_ = surface_p->T_get_event<F_surface_resize_event>().T_push_back_listener([this](auto& event){
 
             auto& d3d11_back_rtv_p = back_rtv_p_.T_cast<F_directx11_render_target_view>();
 
@@ -117,6 +117,10 @@ namespace nrhi {
 
     }
     F_directx11_swapchain::~F_directx11_swapchain(){
+
+        NCPP_ASSERT(surface_p().is_valid()) << "surface is destroyed";
+
+        surface_p()->T_get_event<F_surface_resize_event>().remove_listener(surface_resize_handle_);
 
         if(dxgi_swapchain_p_)
             dxgi_swapchain_p_->Release();

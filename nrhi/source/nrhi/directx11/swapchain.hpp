@@ -54,6 +54,7 @@ namespace nrhi {
 
     private:
         IDXGISwapChain* dxgi_swapchain_p_ = 0;
+        typename F_event::F_listener_handle surface_resize_handle_;
 
     public:
         NCPP_FORCE_INLINE IDXGISwapChain* dxgi_swapchain_p() noexcept { return dxgi_swapchain_p_; }

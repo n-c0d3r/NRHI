@@ -69,6 +69,14 @@ int main() {
 
 
 
+    // delete swapchain when surface is destroyed
+    surface_p->T_get_event<F_surface_destroy_event>().T_push_back_listener([&](auto& e){
+
+        swapchain_p.reset();
+    });
+
+
+
     TG_vector<F_vector4> vertices(128);
     U_buffer_handle vbuffer_p = H_buffer::T_create<F_vector4>(
         NCPP_FOREF_VALID(device_p),
