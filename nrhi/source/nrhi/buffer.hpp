@@ -176,7 +176,7 @@ namespace nrhi {
         }
 
     public:
-        static U_buffer_handle create_structured(
+        static U_structured_buffer_handle create_structured(
             TK_valid<A_device> device_p,
             F_initial_resource_data initial_data,
             u32 count,
@@ -187,7 +187,7 @@ namespace nrhi {
 
     public:
         template<typename F_element__>
-        static U_buffer_handle T_create_structured(
+        static U_structured_buffer_handle T_create_structured(
             TK_valid<A_device> device_p,
             F_initial_resource_data initial_data,
             u32 count,
@@ -207,7 +207,7 @@ namespace nrhi {
 
     public:
         template<typename F_element__>
-        static U_buffer_handle T_create_structured(
+        static U_structured_buffer_handle T_create_structured(
             TK_valid<A_device> device_p,
             const TG_span<F_element__>& data,
             E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
@@ -225,7 +225,7 @@ namespace nrhi {
         }
 
     public:
-        static U_buffer_handle create_single_elemented(
+        static U_single_elemented_buffer_handle create_single_elemented(
             TK_valid<A_device> device_p,
             F_initial_resource_data initial_data,
             u32 width,
@@ -235,7 +235,7 @@ namespace nrhi {
 
     public:
         template<typename F__>
-        static U_buffer_handle T_create_single_elemented(
+        static U_single_elemented_buffer_handle T_create_single_elemented(
             TK_valid<A_device> device_p,
             F_initial_resource_data initial_data,
             E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
@@ -253,7 +253,7 @@ namespace nrhi {
 
     public:
         template<typename F__>
-        static U_buffer_handle T_create_single_elemented(
+        static U_single_elemented_buffer_handle T_create_single_elemented(
             TK_valid<A_device> device_p,
             const F__* data,
             E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,

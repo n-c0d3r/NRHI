@@ -47,7 +47,7 @@ namespace nrhi {
         );
     }
 
-    U_buffer_handle H_buffer::create_structured(
+    U_structured_buffer_handle H_buffer::create_structured(
         TK_valid<A_device> device_p,
         F_initial_resource_data initial_data,
         u32 count,
@@ -68,7 +68,7 @@ namespace nrhi {
         );
     }
 
-    U_buffer_handle H_buffer::create_single_elemented(
+    U_single_elemented_buffer_handle H_buffer::create_single_elemented(
         TK_valid<A_device> device_p,
         F_initial_resource_data initial_data,
         u32 width,

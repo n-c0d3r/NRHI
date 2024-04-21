@@ -93,7 +93,7 @@ int main() {
     );
 
     TG_vector<F_matrix4x4> buffer2_data(128);
-    U_buffer_handle buffer2_p = H_buffer::T_create_structured<F_matrix4x4>(
+    U_structured_buffer_handle buffer2_p = H_buffer::T_create_structured<F_matrix4x4>(
         NCPP_FOREF_VALID(device_p),
         buffer2_data,
         E_resource_bind_flag::SRV
@@ -106,7 +106,7 @@ int main() {
     );
 
     F_vector4 cdata;
-    U_buffer_handle cbuffer_p = H_buffer::T_create_single_elemented<F_vector4>(
+    U_single_elemented_buffer_handle cbuffer_p = H_buffer::T_create_single_elemented<F_vector4>(
         NCPP_FOREF_VALID(device_p),
         &cdata,
         E_resource_bind_flag::CBV

@@ -62,7 +62,7 @@ namespace nrhi {
 
         return { TU<F_directx11_buffer>()(device_p, initial_resource_data, desc) };
     }
-    U_buffer_handle HD_directx11_resource::create_structured_buffer(
+    U_structured_buffer_handle HD_directx11_resource::create_structured_buffer(
         TK_valid<A_device> device_p,
         const F_initial_resource_data& initial_resource_data,
         const F_resource_desc& desc
@@ -70,7 +70,7 @@ namespace nrhi {
 
         return { TU<F_directx11_structured_buffer>()(device_p, initial_resource_data, desc) };
     }
-    U_buffer_handle HD_directx11_resource::create_single_elemented_buffer(
+    U_single_elemented_buffer_handle HD_directx11_resource::create_single_elemented_buffer(
         TK_valid<A_device> device_p,
         const F_initial_resource_data& initial_resource_data,
         const F_resource_desc& desc

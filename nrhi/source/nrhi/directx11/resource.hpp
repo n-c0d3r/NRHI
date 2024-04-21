@@ -93,12 +93,12 @@ namespace nrhi {
             const F_initial_resource_data& initial_resource_data,
             const F_resource_desc& desc
         );
-        static U_buffer_handle create_structured_buffer(
+        static U_structured_buffer_handle create_structured_buffer(
             TK_valid<A_device> device_p,
             const F_initial_resource_data& initial_resource_data,
             const F_resource_desc& desc
         );
-        static U_buffer_handle create_single_elemented_buffer(
+        static U_single_elemented_buffer_handle create_single_elemented_buffer(
             TK_valid<A_device> device_p,
             const F_initial_resource_data& initial_resource_data,
             const F_resource_desc& desc
