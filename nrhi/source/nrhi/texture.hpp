@@ -94,7 +94,7 @@ namespace nrhi {
 
 
 
-    class H_texture {
+    class NRHI_API H_texture {
 
     public:
         static U_texture_1d_handle create_1d(

@@ -34,7 +34,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/shader_type.hpp>
-#include <nrhi/shader_desc.hpp>
+#include <nrhi/shader_blob_desc.hpp>
 
 #pragma endregion
 

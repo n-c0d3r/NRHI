@@ -84,6 +84,7 @@ namespace nrhi { }
 #include <nrhi/shader.hpp>
 #include <nrhi/shader_compiler.hpp>
 #include <nrhi/shader_library.hpp>
+#include <nrhi/shader_blob.hpp>
 
 #ifdef NRHI_DRIVER_DIRECTX_11
 #include <nrhi/directx11/buffer.hpp>

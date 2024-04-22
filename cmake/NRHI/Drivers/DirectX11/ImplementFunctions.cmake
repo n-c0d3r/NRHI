@@ -13,6 +13,7 @@ include(NRHI/Drivers/DirectX11/ImplementFormatHelper)
 include(NRHI/Drivers/DirectX11/ImplementShaderCompiler)
 include(NRHI/Drivers/DirectX11/ImplementShaderLibrary)
 include(NRHI/Drivers/DirectX11/ImplementShader)
+include(NRHI/Drivers/DirectX11/ImplementShaderBlob)
 include(NRHI/Drivers/DXGI/AdapterHelper)
 
 

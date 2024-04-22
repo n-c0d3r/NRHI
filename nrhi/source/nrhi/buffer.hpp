@@ -94,7 +94,7 @@ namespace nrhi {
 
 
 
-    class H_buffer {
+    class NRHI_API H_buffer {
 
     public:
         static U_buffer_handle create(

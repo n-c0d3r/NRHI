@@ -49,8 +49,7 @@ namespace nrhi {
 
 	struct F_shader_library_desc {
 
-		TG_vector<F_shader_desc> shader_desc_vector;
-		TG_vector<TK_valid<A_shader>> shader_p_vector;
+		TG_vector<TK_valid<A_shader_blob>> shader_blob_p_vector;
 
 	};
 

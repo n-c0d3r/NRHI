@@ -34,8 +34,6 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/shader_base.hpp>
-#include <nrhi/buffer.hpp>
-#include <nrhi/texture.hpp>
 
 #pragma endregion
 
@@ -52,8 +50,7 @@ namespace nrhi {
 	public:
 		F_directx11_shader(
 			TK_valid<A_device> device_p,
-			const F_shader_desc& desc,
-			E_shader_type overrided_type
+			const F_shader_desc& desc
 		);
 		virtual ~F_directx11_shader();
 
