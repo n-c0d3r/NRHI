@@ -68,10 +68,7 @@ namespace nrhi {
 		TK_valid<A_frame_buffer> frame_buffer_p;
 		F_input_layout_desc input_layout_desc;
 
-		TK_valid<A_shader> vertex_shader_p;
-		TK_valid<A_shader> pixel_shader_p;
-
-		TK_valid<A_shader> compute_shader_p;
+		TG_vector<TK_valid<A_shader>> shader_p_vector;
 
 	};
 
