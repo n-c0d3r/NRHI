@@ -48,13 +48,19 @@ namespace nrhi {
 
 	struct F_shader_desc {
 
+		G_string name;
 		E_shader_type type = E_shader_type::NONE;
 
 	};
 
 	class NRHI_API H_shader_desc {
 
+	public:
+		F_shader_desc create_vertex_shader_desc(V_string name);
+		F_shader_desc create_pixel_shader_desc(V_string name);
 
+	public:
+		F_shader_desc create_compute_shader_desc(V_string name);
 
 	};
 

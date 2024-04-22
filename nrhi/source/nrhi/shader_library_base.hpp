@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/shader_base.hpp
+/** @file nrhi/shader_library_base.hpp
 *
-*   Implement shader base class.
+*   Implement shader_library base class.
 */
 
 
@@ -33,8 +33,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/shader_desc.hpp>
 #include <nrhi/shader_type.hpp>
+#include <nrhi/shader_desc.hpp>
 
 #pragma endregion
 
@@ -47,75 +47,35 @@ namespace nrhi {
 
 
 
-	NCPP_FHANDLE_TEMPLATE(A_shader)
-	struct TF_vertex_shader_handle {
+	struct F_shader_library_desc {
 
-		NCPP_FHANDLE_GENERATED_BODY(TF_vertex_shader_handle, A_shader);
-
-	};
-
-	using U_vertex_shader_handle = TF_vertex_shader_handle<TU<A_shader>>;
-	using S_vertex_shader_handle = TF_vertex_shader_handle<TS<A_shader>>;
-	using K_vertex_shader_handle = TF_vertex_shader_handle<TK<A_shader>>;
-
-	using S_valid_vertex_shader_handle = TF_vertex_shader_handle<TS_valid<A_shader>>;
-	using K_valid_vertex_shader_handle = TF_vertex_shader_handle<TK_valid<A_shader>>;
-
-
-
-	NCPP_FHANDLE_TEMPLATE(A_shader)
-	struct TF_pixel_shader_handle {
-
-		NCPP_FHANDLE_GENERATED_BODY(TF_vertex_shader_handle, A_shader);
+		TG_vector<F_shader_desc> shader_desc_vector;
+		TG_vector<TK_valid<A_shader>> shader_p_vector;
 
 	};
 
-	using U_pixel_shader_handle = TF_pixel_shader_handle<TU<A_shader>>;
-	using S_pixel_shader_handle = TF_pixel_shader_handle<TS<A_shader>>;
-	using K_pixel_shader_handle = TF_pixel_shader_handle<TK<A_shader>>;
-
-	using S_valid_pixel_shader_handle = TF_pixel_shader_handle<TS_valid<A_shader>>;
-	using K_valid_pixel_shader_handle = TF_pixel_shader_handle<TK_valid<A_shader>>;
 
 
-
-	NCPP_FHANDLE_TEMPLATE(A_shader)
-	struct TF_compute_shader_handle {
-
-		NCPP_FHANDLE_GENERATED_BODY(TF_compute_shader_handle, A_shader);
-
-	};
-
-	using U_compute_shader_handle = TF_compute_shader_handle<TU<A_shader>>;
-	using S_compute_shader_handle = TF_compute_shader_handle<TS<A_shader>>;
-	using K_compute_shader_handle = TF_compute_shader_handle<TK<A_shader>>;
-
-	using S_valid_compute_shader_handle = TF_compute_shader_handle<TS_valid<A_shader>>;
-	using K_valid_compute_shader_handle = TF_compute_shader_handle<TK_valid<A_shader>>;
-
-
-
-	class NRHI_API A_shader {
+	class NRHI_API A_shader_library {
 
 	private:
 		TK_valid<A_device> device_p_;
-		F_shader_desc desc_;
+		F_shader_library_desc desc_;
 
 	public:
 		NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
-		NCPP_FORCE_INLINE F_shader_desc desc() noexcept { return desc_; }
+		NCPP_FORCE_INLINE F_shader_library_desc desc() noexcept { return desc_; }
 
 
 
 	protected:
-		A_shader(
+		A_shader_library(
 			TK_valid<A_device> device_p,
-			const F_shader_desc& desc,
-			E_shader_type overrided_type
+			const F_shader_library_desc& desc
 		);
 
 	public:
-		virtual ~A_shader();
+		virtual ~A_shader_library();
 
 	};
 

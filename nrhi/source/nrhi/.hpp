@@ -81,6 +81,9 @@ namespace nrhi { }
 #include <nrhi/buffer.hpp>
 #include <nrhi/texture.hpp>
 #include <nrhi/format_helper.hpp>
+#include <nrhi/shader.hpp>
+#include <nrhi/shader_compiler.hpp>
+#include <nrhi/shader_library.hpp>
 
 #ifdef NRHI_DRIVER_DIRECTX_11
 #include <nrhi/directx11/buffer.hpp>

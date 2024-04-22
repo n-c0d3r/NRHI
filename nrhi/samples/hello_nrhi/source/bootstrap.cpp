@@ -138,8 +138,6 @@ int main() {
         }
     );
 
-
-
     // run app
     surface_manager.T_run([](F_surface_manager& surface_manager){
     });

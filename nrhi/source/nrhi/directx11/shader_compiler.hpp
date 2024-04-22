@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/shader_base.hpp
+/** @file nrhi/directx11/shader_compiler.hpp
 *
-*   Implement shader base class.
+*   Implement directx11 shader compiler.
 */
 
 
@@ -33,8 +33,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/shader_desc.hpp>
-#include <nrhi/shader_type.hpp>
+#include <nrhi/shader_compiler_base.hpp>
+#include <nrhi/shader_library_base.hpp>
 
 #pragma endregion
 
@@ -43,79 +43,17 @@
 namespace nrhi {
 
 	class A_device;
-	class A_shader;
+	class A_shader_library;
 
 
 
-	NCPP_FHANDLE_TEMPLATE(A_shader)
-	struct TF_vertex_shader_handle {
-
-		NCPP_FHANDLE_GENERATED_BODY(TF_vertex_shader_handle, A_shader);
-
-	};
-
-	using U_vertex_shader_handle = TF_vertex_shader_handle<TU<A_shader>>;
-	using S_vertex_shader_handle = TF_vertex_shader_handle<TS<A_shader>>;
-	using K_vertex_shader_handle = TF_vertex_shader_handle<TK<A_shader>>;
-
-	using S_valid_vertex_shader_handle = TF_vertex_shader_handle<TS_valid<A_shader>>;
-	using K_valid_vertex_shader_handle = TF_vertex_shader_handle<TK_valid<A_shader>>;
-
-
-
-	NCPP_FHANDLE_TEMPLATE(A_shader)
-	struct TF_pixel_shader_handle {
-
-		NCPP_FHANDLE_GENERATED_BODY(TF_vertex_shader_handle, A_shader);
-
-	};
-
-	using U_pixel_shader_handle = TF_pixel_shader_handle<TU<A_shader>>;
-	using S_pixel_shader_handle = TF_pixel_shader_handle<TS<A_shader>>;
-	using K_pixel_shader_handle = TF_pixel_shader_handle<TK<A_shader>>;
-
-	using S_valid_pixel_shader_handle = TF_pixel_shader_handle<TS_valid<A_shader>>;
-	using K_valid_pixel_shader_handle = TF_pixel_shader_handle<TK_valid<A_shader>>;
-
-
-
-	NCPP_FHANDLE_TEMPLATE(A_shader)
-	struct TF_compute_shader_handle {
-
-		NCPP_FHANDLE_GENERATED_BODY(TF_compute_shader_handle, A_shader);
-
-	};
-
-	using U_compute_shader_handle = TF_compute_shader_handle<TU<A_shader>>;
-	using S_compute_shader_handle = TF_compute_shader_handle<TS<A_shader>>;
-	using K_compute_shader_handle = TF_compute_shader_handle<TK<A_shader>>;
-
-	using S_valid_compute_shader_handle = TF_compute_shader_handle<TS_valid<A_shader>>;
-	using K_valid_compute_shader_handle = TF_compute_shader_handle<TK_valid<A_shader>>;
-
-
-
-	class NRHI_API A_shader {
-
-	private:
-		TK_valid<A_device> device_p_;
-		F_shader_desc desc_;
+	class NRHI_API HD_directx11_shader_compiler {
 
 	public:
-		NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
-		NCPP_FORCE_INLINE F_shader_desc desc() noexcept { return desc_; }
-
-
-
-	protected:
-		A_shader(
-			TK_valid<A_device> device_p,
-			const F_shader_desc& desc,
-			E_shader_type overrided_type
+		TU<A_shader_library> compile_hlsl(
+			V_string src_content,
+			TV_vector<F_shader_desc> kernel_descs
 		);
-
-	public:
-		virtual ~A_shader();
 
 	};
 

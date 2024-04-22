@@ -93,6 +93,9 @@ namespace nrhi {
             NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_resource);
             NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_resource_view);
             NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_format);
+            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_shader_compiler);
+            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_shader_library);
+            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_shader);
 
         }
         void try_update_map(){
