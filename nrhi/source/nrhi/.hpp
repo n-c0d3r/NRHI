@@ -59,11 +59,16 @@ namespace nrhi { }
 #include <nrhi/resource_type.hpp>
 #include <nrhi/resource_heap_type.hpp>
 #include <nrhi/resource_view_type.hpp>
+#include <nrhi/pipeline_type.hpp>
+#include <nrhi/shader_type.hpp>
 #include <nrhi/descriptor_base.hpp>
 #include <nrhi/root_signature_base.hpp>
 #include <nrhi/resource_base.hpp>
 #include <nrhi/resource_desc.hpp>
 #include <nrhi/resource_view_desc.hpp>
+#include <nrhi/pipeline_desc.hpp>
+#include <nrhi/shader_desc.hpp>
+#include <nrhi/frame_buffer_desc.hpp>
 #include <nrhi/driver.hpp>
 #include <nrhi/system.hpp>
 #include <nrhi/device.hpp>

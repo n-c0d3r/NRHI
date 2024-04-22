@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/directx11/driver.hpp
+/** @file nrhi/shader_desc.hpp
 *
-*   Implement directx11 driver.
+*   Implement shader desc.
 */
 
 
@@ -33,7 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/driver_base.hpp>
+#include <nrhi/shader_type.hpp>
 
 #pragma endregion
 
@@ -41,15 +41,21 @@
 
 namespace nrhi {
 
-    class NRHI_API HD_directx11_driver {
+	class A_device;
+	class A_shader;
 
-    public:
-        static constexpr b8 is_support_descriptor_management() { return false; }
-        static constexpr b8 is_support_advanced_resource() { return false; }
-        static constexpr b8 is_support_direct_constants() { return false; }
-        static constexpr b8 is_support_hardware_vbuffer() { return true; }
-        static constexpr b8 is_support_hardware_cbuffer() { return true; }
 
-    };
+
+	struct F_shader_desc {
+
+		E_shader_type type = E_shader_type::NONE;
+
+	};
+
+	class NRHI_API H_shader_desc {
+
+
+
+	};
 
 }

@@ -11,6 +11,8 @@ include(NRHI/Drivers/DirectX11/ImplementResourceBindFlag)
 include(NRHI/Drivers/DirectX11/ImplementResourceType)
 include(NRHI/Drivers/DirectX11/ImplementResourceHeapType)
 include(NRHI/Drivers/DirectX11/ImplementResourceViewType)
+include(NRHI/Drivers/DirectX11/ImplementPipelineType)
+include(NRHI/Drivers/DirectX11/ImplementShaderType)
 
 
 

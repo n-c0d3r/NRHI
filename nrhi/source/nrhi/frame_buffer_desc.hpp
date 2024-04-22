@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/directx11/driver.hpp
+/** @file nrhi/frame_buffer_desc.hpp
 *
-*   Implement directx11 driver.
+*   Implement frame buffer desc.
 */
 
 
@@ -33,7 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/driver_base.hpp>
+#include <nrhi/format.hpp>
 
 #pragma endregion
 
@@ -41,15 +41,22 @@
 
 namespace nrhi {
 
-    class NRHI_API HD_directx11_driver {
+	class A_device;
 
-    public:
-        static constexpr b8 is_support_descriptor_management() { return false; }
-        static constexpr b8 is_support_advanced_resource() { return false; }
-        static constexpr b8 is_support_direct_constants() { return false; }
-        static constexpr b8 is_support_hardware_vbuffer() { return true; }
-        static constexpr b8 is_support_hardware_cbuffer() { return true; }
 
-    };
+
+	struct F_frame_attachment_desc {
+
+		E_format format = E_format::R8G8B8A8_UNORM;
+
+	};
+
+	struct F_frame_buffer_desc {
+
+		TG_vector<F_frame_attachment_desc> attachment_descs;
+
+		E_format depth_stencil_format = E_format::NONE;
+
+	};
 
 }

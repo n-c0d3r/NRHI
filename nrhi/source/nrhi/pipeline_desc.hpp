@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/directx11/driver.hpp
+/** @file nrhi/pipeline_desc.hpp
 *
-*   Implement directx11 driver.
+*   Implement pipeline desc.
 */
 
 
@@ -33,7 +33,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/driver_base.hpp>
+#include <nrhi/pipeline_type.hpp>
+#include <nrhi/format.hpp>
 
 #pragma endregion
 
@@ -41,15 +42,43 @@
 
 namespace nrhi {
 
-    class NRHI_API HD_directx11_driver {
+	class A_device;
+	class A_pipeline;
+	class A_frame_buffer;
+	class A_shader;
 
-    public:
-        static constexpr b8 is_support_descriptor_management() { return false; }
-        static constexpr b8 is_support_advanced_resource() { return false; }
-        static constexpr b8 is_support_direct_constants() { return false; }
-        static constexpr b8 is_support_hardware_vbuffer() { return true; }
-        static constexpr b8 is_support_hardware_cbuffer() { return true; }
 
-    };
+
+	struct F_input_layout_element_desc {
+
+
+
+	};
+
+	struct F_input_layout_desc {
+
+		TG_vector<F_input_layout_element_desc> element_descs;
+
+	};
+
+	struct F_pipeline_desc {
+
+		E_pipeline_type type = E_pipeline_type::NONE;
+
+		TK_valid<A_frame_buffer> frame_buffer_p;
+		F_input_layout_desc input_layout_desc;
+
+		TK_valid<A_shader> vertex_shader_p;
+		TK_valid<A_shader> pixel_shader_p;
+
+		TK_valid<A_shader> compute_shader_p;
+
+	};
+
+	class NRHI_API H_pipeline_desc {
+
+
+
+	};
 
 }

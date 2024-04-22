@@ -77,6 +77,8 @@ namespace nrhi {
             NRHI_ENUM_TRY_UPDATE_MAP(E_resource_type);
             NRHI_ENUM_TRY_UPDATE_MAP(E_resource_heap_type);
             NRHI_ENUM_TRY_UPDATE_MAP(E_resource_view_type);
+            NRHI_ENUM_TRY_UPDATE_MAP(E_pipeline_type);
+            NRHI_ENUM_TRY_UPDATE_MAP(E_shader_type);
 
         }
         void try_update_map_functions(){
