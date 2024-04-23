@@ -138,11 +138,14 @@ int main() {
         }
     );
 
-	// create demo shader
+	// create demo shader library
 	auto shader_library_p = H_shader_compiler::compile_hlsl(
+		// shader library name
 		"DemoShaderLibrary",
+		// shader library source content
 		"float4 vmain(float4 pos : POSITION) : SV_POSITION"
 		"{ return float4(1,1,1,1); }",
+		// shader kernel descriptors (each kernel has 1 entry point function and is compiled to 1 shader blob)
 		NCPP_INIL_SPAN(
 			F_shader_kernel_desc {
 				.blob_desc = {
@@ -152,8 +155,11 @@ int main() {
 			}
 		)
 	);
+
+	// get vertex shader blob (the object storing compiled shader binary from hlsl)
 	auto vshader_blob_p = shader_library_p->shader_blob_p("vmain");
 
+	// create vertex shader from vertex shader blob
 	auto vshader_p = H_vertex_shader::create(
 		NCPP_FOREF_VALID(device_p),
 		{
