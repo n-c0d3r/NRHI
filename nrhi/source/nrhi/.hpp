@@ -86,12 +86,16 @@ namespace nrhi { }
 #include <nrhi/shader_class.hpp>
 #include <nrhi/shader_blob.hpp>
 #include <nrhi/shader_factory.hpp>
+#include <nrhi/compute_pipeline.hpp>
+#include <nrhi/graphics_pipeline.hpp>
 
 #ifdef NRHI_DRIVER_DIRECTX_11
 #include <nrhi/directx11/buffer.hpp>
 #include <nrhi/directx11/texture.hpp>
 #include <nrhi/directx11/shader_resource_view.hpp>
 #include <nrhi/directx11/render_target_view.hpp>
+#include <nrhi/directx11/graphics_pipeline.hpp>
+#include <nrhi/directx11/compute_pipeline.hpp>
 #endif
 
 #pragma endregion

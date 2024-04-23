@@ -35,6 +35,7 @@
 
 #include <nrhi/pipeline_type.hpp>
 #include <nrhi/format.hpp>
+#include <nrhi/frame_buffer_desc.hpp>
 
 #pragma endregion
 
@@ -51,8 +52,6 @@ namespace nrhi {
 
 	struct F_input_layout_element_desc {
 
-
-
 	};
 
 	struct F_input_layout_desc {
@@ -65,7 +64,7 @@ namespace nrhi {
 
 		E_pipeline_type type = E_pipeline_type::NONE;
 
-		TK_valid<A_frame_buffer> frame_buffer_p;
+		F_frame_buffer_desc frame_buffer_desc;
 		F_input_layout_desc input_layout_desc;
 
 		TG_vector<TK_valid<A_shader>> shader_p_vector;
