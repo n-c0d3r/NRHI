@@ -45,12 +45,18 @@ namespace nrhi {
 	class A_device;
 	class A_shader;
 
+	class H_vertex_shader;
+	class H_pixel_shader;
+	class H_compute_shader;
+
 
 
 	NCPP_FHANDLE_TEMPLATE(A_shader)
 	struct TF_vertex_shader_handle {
 
 		NCPP_FHANDLE_GENERATED_BODY(TF_vertex_shader_handle, A_shader);
+
+		using H_shader_factory = H_vertex_shader;
 
 	};
 
@@ -68,6 +74,8 @@ namespace nrhi {
 
 		NCPP_FHANDLE_GENERATED_BODY(TF_vertex_shader_handle, A_shader);
 
+		using H_shader_factory = H_pixel_shader;
+
 	};
 
 	using U_pixel_shader_handle = TF_pixel_shader_handle<TU<A_shader>>;
@@ -84,6 +92,8 @@ namespace nrhi {
 
 		NCPP_FHANDLE_GENERATED_BODY(TF_compute_shader_handle, A_shader);
 
+		using H_shader_factory = H_compute_shader;
+
 	};
 
 	using U_compute_shader_handle = TF_compute_shader_handle<TU<A_shader>>;
@@ -92,6 +102,23 @@ namespace nrhi {
 
 	using S_valid_compute_shader_handle = TF_compute_shader_handle<TS_valid<A_shader>>;
 	using K_valid_compute_shader_handle = TF_compute_shader_handle<TK_valid<A_shader>>;
+
+
+
+#define NRHI_VCREATE_SHADER(...) std::remove_const_t<std::remove_reference_t<decltype(__VA_ARGS__)>>::H_shader_factory::create
+#define NRHI_ECREATE_SHADER(...) 	ncpp::TF_nth_template_targ< \
+										__VA_ARGS__ != nrhi::E_shader_type::VERTEX,          \
+										nrhi::H_vertex_shader,                                     \
+									ncpp::TF_nth_template_targ< \
+										__VA_ARGS__ != nrhi::E_shader_type::PIXEL,          \
+										nrhi::H_pixel_shader,                                     \
+                                   	ncpp::TF_nth_template_targ< \
+										__VA_ARGS__ != nrhi::E_shader_type::COMPUTE,          \
+										nrhi::H_compute_shader,                             \
+										void\
+									>                                                   \
+									>                                                    \
+									>::create
 
 
 

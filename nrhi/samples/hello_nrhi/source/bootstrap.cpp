@@ -154,6 +154,34 @@ int main() {
 	);
 	auto vshader_blob_p = shader_library_p->shader_blob_p("vmain");
 
+	auto vshader1_p = H_shader::create_vertex_shader(
+		NCPP_FOREF_VALID(device_p),
+		{
+			.blob_p = NCPP_FOREF_VALID(vshader_blob_p)
+		}
+	);
+
+	auto vshader2_p = NRHI_VCREATE_SHADER(vshader1_p)(
+		NCPP_FOREF_VALID(device_p),
+		{
+			.blob_p = NCPP_FOREF_VALID(vshader_blob_p)
+		}
+	);
+
+	auto vshader3_p = NRHI_ECREATE_SHADER(E_shader_type::VERTEX)(
+		NCPP_FOREF_VALID(device_p),
+		{
+			.blob_p = NCPP_FOREF_VALID(vshader_blob_p)
+		}
+	);
+
+	auto vshader4_p = H_vertex_shader::create(
+		NCPP_FOREF_VALID(device_p),
+		{
+			.blob_p = NCPP_FOREF_VALID(vshader_blob_p)
+		}
+	);
+
     // run app
     surface_manager.T_run([](F_surface_manager& surface_manager){
     });

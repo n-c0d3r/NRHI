@@ -23,6 +23,22 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "namespace nrhi {
         }"
     VALUES
+        "create" "TU<A_shader>(
+            TK_valid<A_device> device_p,
+            const F_shader_desc& desc
+        )"
+        "create_vertex_shader" "U_vertex_shader_handle(
+            TK_valid<A_device> device_p,
+            const F_shader_desc& desc
+        )"
+        "create_pixel_shader" "U_pixel_shader_handle(
+            TK_valid<A_device> device_p,
+            const F_shader_desc& desc
+        )"
+        "create_compute_shader" "U_compute_shader_handle(
+            TK_valid<A_device> device_p,
+            const F_shader_desc& desc
+        )"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX11> Implement shader done")
