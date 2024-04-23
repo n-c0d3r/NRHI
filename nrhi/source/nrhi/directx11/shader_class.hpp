@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/directx11/shader_library.hpp
+/** @file nrhi/directx11/shader_class.hpp
 *
-*   Implement directx11 shader library.
+*   Implement directx11 shader class.
 */
 
 
@@ -33,7 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/shader_library_base.hpp>
+#include <nrhi/shader_class_base.hpp>
 
 #pragma endregion
 
@@ -42,23 +42,23 @@
 namespace nrhi {
 
 	class A_device;
-	class A_shader_library;
+	class A_shader_class;
 
 
 
-	class NRHI_API F_directx11_shader_library : public A_shader_library {
+	class NRHI_API F_directx11_shader_class : public A_shader_class {
 
 	public:
-		F_directx11_shader_library(
-			const F_shader_library_desc& desc
+		F_directx11_shader_class(
+			const F_shader_class_desc& desc
 		);
-		virtual ~F_directx11_shader_library();
+		virtual ~F_directx11_shader_class();
 
 	};
 
 
 
-	class NRHI_API HD_directx11_shader_library {
+	class NRHI_API HD_directx11_shader_class {
 
 	};
 

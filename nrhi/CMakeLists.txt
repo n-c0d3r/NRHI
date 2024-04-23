@@ -10,7 +10,7 @@ include(NCPP/ConfigureCompiler)
 #   Options
 #####################################################################################
 # NRHI linking options
-option(NRHI_DLL "Build NRHI á DLL or not" ON)
+option(NRHI_DLL "Build NRHI as DLL or not" OFF)
 
 # NRHI driver options
 option(NRHI_DRIVER_DIRECTX_12 "If checked, NRHI will use Directx12 driver" OFF)

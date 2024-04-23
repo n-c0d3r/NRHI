@@ -34,7 +34,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/shader_compiler_base.hpp>
-#include <nrhi/shader_library_base.hpp>
+#include <nrhi/shader_class_base.hpp>
 
 #pragma endregion
 
@@ -43,14 +43,14 @@
 namespace nrhi {
 
 	class A_device;
-	class A_shader_library;
+	class A_shader_class;
 
 
 
 	class NRHI_API HD_directx11_shader_compiler {
 
 	public:
-		static TU<A_shader_library> compile_hlsl(
+		static TU<A_shader_class> compile_hlsl(
 			V_string name,
 			V_string src_content,
 			TG_span<F_shader_kernel_desc> kernel_descs

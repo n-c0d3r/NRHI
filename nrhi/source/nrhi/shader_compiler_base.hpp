@@ -43,6 +43,6 @@
 namespace nrhi {
 
 	class A_shader;
-	class A_shader_library;
+	class A_shader_class;
 
 }

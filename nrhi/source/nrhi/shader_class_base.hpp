@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/shader_library_base.hpp
+/** @file nrhi/shader_class_base.hpp
 *
-*   Implement shader_library base class.
+*   Implement shader_class base class.
 */
 
 
@@ -56,7 +56,7 @@ namespace nrhi {
 
 	};
 
-	struct F_shader_library_desc {
+	struct F_shader_class_desc {
 
 		G_string name;
 		TG_vector<TS_valid<A_shader_blob>> shader_blob_p_vector;
@@ -65,7 +65,7 @@ namespace nrhi {
 
 
 
-	class NRHI_API A_shader_library {
+	class NRHI_API A_shader_class {
 
 	public:
 		using F_shader_blob_p_map = TG_unordered_map<G_string, TK<A_shader_blob>>;
@@ -73,11 +73,11 @@ namespace nrhi {
 
 
 	private:
-		F_shader_library_desc desc_;
+		F_shader_class_desc desc_;
 		F_shader_blob_p_map shader_blob_p_map_;
 
 	public:
-		NCPP_FORCE_INLINE const F_shader_library_desc& desc() noexcept { return desc_; }
+		NCPP_FORCE_INLINE const F_shader_class_desc& desc() noexcept { return desc_; }
 		NCPP_FORCE_INLINE const F_shader_blob_p_map& shader_blob_p_map() noexcept { return shader_blob_p_map_; }
 		NCPP_FORCE_INLINE TK_valid<A_shader_blob> shader_blob_p(V_string name) const noexcept {
 
@@ -89,12 +89,12 @@ namespace nrhi {
 
 
 	protected:
-		A_shader_library(
-			const F_shader_library_desc& desc
+		A_shader_class(
+			const F_shader_class_desc& desc
 		);
 
 	public:
-		virtual ~A_shader_library();
+		virtual ~A_shader_class();
 
 	};
 

@@ -83,7 +83,7 @@ namespace nrhi { }
 #include <nrhi/format_helper.hpp>
 #include <nrhi/shader.hpp>
 #include <nrhi/shader_compiler.hpp>
-#include <nrhi/shader_library.hpp>
+#include <nrhi/shader_class.hpp>
 #include <nrhi/shader_blob.hpp>
 #include <nrhi/shader_factory.hpp>
 

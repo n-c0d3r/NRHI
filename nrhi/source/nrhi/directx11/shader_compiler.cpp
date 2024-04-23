@@ -1,5 +1,5 @@
 #include <nrhi/directx11/shader_compiler.hpp>
-#include <nrhi/directx11/shader_library.hpp>
+#include <nrhi/directx11/shader_class.hpp>
 #include <nrhi/directx11/shader_blob.hpp>
 
 #include <d3dcompiler.h>
@@ -8,7 +8,7 @@
 
 namespace nrhi {
 
-	TU<A_shader_library> HD_directx11_shader_compiler::compile_hlsl(
+	TU<A_shader_class> HD_directx11_shader_compiler::compile_hlsl(
 		V_string name,
 		V_string src_content,
 		TG_span<F_shader_kernel_desc> kernel_descs
@@ -108,8 +108,8 @@ namespace nrhi {
 			);
 		}
 
-		return TU<F_directx11_shader_library>()(
-			F_shader_library_desc {
+		return TU<F_directx11_shader_class>()(
+			F_shader_class_desc {
 				.name = name,
 				.shader_blob_p_vector = shader_blob_p_vector
 			}

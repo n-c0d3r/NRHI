@@ -23,7 +23,7 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "namespace nrhi {
         }"
     VALUES
-        "create_hlsl" "TU<A_shader_library>(
+        "create_hlsl" "TU<A_shader_class>(
             V_string name,
             V_string src_content,
             TG_span<F_shader_kernel_desc> kernel_descs

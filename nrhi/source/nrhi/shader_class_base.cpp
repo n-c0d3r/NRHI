@@ -1,11 +1,11 @@
-#include <nrhi/shader_library_base.hpp>
+#include <nrhi/shader_class_base.hpp>
 
 
 
 namespace nrhi {
 
-	A_shader_library::A_shader_library(
-		const F_shader_library_desc& desc
+	A_shader_class::A_shader_class(
+		const F_shader_class_desc& desc
 	) :
 		desc_(desc)
 	{
@@ -14,7 +14,7 @@ namespace nrhi {
 			shader_blob_p_map_[shader_blob_p->desc().name] = shader_blob_p.no_requirements();
 		}
 	}
-	A_shader_library::~A_shader_library() {
+	A_shader_class::~A_shader_class() {
 	}
 
 }
