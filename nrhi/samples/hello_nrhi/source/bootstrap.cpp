@@ -138,6 +138,22 @@ int main() {
         }
     );
 
+	// create demo shader
+	auto shader_library_p = H_shader_compiler::compile_hlsl(
+		"DemoShaderLibrary",
+		"float4 vmain(float4 pos : POSITION) : SV_POSITION"
+		"{ return float4(1,1,1,1); }",
+		NCPP_INIL_SPAN(
+			F_shader_kernel_desc {
+				.blob_desc = {
+					.name = "vmain",
+					.type = E_shader_type::VERTEX
+				}
+			}
+		)
+	);
+	auto vshader_blob_p = shader_library_p->shader_blob_p("vmain");
+
     // run app
     surface_manager.T_run([](F_surface_manager& surface_manager){
     });

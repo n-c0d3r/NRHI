@@ -50,7 +50,6 @@ namespace nrhi {
 
 	public:
 		F_directx11_shader_library(
-			TK_valid<A_device> device_p,
 			const F_shader_library_desc& desc
 		);
 		virtual ~F_directx11_shader_library();

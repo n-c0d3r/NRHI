@@ -5,12 +5,14 @@
 namespace nrhi {
 
 	A_shader_library::A_shader_library(
-		TK_valid<A_device> device_p,
 		const F_shader_library_desc& desc
 	) :
-		device_p_(device_p),
 		desc_(desc)
 	{
+		for(const auto& shader_blob_p : desc.shader_blob_p_vector) {
+
+			shader_blob_p_map_[shader_blob_p->desc().name] = shader_blob_p.no_requirements();
+		}
 	}
 	A_shader_library::~A_shader_library() {
 	}

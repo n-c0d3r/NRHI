@@ -191,12 +191,14 @@ if(NRHI_DRIVER_DIRECTX_12)
     target_link_libraries(nrhi
         PUBLIC
             d3d12.lib
+            d3dcompiler.lib
     )
 endif()
 if(NRHI_DRIVER_DIRECTX_11)
     target_link_libraries(nrhi
         PUBLIC
             d3d11.lib
+            d3dcompiler.lib
     )
 endif()
 if(NRHI_ENABLE_DXGI)

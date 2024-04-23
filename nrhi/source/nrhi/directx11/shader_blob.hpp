@@ -43,10 +43,19 @@ namespace nrhi {
 
 	class NRHI_API F_directx11_shader_blob : public A_shader_blob {
 
+	private:
+		ID3DBlob* d3d_blob_p_ = 0;
+
+	public:
+		NCPP_FORCE_INLINE ID3DBlob* d3d_blob_p() noexcept { return d3d_blob_p_; }
+
+
+
 	public:
 		F_directx11_shader_blob(
 			const F_shader_blob_desc& desc,
-			E_shader_type overrided_type
+			E_shader_type overrided_type,
+			ID3DBlob* d3d_blob_p
 		);
 		virtual ~F_directx11_shader_blob();
 

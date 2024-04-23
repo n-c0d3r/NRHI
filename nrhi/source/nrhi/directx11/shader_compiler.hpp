@@ -50,9 +50,10 @@ namespace nrhi {
 	class NRHI_API HD_directx11_shader_compiler {
 
 	public:
-		TU<A_shader_library> compile_hlsl(
+		static TU<A_shader_library> compile_hlsl(
+			V_string name,
 			V_string src_content,
-			TV_vector<F_shader_blob_desc> kernel_descs
+			TG_span<F_shader_kernel_desc> kernel_descs
 		);
 
 	};
