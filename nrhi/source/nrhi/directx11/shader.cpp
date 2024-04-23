@@ -25,6 +25,20 @@ namespace nrhi {
 		F_directx11_shader(device_p, desc)
 	{
 		NCPP_ASSERT(desc.blob_p->desc().type == E_shader_type::VERTEX) << "invalid blob's shader type";
+
+		const auto& d3d11_shader_blob_p = desc.blob_p.T_cast<F_directx11_shader_blob>();
+
+		auto d3d_blob_p = d3d11_shader_blob_p->d3d_blob_p();
+		auto d3d11_device_p = device_p.T_cast<F_directx11_device>()->d3d11_device_p();
+
+		HRESULT hr = d3d11_device_p->CreateVertexShader(
+			d3d_blob_p->GetBufferPointer(),
+			d3d_blob_p->GetBufferSize(),
+			0,
+			&d3d11_vertex_shader_p_
+		);
+
+		NCPP_ASSERT(!FAILED(hr)) << "can't create d3d11 vertex shader";
 	}
 	F_directx11_vertex_shader::~F_directx11_vertex_shader() {
 	}
@@ -38,6 +52,20 @@ namespace nrhi {
 		F_directx11_shader(device_p, desc)
 	{
 		NCPP_ASSERT(desc.blob_p->desc().type == E_shader_type::PIXEL) << "invalid blob's shader type";
+
+		const auto& d3d11_shader_blob_p = desc.blob_p.T_cast<F_directx11_shader_blob>();
+
+		auto d3d_blob_p = d3d11_shader_blob_p->d3d_blob_p();
+		auto d3d11_device_p = device_p.T_cast<F_directx11_device>()->d3d11_device_p();
+
+		HRESULT hr = d3d11_device_p->CreatePixelShader(
+			d3d_blob_p->GetBufferPointer(),
+			d3d_blob_p->GetBufferSize(),
+			0,
+			&d3d11_pixel_shader_p_
+		);
+
+		NCPP_ASSERT(!FAILED(hr)) << "can't create d3d11 pixel shader";
 	}
 	F_directx11_pixel_shader::~F_directx11_pixel_shader() {
 	}
@@ -51,6 +79,20 @@ namespace nrhi {
 		F_directx11_shader(device_p, desc)
 	{
 		NCPP_ASSERT(desc.blob_p->desc().type == E_shader_type::COMPUTE) << "invalid blob's shader type";
+
+		const auto& d3d11_shader_blob_p = desc.blob_p.T_cast<F_directx11_shader_blob>();
+
+		auto d3d_blob_p = d3d11_shader_blob_p->d3d_blob_p();
+		auto d3d11_device_p = device_p.T_cast<F_directx11_device>()->d3d11_device_p();
+
+		HRESULT hr = d3d11_device_p->CreateComputeShader(
+			d3d_blob_p->GetBufferPointer(),
+			d3d_blob_p->GetBufferSize(),
+			0,
+			&d3d11_compute_shader_p_
+		);
+
+		NCPP_ASSERT(!FAILED(hr)) << "can't create d3d11 compute shader";
 	}
 	F_directx11_compute_shader::~F_directx11_compute_shader() {
 	}

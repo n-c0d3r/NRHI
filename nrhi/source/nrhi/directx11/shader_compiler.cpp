@@ -32,7 +32,7 @@ namespace nrhi {
 				hr = D3DCompile(
 					src_content->data(),
 					src_content->size() * sizeof(char),
-					(name + "." + blob_desc.name).data(),
+					(name + "::" + blob_desc.name).data(),
 					0,
 					0,
 					blob_desc.name.data(),
@@ -55,7 +55,7 @@ namespace nrhi {
 				hr = D3DCompile(
 					src_content->data(),
 					src_content->size() * sizeof(char),
-					(name + "." + blob_desc.name).data(),
+					(name + "::" + blob_desc.name).data(),
 					0,
 					0,
 					blob_desc.name.data(),
@@ -78,7 +78,7 @@ namespace nrhi {
 				hr = D3DCompile(
 					src_content->data(),
 					src_content->size() * sizeof(char),
-					(name + "." + blob_desc.name).data(),
+					(name + "::" + blob_desc.name).data(),
 					0,
 					0,
 					blob_desc.name.data(),
