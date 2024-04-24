@@ -38,6 +38,7 @@
 #include <nrhi/frame_buffer_desc.hpp>
 #include <nrhi/cull_mode.hpp>
 #include <nrhi/fill_mode.hpp>
+#include <nrhi/depth_comparison_func.hpp>
 
 #pragma endregion
 
@@ -64,7 +65,7 @@ namespace nrhi {
 
 	struct F_rasterizer_desc {
 
-		E_cull_mode cull_mode = E_cull_mode::NONE;
+		E_cull_mode cull_mode = E_cull_mode::BACK;
 		E_fill_mode fill_mode = E_fill_mode::SOLID;
 
 	};
@@ -73,6 +74,7 @@ namespace nrhi {
 
 		b8 enable_depth_test = true;
 		E_format format = E_format::D32_FLOAT;
+		E_depth_comparison_func depth_comparison_func = E_depth_comparison_func::LESS;
 		b8 depth_buffer_write = true;
 
 	};
@@ -81,7 +83,9 @@ namespace nrhi {
 
 		E_pipeline_state_type type = E_pipeline_state_type::NONE;
 
-		TG_vector<E_format> color_format_vector;
+		TG_vector<E_format> color_format_vector = {
+			E_format::R8G8B8A8_UNORM
+		};
 		F_depth_stencil_desc depth_stencil_desc;
 
 		F_input_layout_desc input_layout_desc;

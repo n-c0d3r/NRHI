@@ -34,6 +34,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/directx11/pipeline_state.hpp>
+#include <nrhi/utilities/platform_object_pool.hpp>
 
 #pragma endregion
 
@@ -45,15 +46,36 @@ namespace nrhi {
 
 
 
+	class NRHI_API F_directx11_rasterizer_state_pool : public utilities::TF_platform_object_pool<
+		F_directx11_rasterizer_state_pool,
+		ID3D11RasterizerState*,
+		F_rasterizer_desc
+	>
+	{
+
+		NRHI_PLATFORM_OBJECT_POOL_GENERATED_BODY();
+
+	public:
+		static ID3D11RasterizerState* create_object(TK_valid<A_device> device_p, const F_rasterizer_desc& desc);
+		static void destroy_object(TK_valid<A_device> device_p, ID3D11RasterizerState* object_p, const F_rasterizer_desc& desc);
+
+	};
+
+
+
 	class NRHI_API F_directx11_graphics_pipeline_state : public F_directx11_pipeline_state {
 
 	private:
 		ID3D11VertexShader* d3d11_vertex_shader_p_ = 0;
 		ID3D11PixelShader* d3d11_pixel_shader_p_ = 0;
 
+		ID3D11RasterizerState* d3d11_rasterizer_state_p_ = 0;
+
 	public:
 		NCPP_FORCE_INLINE ID3D11VertexShader* d3d11_vertex_shader_p() noexcept { return d3d11_vertex_shader_p_; }
 		NCPP_FORCE_INLINE ID3D11PixelShader* d3d11_pixel_shader_p() noexcept { return d3d11_pixel_shader_p_; }
+
+		NCPP_FORCE_INLINE ID3D11RasterizerState* d3d11_rasterizer_state_p() noexcept { return d3d11_rasterizer_state_p_; }
 
 
 
@@ -64,6 +86,10 @@ namespace nrhi {
 			E_pipeline_state_type overrided_type = E_pipeline_state_type::GRAPHICS
 		);
 		virtual ~F_directx11_graphics_pipeline_state();
+
+	public:
+		static void initialize_pools();
+		static void release_pools();
 
 	};
 

@@ -19,6 +19,9 @@ option(NRHI_DRIVER_VULKAN "If checked, NRHI will use Vulkan driver" OFF)
 option(NRHI_DRIVER_METAL "If checked, NRHI will use Metal driver" OFF)
 option(NRHI_DRIVER_OPENGL "If checked, NRHI will use OpenGL driver" OFF)
 
+# NRHI threading options
+option(NRHI_THREAD_SAFE "If checked, NRHI will use locks when creating and releasing objects" OFF)
+
 # Compute driver count
 set(NRHI_DRIVER_COUNT 0)
 if(NRHI_DRIVER_DIRECTX_12)
