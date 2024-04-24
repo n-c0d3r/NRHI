@@ -1,16 +1,16 @@
-#include <nrhi/directx11/graphics_pipeline.hpp>
+#include <nrhi/directx11/graphics_pipeline_state.hpp>
 #include <nrhi/directx11/shader.hpp>
 #include <nrhi/directx11/shader_blob.hpp>
 #include <nrhi/shader_type.hpp>
 
 namespace nrhi {
 
-	F_directx11_graphics_pipeline::F_directx11_graphics_pipeline(
+	F_directx11_graphics_pipeline_state::F_directx11_graphics_pipeline_state(
 		TK_valid<A_device> device_p,
-		const F_pipeline_desc& desc,
-		E_pipeline_type overrided_type
+		const F_pipeline_state_desc& desc,
+		E_pipeline_state_type overrided_type
 	) :
-		F_directx11_pipeline(device_p, desc, overrided_type)
+		F_directx11_pipeline_state(device_p, desc, overrided_type)
 	{
 		for(auto shader_p : desc.shader_p_vector) {
 
@@ -30,7 +30,7 @@ namespace nrhi {
 
 		NCPP_ASSERT(d3d11_vertex_shader_p_) << "vertex shader is required";
 	}
-	F_directx11_graphics_pipeline::~F_directx11_graphics_pipeline(){
+	F_directx11_graphics_pipeline_state::~F_directx11_graphics_pipeline_state(){
 
 	}
 

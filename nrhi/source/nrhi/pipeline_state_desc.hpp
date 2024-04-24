@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/directx11/compute_pipeline.hpp
+/** @file nrhi/pipeline_state_desc.hpp
 *
-*   Implement directx11 compute pipeline.
+*   Implement pipeline_state desc.
 */
 
 
@@ -33,7 +33,11 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/directx11/pipeline.hpp>
+#include <nrhi/pipeline_state_type.hpp>
+#include <nrhi/format.hpp>
+#include <nrhi/frame_buffer_desc.hpp>
+#include <nrhi/cull_mode.hpp>
+#include <nrhi/fill_mode.hpp>
 
 #pragma endregion
 
@@ -42,18 +46,55 @@
 namespace nrhi {
 
 	class A_device;
+	class A_pipeline_state;
+	class A_frame_buffer;
+	class A_shader;
 
 
 
-	class NRHI_API F_directx11_compute_pipeline : public F_directx11_pipeline {
+	struct F_input_layout_element_desc {
 
-	public:
-		F_directx11_compute_pipeline(
-			TK_valid<A_device> device_p,
-			const F_pipeline_desc& desc,
-			E_pipeline_type overrided_type
-		);
-		virtual ~F_directx11_compute_pipeline();
+	};
+
+	struct F_input_layout_desc {
+
+		TG_vector<F_input_layout_element_desc> element_desc_vector;
+
+	};
+
+	struct F_rasterizer_desc {
+
+		E_cull_mode cull_mode = E_cull_mode::NONE;
+		E_fill_mode fill_mode = E_fill_mode::SOLID;
+
+	};
+
+	struct F_depth_stencil_desc {
+
+		b8 enable_depth_test = true;
+		E_format format = E_format::D32_FLOAT;
+		b8 depth_buffer_write = true;
+
+	};
+
+	struct F_pipeline_state_desc {
+
+		E_pipeline_state_type type = E_pipeline_state_type::NONE;
+
+		TG_vector<E_format> color_format_vector;
+		F_depth_stencil_desc depth_stencil_desc;
+
+		F_input_layout_desc input_layout_desc;
+
+		F_rasterizer_desc rasterizer_desc;
+
+		TG_vector<TK_valid<A_shader>> shader_p_vector;
+
+	};
+
+	class NRHI_API H_pipeline_state_desc {
+
+
 
 	};
 

@@ -34,6 +34,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/format.hpp>
+#include <nrhi/resource_view_base.hpp>
 
 #pragma endregion
 
@@ -45,17 +46,9 @@ namespace nrhi {
 
 
 
-	struct F_color_attachment_desc {
-
-		E_format format = E_format::R8G8B8A8_UNORM;
-
-	};
-
 	struct F_frame_buffer_desc {
 
-		TG_vector<F_color_attachment_desc> color_attachment_descs;
-
-		E_format depth_stencil_format = E_format::NONE;
+		TG_vector<K_valid_rtv_handle> color_attachment_vector;
 
 	};
 

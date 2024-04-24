@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/compute_pipeline.hpp
+/** @file nrhi/pipeline_state_base.hpp
 *
-*   Implement compute pipeline.
+*   Implement pipeline_state base class.
 */
 
 
@@ -33,7 +33,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/pipeline_base.hpp>
+#include <nrhi/pipeline_state_desc.hpp>
+#include <nrhi/pipeline_state_type.hpp>
 
 #pragma endregion
 
@@ -41,18 +42,33 @@
 
 namespace nrhi {
 
-	NCPP_FHANDLE_TEMPLATE(A_pipeline)
-	struct TF_compute_pipeline_handle {
+	class A_device;
+	class A_pipeline_state;
 
-		NCPP_FHANDLE_GENERATED_BODY(TF_compute_pipeline_handle, A_pipeline);
+
+
+	class NRHI_API A_pipeline_state {
+
+	private:
+		TK_valid<A_device> device_p_;
+		F_pipeline_state_desc desc_;
+
+	public:
+		NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
+		NCPP_FORCE_INLINE const F_pipeline_state_desc& desc() const noexcept { return desc_; }
+
+
+
+	protected:
+		A_pipeline_state(
+			TK_valid<A_device> device_p,
+			const F_pipeline_state_desc& desc,
+			E_pipeline_state_type overrided_type
+		);
+
+	public:
+		virtual ~A_pipeline_state();
 
 	};
-
-	using U_compute_pipeline_handle = TF_compute_pipeline_handle<TU<A_pipeline>>;
-	using S_compute_pipeline_handle = TF_compute_pipeline_handle<TS<A_pipeline>>;
-	using K_compute_pipeline_handle = TF_compute_pipeline_handle<TK<A_pipeline>>;
-
-	using S_valid_compute_pipeline_handle = TF_compute_pipeline_handle<TS_valid<A_pipeline>>;
-	using K_valid_compute_pipeline_handle = TF_compute_pipeline_handle<TK_valid<A_pipeline>>;
 
 }

@@ -77,8 +77,10 @@ namespace nrhi {
             NRHI_ENUM_TRY_UPDATE_MAP(E_resource_type);
             NRHI_ENUM_TRY_UPDATE_MAP(E_resource_heap_type);
             NRHI_ENUM_TRY_UPDATE_MAP(E_resource_view_type);
-            NRHI_ENUM_TRY_UPDATE_MAP(E_pipeline_type);
+            NRHI_ENUM_TRY_UPDATE_MAP(E_pipeline_state_type);
             NRHI_ENUM_TRY_UPDATE_MAP(E_shader_type);
+            NRHI_ENUM_TRY_UPDATE_MAP(E_cull_mode);
+            NRHI_ENUM_TRY_UPDATE_MAP(E_fill_mode);
 
         }
         void try_update_map_functions(){
@@ -97,7 +99,7 @@ namespace nrhi {
             NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_shader_class);
             NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_shader);
             NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_shader_blob);
-            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_pipeline);
+            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_pipeline_state);
 
         }
         void try_update_map(){

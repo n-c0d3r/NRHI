@@ -186,17 +186,30 @@ int main() {
 		}
 	);
 
-	// create graphics pipeline
-	auto graphics_pipeline = H_graphics_pipeline::create(
+	// create frame buffer
+	auto frame_buffer_desc = F_frame_buffer_desc {
+		.color_attachment_vector = {
+			swapchain_p->back_rtv_p()
+		}
+	};
+	auto frame_buffer_p = H_frame_buffer::create(
+		NCPP_FOREF_VALID(device_p),
+		frame_buffer_desc
+	);
+
+	// create graphics pipeline state
+	auto graphics_pipeline_state_p = H_graphics_pipeline_state::create(
 		NCPP_FOREF_VALID(device_p),
 		{
-			.frame_buffer_desc = {
-				.color_attachment_descs = {
-					F_color_attachment_desc {
-						.format = E_format::R8G8B8A8_UNORM
-					}
-				},
-				.depth_stencil_format = E_format::D32_FLOAT
+			.color_format_vector = {
+				swapchain_p->back_rtv_p()->desc().resource_p->desc().format
+			},
+			.depth_stencil_desc = {
+				.format = E_format::D32_FLOAT
+			},
+			.rasterizer_desc = {
+				.cull_mode = E_cull_mode::NONE,
+				.fill_mode = E_fill_mode::SOLID
 			},
 			.shader_p_vector = {
 				NCPP_FHANDLE_VALID_AS_OREF(vshader_p),

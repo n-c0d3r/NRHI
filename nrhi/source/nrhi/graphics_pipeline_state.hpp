@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/pipeline_base.hpp
+/** @file nrhi/graphics_pipeline_state.hpp
 *
-*   Implement pipeline base class.
+*   Implement graphics pipeline_state.
 */
 
 
@@ -33,8 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/pipeline_desc.hpp>
-#include <nrhi/pipeline_type.hpp>
+#include <nrhi/pipeline_state_base.hpp>
 
 #pragma endregion
 
@@ -42,32 +41,29 @@
 
 namespace nrhi {
 
-	class A_device;
-	class A_pipeline;
+	NCPP_FHANDLE_TEMPLATE(A_pipeline_state)
+	struct TF_graphics_pipeline_state_handle {
+
+		NCPP_FHANDLE_GENERATED_BODY(TF_graphics_pipeline_state_handle, A_pipeline_state);
+
+	};
+
+	using U_graphics_pipeline_state_handle = TF_graphics_pipeline_state_handle<TU<A_pipeline_state>>;
+	using S_graphics_pipeline_state_handle = TF_graphics_pipeline_state_handle<TS<A_pipeline_state>>;
+	using K_graphics_pipeline_state_handle = TF_graphics_pipeline_state_handle<TK<A_pipeline_state>>;
+
+	using S_valid_graphics_pipeline_state_handle = TF_graphics_pipeline_state_handle<TS_valid<A_pipeline_state>>;
+	using K_valid_graphics_pipeline_state_handle = TF_graphics_pipeline_state_handle<TK_valid<A_pipeline_state>>;
 
 
 
-	class NRHI_API A_pipeline {
-
-	private:
-		TK_valid<A_device> device_p_;
-		F_pipeline_desc desc_;
+	class NRHI_API H_graphics_pipeline_state {
 
 	public:
-		NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
-		NCPP_FORCE_INLINE const F_pipeline_desc& desc() const noexcept { return desc_; }
-
-
-
-	protected:
-		A_pipeline(
+		static U_graphics_pipeline_state_handle create(
 			TK_valid<A_device> device_p,
-			const F_pipeline_desc& desc,
-			E_pipeline_type overrided_type
+			const F_pipeline_state_desc& desc
 		);
-
-	public:
-		virtual ~A_pipeline();
 
 	};
 

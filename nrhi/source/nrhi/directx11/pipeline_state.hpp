@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/pipeline_desc.hpp
+/** @file nrhi/directx11/pipeline_state.hpp
 *
-*   Implement pipeline desc.
+*   Implement directx11 pipeline_state.
 */
 
 
@@ -33,9 +33,9 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/pipeline_type.hpp>
-#include <nrhi/format.hpp>
-#include <nrhi/frame_buffer_desc.hpp>
+#include <nrhi/pipeline_state_base.hpp>
+#include <nrhi/graphics_pipeline_state.hpp>
+#include <nrhi/compute_pipeline_state.hpp>
 
 #pragma endregion
 
@@ -44,36 +44,36 @@
 namespace nrhi {
 
 	class A_device;
-	class A_pipeline;
-	class A_frame_buffer;
-	class A_shader;
 
 
 
-	struct F_input_layout_element_desc {
+	class NRHI_API F_directx11_pipeline_state : public A_pipeline_state {
 
-	};
-
-	struct F_input_layout_desc {
-
-		TG_vector<F_input_layout_element_desc> element_descs;
-
-	};
-
-	struct F_pipeline_desc {
-
-		E_pipeline_type type = E_pipeline_type::NONE;
-
-		F_frame_buffer_desc frame_buffer_desc;
-		F_input_layout_desc input_layout_desc;
-
-		TG_vector<TK_valid<A_shader>> shader_p_vector;
+	public:
+		F_directx11_pipeline_state(
+			TK_valid<A_device> device_p,
+			const F_pipeline_state_desc& desc,
+			E_pipeline_state_type overrided_type
+		);
+		virtual ~F_directx11_pipeline_state();
 
 	};
 
-	class NRHI_API H_pipeline_desc {
 
 
+	class NRHI_API HD_directx11_pipeline_state {
+
+	public:
+		static TU<A_pipeline_state> create(
+			TK_valid<A_device> device_p,
+			const F_pipeline_state_desc& desc
+		);
+
+	public:
+		static U_graphics_pipeline_state_handle create_graphics_pipeline_state(
+			TK_valid<A_device> device_p,
+			const F_pipeline_state_desc& desc
+		);
 
 	};
 

@@ -59,14 +59,16 @@ namespace nrhi { }
 #include <nrhi/resource_type.hpp>
 #include <nrhi/resource_heap_type.hpp>
 #include <nrhi/resource_view_type.hpp>
-#include <nrhi/pipeline_type.hpp>
+#include <nrhi/pipeline_state_type.hpp>
 #include <nrhi/shader_type.hpp>
+#include <nrhi/cull_mode.hpp>
+#include <nrhi/fill_mode.hpp>
 #include <nrhi/descriptor_base.hpp>
 #include <nrhi/root_signature_base.hpp>
 #include <nrhi/resource_base.hpp>
 #include <nrhi/resource_desc.hpp>
 #include <nrhi/resource_view_desc.hpp>
-#include <nrhi/pipeline_desc.hpp>
+#include <nrhi/pipeline_state_desc.hpp>
 #include <nrhi/shader_desc.hpp>
 #include <nrhi/frame_buffer_desc.hpp>
 #include <nrhi/driver.hpp>
@@ -86,9 +88,9 @@ namespace nrhi { }
 #include <nrhi/shader_class.hpp>
 #include <nrhi/shader_blob.hpp>
 #include <nrhi/shader_factory.hpp>
-#include <nrhi/pipeline.hpp>
-#include <nrhi/compute_pipeline.hpp>
-#include <nrhi/graphics_pipeline.hpp>
+#include <nrhi/pipeline_state.hpp>
+#include <nrhi/compute_pipeline_state.hpp>
+#include <nrhi/graphics_pipeline_state.hpp>
 #include <nrhi/frame_buffer.hpp>
 
 #ifdef NRHI_DRIVER_DIRECTX_11
@@ -96,8 +98,8 @@ namespace nrhi { }
 #include <nrhi/directx11/texture.hpp>
 #include <nrhi/directx11/shader_resource_view.hpp>
 #include <nrhi/directx11/render_target_view.hpp>
-#include <nrhi/directx11/graphics_pipeline.hpp>
-#include <nrhi/directx11/compute_pipeline.hpp>
+#include <nrhi/directx11/graphics_pipeline_state.hpp>
+#include <nrhi/directx11/compute_pipeline_state.hpp>
 #endif
 
 #pragma endregion

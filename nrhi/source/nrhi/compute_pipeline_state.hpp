@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/directx11/pipeline.hpp
+/** @file nrhi/compute_pipeline_state.hpp
 *
-*   Implement directx11 pipeline.
+*   Implement compute pipeline_state.
 */
 
 
@@ -33,9 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/pipeline_base.hpp>
-#include <nrhi/graphics_pipeline.hpp>
-#include <nrhi/compute_pipeline.hpp>
+#include <nrhi/pipeline_state_base.hpp>
 
 #pragma endregion
 
@@ -43,38 +41,18 @@
 
 namespace nrhi {
 
-	class A_device;
+	NCPP_FHANDLE_TEMPLATE(A_pipeline_state)
+	struct TF_compute_pipeline_state_handle {
 
-
-
-	class NRHI_API F_directx11_pipeline : public A_pipeline {
-
-	public:
-		F_directx11_pipeline(
-			TK_valid<A_device> device_p,
-			const F_pipeline_desc& desc,
-			E_pipeline_type overrided_type
-		);
-		virtual ~F_directx11_pipeline();
+		NCPP_FHANDLE_GENERATED_BODY(TF_compute_pipeline_state_handle, A_pipeline_state);
 
 	};
 
+	using U_compute_pipeline_state_handle = TF_compute_pipeline_state_handle<TU<A_pipeline_state>>;
+	using S_compute_pipeline_state_handle = TF_compute_pipeline_state_handle<TS<A_pipeline_state>>;
+	using K_compute_pipeline_state_handle = TF_compute_pipeline_state_handle<TK<A_pipeline_state>>;
 
-
-	class NRHI_API HD_directx11_pipeline {
-
-	public:
-		static TU<A_pipeline> create(
-			TK_valid<A_device> device_p,
-			const F_pipeline_desc& desc
-		);
-
-	public:
-		static U_graphics_pipeline_handle create_graphics_pipeline(
-			TK_valid<A_device> device_p,
-			const F_pipeline_desc& desc
-		);
-
-	};
+	using S_valid_compute_pipeline_state_handle = TF_compute_pipeline_state_handle<TS_valid<A_pipeline_state>>;
+	using K_valid_compute_pipeline_state_handle = TF_compute_pipeline_state_handle<TK_valid<A_pipeline_state>>;
 
 }

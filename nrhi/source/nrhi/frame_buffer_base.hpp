@@ -34,6 +34,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/frame_buffer_desc.hpp>
+#include <nrhi/texture.hpp>
+#include <nrhi/resource_view_base.hpp>
 
 #pragma endregion
 
@@ -42,6 +44,7 @@
 namespace nrhi {
 
 	class A_device;
+	class A_frame_buffer;
 
 
 

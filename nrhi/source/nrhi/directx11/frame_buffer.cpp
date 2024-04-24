@@ -17,7 +17,7 @@ namespace nrhi {
 
 
 
-	TU<A_frame_buffer> H_frame_buffer::create(
+	TU<A_frame_buffer> HD_directx11_frame_buffer::create(
 		TK_valid<A_device> device_p,
 		const F_frame_buffer_desc& desc
 	) {

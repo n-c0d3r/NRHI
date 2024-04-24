@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/directx11/graphics_pipeline.hpp
+/** @file nrhi/directx11/graphics_pipeline_state.hpp
 *
-*   Implement directx11 graphics pipeline.
+*   Implement directx11 graphics pipeline_state.
 */
 
 
@@ -33,7 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/directx11/pipeline.hpp>
+#include <nrhi/directx11/pipeline_state.hpp>
 
 #pragma endregion
 
@@ -45,7 +45,7 @@ namespace nrhi {
 
 
 
-	class NRHI_API F_directx11_graphics_pipeline : public F_directx11_pipeline {
+	class NRHI_API F_directx11_graphics_pipeline_state : public F_directx11_pipeline_state {
 
 	private:
 		ID3D11VertexShader* d3d11_vertex_shader_p_ = 0;
@@ -58,12 +58,12 @@ namespace nrhi {
 
 
 	public:
-		F_directx11_graphics_pipeline(
+		F_directx11_graphics_pipeline_state(
 			TK_valid<A_device> device_p,
-			const F_pipeline_desc& desc,
-			E_pipeline_type overrided_type = E_pipeline_type::GRAPHICS
+			const F_pipeline_state_desc& desc,
+			E_pipeline_state_type overrided_type = E_pipeline_state_type::GRAPHICS
 		);
-		virtual ~F_directx11_graphics_pipeline();
+		virtual ~F_directx11_graphics_pipeline_state();
 
 	};
 
