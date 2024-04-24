@@ -23,6 +23,14 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "namespace nrhi {
         }"
     VALUES
+        "create" "TU<A_pipeline>(
+            TK_valid<A_device> device_p,
+            const F_pipeline_desc& desc
+        )"
+        "create_graphics_pipeline" "U_graphics_pipeline_handle(
+            TK_valid<A_device> device_p,
+            const F_pipeline_desc& desc
+        )"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX11> Implement pipeline done")

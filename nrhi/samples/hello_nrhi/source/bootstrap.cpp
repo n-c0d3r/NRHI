@@ -144,6 +144,8 @@ int main() {
 		"DemoShaderClass",
 		// shader class source content
 		"float4 vmain(float4 pos : POSITION) : SV_POSITION"
+		"{ return float4(1,1,1,1); }"
+		"float4 pmain(float4 pos : SV_POSITION) : SV_TARGET"
 		"{ return float4(1,1,1,1); }",
 		// shader kernel descriptors (each kernel has 1 entry point function and is compiled to 1 shader blob)
 		NCPP_INIL_SPAN(
@@ -151,6 +153,12 @@ int main() {
 				.blob_desc = {
 					.name = "vmain",
 					.type = E_shader_type::VERTEX
+				}
+			},
+			F_shader_kernel_desc {
+				.blob_desc = {
+					.name = "pmain",
+					.type = E_shader_type::PIXEL
 				}
 			}
 		)
@@ -164,6 +172,36 @@ int main() {
 		NCPP_FOREF_VALID(device_p),
 		{
 			.blob_p = NCPP_FOREF_VALID(vshader_blob_p)
+		}
+	);
+
+	// get pixel shader blob (the object storing compiled shader binary from hlsl)
+	auto pshader_blob_p = shader_class_p->shader_blob_p("pmain");
+
+	// create pixel shader from pixel shader blob
+	auto pshader_p = H_pixel_shader::create(
+		NCPP_FOREF_VALID(device_p),
+		{
+			.blob_p = NCPP_FOREF_VALID(pshader_blob_p)
+		}
+	);
+
+	// create graphics pipeline
+	auto graphics_pipeline = H_graphics_pipeline::create(
+		NCPP_FOREF_VALID(device_p),
+		{
+			.frame_buffer_desc = {
+				.color_attachment_descs = {
+					F_color_attachment_desc {
+						.format = E_format::R8G8B8A8_UNORM
+					}
+				},
+				.depth_stencil_format = E_format::D32_FLOAT
+			},
+			.shader_p_vector = {
+				NCPP_FHANDLE_VALID_AS_OREF(vshader_p),
+				NCPP_FHANDLE_VALID_AS_OREF(pshader_p)
+			}
 		}
 	);
 

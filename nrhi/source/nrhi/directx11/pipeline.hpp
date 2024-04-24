@@ -34,6 +34,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/pipeline_base.hpp>
+#include <nrhi/graphics_pipeline.hpp>
+#include <nrhi/compute_pipeline.hpp>
 
 #pragma endregion
 
@@ -60,6 +62,18 @@ namespace nrhi {
 
 
 	class NRHI_API HD_directx11_pipeline {
+
+	public:
+		static TU<A_pipeline> create(
+			TK_valid<A_device> device_p,
+			const F_pipeline_desc& desc
+		);
+
+	public:
+		static U_graphics_pipeline_handle create_graphics_pipeline(
+			TK_valid<A_device> device_p,
+			const F_pipeline_desc& desc
+		);
 
 	};
 

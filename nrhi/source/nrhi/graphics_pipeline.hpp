@@ -55,4 +55,16 @@ namespace nrhi {
 	using S_valid_graphics_pipeline_handle = TF_graphics_pipeline_handle<TS_valid<A_pipeline>>;
 	using K_valid_graphics_pipeline_handle = TF_graphics_pipeline_handle<TK_valid<A_pipeline>>;
 
+
+
+	class NRHI_API H_graphics_pipeline {
+
+	public:
+		static U_graphics_pipeline_handle create(
+			TK_valid<A_device> device_p,
+			const F_pipeline_desc& desc
+		);
+
+	};
+
 }

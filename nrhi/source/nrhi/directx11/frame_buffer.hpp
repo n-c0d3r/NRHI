@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/frame_buffer_desc.hpp
+/** @file nrhi/directx11/frame_buffer.hpp
 *
-*   Implement frame buffer desc.
+*   Implement directx11 frame_buffer.
 */
 
 
@@ -33,7 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/format.hpp>
+#include <nrhi/frame_buffer_base.hpp>
 
 #pragma endregion
 
@@ -45,17 +45,26 @@ namespace nrhi {
 
 
 
-	struct F_color_attachment_desc {
+	class NRHI_API F_directx11_frame_buffer : public A_frame_buffer {
 
-		E_format format = E_format::R8G8B8A8_UNORM;
+	public:
+		F_directx11_frame_buffer(
+			TK_valid<A_device> device_p,
+			const F_frame_buffer_desc& desc
+		);
+		virtual ~F_directx11_frame_buffer();
 
 	};
 
-	struct F_frame_buffer_desc {
 
-		TG_vector<F_color_attachment_desc> color_attachment_descs;
 
-		E_format depth_stencil_format = E_format::NONE;
+	class NRHI_API HD_directx11_frame_buffer {
+
+	public:
+		static TU<A_frame_buffer> create(
+			TK_valid<A_device> device_p,
+			const F_frame_buffer_desc& desc
+		);
 
 	};
 

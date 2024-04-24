@@ -47,11 +47,21 @@ namespace nrhi {
 
 	class NRHI_API F_directx11_graphics_pipeline : public F_directx11_pipeline {
 
+	private:
+		ID3D11VertexShader* d3d11_vertex_shader_p_ = 0;
+		ID3D11PixelShader* d3d11_pixel_shader_p_ = 0;
+
+	public:
+		NCPP_FORCE_INLINE ID3D11VertexShader* d3d11_vertex_shader_p() noexcept { return d3d11_vertex_shader_p_; }
+		NCPP_FORCE_INLINE ID3D11PixelShader* d3d11_pixel_shader_p() noexcept { return d3d11_pixel_shader_p_; }
+
+
+
 	public:
 		F_directx11_graphics_pipeline(
 			TK_valid<A_device> device_p,
 			const F_pipeline_desc& desc,
-			E_pipeline_type overrided_type
+			E_pipeline_type overrided_type = E_pipeline_type::GRAPHICS
 		);
 		virtual ~F_directx11_graphics_pipeline();
 
