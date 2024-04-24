@@ -202,7 +202,7 @@ int main() {
 		NCPP_FOREF_VALID(device_p),
 		{
 			.color_format_vector = {
-				swapchain_p->back_rtv_p()->desc().resource_p->desc().format
+				E_format::R8G8B8A8_UNORM
 			},
 			.depth_stencil_desc = {
 				.format = E_format::D32_FLOAT
