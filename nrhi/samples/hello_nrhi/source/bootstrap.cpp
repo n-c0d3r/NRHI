@@ -227,6 +227,12 @@ int main() {
 				NCPP_FHANDLE_VALID(graphics_pipeline_state_p)
 			);
 
+			command_queue_p->execute_command_lists(
+				NCPP_INIL_SPAN(
+					NCPP_FOREF_VALID(command_list_p)
+				)
+			);
+
 			swapchain_p->present();
 		}
 	});
