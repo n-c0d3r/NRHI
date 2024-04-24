@@ -219,8 +219,17 @@ int main() {
 	);
 
     // run app
-    surface_manager.T_run([](F_surface_manager& surface_manager){
-    });
+    surface_manager.T_run([&](F_surface_manager& surface_manager){
+
+		if(swapchain_p.is_valid()) {
+
+			command_list_p->set_graphics_pipeline_state(
+				NCPP_FHANDLE_VALID(graphics_pipeline_state_p)
+			);
+
+			swapchain_p->present();
+		}
+	});
 
 	return 0;
 }

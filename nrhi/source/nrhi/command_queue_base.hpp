@@ -42,6 +42,7 @@
 namespace nrhi {
 
     class A_device;
+    class A_command_list;
 
 
 
@@ -70,6 +71,11 @@ namespace nrhi {
 
     public:
         virtual ~A_command_queue();
+
+
+
+	public:
+		void execute_command_lists(TG_span<TK_valid<A_command_list>> command_list_p_span);
 
     };
 

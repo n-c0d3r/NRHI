@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/directx11/swapchain.hpp
+/** @file nrhi/graphics_pipeline_state_handle.hpp
 *
-*   Implement directx11 swapchain.
+*   Implement graphics pipeline state handle.
 */
 
 
@@ -29,65 +29,28 @@
 
 #include <nrhi/prerequisites.hpp>
 
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-
-#include <nrhi/swapchain_base.hpp>
-#include <nrhi/texture.hpp>
-#include <nrhi/resource_view_base.hpp>
-
 #pragma endregion
 
 
 
 namespace nrhi {
 
-    class A_command_queue;
-    class A_command_list;
-    class A_resource;
-    class A_resource_view;
+	class A_pipeline_state;
 
 
 
-    class NRHI_API F_directx11_swapchain : public A_swapchain {
+	NCPP_FHANDLE_TEMPLATE(A_pipeline_state)
+	struct TF_graphics_pipeline_state_handle {
 
-    private:
-        IDXGISwapChain* dxgi_swapchain_p_ = 0;
-        typename F_event::F_listener_handle surface_resize_handle_;
-
-    public:
-        NCPP_FORCE_INLINE IDXGISwapChain* dxgi_swapchain_p() noexcept { return dxgi_swapchain_p_; }
-
-
-
-    public:
-        F_directx11_swapchain(
-            TK_valid<A_command_queue> command_queue_p,
-            TK_valid<A_surface> surface_p,
-            const F_swapchain_desc& desc
-        );
-        ~F_directx11_swapchain();
-
-    private:
-        void update_d3d11_object_for_back_rtv();
-
-    };
-
-
-
-    class NRHI_API HD_directx11_swapchain {
-
-    public:
-        static TU<A_swapchain> create(
-            TK_valid<A_command_queue> command_queue_p,
-            TK_valid<A_surface> surface_p,
-            const F_swapchain_desc& desc
-        );
-
-	public:
-		static void present(TK_valid<A_swapchain>);
+		NCPP_FHANDLE_GENERATED_BODY(TF_graphics_pipeline_state_handle, A_pipeline_state);
 
 	};
+
+	using U_graphics_pipeline_state_handle = TF_graphics_pipeline_state_handle<TU<A_pipeline_state>>;
+	using S_graphics_pipeline_state_handle = TF_graphics_pipeline_state_handle<TS<A_pipeline_state>>;
+	using K_graphics_pipeline_state_handle = TF_graphics_pipeline_state_handle<TK<A_pipeline_state>>;
+
+	using S_valid_graphics_pipeline_state_handle = TF_graphics_pipeline_state_handle<TS_valid<A_pipeline_state>>;
+	using K_valid_graphics_pipeline_state_handle = TF_graphics_pipeline_state_handle<TK_valid<A_pipeline_state>>;
 
 }

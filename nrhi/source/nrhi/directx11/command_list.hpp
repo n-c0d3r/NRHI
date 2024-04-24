@@ -34,6 +34,9 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/command_list_base.hpp>
+#include <nrhi/pipeline_state_base.hpp>
+#include <nrhi/graphics_pipeline_state.hpp>
+#include <nrhi/compute_pipeline_state.hpp>
 
 #pragma endregion
 
@@ -42,6 +45,8 @@
 namespace nrhi {
 
     class A_device;
+    class A_pipeline_state;
+    class A_frame_buffer;
 
 
 
@@ -67,6 +72,25 @@ namespace nrhi {
 
     public:
         static TU<A_command_list> create(TK_valid<A_device> device_p, const F_command_list_desc& desc);
+
+	public:
+		static void set_frame_buffer(
+			TK_valid<A_command_list> command_list_p,
+			TK_valid<A_frame_buffer> frame_buffer_p
+		);
+		static void set_graphics_pipeline_state(
+			TK_valid<A_command_list> command_list_p,
+			K_valid_graphics_pipeline_state_handle graphics_pipeline_state_p
+		);
+		static void set_compute_pipeline_state(
+			TK_valid<A_command_list> command_list_p,
+			K_valid_compute_pipeline_state_handle compute_pipeline_state_p
+		);
+		static void draw_indexed(
+			TK_valid<A_command_list> command_list_p,
+			u32 index_count,
+			u32 base_index_location
+		);
 
     };
 

@@ -34,6 +34,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/command_list_type.hpp>
+#include <nrhi/graphics_pipeline_state_handle.hpp>
+#include <nrhi/compute_pipeline_state_handle.hpp>
 
 #pragma endregion
 
@@ -42,6 +44,7 @@
 namespace nrhi {
 
     class A_device;
+    class A_frame_buffer;
 
 
 
@@ -70,6 +73,14 @@ namespace nrhi {
 
     public:
         virtual ~A_command_list();
+
+
+
+	public:
+		void set_frame_buffer(TK_valid<A_frame_buffer> frame_buffer_p);
+		void set_graphics_pipeline_state(K_valid_graphics_pipeline_state_handle graphics_pipeline_state_p);
+		void set_compute_pipeline_state(K_valid_compute_pipeline_state_handle compute_pipeline_state_p);
+		void draw_indexed(u32 index_count, u32 base_index_location);
 
     };
 

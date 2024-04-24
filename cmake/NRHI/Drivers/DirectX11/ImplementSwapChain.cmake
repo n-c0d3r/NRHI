@@ -29,6 +29,7 @@ NRHI_FunctionHelper_CreateFunctionClass(
             TK_valid<A_surface> surface_p,
             const F_swapchain_desc& desc
         )"
+        "present" "void(TK_valid<A_swapchain> swapchain_p)"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX11> Implement swapchain done")

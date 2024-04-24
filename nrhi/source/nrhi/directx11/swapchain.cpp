@@ -160,4 +160,9 @@ namespace nrhi {
         );
     }
 
+	void HD_directx11_swapchain::present(TK_valid<A_swapchain> swapchain_p){
+
+		swapchain_p.T_cast<F_directx11_swapchain>()->dxgi_swapchain_p()->Present(0, 0);
+	}
+
 }

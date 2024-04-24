@@ -34,6 +34,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/resource_desc.hpp>
+#include <nrhi/texture_handle.hpp>
 
 #pragma endregion
 
@@ -43,54 +44,6 @@ namespace nrhi {
 
     class A_device;
     class A_resource;
-
-
-
-    NCPP_FHANDLE_TEMPLATE(A_resource)
-    struct TF_texture_1d_handle {
-
-        NCPP_FHANDLE_GENERATED_BODY(TF_texture_1d_handle, A_resource);
-
-    };
-
-    using U_texture_1d_handle = TF_texture_1d_handle<TU<A_resource>>;
-    using S_texture_1d_handle = TF_texture_1d_handle<TS<A_resource>>;
-    using K_texture_1d_handle = TF_texture_1d_handle<TK<A_resource>>;
-
-    using S_valid_texture_1d_handle = TF_texture_1d_handle<TS_valid<A_resource>>;
-    using K_valid_texture_1d_handle = TF_texture_1d_handle<TK_valid<A_resource>>;
-
-
-
-    NCPP_FHANDLE_TEMPLATE(A_resource)
-    struct TF_texture_2d_handle {
-
-        NCPP_FHANDLE_GENERATED_BODY(TF_texture_2d_handle, A_resource);
-
-    };
-
-    using U_texture_2d_handle = TF_texture_2d_handle<TU<A_resource>>;
-    using S_texture_2d_handle = TF_texture_2d_handle<TS<A_resource>>;
-    using K_texture_2d_handle = TF_texture_2d_handle<TK<A_resource>>;
-
-    using S_valid_texture_2d_handle = TF_texture_2d_handle<TS_valid<A_resource>>;
-    using K_valid_texture_2d_handle = TF_texture_2d_handle<TK_valid<A_resource>>;
-
-
-
-    NCPP_FHANDLE_TEMPLATE(A_resource)
-    struct TF_texture_3d_handle {
-
-        NCPP_FHANDLE_GENERATED_BODY(TF_texture_3d_handle, A_resource);
-
-    };
-
-    using U_texture_3d_handle = TF_texture_3d_handle<TU<A_resource>>;
-    using S_texture_3d_handle = TF_texture_3d_handle<TS<A_resource>>;
-    using K_texture_3d_handle = TF_texture_3d_handle<TK<A_resource>>;
-
-    using S_valid_texture_3d_handle = TF_texture_3d_handle<TS_valid<A_resource>>;
-    using K_valid_texture_3d_handle = TF_texture_3d_handle<TK_valid<A_resource>>;
 
 
 

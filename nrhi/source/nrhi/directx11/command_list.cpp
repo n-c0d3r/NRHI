@@ -1,5 +1,7 @@
 #include <nrhi/directx11/command_list.hpp>
 #include <nrhi/directx11/device.hpp>
+#include <nrhi/directx11/frame_buffer.hpp>
+#include <nrhi/directx11/pipeline_state.hpp>
 
 
 
@@ -31,5 +33,31 @@ namespace nrhi {
 
         return TU<F_directx11_command_list>()(device_p, desc);
     }
+
+	void HD_directx11_command_list::set_frame_buffer(
+		TK_valid<A_command_list> command_list_p,
+		TK_valid<A_frame_buffer> frame_buffer_p
+	) {
+
+	}
+	void HD_directx11_command_list::set_graphics_pipeline_state(
+		TK_valid<A_command_list> command_list_p,
+		K_valid_graphics_pipeline_state_handle graphics_pipeline_state_p
+	) {
+
+	}
+	void HD_directx11_command_list::set_compute_pipeline_state(
+		TK_valid<A_command_list> command_list_p,
+		K_valid_compute_pipeline_state_handle compute_pipeline_state_p
+	) {
+
+	}
+	void HD_directx11_command_list::draw_indexed(
+		TK_valid<A_command_list> command_list_p,
+		u32 index_count,
+		u32 base_index_location
+	) {
+
+	}
 
 }

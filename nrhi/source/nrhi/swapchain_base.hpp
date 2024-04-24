@@ -87,6 +87,11 @@ namespace nrhi {
     public:
         virtual ~A_swapchain();
 
+
+
+	public:
+		void present();
+
     };
 
 }

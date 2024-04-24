@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/directx11/swapchain.hpp
+/** @file nrhi/command_queue.external_use_only.inl
 *
-*   Implement directx11 swapchain.
+*   Implement command queue inline functions that is only used by external.
 */
 
 
@@ -33,9 +33,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/swapchain_base.hpp>
-#include <nrhi/texture.hpp>
-#include <nrhi/resource_view_base.hpp>
+#include <nrhi/command_queue_base.hpp>
+#include <nrhi/command_queue.hpp>
 
 #pragma endregion
 
@@ -43,51 +42,8 @@
 
 namespace nrhi {
 
-    class A_command_queue;
-    class A_command_list;
-    class A_resource;
-    class A_resource_view;
+	NCPP_FORCE_INLINE void A_command_queue::execute_command_lists(TG_span<TK_valid<A_command_list>> command_list_p_span) {
 
-
-
-    class NRHI_API F_directx11_swapchain : public A_swapchain {
-
-    private:
-        IDXGISwapChain* dxgi_swapchain_p_ = 0;
-        typename F_event::F_listener_handle surface_resize_handle_;
-
-    public:
-        NCPP_FORCE_INLINE IDXGISwapChain* dxgi_swapchain_p() noexcept { return dxgi_swapchain_p_; }
-
-
-
-    public:
-        F_directx11_swapchain(
-            TK_valid<A_command_queue> command_queue_p,
-            TK_valid<A_surface> surface_p,
-            const F_swapchain_desc& desc
-        );
-        ~F_directx11_swapchain();
-
-    private:
-        void update_d3d11_object_for_back_rtv();
-
-    };
-
-
-
-    class NRHI_API HD_directx11_swapchain {
-
-    public:
-        static TU<A_swapchain> create(
-            TK_valid<A_command_queue> command_queue_p,
-            TK_valid<A_surface> surface_p,
-            const F_swapchain_desc& desc
-        );
-
-	public:
-		static void present(TK_valid<A_swapchain>);
-
-	};
-
+		H_command_queue::execute_command_lists(NCPP_KTHIS(), command_list_p_span);
+	}
 }
