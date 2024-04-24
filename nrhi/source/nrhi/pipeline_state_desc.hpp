@@ -68,6 +68,8 @@ namespace nrhi {
 		E_cull_mode cull_mode = E_cull_mode::BACK;
 		E_fill_mode fill_mode = E_fill_mode::SOLID;
 
+		b8 font_counter_clock_wise = true;
+
 	};
 
 	struct F_depth_stencil_desc {
