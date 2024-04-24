@@ -48,9 +48,9 @@ namespace nrhi {
 
 	struct F_frame_buffer_desc {
 
-		TG_vector<K_valid_rtv_handle> color_attachment_vector;
+		TG_vector<K_valid_rtv_handle> color_attachment_p_vector;
 
-		K_dsv_handle depth_attachment;
+		K_dsv_handle depth_attachment_p;
 
 	};
 

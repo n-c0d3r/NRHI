@@ -188,7 +188,7 @@ int main() {
 
 	// create frame buffer
 	auto frame_buffer_desc = F_frame_buffer_desc {
-		.color_attachment_vector = {
+		.color_attachment_p_vector = {
 			swapchain_p->back_rtv_p()
 		}
 	};
