@@ -221,6 +221,8 @@ int main() {
     // run app
     surface_manager.T_run([&](F_surface_manager& surface_manager){
 
+		auto start_time = std::chrono::high_resolution_clock::now();
+
 		if(swapchain_p.is_valid()) {
 
 			command_list_p->set_graphics_pipeline_state(
@@ -235,6 +237,14 @@ int main() {
 
 			swapchain_p->present();
 		}
+
+		auto end_time = std::chrono::high_resolution_clock::now();
+
+		u64 nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(end_time - start_time).count();
+
+		f32 fps = 1.0f / (((f32)nanoseconds) * 0.000000001f);
+
+		NCPP_INFO() << "FPS: " << T_cout_value(fps);
 	});
 
 	return 0;
