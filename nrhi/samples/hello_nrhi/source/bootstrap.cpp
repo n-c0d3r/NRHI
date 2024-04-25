@@ -143,7 +143,7 @@ int main() {
 		// shader class name
 		"DemoShaderClass",
 		// shader class source content
-		"float4 vmain(float4 pos : POSITION) : SV_POSITION"
+		"float4 vmain(float4 vertex_pos : VERTEX_POSITION, float4 instance_pos : INSTANCE_POSITION) : SV_POSITION"
 		"{ return float4(1,1,1,1); }"
 		"float4 pmain(float4 pos : SV_POSITION) : SV_TARGET"
 		"{ return float4(1,1,1,1); }",
@@ -152,7 +152,27 @@ int main() {
 			F_shader_kernel_desc {
 				.blob_desc = {
 					.name = "vmain",
-					.type = E_shader_type::VERTEX
+					.type = E_shader_type::VERTEX,
+					.vertex_attribute_group_desc_vector = {
+						{
+							.attribute_desc_vector = {
+								{
+									.name = "VERTEX_POSITION",
+									.format = E_format::R32G32B32A32_FLOAT
+								}
+							}
+						}
+					},
+					.instance_attribute_group_desc_vector = {
+						{
+							.attribute_desc_vector = {
+								{
+									.name = "INSTANCE_POSITION",
+									.format = E_format::R32G32B32A32_FLOAT
+								}
+							}
+						}
+					}
 				}
 			},
 			F_shader_kernel_desc {

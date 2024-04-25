@@ -46,7 +46,7 @@ namespace nrhi {
 
 	public:
 		static U_compute_pipeline_state_handle create(
-			TK_valid<A_device> device_p,
+			TKPA_valid<A_device> device_p,
 			const F_pipeline_state_desc& desc
 		);
 

@@ -6,7 +6,7 @@
 namespace nrhi {
 
     U_buffer_handle H_buffer::create(
-        TK_valid<A_device> device_p,
+        TKPA_valid<A_device> device_p,
         F_initial_resource_data initial_data,
         u32 count,
         u32 stride,
@@ -27,7 +27,7 @@ namespace nrhi {
     }
 
     U_buffer_handle H_buffer::create(
-        TK_valid<A_device> device_p,
+        TKPA_valid<A_device> device_p,
         F_initial_resource_data initial_data,
         u32 count,
         E_format format,
@@ -48,7 +48,7 @@ namespace nrhi {
     }
 
     U_structured_buffer_handle H_buffer::create_structured(
-        TK_valid<A_device> device_p,
+        TKPA_valid<A_device> device_p,
         F_initial_resource_data initial_data,
         u32 count,
         u32 stride,
@@ -69,7 +69,7 @@ namespace nrhi {
     }
 
     U_single_elemented_buffer_handle H_buffer::create_single_elemented(
-        TK_valid<A_device> device_p,
+        TKPA_valid<A_device> device_p,
         F_initial_resource_data initial_data,
         u32 width,
         E_resource_bind_flag bind_flags,

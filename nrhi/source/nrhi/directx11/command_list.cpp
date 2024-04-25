@@ -7,7 +7,7 @@
 
 namespace nrhi {
 
-    F_directx11_command_list::F_directx11_command_list(TK_valid<A_device> device_p, const F_command_list_desc& desc) :
+    F_directx11_command_list::F_directx11_command_list(TKPA_valid<A_device> device_p, const F_command_list_desc& desc) :
         A_command_list(device_p, desc)
     {
 
@@ -29,31 +29,31 @@ namespace nrhi {
 
 
 
-    TU<A_command_list> HD_directx11_command_list::create(TK_valid<A_device> device_p, const F_command_list_desc& desc){
+    TU<A_command_list> HD_directx11_command_list::create(TKPA_valid<A_device> device_p, const F_command_list_desc& desc){
 
         return TU<F_directx11_command_list>()(device_p, desc);
     }
 
 	void HD_directx11_command_list::set_frame_buffer(
-		TK_valid<A_command_list> command_list_p,
-		TK_valid<A_frame_buffer> frame_buffer_p
+		TKPA_valid<A_command_list> command_list_p,
+		TKPA_valid<A_frame_buffer> frame_buffer_p
 	) {
 
 	}
 	void HD_directx11_command_list::set_graphics_pipeline_state(
-		TK_valid<A_command_list> command_list_p,
-		K_valid_graphics_pipeline_state_handle graphics_pipeline_state_p
+		TKPA_valid<A_command_list> command_list_p,
+		KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p
 	) {
 
 	}
 	void HD_directx11_command_list::set_compute_pipeline_state(
-		TK_valid<A_command_list> command_list_p,
-		K_valid_compute_pipeline_state_handle compute_pipeline_state_p
+		TKPA_valid<A_command_list> command_list_p,
+		KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p
 	) {
 
 	}
 	void HD_directx11_command_list::draw_indexed(
-		TK_valid<A_command_list> command_list_p,
+		TKPA_valid<A_command_list> command_list_p,
 		u32 index_count,
 		u32 base_index_location
 	) {

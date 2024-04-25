@@ -24,9 +24,9 @@ NRHI_FunctionHelper_CreateFunctionClass(
             class A_device;
         }"
     VALUES
-        "create" "TU<A_command_queue>(TK_valid<A_device> device_p, const F_command_queue_desc& desc)"
+        "create" "TU<A_command_queue>(TKPA_valid<A_device> device_p, const F_command_queue_desc& desc)"
         "execute_command_lists" "void(
-            TK_valid<A_command_queue> command_queue_p,
+            TKPA_valid<A_command_queue> command_queue_p,
             TG_span<TK_valid<A_command_list>> command_list_p_span
         )"
 )

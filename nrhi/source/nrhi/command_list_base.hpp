@@ -69,7 +69,7 @@ namespace nrhi {
 
 
     protected:
-        A_command_list(TK_valid<A_device> device_p, const F_command_list_desc& desc);
+        A_command_list(TKPA_valid<A_device> device_p, const F_command_list_desc& desc);
 
     public:
         virtual ~A_command_list();
@@ -77,9 +77,9 @@ namespace nrhi {
 
 
 	public:
-		void set_frame_buffer(TK_valid<A_frame_buffer> frame_buffer_p);
-		void set_graphics_pipeline_state(K_valid_graphics_pipeline_state_handle graphics_pipeline_state_p);
-		void set_compute_pipeline_state(K_valid_compute_pipeline_state_handle compute_pipeline_state_p);
+		void set_frame_buffer(TKPA_valid<A_frame_buffer> frame_buffer_p);
+		void set_graphics_pipeline_state(KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p);
+		void set_compute_pipeline_state(KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p);
 		void draw_indexed(u32 index_count, u32 base_index_location);
 
     };

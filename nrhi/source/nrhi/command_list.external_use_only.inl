@@ -42,15 +42,15 @@
 
 namespace nrhi {
 
-	NCPP_FORCE_INLINE void A_command_list::set_frame_buffer(TK_valid<A_frame_buffer> frame_buffer_p) {
+	NCPP_FORCE_INLINE void A_command_list::set_frame_buffer(TKPA_valid<A_frame_buffer> frame_buffer_p) {
 
 		H_command_list::set_frame_buffer(NCPP_KTHIS(), frame_buffer_p);
 	}
-	NCPP_FORCE_INLINE void A_command_list::set_graphics_pipeline_state(K_valid_graphics_pipeline_state_handle graphics_pipeline_state_p) {
+	NCPP_FORCE_INLINE void A_command_list::set_graphics_pipeline_state(KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p) {
 
 		H_command_list::set_graphics_pipeline_state(NCPP_KTHIS(), graphics_pipeline_state_p);
 	}
-	NCPP_FORCE_INLINE void A_command_list::set_compute_pipeline_state(K_valid_compute_pipeline_state_handle compute_pipeline_state_p) {
+	NCPP_FORCE_INLINE void A_command_list::set_compute_pipeline_state(KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p) {
 
 		H_command_list::set_compute_pipeline_state(NCPP_KTHIS(), compute_pipeline_state_p);
 	}

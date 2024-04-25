@@ -7,7 +7,7 @@
 namespace nrhi {
 
 	F_directx11_pipeline_state::F_directx11_pipeline_state(
-		TK_valid<A_device> device_p,
+		TKPA_valid<A_device> device_p,
 		const F_pipeline_state_desc& desc,
 		E_pipeline_state_type overrided_type
 	) :
@@ -21,7 +21,7 @@ namespace nrhi {
 
 
 	TU<A_pipeline_state> HD_directx11_pipeline_state::create(
-		TK_valid<A_device> device_p,
+		TKPA_valid<A_device> device_p,
 		const F_pipeline_state_desc& desc
 	) {
 
@@ -33,7 +33,7 @@ namespace nrhi {
 	}
 
 	U_graphics_pipeline_state_handle HD_directx11_pipeline_state::create_graphics_pipeline_state(
-		TK_valid<A_device> device_p,
+		TKPA_valid<A_device> device_p,
 		const F_pipeline_state_desc& desc
 	) {
 

@@ -39,50 +39,22 @@ namespace nrhi {
 
 
 
-	NCPP_FHANDLE_TEMPLATE(A_resource)
-	struct TF_buffer_handle {
+	NCPP_FHANDLE_TEMPLATE(buffer_handle, A_resource) {
 
-		NCPP_FHANDLE_GENERATED_BODY(TF_buffer_handle, A_resource);
-
-	};
-
-	using U_buffer_handle = TF_buffer_handle<TU<A_resource>>;
-	using S_buffer_handle = TF_buffer_handle<TS<A_resource>>;
-	using K_buffer_handle = TF_buffer_handle<TK<A_resource>>;
-
-	using S_valid_buffer_handle = TF_buffer_handle<TS_valid<A_resource>>;
-	using K_valid_buffer_handle = TF_buffer_handle<TK_valid<A_resource>>;
-
-
-
-	NCPP_FHANDLE_TEMPLATE(A_resource)
-	struct TF_structured_buffer_handle {
-
-		NCPP_FHANDLE_GENERATED_BODY(TF_structured_buffer_handle, A_resource);
+		NCPP_FHANDLE_GENERATED_BODY(buffer_handle, A_resource);
 
 	};
 
-	using U_structured_buffer_handle = TF_structured_buffer_handle<TU<A_resource>>;
-	using S_structured_buffer_handle = TF_structured_buffer_handle<TS<A_resource>>;
-	using K_structured_buffer_handle = TF_structured_buffer_handle<TK<A_resource>>;
+	NCPP_FHANDLE_TEMPLATE(structured_buffer_handle, A_resource) {
 
-	using S_valid_structured_buffer_handle = TF_structured_buffer_handle<TS_valid<A_resource>>;
-	using K_valid_structured_buffer_handle = TF_structured_buffer_handle<TK_valid<A_resource>>;
-
-
-
-	NCPP_FHANDLE_TEMPLATE(A_resource)
-	struct TF_single_elemented_buffer_handle {
-
-		NCPP_FHANDLE_GENERATED_BODY(TF_single_elemented_buffer_handle, A_resource);
+		NCPP_FHANDLE_GENERATED_BODY(structured_buffer_handle, A_resource);
 
 	};
 
-	using U_single_elemented_buffer_handle = TF_single_elemented_buffer_handle<TU<A_resource>>;
-	using S_single_elemented_buffer_handle = TF_single_elemented_buffer_handle<TS<A_resource>>;
-	using K_single_elemented_buffer_handle = TF_single_elemented_buffer_handle<TK<A_resource>>;
+	NCPP_FHANDLE_TEMPLATE(single_elemented_buffer_handle, A_resource) {
 
-	using S_valid_single_elemented_buffer_handle = TF_single_elemented_buffer_handle<TS_valid<A_resource>>;
-	using K_valid_single_elemented_buffer_handle = TF_single_elemented_buffer_handle<TK_valid<A_resource>>;
+		NCPP_FHANDLE_GENERATED_BODY(single_elemented_buffer_handle, A_resource);
+
+	};
 
 }

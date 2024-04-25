@@ -51,7 +51,7 @@ namespace nrhi {
 
     public:
         static U_buffer_handle create(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             F_initial_resource_data initial_data,
             u32 count,
             u32 stride,
@@ -62,7 +62,7 @@ namespace nrhi {
     public:
         template<typename F_element__>
         static U_buffer_handle T_create(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             F_initial_resource_data initial_data,
             u32 count,
             E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
@@ -82,7 +82,7 @@ namespace nrhi {
     public:
         template<typename F_element__>
         static U_buffer_handle T_create(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             const TG_span<F_element__>& data,
             E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
             E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
@@ -100,7 +100,7 @@ namespace nrhi {
 
     public:
         static U_buffer_handle create(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             F_initial_resource_data initial_data,
             u32 count,
             E_format format,
@@ -111,7 +111,7 @@ namespace nrhi {
     public:
         template<typename F_element__>
         static U_buffer_handle T_create(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             const TG_span<F_element__>& data,
             E_format format,
             E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
@@ -130,7 +130,7 @@ namespace nrhi {
 
     public:
         static U_structured_buffer_handle create_structured(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             F_initial_resource_data initial_data,
             u32 count,
             u32 stride,
@@ -141,7 +141,7 @@ namespace nrhi {
     public:
         template<typename F_element__>
         static U_structured_buffer_handle T_create_structured(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             F_initial_resource_data initial_data,
             u32 count,
             E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
@@ -161,7 +161,7 @@ namespace nrhi {
     public:
         template<typename F_element__>
         static U_structured_buffer_handle T_create_structured(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             const TG_span<F_element__>& data,
             E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
             E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
@@ -179,7 +179,7 @@ namespace nrhi {
 
     public:
         static U_single_elemented_buffer_handle create_single_elemented(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             F_initial_resource_data initial_data,
             u32 width,
             E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
@@ -189,7 +189,7 @@ namespace nrhi {
     public:
         template<typename F__>
         static U_single_elemented_buffer_handle T_create_single_elemented(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             F_initial_resource_data initial_data,
             E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
             E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
@@ -207,7 +207,7 @@ namespace nrhi {
     public:
         template<typename F__>
         static U_single_elemented_buffer_handle T_create_single_elemented(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             const F__* data,
             E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
             E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE

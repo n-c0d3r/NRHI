@@ -8,7 +8,7 @@
 namespace nrhi {
 
     F_directx11_shader_resource_view::F_directx11_shader_resource_view(
-        TK_valid<A_device> device_p,
+        TKPA_valid<A_device> device_p,
         const F_resource_view_desc& desc,
         E_resource_view_type overrided_type
     ) :
@@ -24,7 +24,7 @@ namespace nrhi {
     {
     }
     F_directx11_shader_resource_view::F_directx11_shader_resource_view(
-        TK_valid<A_device> device_p,
+        TKPA_valid<A_device> device_p,
         const F_resource_view_desc& desc,
         E_resource_view_type overrided_type,
         ID3D11ShaderResourceView* d3d11_shader_resource_view_p
@@ -37,7 +37,7 @@ namespace nrhi {
     }
 
     ID3D11ShaderResourceView* F_directx11_shader_resource_view::create_d3d11_shader_resource_view(
-        TK_valid<A_device> device_p,
+        TKPA_valid<A_device> device_p,
         const F_resource_view_desc& desc
     ) {
 

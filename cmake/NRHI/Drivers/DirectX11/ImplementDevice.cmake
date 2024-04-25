@@ -24,7 +24,7 @@ NRHI_FunctionHelper_CreateFunctionClass(
             class A_adapter;
         }"
     VALUES
-        "create" "TU<A_device>(TK_valid<A_adapter> adapter_p)"
+        "create" "TU<A_device>(TKPA_valid<A_adapter> adapter_p)"
         "max_queue_count" "void(A_device*)"
 )
 

@@ -53,16 +53,6 @@ namespace nrhi {
 
 
 
-	struct F_input_layout_element_desc {
-
-	};
-
-	struct F_input_layout_desc {
-
-		TG_vector<F_input_layout_element_desc> element_desc_vector;
-
-	};
-
 	struct F_rasterizer_desc {
 
 		E_cull_mode cull_mode = E_cull_mode::BACK;
@@ -89,8 +79,6 @@ namespace nrhi {
 			E_format::R8G8B8A8_UNORM
 		};
 		F_depth_stencil_desc depth_stencil_desc;
-
-		F_input_layout_desc input_layout_desc;
 
 		F_rasterizer_desc rasterizer_desc;
 

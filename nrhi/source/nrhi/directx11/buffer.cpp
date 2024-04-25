@@ -7,7 +7,7 @@
 namespace nrhi {
 
     F_directx11_buffer::F_directx11_buffer(
-        TK_valid<A_device> device_p,
+        TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_data,
         const F_resource_desc& desc,
         E_resource_type overrided_type
@@ -26,7 +26,7 @@ namespace nrhi {
     {
     }
     F_directx11_buffer::F_directx11_buffer(
-        TK_valid<A_device> device_p,
+        TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_data,
         const F_resource_desc& desc,
         E_resource_type overrided_type,
@@ -40,7 +40,7 @@ namespace nrhi {
     }
 
     ID3D11Buffer* F_directx11_buffer::create_d3d11_buffer(
-        TK_valid<A_device> device_p,
+        TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_data_,
         const F_resource_desc& desc_
     ) {
@@ -93,7 +93,7 @@ namespace nrhi {
 
 
     F_directx11_structured_buffer::F_directx11_structured_buffer(
-        TK_valid<A_device> device_p,
+        TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_data,
         const F_resource_desc& desc,
         E_resource_type overrided_type
@@ -112,7 +112,7 @@ namespace nrhi {
     {
     }
     F_directx11_structured_buffer::F_directx11_structured_buffer(
-        TK_valid<A_device> device_p,
+        TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_data,
         const F_resource_desc& desc,
         E_resource_type overrided_type,
@@ -126,7 +126,7 @@ namespace nrhi {
     }
 
     ID3D11Buffer* F_directx11_structured_buffer::create_d3d11_structured_buffer(
-        TK_valid<A_device> device_p,
+        TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_data_,
         const F_resource_desc& desc_
     ) {
@@ -179,7 +179,7 @@ namespace nrhi {
 
 
     F_directx11_single_elemented_buffer::F_directx11_single_elemented_buffer(
-        TK_valid<A_device> device_p,
+        TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_data,
         const F_resource_desc& desc,
         E_resource_type overrided_type
@@ -198,7 +198,7 @@ namespace nrhi {
     {
     }
     F_directx11_single_elemented_buffer::F_directx11_single_elemented_buffer(
-        TK_valid<A_device> device_p,
+        TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_data,
         const F_resource_desc& desc,
         E_resource_type overrided_type,
@@ -212,7 +212,7 @@ namespace nrhi {
     }
 
     ID3D11Buffer* F_directx11_single_elemented_buffer::create_d3d11_single_elemented_buffer(
-        TK_valid<A_device> device_p,
+        TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_data_,
         const F_resource_desc& desc_
     ) {

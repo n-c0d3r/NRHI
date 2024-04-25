@@ -63,7 +63,7 @@ namespace nrhi {
 
     protected:
         A_resource(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_data,
             const F_resource_desc& desc,
             E_resource_type overrided_type

@@ -52,7 +52,7 @@ namespace nrhi {
 	class H_vertex_shader {
 
 	public:
-		static NCPP_FORCE_INLINE U_vertex_shader_handle create(TK_valid<A_device> device_p, const F_shader_desc& desc) {
+		static NCPP_FORCE_INLINE U_vertex_shader_handle create(TKPA_valid<A_device> device_p, const F_shader_desc& desc) {
 
 			return H_shader::create_vertex_shader(device_p, desc);
 		}
@@ -62,7 +62,7 @@ namespace nrhi {
 	class H_pixel_shader {
 
 	public:
-		static NCPP_FORCE_INLINE U_pixel_shader_handle create(TK_valid<A_device> device_p, const F_shader_desc& desc) {
+		static NCPP_FORCE_INLINE U_pixel_shader_handle create(TKPA_valid<A_device> device_p, const F_shader_desc& desc) {
 
 			return H_shader::create_pixel_shader(device_p, desc);
 		}
@@ -72,7 +72,7 @@ namespace nrhi {
 	class H_compute_shader {
 
 	public:
-		static NCPP_FORCE_INLINE U_compute_shader_handle create(TK_valid<A_device> device_p, const F_shader_desc& desc) {
+		static NCPP_FORCE_INLINE U_compute_shader_handle create(TKPA_valid<A_device> device_p, const F_shader_desc& desc) {
 
 			return H_shader::create_compute_shader(device_p, desc);
 		}

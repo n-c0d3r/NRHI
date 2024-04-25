@@ -4,7 +4,7 @@
 
 namespace nrhi {
 
-    F_directx11_device::F_directx11_device(TK_valid<A_adapter> adapter_p) :
+    F_directx11_device::F_directx11_device(TKPA_valid<A_adapter> adapter_p) :
         A_device(adapter_p)
     {
 
@@ -67,7 +67,7 @@ namespace nrhi {
 
 
 
-    TU<A_device> HD_directx11_device::create(TK_valid<A_adapter> adapter_p){
+    TU<A_device> HD_directx11_device::create(TKPA_valid<A_adapter> adapter_p){
 
         return TU<F_directx11_device>()(adapter_p);
     }

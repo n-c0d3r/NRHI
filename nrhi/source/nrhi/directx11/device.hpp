@@ -57,7 +57,7 @@ namespace nrhi {
 
 
     public:
-        F_directx11_device(TK_valid<A_adapter> adapter_p);
+        F_directx11_device(TKPA_valid<A_adapter> adapter_p);
         ~F_directx11_device();
 
     public:
@@ -71,7 +71,7 @@ namespace nrhi {
     class NRHI_API HD_directx11_device {
 
     public:
-        static TU<A_device> create(TK_valid<A_adapter> adapter_p);
+        static TU<A_device> create(TKPA_valid<A_adapter> adapter_p);
 
         static constexpr u32 max_queue_count(A_device*) { return 1; }
 

@@ -63,8 +63,8 @@ namespace nrhi {
 
     public:
         F_directx11_swapchain(
-            TK_valid<A_command_queue> command_queue_p,
-            TK_valid<A_surface> surface_p,
+            TKPA_valid<A_command_queue> command_queue_p,
+            TKPA_valid<A_surface> surface_p,
             const F_swapchain_desc& desc
         );
         ~F_directx11_swapchain();
@@ -80,13 +80,13 @@ namespace nrhi {
 
     public:
         static TU<A_swapchain> create(
-            TK_valid<A_command_queue> command_queue_p,
-            TK_valid<A_surface> surface_p,
+            TKPA_valid<A_command_queue> command_queue_p,
+            TKPA_valid<A_surface> surface_p,
             const F_swapchain_desc& desc
         );
 
 	public:
-		static void present(TK_valid<A_swapchain>);
+		static void present(TKPA_valid<A_swapchain>);
 
 	};
 

@@ -5,7 +5,7 @@
 namespace nrhi {
 
 	A_frame_buffer::A_frame_buffer(
-		TK_valid<A_device> device_p,
+		TKPA_valid<A_device> device_p,
 		const F_frame_buffer_desc& desc
 	) :
 		device_p_(device_p),

@@ -49,13 +49,13 @@ namespace nrhi {
 
     public:
         F_directx11_texture_1d(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_data,
             const F_resource_desc& desc,
             E_resource_type overrided_type = E_resource_type::TEXTURE_1D
         );
         F_directx11_texture_1d(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_data,
             const F_resource_desc& desc,
             E_resource_type overrided_type,
@@ -65,7 +65,7 @@ namespace nrhi {
 
     private:
         static ID3D11Texture1D* create_d3d11_texture_1d(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_data,
             const F_resource_desc& desc
         );
@@ -78,13 +78,13 @@ namespace nrhi {
 
     public:
         F_directx11_texture_2d(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_data,
             const F_resource_desc& desc,
             E_resource_type overrided_type = E_resource_type::TEXTURE_2D
         );
         F_directx11_texture_2d(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_data,
             const F_resource_desc& desc,
             E_resource_type overrided_type,
@@ -94,7 +94,7 @@ namespace nrhi {
 
     private:
         static ID3D11Texture2D* create_d3d11_texture_2d(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_data,
             const F_resource_desc& desc
         );
@@ -107,13 +107,13 @@ namespace nrhi {
 
     public:
         F_directx11_texture_3d(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_data,
             const F_resource_desc& desc,
             E_resource_type overrided_type = E_resource_type::TEXTURE_3D
         );
         F_directx11_texture_3d(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_data,
             const F_resource_desc& desc,
             E_resource_type overrided_type,
@@ -123,7 +123,7 @@ namespace nrhi {
 
     private:
         static ID3D11Texture3D* create_d3d11_texture_3d(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_data,
             const F_resource_desc& desc
         );

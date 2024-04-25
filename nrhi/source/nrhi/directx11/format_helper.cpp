@@ -16,6 +16,7 @@ namespace nrhi {
 
             directx11_format_stride_table[u32(DXGI_FORMAT_R8G8B8A8_UNORM)] = 4;
             directx11_format_stride_table[u32(DXGI_FORMAT_R32_UINT)] = 4;
+            directx11_format_stride_table[u32(DXGI_FORMAT_R32G32B32A32_FLOAT)] = 16;
         }
     };
 

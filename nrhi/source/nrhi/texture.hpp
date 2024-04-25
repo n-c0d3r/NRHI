@@ -51,7 +51,7 @@ namespace nrhi {
 
     public:
         static U_texture_1d_handle create_1d(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             F_initial_resource_data initial_data,
             u32 width,
             E_format format,
@@ -63,7 +63,7 @@ namespace nrhi {
 
     public:
         static U_texture_2d_handle create_2d(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             F_initial_resource_data initial_data,
             u32 width,
             u32 height,
@@ -76,7 +76,7 @@ namespace nrhi {
 
     public:
         static U_texture_3d_handle create_3d(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             F_initial_resource_data initial_data,
             u32 width,
             u32 height,

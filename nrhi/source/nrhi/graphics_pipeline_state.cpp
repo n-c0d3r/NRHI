@@ -6,7 +6,7 @@
 namespace nrhi {
 
 	U_graphics_pipeline_state_handle H_graphics_pipeline_state::create(
-		TK_valid<A_device> device_p,
+		TKPA_valid<A_device> device_p,
 		const F_pipeline_state_desc& desc
 	) {
 

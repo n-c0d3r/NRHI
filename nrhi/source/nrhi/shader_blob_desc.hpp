@@ -34,6 +34,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/shader_type.hpp>
+#include <nrhi/format.hpp>
 
 #pragma endregion
 
@@ -46,10 +47,41 @@ namespace nrhi {
 
 
 
+	struct F_vertex_attribute_desc {
+
+		G_string name;
+		E_format format;
+		u32 duplicate_count = 1;
+
+	};
+	struct F_instance_attribute_desc {
+
+		G_string name;
+		E_format format;
+		u32 duplicate_count = 1;
+
+	};
+
+	struct F_vertex_attribute_group_desc {
+
+		TG_vector<F_vertex_attribute_desc> attribute_desc_vector;
+
+	};
+	struct F_instance_attribute_group_desc {
+
+		TG_vector<F_instance_attribute_desc> attribute_desc_vector;
+
+	};
+
+
+
 	struct F_shader_blob_desc {
 
 		G_string name;
 		E_shader_type type = E_shader_type::NONE;
+
+		TG_vector<F_vertex_attribute_group_desc> vertex_attribute_group_desc_vector;
+		TG_vector<F_instance_attribute_group_desc> instance_attribute_group_desc_vector;
 
 	};
 

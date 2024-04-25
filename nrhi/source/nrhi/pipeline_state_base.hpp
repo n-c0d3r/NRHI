@@ -61,7 +61,7 @@ namespace nrhi {
 
 	protected:
 		A_pipeline_state(
-			TK_valid<A_device> device_p,
+			TKPA_valid<A_device> device_p,
 			const F_pipeline_state_desc& desc,
 			E_pipeline_state_type overrided_type
 		);

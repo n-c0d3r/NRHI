@@ -11,8 +11,8 @@
 namespace nrhi {
 
     F_directx11_swapchain::F_directx11_swapchain(
-        TK_valid<A_command_queue> command_queue_p,
-        TK_valid<A_surface> surface_p,
+        TKPA_valid<A_command_queue> command_queue_p,
+        TKPA_valid<A_surface> surface_p,
         const F_swapchain_desc& desc
     ) :
         A_swapchain(
@@ -148,8 +148,8 @@ namespace nrhi {
 
 
     TU<A_swapchain> HD_directx11_swapchain::create(
-        TK_valid<A_command_queue> command_queue_p,
-        TK_valid<A_surface> surface_p,
+        TKPA_valid<A_command_queue> command_queue_p,
+        TKPA_valid<A_surface> surface_p,
         const F_swapchain_desc& desc
     ){
 
@@ -160,7 +160,7 @@ namespace nrhi {
         );
     }
 
-	void HD_directx11_swapchain::present(TK_valid<A_swapchain> swapchain_p){
+	void HD_directx11_swapchain::present(TKPA_valid<A_swapchain> swapchain_p){
 
 		swapchain_p.T_cast<F_directx11_swapchain>()->dxgi_swapchain_p()->Present(0, 0);
 	}

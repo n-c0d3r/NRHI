@@ -64,7 +64,7 @@ namespace nrhi {
 
     protected:
         A_resource_view(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             const F_resource_view_desc& desc,
             E_resource_view_type overrided_type
         );

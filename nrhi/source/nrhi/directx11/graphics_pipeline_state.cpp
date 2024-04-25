@@ -1,24 +1,72 @@
 #include <nrhi/directx11/graphics_pipeline_state.hpp>
 #include <nrhi/directx11/shader.hpp>
 #include <nrhi/directx11/shader_blob.hpp>
+#include <nrhi/directx11/device.hpp>
 #include <nrhi/shader_type.hpp>
 
 namespace nrhi {
 
 	NRHI_PLATFORM_OBJECT_POOL_DEFINE(F_directx11_rasterizer_state_pool);
 
-	ID3D11RasterizerState* F_directx11_rasterizer_state_pool::create_object(TK_valid<A_device> device_p, const F_rasterizer_desc& desc) {
+	ID3D11RasterizerState* F_directx11_rasterizer_state_pool::create_object(TKPA_valid<A_device> device_p, const F_rasterizer_desc& desc) {
 
-		return 0;
+		D3D11_RASTERIZER_DESC d3d11_rs_desc;
+		d3d11_rs_desc.FillMode = D3D11_FILL_MODE(desc.fill_mode);
+		d3d11_rs_desc.CullMode = D3D11_CULL_MODE(desc.cull_mode);
+		d3d11_rs_desc.FrontCounterClockwise = desc.font_counter_clock_wise;
+		d3d11_rs_desc.DepthBias = 0.0f;
+		d3d11_rs_desc.SlopeScaledDepthBias = 0.0f;
+		d3d11_rs_desc.DepthClipEnable = true;
+		d3d11_rs_desc.ScissorEnable = false;
+		d3d11_rs_desc.MultisampleEnable = false;
+		d3d11_rs_desc.AntialiasedLineEnable = false;
+
+		ID3D11Device* d3d11_device_p = device_p.T_cast<F_directx11_device>()->d3d11_device_p();
+
+		ID3D11RasterizerState* result_p = 0;
+
+		HRESULT hr = d3d11_device_p->CreateRasterizerState(&d3d11_rs_desc, &result_p);
+
+		NCPP_ASSERT(!FAILED(hr)) << "can't create d3d11 rasterizer state";
+
+		return result_p;
 	}
-	void F_directx11_rasterizer_state_pool::destroy_object(TK_valid<A_device> device_p, ID3D11RasterizerState* object_p, const F_rasterizer_desc& desc) {
+	void F_directx11_rasterizer_state_pool::destroy_object(TKPA_valid<A_device> device_p, ID3D11RasterizerState* object_p, const F_rasterizer_desc& desc) {
 
+		object_p->Release();
+	}
+
+
+
+	NRHI_PLATFORM_OBJECT_POOL_DEFINE(F_directx11_depth_stencil_state_pool);
+
+	ID3D11DepthStencilState* F_directx11_depth_stencil_state_pool::create_object(TKPA_valid<A_device> device_p, const F_depth_stencil_desc& desc) {
+
+		D3D11_DEPTH_STENCIL_DESC d3d11_ds_desc;
+		memset(&d3d11_ds_desc, 0, sizeof(d3d11_ds_desc));
+		d3d11_ds_desc.DepthEnable = desc.enable_depth_test;
+		d3d11_ds_desc.DepthWriteMask = (desc.depth_buffer_write ? D3D11_DEPTH_WRITE_MASK_ALL : D3D11_DEPTH_WRITE_MASK_ZERO);
+		d3d11_ds_desc.DepthFunc = D3D11_COMPARISON_FUNC(desc.depth_comparison_func);
+
+		ID3D11Device* d3d11_device_p = device_p.T_cast<F_directx11_device>()->d3d11_device_p();
+
+		ID3D11DepthStencilState* result_p = 0;
+
+		HRESULT hr = d3d11_device_p->CreateDepthStencilState(&d3d11_ds_desc, &result_p);
+
+		NCPP_ASSERT(!FAILED(hr)) << "can't create d3d11 rasterizer state";
+
+		return result_p;
+	}
+	void F_directx11_depth_stencil_state_pool::destroy_object(TKPA_valid<A_device> device_p, ID3D11DepthStencilState* object_p, const F_depth_stencil_desc& desc) {
+
+		object_p->Release();
 	}
 
 
 
 	F_directx11_graphics_pipeline_state::F_directx11_graphics_pipeline_state(
-		TK_valid<A_device> device_p,
+		TKPA_valid<A_device> device_p,
 		const F_pipeline_state_desc& desc,
 		E_pipeline_state_type overrided_type
 	) :
@@ -41,6 +89,7 @@ namespace nrhi {
 				break;
 			}
 		}
+		NCPP_ASSERT(d3d11_vertex_shader_p_) << "vertex shader is required";
 
 		// acquire d3d11 rasterizer state
 		d3d11_rasterizer_state_p_ = F_directx11_rasterizer_state_pool::acquire_object(
@@ -48,7 +97,11 @@ namespace nrhi {
 			desc.rasterizer_desc
 		);
 
-		NCPP_ASSERT(d3d11_vertex_shader_p_) << "vertex shader is required";
+		// acquire d3d11 depth stencil state
+		d3d11_depth_stencil_state_p_ = F_directx11_depth_stencil_state_pool::acquire_object(
+			device_p,
+			desc.depth_stencil_desc
+		);
 	}
 	F_directx11_graphics_pipeline_state::~F_directx11_graphics_pipeline_state(){
 
@@ -58,6 +111,13 @@ namespace nrhi {
 			desc().rasterizer_desc
 		);
 		d3d11_rasterizer_state_p_ = 0;
+
+		// release d3d11 depth stencil state
+		F_directx11_depth_stencil_state_pool::release_object(
+			device_p(),
+			desc().depth_stencil_desc
+		);
+		d3d11_depth_stencil_state_p_ = 0;
 	}
 
 	void F_directx11_graphics_pipeline_state::initialize_pools() {

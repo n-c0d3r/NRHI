@@ -9,7 +9,7 @@
 namespace nrhi {
 
     F_directx11_resource::F_directx11_resource(
-        TK_valid<A_device> device_p,
+        TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_data,
         const F_resource_desc& desc,
         E_resource_type overrided_type
@@ -18,7 +18,7 @@ namespace nrhi {
     {
     }
     F_directx11_resource::F_directx11_resource(
-        TK_valid<A_device> device_p,
+        TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_data,
         const F_resource_desc& desc,
         E_resource_type overrided_type,
@@ -38,7 +38,7 @@ namespace nrhi {
 
 
     TU<A_resource> HD_directx11_resource::create(
-        TK_valid<A_device> device_p,
+        TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_resource_data,
         const F_resource_desc& desc
     ){
@@ -55,7 +55,7 @@ namespace nrhi {
     }
 
     U_buffer_handle HD_directx11_resource::create_buffer(
-        TK_valid<A_device> device_p,
+        TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_resource_data,
         const F_resource_desc& desc
     )  {
@@ -63,7 +63,7 @@ namespace nrhi {
         return { TU<F_directx11_buffer>()(device_p, initial_resource_data, desc) };
     }
     U_structured_buffer_handle HD_directx11_resource::create_structured_buffer(
-        TK_valid<A_device> device_p,
+        TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_resource_data,
         const F_resource_desc& desc
     ) {
@@ -71,7 +71,7 @@ namespace nrhi {
         return { TU<F_directx11_structured_buffer>()(device_p, initial_resource_data, desc) };
     }
     U_single_elemented_buffer_handle HD_directx11_resource::create_single_elemented_buffer(
-        TK_valid<A_device> device_p,
+        TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_resource_data,
         const F_resource_desc& desc
     ) {
@@ -80,7 +80,7 @@ namespace nrhi {
     }
 
     U_texture_1d_handle HD_directx11_resource::create_texture_1d(
-        TK_valid<A_device> device_p,
+        TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_resource_data,
         const F_resource_desc& desc
     )  {
@@ -88,7 +88,7 @@ namespace nrhi {
         return { TU<F_directx11_texture_1d>()(device_p, initial_resource_data, desc) };
     }
     U_texture_2d_handle HD_directx11_resource::create_texture_2d(
-        TK_valid<A_device> device_p,
+        TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_resource_data,
         const F_resource_desc& desc
     )  {
@@ -96,7 +96,7 @@ namespace nrhi {
         return { TU<F_directx11_texture_2d>()(device_p, initial_resource_data, desc) };
     }
     U_texture_3d_handle HD_directx11_resource::create_texture_3d(
-        TK_valid<A_device> device_p,
+        TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_resource_data,
         const F_resource_desc& desc
     )  {

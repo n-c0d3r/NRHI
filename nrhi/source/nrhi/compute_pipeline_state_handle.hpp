@@ -40,18 +40,10 @@ namespace nrhi {
 
 
 
-	NCPP_FHANDLE_TEMPLATE(A_pipeline_state)
-	struct TF_compute_pipeline_state_handle {
+	NCPP_FHANDLE_TEMPLATE(compute_pipeline_state_handle, A_pipeline_state) {
 
-		NCPP_FHANDLE_GENERATED_BODY(TF_compute_pipeline_state_handle, A_pipeline_state);
+		NCPP_FHANDLE_GENERATED_BODY(compute_pipeline_state_handle, A_pipeline_state);
 
 	};
-
-	using U_compute_pipeline_state_handle = TF_compute_pipeline_state_handle<TU<A_pipeline_state>>;
-	using S_compute_pipeline_state_handle = TF_compute_pipeline_state_handle<TS<A_pipeline_state>>;
-	using K_compute_pipeline_state_handle = TF_compute_pipeline_state_handle<TK<A_pipeline_state>>;
-
-	using S_valid_compute_pipeline_state_handle = TF_compute_pipeline_state_handle<TS_valid<A_pipeline_state>>;
-	using K_valid_compute_pipeline_state_handle = TF_compute_pipeline_state_handle<TK_valid<A_pipeline_state>>;
 
 }

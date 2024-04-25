@@ -51,7 +51,7 @@ namespace nrhi {
 
 	public:
 		F_directx11_pipeline_state(
-			TK_valid<A_device> device_p,
+			TKPA_valid<A_device> device_p,
 			const F_pipeline_state_desc& desc,
 			E_pipeline_state_type overrided_type
 		);
@@ -65,13 +65,13 @@ namespace nrhi {
 
 	public:
 		static TU<A_pipeline_state> create(
-			TK_valid<A_device> device_p,
+			TKPA_valid<A_device> device_p,
 			const F_pipeline_state_desc& desc
 		);
 
 	public:
 		static U_graphics_pipeline_state_handle create_graphics_pipeline_state(
-			TK_valid<A_device> device_p,
+			TKPA_valid<A_device> device_p,
 			const F_pipeline_state_desc& desc
 		);
 

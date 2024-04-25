@@ -67,7 +67,7 @@ namespace nrhi {
 
 
     protected:
-        A_command_queue(TK_valid<A_device> device_p, const F_command_queue_desc& desc);
+        A_command_queue(TKPA_valid<A_device> device_p, const F_command_queue_desc& desc);
 
     public:
         virtual ~A_command_queue();

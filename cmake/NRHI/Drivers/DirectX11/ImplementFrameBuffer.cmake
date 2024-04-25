@@ -24,7 +24,7 @@ NRHI_FunctionHelper_CreateFunctionClass(
         }"
     VALUES
         "create" "TU<A_frame_buffer>(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             const F_frame_buffer_desc& desc
         )"
 )

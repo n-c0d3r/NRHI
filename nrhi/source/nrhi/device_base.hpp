@@ -50,7 +50,7 @@ namespace nrhi {
 
 
     protected:
-        A_device(TK_valid<A_adapter> adapter_p);
+        A_device(TKPA_valid<A_adapter> adapter_p);
 
     public:
         virtual ~A_device();

@@ -56,8 +56,25 @@ namespace nrhi {
 		NRHI_PLATFORM_OBJECT_POOL_GENERATED_BODY();
 
 	public:
-		static ID3D11RasterizerState* create_object(TK_valid<A_device> device_p, const F_rasterizer_desc& desc);
-		static void destroy_object(TK_valid<A_device> device_p, ID3D11RasterizerState* object_p, const F_rasterizer_desc& desc);
+		static ID3D11RasterizerState* create_object(TKPA_valid<A_device> device_p, const F_rasterizer_desc& desc);
+		static void destroy_object(TKPA_valid<A_device> device_p, ID3D11RasterizerState* object_p, const F_rasterizer_desc& desc);
+
+	};
+
+
+
+	class NRHI_API F_directx11_depth_stencil_state_pool : public utilities::TF_platform_object_pool<
+		F_directx11_depth_stencil_state_pool,
+		ID3D11DepthStencilState*,
+		F_depth_stencil_desc
+	>
+	{
+
+		NRHI_PLATFORM_OBJECT_POOL_GENERATED_BODY();
+
+	public:
+		static ID3D11DepthStencilState* create_object(TKPA_valid<A_device> device_p, const F_depth_stencil_desc& desc);
+		static void destroy_object(TKPA_valid<A_device> device_p, ID3D11DepthStencilState* object_p, const F_depth_stencil_desc& desc);
 
 	};
 
@@ -70,18 +87,20 @@ namespace nrhi {
 		ID3D11PixelShader* d3d11_pixel_shader_p_ = 0;
 
 		ID3D11RasterizerState* d3d11_rasterizer_state_p_ = 0;
+		ID3D11DepthStencilState* d3d11_depth_stencil_state_p_ = 0;
 
 	public:
 		NCPP_FORCE_INLINE ID3D11VertexShader* d3d11_vertex_shader_p() noexcept { return d3d11_vertex_shader_p_; }
 		NCPP_FORCE_INLINE ID3D11PixelShader* d3d11_pixel_shader_p() noexcept { return d3d11_pixel_shader_p_; }
 
 		NCPP_FORCE_INLINE ID3D11RasterizerState* d3d11_rasterizer_state_p() noexcept { return d3d11_rasterizer_state_p_; }
+		NCPP_FORCE_INLINE ID3D11DepthStencilState* d3d11_depth_stencil_state_p() noexcept { return d3d11_depth_stencil_state_p_; }
 
 
 
 	public:
 		F_directx11_graphics_pipeline_state(
-			TK_valid<A_device> device_p,
+			TKPA_valid<A_device> device_p,
 			const F_pipeline_state_desc& desc,
 			E_pipeline_state_type overrided_type = E_pipeline_state_type::GRAPHICS
 		);

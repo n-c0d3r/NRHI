@@ -24,21 +24,21 @@ NRHI_FunctionHelper_CreateFunctionClass(
             class A_device;
         }"
     VALUES
-        "create" "TU<A_command_list>(TK_valid<A_device> device_p, const F_command_list_desc& desc)"
+        "create" "TU<A_command_list>(TKPA_valid<A_device> device_p, const F_command_list_desc& desc)"
         "set_frame_buffer" "void(
-            TK_valid<A_command_list> command_list_p,
-            TK_valid<A_frame_buffer> frame_buffer_p
+            TKPA_valid<A_command_list> command_list_p,
+            TKPA_valid<A_frame_buffer> frame_buffer_p
         )"
         "set_graphics_pipeline_state" "void(
-            TK_valid<A_command_list> command_list_p,
-            K_valid_graphics_pipeline_state_handle graphics_pipeline_state_p
+            TKPA_valid<A_command_list> command_list_p,
+            KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p
         )"
         "set_compute_pipeline_state" "void(
-            TK_valid<A_command_list> command_list_p,
-            K_valid_compute_pipeline_state_handle compute_pipeline_state_p
+            TKPA_valid<A_command_list> command_list_p,
+            KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p
         )"
         "draw_indexed" "void(
-            TK_valid<A_command_list> command_list_p,
+            TKPA_valid<A_command_list> command_list_p,
             u32 index_count,
             u32 base_index_location
         )"

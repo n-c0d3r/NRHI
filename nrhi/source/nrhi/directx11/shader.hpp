@@ -49,7 +49,7 @@ namespace nrhi {
 
 	public:
 		F_directx11_shader(
-			TK_valid<A_device> device_p,
+			TKPA_valid<A_device> device_p,
 			const F_shader_desc& desc
 		);
 		virtual ~F_directx11_shader();
@@ -62,9 +62,11 @@ namespace nrhi {
 
 	private:
 		ID3D11VertexShader* d3d11_vertex_shader_p_ = 0;
+		ID3D11InputLayout* d3d11_input_layout_p_ = 0;
 
 	public:
 		NCPP_FORCE_INLINE ID3D11VertexShader* d3d11_vertex_shader_p() noexcept { return d3d11_vertex_shader_p_; }
+		NCPP_FORCE_INLINE ID3D11InputLayout* d3d11_input_layout_p() noexcept { return d3d11_input_layout_p_; }
 
 
 
@@ -125,21 +127,21 @@ namespace nrhi {
 
 	public:
 		static TU<A_shader> create(
-			TK_valid<A_device> device_p,
+			TKPA_valid<A_device> device_p,
 			const F_shader_desc& desc
 		);
 
 	public:
 		static U_vertex_shader_handle create_vertex_shader(
-			TK_valid<A_device> device_p,
+			TKPA_valid<A_device> device_p,
 			const F_shader_desc& desc
 		);
 		static U_pixel_shader_handle create_pixel_shader(
-			TK_valid<A_device> device_p,
+			TKPA_valid<A_device> device_p,
 			const F_shader_desc& desc
 		);
 		static U_compute_shader_handle create_compute_shader(
-			TK_valid<A_device> device_p,
+			TKPA_valid<A_device> device_p,
 			const F_shader_desc& desc
 		);
 

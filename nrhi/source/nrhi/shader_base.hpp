@@ -51,57 +51,29 @@ namespace nrhi {
 
 
 
-	NCPP_FHANDLE_TEMPLATE(A_shader)
-	struct TF_vertex_shader_handle {
+	NCPP_FHANDLE_TEMPLATE(vertex_shader_handle, A_shader) {
 
-		NCPP_FHANDLE_GENERATED_BODY(TF_vertex_shader_handle, A_shader);
+		NCPP_FHANDLE_GENERATED_BODY(vertex_shader_handle, A_shader);
 
 		using H_shader_factory = H_vertex_shader;
 
 	};
 
-	using U_vertex_shader_handle = TF_vertex_shader_handle<TU<A_shader>>;
-	using S_vertex_shader_handle = TF_vertex_shader_handle<TS<A_shader>>;
-	using K_vertex_shader_handle = TF_vertex_shader_handle<TK<A_shader>>;
+	NCPP_FHANDLE_TEMPLATE(pixel_shader_handle, A_shader) {
 
-	using S_valid_vertex_shader_handle = TF_vertex_shader_handle<TS_valid<A_shader>>;
-	using K_valid_vertex_shader_handle = TF_vertex_shader_handle<TK_valid<A_shader>>;
-
-
-
-	NCPP_FHANDLE_TEMPLATE(A_shader)
-	struct TF_pixel_shader_handle {
-
-		NCPP_FHANDLE_GENERATED_BODY(TF_vertex_shader_handle, A_shader);
+		NCPP_FHANDLE_GENERATED_BODY(pixel_shader_handle, A_shader);
 
 		using H_shader_factory = H_pixel_shader;
 
 	};
 
-	using U_pixel_shader_handle = TF_pixel_shader_handle<TU<A_shader>>;
-	using S_pixel_shader_handle = TF_pixel_shader_handle<TS<A_shader>>;
-	using K_pixel_shader_handle = TF_pixel_shader_handle<TK<A_shader>>;
+	NCPP_FHANDLE_TEMPLATE(compute_shader_handle, A_shader) {
 
-	using S_valid_pixel_shader_handle = TF_pixel_shader_handle<TS_valid<A_shader>>;
-	using K_valid_pixel_shader_handle = TF_pixel_shader_handle<TK_valid<A_shader>>;
-
-
-
-	NCPP_FHANDLE_TEMPLATE(A_shader)
-	struct TF_compute_shader_handle {
-
-		NCPP_FHANDLE_GENERATED_BODY(TF_compute_shader_handle, A_shader);
+		NCPP_FHANDLE_GENERATED_BODY(compute_shader_handle, A_shader);
 
 		using H_shader_factory = H_compute_shader;
 
 	};
-
-	using U_compute_shader_handle = TF_compute_shader_handle<TU<A_shader>>;
-	using S_compute_shader_handle = TF_compute_shader_handle<TS<A_shader>>;
-	using K_compute_shader_handle = TF_compute_shader_handle<TK<A_shader>>;
-
-	using S_valid_compute_shader_handle = TF_compute_shader_handle<TS_valid<A_shader>>;
-	using K_valid_compute_shader_handle = TF_compute_shader_handle<TK_valid<A_shader>>;
 
 
 
@@ -136,7 +108,7 @@ namespace nrhi {
 
 	protected:
 		A_shader(
-			TK_valid<A_device> device_p,
+			TKPA_valid<A_device> device_p,
 			const F_shader_desc& desc
 		);
 

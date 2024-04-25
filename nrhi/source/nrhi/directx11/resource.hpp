@@ -60,13 +60,13 @@ namespace nrhi {
 
     public:
         F_directx11_resource(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_data,
             const F_resource_desc& desc,
             E_resource_type overrided_type
         );
         F_directx11_resource(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_data,
             const F_resource_desc& desc,
             E_resource_type overrided_type,
@@ -82,41 +82,41 @@ namespace nrhi {
 
     public:
         static TU<A_resource> create(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_resource_data,
             const F_resource_desc& desc
         );
 
     public:
         static U_buffer_handle create_buffer(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_resource_data,
             const F_resource_desc& desc
         );
         static U_structured_buffer_handle create_structured_buffer(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_resource_data,
             const F_resource_desc& desc
         );
         static U_single_elemented_buffer_handle create_single_elemented_buffer(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_resource_data,
             const F_resource_desc& desc
         );
 
     public:
         static U_texture_1d_handle create_texture_1d(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_resource_data,
             const F_resource_desc& desc
         );
         static U_texture_2d_handle create_texture_2d(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_resource_data,
             const F_resource_desc& desc
         );
         static U_texture_3d_handle create_texture_3d(
-            TK_valid<A_device> device_p,
+            TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_resource_data,
             const F_resource_desc& desc
         );

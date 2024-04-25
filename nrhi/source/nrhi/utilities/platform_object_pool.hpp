@@ -82,7 +82,7 @@ namespace nrhi {
 			}
 
 		public:
-			static inline F_platform_object acquire_object(TK_valid<A_device> device_p, const F_input& input) {
+			static inline F_platform_object acquire_object(TKPA_valid<A_device> device_p, const F_input& input) {
 
 				u64 id = hash_input(input);
 				F_platform_object result;
@@ -113,7 +113,7 @@ namespace nrhi {
 
 				return result;
 			}
-			static inline void release_object(TK_valid<A_device> device_p, const F_input& input) {
+			static inline void release_object(TKPA_valid<A_device> device_p, const F_input& input) {
 
 				u64 id = hash_input(input);
 

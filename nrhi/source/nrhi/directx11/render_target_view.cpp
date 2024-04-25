@@ -8,7 +8,7 @@
 namespace nrhi {
 
     F_directx11_render_target_view::F_directx11_render_target_view(
-        TK_valid<A_device> device_p,
+        TKPA_valid<A_device> device_p,
         const F_resource_view_desc& desc,
         E_resource_view_type overrided_type
     ) :
@@ -24,7 +24,7 @@ namespace nrhi {
     {
     }
     F_directx11_render_target_view::F_directx11_render_target_view(
-        TK_valid<A_device> device_p,
+        TKPA_valid<A_device> device_p,
         const F_resource_view_desc& desc,
         E_resource_view_type overrided_type,
         ID3D11RenderTargetView* d3d11_render_target_view_p
@@ -37,7 +37,7 @@ namespace nrhi {
     }
 
     ID3D11RenderTargetView* F_directx11_render_target_view::create_d3d11_render_target_view(
-        TK_valid<A_device> device_p,
+        TKPA_valid<A_device> device_p,
         const F_resource_view_desc& desc
     ) {
 
