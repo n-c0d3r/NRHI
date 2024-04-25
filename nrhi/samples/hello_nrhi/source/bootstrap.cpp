@@ -235,17 +235,20 @@ int main() {
 
 		if(swapchain_p.is_valid()) {
 
+			// clear main render target view to cyan (r: 0, g: 255, b:255, a: 1.0)
 			command_list_p->clear_rtv(
 				NCPP_FHANDLE_VALID(back_rtv_p),
 				{ 0.0f, 1.0f, 1.0f, 1.0f }
 			);
 
+			// submit command lists to GPU
 			command_queue_p->execute_command_lists(
 				NCPP_INIL_SPAN(
 					NCPP_FOREF_VALID(command_list_p)
 				)
 			);
 
+			// finalize rendering, swap back buffer and front buffer to show the rendered image
 			swapchain_p->present();
 		}
 
