@@ -25,8 +25,11 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "is_support_descriptor_management" "bool()"
         "is_support_advanced_resource" "bool()"
         "is_support_direct_constants" "bool()"
-        "is_support_hardware_vbuffer" "bool()"
-        "is_support_hardware_cbuffer" "bool()"
+        "is_support_constant_buffer" "bool()"
+        "is_support_vertex_buffer" "bool()"
+        "is_support_instance_buffer" "bool()"
+        "is_support_multiple_vertex_buffers" "bool()"
+        "is_support_multiple_instance_buffers" "bool()"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX11> Implement driver done")
