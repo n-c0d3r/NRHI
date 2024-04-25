@@ -78,6 +78,11 @@ namespace nrhi {
 			TKPA_valid<A_command_list> command_list_p,
 			TKPA_valid<A_frame_buffer> frame_buffer_p
 		);
+		static void clear_rtv(
+			TKPA_valid<A_command_list> command_list_p,
+			KPA_valid_rtv_handle rtv_p,
+			PA_vector4 color
+		);
 		static void set_graphics_pipeline_state(
 			TKPA_valid<A_command_list> command_list_p,
 			KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p

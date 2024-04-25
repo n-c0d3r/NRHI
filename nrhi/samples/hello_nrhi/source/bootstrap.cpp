@@ -235,8 +235,9 @@ int main() {
 
 		if(swapchain_p.is_valid()) {
 
-			command_list_p->set_graphics_pipeline_state(
-				NCPP_FHANDLE_VALID(graphics_pipeline_state_p)
+			command_list_p->clear_rtv(
+				NCPP_FHANDLE_VALID(back_rtv_p),
+				{ 0.0f, 1.0f, 1.0f, 1.0f }
 			);
 
 			command_queue_p->execute_command_lists(

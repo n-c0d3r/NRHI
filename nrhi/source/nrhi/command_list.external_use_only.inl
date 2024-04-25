@@ -46,6 +46,10 @@ namespace nrhi {
 
 		H_command_list::set_frame_buffer(NCPP_KTHIS(), frame_buffer_p);
 	}
+	NCPP_FORCE_INLINE void A_command_list::clear_rtv(KPA_valid_rtv_handle rtv_p, PA_vector4 color) {
+
+		H_command_list::clear_rtv(NCPP_KTHIS(), rtv_p, color);
+	}
 	NCPP_FORCE_INLINE void A_command_list::set_graphics_pipeline_state(KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p) {
 
 		H_command_list::set_graphics_pipeline_state(NCPP_KTHIS(), graphics_pipeline_state_p);

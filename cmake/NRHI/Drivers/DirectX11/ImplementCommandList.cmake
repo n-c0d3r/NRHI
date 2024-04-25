@@ -29,6 +29,11 @@ NRHI_FunctionHelper_CreateFunctionClass(
             TKPA_valid<A_command_list> command_list_p,
             TKPA_valid<A_frame_buffer> frame_buffer_p
         )"
+        "clear_rtv" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			KPA_valid_rtv_handle rtv_p,
+			PA_vector4 color
+		)"
         "set_graphics_pipeline_state" "void(
             TKPA_valid<A_command_list> command_list_p,
             KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p
