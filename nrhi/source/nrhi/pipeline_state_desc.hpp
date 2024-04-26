@@ -40,6 +40,7 @@
 #include <nrhi/fill_mode.hpp>
 #include <nrhi/depth_comparison_func.hpp>
 #include <nrhi/primitive_topology.hpp>
+#include <nrhi/utilities/platform_object_pool.hpp>
 
 #pragma endregion
 
@@ -61,6 +62,12 @@ namespace nrhi {
 
 		b8 font_counter_clock_wise = true;
 
+		NRHI_PLATFORM_OBJECT_HASH_MEMBERS_FUNCTION(
+			cull_mode,
+			fill_mode,
+			font_counter_clock_wise
+		);
+
 	};
 
 	struct F_depth_stencil_desc {
@@ -69,6 +76,13 @@ namespace nrhi {
 		E_format format = E_format::D32_FLOAT;
 		E_depth_comparison_func depth_comparison_func = E_depth_comparison_func::LESS;
 		b8 depth_buffer_write = true;
+
+		NRHI_PLATFORM_OBJECT_HASH_MEMBERS_FUNCTION(
+			enable_depth_test,
+			format,
+			depth_comparison_func,
+			depth_buffer_write
+		);
 
 	};
 

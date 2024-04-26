@@ -80,7 +80,7 @@ namespace nrhi {
 		private:
 			static NCPP_FORCE_INLINE u64 hash_input(const F_input& input) {
 
-				return TF_hash_type_memory<F_input>()(input);
+				return input.hash_members();
 			}
 
 		public:
@@ -146,6 +146,16 @@ namespace nrhi {
 
 		};
 
+		template<typename... Fs__>
+		auto T_platform_object_member_tuple(Fs__&&... members)
+			-> TG_tuple<std::remove_const_t<std::remove_reference_t<Fs__>>...>
+		{
+
+			return {
+				members...
+			};
+		}
+
 #define NRHI_PLATFORM_OBJECT_POOL_GENERATED_BODY() \
 			public:                                         \
 				static F_platform_object_wrapper_map map;\
@@ -154,6 +164,15 @@ namespace nrhi {
 #define NRHI_PLATFORM_OBJECT_POOL_DEFINE(...) \
 			typename __VA_ARGS__::F_platform_object_wrapper_map __VA_ARGS__::map; \
 			ncpp::u64 __VA_ARGS__::default_id = 0;
+
+#define NRHI_PLATFORM_OBJECT_HASH_MEMBERS_FUNCTION(...) \
+			ncpp::u64 hash_members() const noexcept {            \
+            	return ncpp::TF_hash_type_memory<          \
+					decltype(nrhi::utilities::T_platform_object_member_tuple(__VA_ARGS__)) \
+				>()(                                                \
+					nrhi::utilities::T_platform_object_member_tuple(__VA_ARGS__)    \
+				);                                    \
+			}
 
 	}
 
