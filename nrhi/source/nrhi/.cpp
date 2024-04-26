@@ -50,6 +50,8 @@ namespace nrhi {
 
         H_system::release();
 
+		internal::try_update_map(true);
+
         internal::is_system_released = true;
     }
 
@@ -83,29 +85,29 @@ namespace nrhi {
             NRHI_ENUM_TRY_UPDATE_MAP(E_fill_mode);
 
         }
-        void try_update_map_functions(){
+        void try_update_map_functions(bool clear){
 
-            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_driver);
-            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_system);
-            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_device);
-            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_adapter);
-            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_command_queue);
-            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_command_list);
-            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_swapchain);
-            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_resource);
-            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_resource_view);
-            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_format);
-            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_shader_compiler);
-            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_shader_class);
-            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_shader);
-            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_shader_blob);
-            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(H_pipeline_state);
+            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(clear, H_driver);
+            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(clear, H_system);
+            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(clear, H_device);
+            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(clear, H_adapter);
+            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(clear, H_command_queue);
+            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(clear, H_command_list);
+            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(clear, H_swapchain);
+            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(clear, H_resource);
+            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(clear, H_resource_view);
+            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(clear, H_format);
+            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(clear, H_shader_compiler);
+            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(clear, H_shader_class);
+            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(clear, H_shader);
+            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(clear, H_shader_blob);
+            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(clear, H_pipeline_state);
 
         }
-        void try_update_map(){
+        void try_update_map(bool clear){
 
             try_update_map_enums();
-            try_update_map_functions();
+            try_update_map_functions(clear);
 
         }
 

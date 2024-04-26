@@ -52,6 +52,24 @@ namespace nrhi {
 		u32 vertex_attribute_group_count = (u32)(blob_desc.vertex_attribute_group_desc_vector.size());
 		u32 instance_attribute_group_count = (u32)(blob_desc.instance_attribute_group_desc_vector.size());
 
+		NCPP_ASSERT(
+			vertex_attribute_group_count
+			<= NRHI_MAX_VERTEX_BUFFER_COUNT_PER_DRAWCALL
+		) << "the number of vertex attribute groups exceeds the limit";
+
+		NCPP_ASSERT(
+			instance_attribute_group_count
+			<= NRHI_MAX_INSTANCE_BUFFER_COUNT_PER_DRAWCALL
+		) << "the number of instance attribute groups exceeds the limit";
+
+		NCPP_ASSERT(
+			(
+				vertex_attribute_group_count
+				+ instance_attribute_group_count
+			)
+			<= NRHI_MAX_VERTEX_INSTANCE_BUFFER_COUNT_PER_DRAWCALL
+		) << "the number of vetex attribute groups and instance attribute groups exceeds the limit";
+
 		u32 element_count = 0;
 		for(u32 i = 0; i < vertex_attribute_group_count; ++i) {
 

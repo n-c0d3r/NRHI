@@ -37,6 +37,7 @@
 #include <nrhi/graphics_pipeline_state_handle.hpp>
 #include <nrhi/compute_pipeline_state_handle.hpp>
 #include <nrhi/resource_view_handle.hpp>
+#include <nrhi/buffer_handle.hpp>
 
 #pragma endregion
 
@@ -78,10 +79,23 @@ namespace nrhi {
 
 
 	public:
+		void clear_state();
 		void set_frame_buffer(TKPA_valid<A_frame_buffer> frame_buffer_p);
 		void clear_rtv(KPA_valid_rtv_handle rtv_p, PA_vector4 color);
 		void set_graphics_pipeline_state(KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p);
 		void set_compute_pipeline_state(KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p);
+		void set_vertex_buffers(
+			const TG_span<K_valid_buffer_handle>& vertex_buffer_p_span,
+			const TG_span<u32>& offset_span
+		);
+		void set_instance_buffers(
+			const TG_span<K_valid_buffer_handle>& instance_buffer_p_span,
+			const TG_span<u32>& offset_span
+		);
+		void set_index_buffer(
+			KPA_valid_buffer_handle index_buffer_p,
+			u32 offset
+		);
 		void draw_indexed(u32 index_count, u32 base_index_location);
 
     };

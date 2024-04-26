@@ -50,7 +50,7 @@ namespace nrhi {
 
 		TG_vector<K_valid_rtv_handle> color_attachment_p_vector;
 
-		K_dsv_handle depth_attachment_p;
+		K_dsv_handle depth_stencil_attachment_p;
 
 	};
 

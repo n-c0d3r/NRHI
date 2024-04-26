@@ -64,7 +64,7 @@ namespace nrhi {
 
 	struct F_depth_stencil_desc {
 
-		b8 enable_depth_test = true;
+		b8 enable_depth_test = false;
 		E_format format = E_format::D32_FLOAT;
 		E_depth_comparison_func depth_comparison_func = E_depth_comparison_func::LESS;
 		b8 depth_buffer_write = true;

@@ -37,6 +37,7 @@
 #include <nrhi/pipeline_state_base.hpp>
 #include <nrhi/graphics_pipeline_state.hpp>
 #include <nrhi/compute_pipeline_state.hpp>
+#include <nrhi/buffer_handle.hpp>
 
 #pragma endregion
 
@@ -50,10 +51,33 @@ namespace nrhi {
 
 
 
+	struct F_directx11_temp_command_list_state {
+
+		ID3D11Buffer* d3d11_vertex_instance_buffers[NRHI_MAX_VERTEX_INSTANCE_BUFFER_COUNT_PER_DRAWCALL];
+		u32 d3d11_vertex_instance_buffer_offsets[NRHI_MAX_VERTEX_INSTANCE_BUFFER_COUNT_PER_DRAWCALL];
+
+		NCPP_ENABLE_IF_DEBUG(b8 is_vertex_shader_binded = false);
+		NCPP_ENABLE_IF_DEBUG(u32 vertex_buffer_count = 0);
+		NCPP_ENABLE_IF_DEBUG(u32 instance_buffer_count = 0);
+
+		NCPP_ENABLE_IF_DEBUG(u32 binded_vertex_buffer_count = 0);
+		NCPP_ENABLE_IF_DEBUG(u32 binded_instance_buffer_count = 0);
+
+	};
+
+
+
     class NRHI_API F_directx11_command_list : public A_command_list {
+
+	public:
+		friend class HD_directx11_command_list;
+
+
 
     private:
         ID3D11DeviceContext* d3d11_device_context_p_ = 0;
+
+		F_directx11_temp_command_list_state temp_state_;
 
     public:
         NCPP_FORCE_INLINE ID3D11DeviceContext* d3d11_device_context_p() noexcept { return d3d11_device_context_p_; }
@@ -74,6 +98,9 @@ namespace nrhi {
         static TU<A_command_list> create(TKPA_valid<A_device> device_p, const F_command_list_desc& desc);
 
 	public:
+		static void clear_state(
+			TKPA_valid<A_command_list> command_list_p
+		);
 		static void set_frame_buffer(
 			TKPA_valid<A_command_list> command_list_p,
 			TKPA_valid<A_frame_buffer> frame_buffer_p
@@ -90,6 +117,21 @@ namespace nrhi {
 		static void set_compute_pipeline_state(
 			TKPA_valid<A_command_list> command_list_p,
 			KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p
+		);
+		static void set_vertex_buffers(
+			TKPA_valid<A_command_list> command_list_p,
+			const TG_span<K_valid_buffer_handle>& vertex_buffer_p_span,
+			const TG_span<u32>& offset_span
+		);
+		static void set_instance_buffers(
+			TKPA_valid<A_command_list> command_list_p,
+			const TG_span<K_valid_buffer_handle>& instance_buffer_p_span,
+			const TG_span<u32>& offset_span
+		);
+		static void set_index_buffer(
+			TKPA_valid<A_command_list> command_list_p,
+			KPA_valid_buffer_handle index_buffer_p,
+			u32 offset
 		);
 		static void draw_indexed(
 			TKPA_valid<A_command_list> command_list_p,

@@ -207,14 +207,13 @@ int main() {
 	);
 
 	// create frame buffer
-	auto frame_buffer_desc = F_frame_buffer_desc {
-		.color_attachment_p_vector = {
-			swapchain_p->back_rtv_p()
-		}
-	};
 	auto frame_buffer_p = H_frame_buffer::create(
 		NCPP_FOREF_VALID(device_p),
-		frame_buffer_desc
+		{
+			.color_attachment_p_vector = {
+				swapchain_p->back_rtv_p()
+			}
+		}
 	);
 
 	// create graphics pipeline state
@@ -240,6 +239,17 @@ int main() {
 				NCPP_FHANDLE_VALID(back_rtv_p),
 				{ 0.0f, 1.0f, 1.0f, 1.0f }
 			);
+
+			// draw triangle
+			{
+				// clear state
+				command_list_p->clear_state();
+
+				// set frame buffer to draw
+				command_list_p->set_frame_buffer(
+					NCPP_FOREF_VALID(frame_buffer_p)
+				);
+			}
 
 			// submit command lists to GPU
 			command_queue_p->execute_command_lists(

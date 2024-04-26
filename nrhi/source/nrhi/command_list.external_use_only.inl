@@ -42,6 +42,10 @@
 
 namespace nrhi {
 
+	NCPP_FORCE_INLINE void A_command_list::clear_state() {
+
+		H_command_list::clear_state(NCPP_KTHIS());
+	}
 	NCPP_FORCE_INLINE void A_command_list::set_frame_buffer(TKPA_valid<A_frame_buffer> frame_buffer_p) {
 
 		H_command_list::set_frame_buffer(NCPP_KTHIS(), frame_buffer_p);
@@ -57,6 +61,39 @@ namespace nrhi {
 	NCPP_FORCE_INLINE void A_command_list::set_compute_pipeline_state(KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p) {
 
 		H_command_list::set_compute_pipeline_state(NCPP_KTHIS(), compute_pipeline_state_p);
+	}
+	NCPP_FORCE_INLINE void A_command_list::set_vertex_buffers(
+		const TG_span<K_valid_buffer_handle>& vertex_buffer_p_span,
+		const TG_span<u32>& offset_span
+	) {
+
+		H_command_list::set_vertex_buffers(
+			NCPP_KTHIS(),
+			vertex_buffer_p_span,
+			offset_span
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::set_instance_buffers(
+		const TG_span<K_valid_buffer_handle>& instance_buffer_p_span,
+		const TG_span<u32>& offset_span
+	) {
+
+		H_command_list::set_instance_buffers(
+			NCPP_KTHIS(),
+			instance_buffer_p_span,
+			offset_span
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::set_index_buffer(
+		KPA_valid_buffer_handle index_buffer_p,
+		u32 offset
+	) {
+
+		H_command_list::set_index_buffer(
+			NCPP_KTHIS(),
+			index_buffer_p,
+			offset
+		);
 	}
 	NCPP_FORCE_INLINE void A_command_list::draw_indexed(u32 index_count, u32 base_index_location) {
 

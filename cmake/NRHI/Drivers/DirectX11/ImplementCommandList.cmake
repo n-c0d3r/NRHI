@@ -25,6 +25,9 @@ NRHI_FunctionHelper_CreateFunctionClass(
         }"
     VALUES
         "create" "TU<A_command_list>(TKPA_valid<A_device> device_p, const F_command_list_desc& desc)"
+        "clear_state" "void(
+            TKPA_valid<A_command_list> command_list_p
+        )"
         "set_frame_buffer" "void(
             TKPA_valid<A_command_list> command_list_p,
             TKPA_valid<A_frame_buffer> frame_buffer_p
@@ -41,6 +44,21 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "set_compute_pipeline_state" "void(
             TKPA_valid<A_command_list> command_list_p,
             KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p
+        )"
+        "set_vertex_buffers" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            const TG_span<K_valid_buffer_handle>& vertex_buffer_p_span,
+            const TG_span<u32>& offset_span
+        )"
+        "set_instance_buffers" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            const TG_span<K_valid_buffer_handle>& instance_buffer_p_span,
+            const TG_span<u32>& offset_span
+        )"
+        "set_index_buffer" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            KPA_valid_buffer_handle index_buffer_p,
+            u32 offset
         )"
         "draw_indexed" "void(
             TKPA_valid<A_command_list> command_list_p,

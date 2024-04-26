@@ -152,7 +152,7 @@ namespace nrhi {}
 ////////////////////////////////////////////////////////////////////////////////////
 
 #define NRHI_ENUM_TRY_UPDATE_MAP(...) NCPP_EXPAND(__VA_ARGS__##___nrhi_enum_internal::try_update_map())
-#define NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(...) NCPP_EXPAND(__VA_ARGS__##___nrhi_function_class_internal::try_update_map())
+#define NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(Clear, ...) NCPP_EXPAND(__VA_ARGS__##___nrhi_function_class_internal::try_update_map(Clear))
 
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -191,8 +191,8 @@ namespace nrhi {
     namespace internal {
 
         NRHI_API void try_update_map_enums();
-        NRHI_API void try_update_map_functions();
-        NRHI_API void try_update_map();
+        NRHI_API void try_update_map_functions(bool clear = false);
+        NRHI_API void try_update_map(bool clear = false);
 
     }
 

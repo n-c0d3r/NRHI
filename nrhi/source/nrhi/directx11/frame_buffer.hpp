@@ -47,6 +47,14 @@ namespace nrhi {
 
 	class NRHI_API F_directx11_frame_buffer : public A_frame_buffer {
 
+	private:
+		D3D11_VIEWPORT d3d11_viewport_;
+
+	public:
+		NCPP_FORCE_INLINE const D3D11_VIEWPORT& d3d11_viewport() const noexcept { return d3d11_viewport_; }
+
+
+
 	public:
 		F_directx11_frame_buffer(
 			TKPA_valid<A_device> device_p,

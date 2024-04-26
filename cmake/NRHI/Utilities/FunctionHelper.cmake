@@ -106,7 +106,7 @@ function(NRHI_FunctionHelper_CreateFunctionClass)
                 "${hppFileContent}
                     struct NRHI_API ${PARGS_NAME} {
 
-                        static void update_map();
+                        static void update_map(bool clear = false);
                 "
             )
         else()
@@ -156,24 +156,11 @@ function(NRHI_FunctionHelper_CreateFunctionClass)
                     set(
                         hppFileContent
                         "${hppFileContent}
-                            public:
-                            using F_${name} = ${funcTypeValue};
-                        "
-                    )
-                    set(
-                        hppFileContent
-                        "${hppFileContent}
-                        static F_${name}* ${name};
+                        static ncpp::TF_first_template_targ<${funcTypeValue}> ${name};
                         "
                     )
                 endif()
             else()
-                set(
-                    hppFileContent
-                    "${hppFileContent}
-                        using F_${name} = ${funcTypeValue};
-                    "
-                )
                 set(
                     hppFileContent
                     "${hppFileContent}
@@ -211,7 +198,7 @@ function(NRHI_FunctionHelper_CreateFunctionClass)
                     set(
                         cppFileContent
                         "${cppFileContent}
-                        ${PARGS_NAME}::F_${name}* ${PARGS_NAME}::${name} = 0;
+                        ncpp::TF_first_template_targ<${funcTypeValue}> ${PARGS_NAME}::${name} = 0;
                         "
                     )
                 endif()
@@ -269,7 +256,10 @@ function(NRHI_FunctionHelper_CreateFunctionClass)
                     set(
                         updateMapBodyContent
                         "${updateMapBodyContent}
-                        ${PARGS_NAME}::${name} = &(${PARGS_DRIVER_SPECIFIC_NAME}::${name});
+                        if(clear)
+                            ${PARGS_NAME}::${name} = &(${PARGS_DRIVER_SPECIFIC_NAME}::${name});
+                        else
+                            ${PARGS_NAME}::${name} = 0;
                         "
                     )
                 else()
@@ -293,7 +283,7 @@ function(NRHI_FunctionHelper_CreateFunctionClass)
             set(
                 cppFileContent
                 "${cppFileContent}
-                    void ${PARGS_NAME}::update_map() {
+                    void ${PARGS_NAME}::update_map(bool clear) {
                         ncpp::i32 driver_index = nrhi::driver_index();
                         #include \"${TARGET_UPDATE_MAP_BODY_FILE_PATH}\"
                     }
@@ -319,8 +309,8 @@ function(NRHI_FunctionHelper_CreateFunctionClass)
                 hppFileContent
                 "${hppFileContent}
                     namespace ${PARGS_NAME}___nrhi_function_class_internal {
-                        inline void try_update_map(){
-                            ${PARGS_NAME}::update_map();
+                        inline void try_update_map(bool clear = false){
+                            ${PARGS_NAME}::update_map(clear);
                         }
                     }
                 "
@@ -330,7 +320,7 @@ function(NRHI_FunctionHelper_CreateFunctionClass)
                 hppFileContent
                 "${hppFileContent}
                     namespace ${PARGS_NAME}___nrhi_function_class_internal {
-                        inline void try_update_map(){
+                        inline void try_update_map(bool clear = false){
                         }
                     }
                 "

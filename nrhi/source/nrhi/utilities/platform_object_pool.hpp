@@ -66,6 +66,8 @@ namespace nrhi {
 		public:
 			static inline void initialize() {
 
+				F_pool__::default_id = hash_input(F_input__ {});
+
 				F_pool__::map.clear();
 			}
 			static inline void release() {
@@ -85,6 +87,10 @@ namespace nrhi {
 			static inline F_platform_object acquire_object(TKPA_valid<A_device> device_p, const F_input& input) {
 
 				u64 id = hash_input(input);
+
+				if(F_pool__::default_id == id)
+					return 0;
+
 				F_platform_object result;
 
 #ifdef NRHI_THREAD_SAFE
@@ -117,6 +123,9 @@ namespace nrhi {
 
 				u64 id = hash_input(input);
 
+				if(F_pool__::default_id == id)
+					return;
+
 #ifdef NRHI_THREAD_SAFE
 				spin_lock_.lock();
 #endif
@@ -139,10 +148,12 @@ namespace nrhi {
 
 #define NRHI_PLATFORM_OBJECT_POOL_GENERATED_BODY() \
 			public:                                         \
-				static F_platform_object_wrapper_map map;
+				static F_platform_object_wrapper_map map;\
+				static ncpp::u64 default_id;
 
 #define NRHI_PLATFORM_OBJECT_POOL_DEFINE(...) \
-			typename __VA_ARGS__::F_platform_object_wrapper_map __VA_ARGS__::map;
+			typename __VA_ARGS__::F_platform_object_wrapper_map __VA_ARGS__::map; \
+			ncpp::u64 __VA_ARGS__::default_id = 0;
 
 	}
 

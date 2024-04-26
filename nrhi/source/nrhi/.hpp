@@ -99,6 +99,7 @@ namespace nrhi { }
 #include <nrhi/directx11/texture.hpp>
 #include <nrhi/directx11/shader_resource_view.hpp>
 #include <nrhi/directx11/render_target_view.hpp>
+#include <nrhi/directx11/depth_stencil_view.hpp>
 #include <nrhi/directx11/graphics_pipeline_state.hpp>
 #include <nrhi/directx11/compute_pipeline_state.hpp>
 #endif
