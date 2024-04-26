@@ -78,9 +78,9 @@ int main() {
 
 
     TG_vector<F_vector4> vertices = {
-		{ 1.0f, 0.0f, 0.0f, 1.0f },
-		{ 0.0f, 1.0f, 0.0f, 1.0f },
-		{ 0.0f, 0.0f, 0.0f, 1.0f }
+		{ 1.0f, 0.0f, 0.5f, 1.0f },
+		{ 0.0f, 0.0f, 0.5f, 1.0f },
+		{ 0.0f, 1.0f, 0.5f, 1.0f }
 	};
     U_buffer_handle vbuffer_p = H_buffer::T_create<F_vector4>(
         NCPP_FOREF_VALID(device_p),
@@ -161,7 +161,7 @@ int main() {
 		"DemoShaderClass",
 		// shader class source content
 		"float4 vmain(float4 vertex_pos : VERTEX_POSITION, float4 instance_pos : INSTANCE_POSITION) : SV_POSITION"
-		"{ return instance_pos + vertex_pos; }"
+		"{ return float4(instance_pos.xyz + vertex_pos.xyz, 1); }"
 		"float4 pmain(float4 pos : SV_POSITION) : SV_TARGET"
 		"{ return float4(1,1,1,1); }",
 		// shader kernel descriptors (each kernel has 1 entry point function and is compiled to 1 shader blob)
@@ -268,6 +268,11 @@ int main() {
 
 				command_list_p->set_graphics_pipeline_state(
 					NCPP_FHANDLE_VALID(graphics_pipeline_state_p)
+				);
+
+				command_list_p->set_index_buffer(
+					NCPP_FHANDLE_VALID(ibuffer_p),
+					0
 				);
 
 				command_list_p->set_vertex_buffer(

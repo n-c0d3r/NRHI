@@ -60,13 +60,16 @@ namespace nrhi {
 		E_cull_mode cull_mode = E_cull_mode::BACK;
 		E_fill_mode fill_mode = E_fill_mode::SOLID;
 
-		b8 font_counter_clock_wise = true;
+		b8 font_counter_clock_wise = false;
 
-		NRHI_PLATFORM_OBJECT_HASH_MEMBERS_FUNCTION(
-			cull_mode,
-			fill_mode,
-			font_counter_clock_wise
-		);
+		NCPP_FORCE_INLINE b8 operator == (const F_rasterizer_desc& b) noexcept {
+
+			return (
+				(cull_mode == b.cull_mode)
+				|| (fill_mode == b.fill_mode)
+				|| (font_counter_clock_wise == b.font_counter_clock_wise)
+			);
+		}
 
 	};
 
@@ -77,12 +80,15 @@ namespace nrhi {
 		E_depth_comparison_func depth_comparison_func = E_depth_comparison_func::LESS;
 		b8 depth_buffer_write = true;
 
-		NRHI_PLATFORM_OBJECT_HASH_MEMBERS_FUNCTION(
-			enable_depth_test,
-			format,
-			depth_comparison_func,
-			depth_buffer_write
-		);
+		NCPP_FORCE_INLINE b8 operator == (const F_depth_stencil_desc& b) noexcept {
+
+			return (
+				(enable_depth_test == b.enable_depth_test)
+				|| (format == b.format)
+				|| (depth_comparison_func == b.depth_comparison_func)
+				|| (depth_buffer_write == b.depth_buffer_write)
+			);
+		}
 
 	};
 

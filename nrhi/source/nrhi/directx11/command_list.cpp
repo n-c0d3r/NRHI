@@ -437,23 +437,6 @@ namespace nrhi {
 			temp_state.d3d11_vertex_buffer_offsets
 		);
 
-		// indexed drawing does not support instance buffer
-//#ifdef NCPP_ENABLE_ASSERT
-//		for(u32 i = 0; i < temp_state.instance_buffer_count; ++i) {
-//
-//			const auto& instance_buffer_p = temp_state.instance_buffer_orefs[i];
-//
-//			NCPP_ASSERT(instance_buffer_p.is_valid()) << "invalid instance buffer";
-//		}
-//#endif
-//		d3d11_device_context_p->IASetVertexBuffers(
-//			temp_state.vertex_buffer_count,
-//			temp_state.instance_buffer_count,
-//			temp_state.d3d11_instance_buffers,
-//			temp_state.d3d11_instance_buffer_strides,
-//			temp_state.d3d11_instance_buffer_offsets
-//		);
-
 	}
 	void HD_directx11_command_list::apply_temp_state_for_indexed_instanced_drawing(
 		const F_directx11_temp_command_list_state& temp_state,
@@ -476,22 +459,21 @@ namespace nrhi {
 			temp_state.d3d11_vertex_buffer_offsets
 		);
 
-		// indexed drawing does not support instance buffer
-//#ifdef NCPP_ENABLE_ASSERT
-//		for(u32 i = 0; i < temp_state.instance_buffer_count; ++i) {
-//
-//			const auto& instance_buffer_p = temp_state.instance_buffer_orefs[i];
-//
-//			NCPP_ASSERT(instance_buffer_p.is_valid()) << "invalid instance buffer";
-//		}
-//#endif
-//		d3d11_device_context_p->IASetVertexBuffers(
-//			temp_state.vertex_buffer_count,
-//			temp_state.instance_buffer_count,
-//			temp_state.d3d11_instance_buffers,
-//			temp_state.d3d11_instance_buffer_strides,
-//			temp_state.d3d11_instance_buffer_offsets
-//		);
+#ifdef NCPP_ENABLE_ASSERT
+		for(u32 i = 0; i < temp_state.instance_buffer_count; ++i) {
+
+			const auto& instance_buffer_p = temp_state.instance_buffer_orefs[i];
+
+			NCPP_ASSERT(instance_buffer_p.is_valid()) << "invalid instance buffer";
+		}
+#endif
+		d3d11_device_context_p->IASetVertexBuffers(
+			temp_state.vertex_buffer_count,
+			temp_state.instance_buffer_count,
+			temp_state.d3d11_instance_buffers,
+			temp_state.d3d11_instance_buffer_strides,
+			temp_state.d3d11_instance_buffer_offsets
+		);
 
 	}
 

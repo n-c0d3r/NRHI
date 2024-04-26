@@ -53,11 +53,11 @@ namespace nrhi {
 	>
 	{
 
-		NRHI_PLATFORM_OBJECT_POOL_GENERATED_BODY();
-
 	public:
+		static F_rasterizer_desc default_input();
+		static constexpr ID3D11RasterizerState* default_object() { return 0; }
 		static ID3D11RasterizerState* create_object(TKPA_valid<A_device> device_p, const F_rasterizer_desc& desc);
-		static void destroy_object(TKPA_valid<A_device> device_p, ID3D11RasterizerState* object_p, const F_rasterizer_desc& desc);
+		static void destroy_object(TKPA_valid<A_device> device_p, const F_rasterizer_desc& desc, ID3D11RasterizerState* object_p);
 
 	};
 
@@ -70,11 +70,11 @@ namespace nrhi {
 	>
 	{
 
-		NRHI_PLATFORM_OBJECT_POOL_GENERATED_BODY();
-
 	public:
+		static F_depth_stencil_desc default_input();
+		static constexpr ID3D11DepthStencilState* default_object() { return 0; }
 		static ID3D11DepthStencilState* create_object(TKPA_valid<A_device> device_p, const F_depth_stencil_desc& desc);
-		static void destroy_object(TKPA_valid<A_device> device_p, ID3D11DepthStencilState* object_p, const F_depth_stencil_desc& desc);
+		static void destroy_object(TKPA_valid<A_device> device_p, const F_depth_stencil_desc& desc, ID3D11DepthStencilState* object_p);
 
 	};
 
@@ -109,10 +109,6 @@ namespace nrhi {
 			E_pipeline_state_type overrided_type = E_pipeline_state_type::GRAPHICS
 		);
 		virtual ~F_directx11_graphics_pipeline_state();
-
-	public:
-		static void initialize_pools();
-		static void release_pools();
 
 	};
 

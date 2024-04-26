@@ -6,8 +6,10 @@
 
 namespace nrhi {
 
-	NRHI_PLATFORM_OBJECT_POOL_DEFINE(F_directx11_rasterizer_state_pool);
+	F_rasterizer_desc F_directx11_rasterizer_state_pool::default_input() {
 
+		return {};
+	}
 	ID3D11RasterizerState* F_directx11_rasterizer_state_pool::create_object(TKPA_valid<A_device> device_p, const F_rasterizer_desc& desc) {
 
 		D3D11_RASTERIZER_DESC d3d11_rs_desc;
@@ -31,15 +33,17 @@ namespace nrhi {
 
 		return result_p;
 	}
-	void F_directx11_rasterizer_state_pool::destroy_object(TKPA_valid<A_device> device_p, ID3D11RasterizerState* object_p, const F_rasterizer_desc& desc) {
+	void F_directx11_rasterizer_state_pool::destroy_object(TKPA_valid<A_device> device_p, const F_rasterizer_desc& desc, ID3D11RasterizerState* object_p) {
 
 		object_p->Release();
 	}
 
 
 
-	NRHI_PLATFORM_OBJECT_POOL_DEFINE(F_directx11_depth_stencil_state_pool);
+	F_depth_stencil_desc F_directx11_depth_stencil_state_pool::default_input() {
 
+		return {};
+	}
 	ID3D11DepthStencilState* F_directx11_depth_stencil_state_pool::create_object(TKPA_valid<A_device> device_p, const F_depth_stencil_desc& desc) {
 
 		D3D11_DEPTH_STENCIL_DESC d3d11_ds_desc;
@@ -58,7 +62,7 @@ namespace nrhi {
 
 		return result_p;
 	}
-	void F_directx11_depth_stencil_state_pool::destroy_object(TKPA_valid<A_device> device_p, ID3D11DepthStencilState* object_p, const F_depth_stencil_desc& desc) {
+	void F_directx11_depth_stencil_state_pool::destroy_object(TKPA_valid<A_device> device_p, const F_depth_stencil_desc& desc, ID3D11DepthStencilState* object_p) {
 
 		object_p->Release();
 	}
@@ -110,25 +114,18 @@ namespace nrhi {
 		// release d3d11 rasterizer state
 		F_directx11_rasterizer_state_pool::release_object(
 			device_p(),
-			desc().rasterizer_desc
+			desc().rasterizer_desc,
+			d3d11_rasterizer_state_p_
 		);
 		d3d11_rasterizer_state_p_ = 0;
 
 		// release d3d11 depth stencil state
 		F_directx11_depth_stencil_state_pool::release_object(
 			device_p(),
-			desc().depth_stencil_desc
+			desc().depth_stencil_desc,
+			d3d11_depth_stencil_state_p_
 		);
 		d3d11_depth_stencil_state_p_ = 0;
-	}
-
-	void F_directx11_graphics_pipeline_state::initialize_pools() {
-
-		F_directx11_rasterizer_state_pool::initialize();
-	}
-	void F_directx11_graphics_pipeline_state::release_pools() {
-
-		F_directx11_rasterizer_state_pool::release();
 	}
 
 }
