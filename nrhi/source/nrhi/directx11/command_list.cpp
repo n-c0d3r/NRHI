@@ -176,7 +176,7 @@ namespace nrhi {
 
 		NCPP_ASSERT(vertex_buffer_p_span.size() == temp_state.vertex_buffer_count);
 		NCPP_ENABLE_IF_DEBUG(
-			temp_state.binded_vertex_buffer_count = temp_state.vertex_buffer_count;
+			temp_state.is_vertex_buffer_binded = true;
 		);
 
 		for(u32 i = 0; i < vertex_buffer_p_span.size(); ++i) {
@@ -206,7 +206,7 @@ namespace nrhi {
 
 		NCPP_ASSERT(instance_buffer_p_span.size() == temp_state.instance_buffer_count);
 		NCPP_ENABLE_IF_DEBUG(
-			temp_state.binded_instance_buffer_count = temp_state.instance_buffer_count;
+			temp_state.is_instance_buffer_binded = true;
 		);
 
 		for(u32 i = 0; i < instance_buffer_p_span.size(); ++i) {
@@ -224,6 +224,20 @@ namespace nrhi {
 		u32 offset
 	) {
 
+		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
+
+		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
+
+		NCPP_ENABLE_IF_DEBUG(
+			auto& temp_state = directx11_command_list_p->temp_state_;
+			temp_state.is_index_buffer_binded = true;
+		);
+
+		d3d11_device_context_p->IASetIndexBuffer(
+			(ID3D11Buffer*)(index_buffer_p.T_cast<F_directx11_buffer>()->d3d11_resource_p()),
+			DXGI_FORMAT(index_buffer_p->desc().format),
+			offset
+		);
 	}
 	void HD_directx11_command_list::draw_indexed(
 		TKPA_valid<A_command_list> command_list_p,

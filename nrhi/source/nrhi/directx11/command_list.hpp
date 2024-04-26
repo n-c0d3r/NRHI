@@ -57,11 +57,13 @@ namespace nrhi {
 		u32 d3d11_vertex_instance_buffer_offsets[NRHI_MAX_VERTEX_INSTANCE_BUFFER_COUNT_PER_DRAWCALL];
 
 		NCPP_ENABLE_IF_DEBUG(b8 is_vertex_shader_binded = false);
-		NCPP_ENABLE_IF_DEBUG(u32 vertex_buffer_count = 0);
-		NCPP_ENABLE_IF_DEBUG(u32 instance_buffer_count = 0);
 
-		NCPP_ENABLE_IF_DEBUG(u32 binded_vertex_buffer_count = 0);
-		NCPP_ENABLE_IF_DEBUG(u32 binded_instance_buffer_count = 0);
+		NCPP_ENABLE_IF_DEBUG(b8 is_vertex_buffer_binded = false);
+		NCPP_ENABLE_IF_DEBUG(b8 is_instance_buffer_binded = false);
+		NCPP_ENABLE_IF_DEBUG(b8 is_index_buffer_binded = false);
+
+		u32 vertex_buffer_count = 0;
+		u32 instance_buffer_count = 0;
 
 	};
 
