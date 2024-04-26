@@ -86,12 +86,16 @@ namespace nrhi {
 		ID3D11VertexShader* d3d11_vertex_shader_p_ = 0;
 		ID3D11PixelShader* d3d11_pixel_shader_p_ = 0;
 
+		ID3D11InputLayout* d3d11_input_layout_p_ = 0;
+
 		ID3D11RasterizerState* d3d11_rasterizer_state_p_ = 0;
 		ID3D11DepthStencilState* d3d11_depth_stencil_state_p_ = 0;
 
 	public:
 		NCPP_FORCE_INLINE ID3D11VertexShader* d3d11_vertex_shader_p() noexcept { return d3d11_vertex_shader_p_; }
 		NCPP_FORCE_INLINE ID3D11PixelShader* d3d11_pixel_shader_p() noexcept { return d3d11_pixel_shader_p_; }
+
+		NCPP_FORCE_INLINE ID3D11InputLayout* d3d11_input_layout_p() noexcept { return d3d11_input_layout_p_; }
 
 		NCPP_FORCE_INLINE ID3D11RasterizerState* d3d11_rasterizer_state_p() noexcept { return d3d11_rasterizer_state_p_; }
 		NCPP_FORCE_INLINE ID3D11DepthStencilState* d3d11_depth_stencil_state_p() noexcept { return d3d11_depth_stencil_state_p_; }

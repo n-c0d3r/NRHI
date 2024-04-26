@@ -39,6 +39,7 @@
 #include <nrhi/cull_mode.hpp>
 #include <nrhi/fill_mode.hpp>
 #include <nrhi/depth_comparison_func.hpp>
+#include <nrhi/primitive_topology.hpp>
 
 #pragma endregion
 
@@ -81,6 +82,8 @@ namespace nrhi {
 		F_depth_stencil_desc depth_stencil_desc;
 
 		F_rasterizer_desc rasterizer_desc;
+
+		E_primitive_topology primitive_topology = E_primitive_topology::NONE;
 
 		TG_vector<TK_valid<A_shader>> shader_p_vector;
 

@@ -77,14 +77,31 @@ int main() {
 
 
 
-    TG_vector<F_vector4> vertices(128);
+    TG_vector<F_vector4> vertices = {
+		{ 1.0f, 0.0f, 0.0f, 1.0f },
+		{ 0.0f, 1.0f, 0.0f, 1.0f },
+		{ 0.0f, 0.0f, 0.0f, 1.0f }
+	};
     U_buffer_handle vbuffer_p = H_buffer::T_create<F_vector4>(
         NCPP_FOREF_VALID(device_p),
         vertices,
         E_resource_bind_flag::VBV
     );
 
-    TG_vector<u32> indices(128);
+	TG_vector<F_vector4> instances = {
+		{ 0.0f, 0.0f, 0.0f, 1.0f }
+	};
+	U_buffer_handle instance_buffer_p = H_buffer::T_create<F_vector4>(
+		NCPP_FOREF_VALID(device_p),
+		instances,
+		E_resource_bind_flag::INSTBV
+	);
+
+    TG_vector<u32> indices = {
+		0,
+		1,
+		2
+	};
     U_buffer_handle ibuffer_p = H_buffer::T_create<u32>(
         NCPP_FOREF_VALID(device_p),
         indices,
@@ -144,7 +161,7 @@ int main() {
 		"DemoShaderClass",
 		// shader class source content
 		"float4 vmain(float4 vertex_pos : VERTEX_POSITION, float4 instance_pos : INSTANCE_POSITION) : SV_POSITION"
-		"{ return float4(1,1,1,1); }"
+		"{ return instance_pos + vertex_pos; }"
 		"float4 pmain(float4 pos : SV_POSITION) : SV_TARGET"
 		"{ return float4(1,1,1,1); }",
 		// shader kernel descriptors (each kernel has 1 entry point function and is compiled to 1 shader blob)
@@ -220,6 +237,7 @@ int main() {
 	auto graphics_pipeline_state_p = H_graphics_pipeline_state::create(
 		NCPP_FOREF_VALID(device_p),
 		{
+			.primitive_topology = E_primitive_topology::TRIANGLE_LIST,
 			.shader_p_vector = {
 				NCPP_FHANDLE_VALID_AS_OREF(vshader_p),
 				NCPP_FHANDLE_VALID_AS_OREF(pshader_p)
@@ -242,12 +260,33 @@ int main() {
 
 			// draw triangle
 			{
-				// clear state
 				command_list_p->clear_state();
 
-				// set frame buffer to draw
 				command_list_p->set_frame_buffer(
 					NCPP_FOREF_VALID(frame_buffer_p)
+				);
+
+				command_list_p->set_graphics_pipeline_state(
+					NCPP_FHANDLE_VALID(graphics_pipeline_state_p)
+				);
+
+				command_list_p->set_vertex_buffer(
+					NCPP_FHANDLE_VALID(vbuffer_p),
+					0,
+					0
+				);
+				command_list_p->set_instance_buffer(
+					NCPP_FHANDLE_VALID(instance_buffer_p),
+					0,
+					0
+				);
+
+				command_list_p->draw_indexed_instanced(
+					3,
+					1,
+					0,
+					0,
+					0
 				);
 			}
 

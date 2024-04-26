@@ -81,6 +81,7 @@ namespace nrhi {
 			case E_shader_type::VERTEX:
 				NCPP_ASSERT(!d3d11_vertex_shader_p_) << "only accept 1 vertex shader";
 				d3d11_vertex_shader_p_ = shader_p.T_cast<F_directx11_vertex_shader>()->d3d11_vertex_shader_p();
+				d3d11_input_layout_p_ = shader_p.T_cast<F_directx11_vertex_shader>()->d3d11_input_layout_p();
 				break;
 
 			case E_shader_type::PIXEL:
@@ -90,6 +91,7 @@ namespace nrhi {
 			}
 		}
 		NCPP_ASSERT(d3d11_vertex_shader_p_) << "vertex shader is required";
+		NCPP_ASSERT(d3d11_input_layout_p_) << "d3d11 input layout is required";
 
 		// acquire d3d11 rasterizer state
 		d3d11_rasterizer_state_p_ = F_directx11_rasterizer_state_pool::acquire_object(

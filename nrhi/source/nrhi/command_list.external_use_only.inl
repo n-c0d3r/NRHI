@@ -64,24 +64,54 @@ namespace nrhi {
 	}
 	NCPP_FORCE_INLINE void A_command_list::set_vertex_buffers(
 		const TG_span<K_valid_buffer_handle>& vertex_buffer_p_span,
-		const TG_span<u32>& offset_span
+		const TG_span<u32>& offset_span,
+		u32 base_slot_index
 	) {
 
 		H_command_list::set_vertex_buffers(
 			NCPP_KTHIS(),
 			vertex_buffer_p_span,
-			offset_span
+			offset_span,
+			base_slot_index
 		);
 	}
 	NCPP_FORCE_INLINE void A_command_list::set_instance_buffers(
 		const TG_span<K_valid_buffer_handle>& instance_buffer_p_span,
-		const TG_span<u32>& offset_span
+		const TG_span<u32>& offset_span,
+		u32 base_slot_index
 	) {
 
 		H_command_list::set_instance_buffers(
 			NCPP_KTHIS(),
 			instance_buffer_p_span,
-			offset_span
+			offset_span,
+			base_slot_index
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::set_vertex_buffer(
+		KPA_valid_buffer_handle vertex_buffer_p,
+		u32 offset,
+		u32 slot_index
+	) {
+
+		H_command_list::set_vertex_buffer(
+			NCPP_KTHIS(),
+			vertex_buffer_p,
+			offset,
+			slot_index
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::set_instance_buffer(
+		KPA_valid_buffer_handle instance_buffer_p,
+		u32 offset,
+		u32 slot_index
+	) {
+
+		H_command_list::set_instance_buffer(
+			NCPP_KTHIS(),
+			instance_buffer_p,
+			offset,
+			slot_index
 		);
 	}
 	NCPP_FORCE_INLINE void A_command_list::set_index_buffer(
@@ -95,9 +125,35 @@ namespace nrhi {
 			offset
 		);
 	}
-	NCPP_FORCE_INLINE void A_command_list::draw_indexed(u32 index_count, u32 base_index_location) {
+	NCPP_FORCE_INLINE void A_command_list::draw_indexed(
+		u32 index_count,
+		u32 base_index_location,
+		u32 base_vertex_location
+	) {
 
-		H_command_list::draw_indexed(NCPP_KTHIS(), index_count, base_index_location);
+		H_command_list::draw_indexed(
+			NCPP_KTHIS(),
+			index_count,
+			base_index_location,
+			base_vertex_location
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::draw_indexed_instanced(
+		u32 index_count_per_instance,
+		u32 instance_count,
+		u32 base_index_location,
+		u32 base_vertex_location,
+		u32 base_instance_location
+	) {
+
+		H_command_list::draw_indexed_instanced(
+			NCPP_KTHIS(),
+			index_count_per_instance,
+			instance_count,
+			base_index_location,
+			base_vertex_location,
+			base_instance_location
+		);
 	}
 
 }

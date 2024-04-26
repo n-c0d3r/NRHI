@@ -48,22 +48,45 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "set_vertex_buffers" "void(
             TKPA_valid<A_command_list> command_list_p,
             const TG_span<K_valid_buffer_handle>& vertex_buffer_p_span,
-            const TG_span<u32>& offset_span
+            const TG_span<u32>& offset_span,
+			u32 base_slot_index
         )"
         "set_instance_buffers" "void(
             TKPA_valid<A_command_list> command_list_p,
             const TG_span<K_valid_buffer_handle>& instance_buffer_p_span,
-            const TG_span<u32>& offset_span
+            const TG_span<u32>& offset_span,
+			u32 base_slot_index
         )"
         "set_index_buffer" "void(
             TKPA_valid<A_command_list> command_list_p,
             KPA_valid_buffer_handle index_buffer_p,
             u32 offset
         )"
+        "set_vertex_buffer" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            KPA_valid_buffer_handle vertex_buffer_p,
+            u32> offset,
+            u32 slot_index
+        )"
+        "set_instance_buffer" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            KPA_valid_buffer_handle instance_buffer_p,
+            u32> offset,
+            u32 slot_index
+        )"
         "draw_indexed" "void(
             TKPA_valid<A_command_list> command_list_p,
             u32 index_count,
-            u32 base_index_location
+            u32 base_index_location,
+            u32 base_vertex_location
+        )"
+        "draw_indexed_instanced" "void(
+            TKPA_valid<A_command_list> command_list_p,
+			u32 index_count_per_instance,
+			u32 instance_count,
+			u32 base_index_location,
+			u32 base_vertex_location,
+			u32 base_instance_location
         )"
 )
 

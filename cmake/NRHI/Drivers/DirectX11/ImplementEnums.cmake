@@ -16,6 +16,7 @@ include(NRHI/Drivers/DirectX11/ImplementShaderType)
 include(NRHI/Drivers/DirectX11/ImplementCullMode)
 include(NRHI/Drivers/DirectX11/ImplementFillMode)
 include(NRHI/Drivers/DirectX11/ImplementDepthComparisonFunc)
+include(NRHI/Drivers/DirectX11/ImplementPrimitiveTopology)
 
 
 

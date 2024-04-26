@@ -86,17 +86,40 @@ namespace nrhi {
 		void set_compute_pipeline_state(KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p);
 		void set_vertex_buffers(
 			const TG_span<K_valid_buffer_handle>& vertex_buffer_p_span,
-			const TG_span<u32>& offset_span
+			const TG_span<u32>& offset_span,
+			u32 base_slot_index
 		);
 		void set_instance_buffers(
 			const TG_span<K_valid_buffer_handle>& instance_buffer_p_span,
-			const TG_span<u32>& offset_span
+			const TG_span<u32>& offset_span,
+			u32 base_slot_index
+		);
+		void set_vertex_buffer(
+			KPA_valid_buffer_handle vertex_buffer_p,
+			u32 offset,
+			u32 slot_index
+		);
+		void set_instance_buffer(
+			KPA_valid_buffer_handle instance_buffer_p,
+			u32 offset,
+			u32 slot_index
 		);
 		void set_index_buffer(
 			KPA_valid_buffer_handle index_buffer_p,
 			u32 offset
 		);
-		void draw_indexed(u32 index_count, u32 base_index_location);
+		void draw_indexed(
+			u32 index_count,
+			u32 base_index_locatio,
+			u32 base_vertex_locationn
+		);
+		void draw_indexed_instanced(
+			u32 index_count_per_instance,
+			u32 instance_count,
+			u32 base_index_location,
+			u32 base_vertex_location,
+			u32 base_instance_location
+		);
 
     };
 

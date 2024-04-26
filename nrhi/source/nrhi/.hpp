@@ -64,6 +64,7 @@ namespace nrhi { }
 #include <nrhi/cull_mode.hpp>
 #include <nrhi/fill_mode.hpp>
 #include <nrhi/depth_comparison_func.hpp>
+#include <nrhi/primitive_topology.hpp>
 #include <nrhi/descriptor_base.hpp>
 #include <nrhi/root_signature_base.hpp>
 #include <nrhi/resource_base.hpp>
