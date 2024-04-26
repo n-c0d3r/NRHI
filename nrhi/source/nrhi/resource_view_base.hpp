@@ -74,4 +74,11 @@ namespace nrhi {
 
     };
 
+
+
+	NCPP_FORCE_INLINE F_resource_view_desc& inject_resource_view_desc(TKPA_valid<A_resource_view> resource_view_p) noexcept {
+
+		return (F_resource_view_desc&)(resource_view_p->desc());
+	}
+
 }

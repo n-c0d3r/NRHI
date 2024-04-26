@@ -108,6 +108,7 @@ namespace nrhi { }
 #include <nrhi/command_list.external_use_only.inl>
 #include <nrhi/command_queue.external_use_only.inl>
 #include <nrhi/swapchain.external_use_only.inl>
+#include <nrhi/frame_buffer.external_use_only.inl>
 
 #pragma endregion
 

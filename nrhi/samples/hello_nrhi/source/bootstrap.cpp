@@ -258,6 +258,9 @@ int main() {
 				{ 0.0f, 1.0f, 1.0f, 1.0f }
 			);
 
+			// update frame buffer
+			frame_buffer_p->update();
+
 			// draw triangle
 			{
 				command_list_p->clear_state();

@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/resource_base.hpp
+/** @file nrhi/frame_buffer.external_use_only.inl
 *
-*   Implement resource base class.
+*   Implement frame buffer inline functions that is only used by external.
 */
 
 
@@ -33,8 +33,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/resource_desc.hpp>
-#include <nrhi/resource_type.hpp>
+#include <nrhi/frame_buffer_base.hpp>
+#include <nrhi/frame_buffer.hpp>
 
 #pragma endregion
 
@@ -42,43 +42,9 @@
 
 namespace nrhi {
 
-    class A_device;
-    class A_resource;
+	NCPP_FORCE_INLINE void A_frame_buffer::update() {
 
-
-
-    class NRHI_API A_resource {
-
-    private:
-        TK_valid<A_device> device_p_;
-        F_resource_desc desc_;
-        F_initial_resource_data initial_data_;
-
-    public:
-        NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
-        NCPP_FORCE_INLINE const F_resource_desc& desc() const noexcept { return desc_; }
-        NCPP_FORCE_INLINE const F_initial_resource_data& initial_data() const noexcept { return initial_data_; }
-
-
-
-    protected:
-        A_resource(
-            TKPA_valid<A_device> device_p,
-            const F_initial_resource_data& initial_data,
-            const F_resource_desc& desc,
-            E_resource_type overrided_type
-        );
-
-    public:
-        virtual ~A_resource();
-
-    };
-
-
-
-	NCPP_FORCE_INLINE F_resource_desc& inject_resource_desc(TKPA_valid<A_resource> resource_p) noexcept {
-
-		return (F_resource_desc&)(resource_p->desc());
+		H_frame_buffer::update(NCPP_KTHIS());
 	}
 
 }

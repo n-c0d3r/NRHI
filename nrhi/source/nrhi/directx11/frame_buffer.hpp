@@ -62,6 +62,9 @@ namespace nrhi {
 		);
 		virtual ~F_directx11_frame_buffer();
 
+	public:
+		void update_d3d11_viewport();
+
 	};
 
 
@@ -73,6 +76,9 @@ namespace nrhi {
 			TKPA_valid<A_device> device_p,
 			const F_frame_buffer_desc& desc
 		);
+
+	public:
+		static void update(TK_valid<A_frame_buffer> frame_bufer_p);
 
 	};
 

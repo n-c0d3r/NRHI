@@ -102,11 +102,16 @@ namespace nrhi {
                 d3d11_back_rtv_p->d3d11_view_p()->Release();
 
             auto& resize_event = (F_surface_resize_event&)event;
+			auto surface_size = resize_event.size();
+
+		  	auto& back_texture_2d_desc = inject_resource_desc(NCPP_FHANDLE_VALID_AS_OREF(back_texture_2d_p_));
+		  	back_texture_2d_desc.width = surface_size.x;
+		  	back_texture_2d_desc.height = surface_size.y;
 
             HRESULT hr = dxgi_swapchain_p_->ResizeBuffers(
                 0,
-                resize_event.size().x,
-                resize_event.size().y,
+				surface_size.x,
+				surface_size.y,
                 (DXGI_FORMAT)(this->desc().format),
                 DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH
             );
