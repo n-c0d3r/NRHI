@@ -78,9 +78,9 @@ int main() {
 
 
     TG_vector<F_vector4> vertices = {
-		{ 1.0f, 0.0f, 0.5f, 1.0f },
+		{ 0.25f, 0.0f, 0.5f, 1.0f },
 		{ 0.0f, 0.0f, 0.5f, 1.0f },
-		{ 0.0f, 1.0f, 0.5f, 1.0f }
+		{ 0.0f, 0.25f, 0.5f, 1.0f }
 	};
     U_buffer_handle vbuffer_p = H_buffer::T_create<F_vector4>(
         NCPP_FOREF_VALID(device_p),
@@ -89,7 +89,9 @@ int main() {
     );
 
 	TG_vector<F_vector4> instances = {
-		{ 0.0f, 0.0f, 0.0f, 1.0f }
+		{ 0.0f, 0.0f, 0.0f, 1.0f },
+		{ -0.5f, -0.5f, 0.0f, 1.0f },
+		{ -1.0f, -1.0f, 0.0f, 1.0f }
 	};
 	U_buffer_handle instance_buffer_p = H_buffer::T_create<F_vector4>(
 		NCPP_FOREF_VALID(device_p),
@@ -264,20 +266,16 @@ int main() {
 			// draw triangle
 			{
 				command_list_p->clear_state();
-
 				command_list_p->set_frame_buffer(
 					NCPP_FOREF_VALID(frame_buffer_p)
 				);
-
 				command_list_p->set_graphics_pipeline_state(
 					NCPP_FHANDLE_VALID(graphics_pipeline_state_p)
 				);
-
 				command_list_p->set_index_buffer(
 					NCPP_FHANDLE_VALID(ibuffer_p),
 					0
 				);
-
 				command_list_p->set_vertex_buffer(
 					NCPP_FHANDLE_VALID(vbuffer_p),
 					0,
@@ -288,10 +286,9 @@ int main() {
 					0,
 					0
 				);
-
 				command_list_p->draw_indexed_instanced(
 					3,
-					1,
+					3,
 					0,
 					0,
 					0
@@ -305,7 +302,7 @@ int main() {
 				)
 			);
 
-			// finalize rendering, swap back buffer and front buffer to show the rendered image
+			// finalize rendering, swap back buffer and front buffer
 			swapchain_p->present();
 		}
 
