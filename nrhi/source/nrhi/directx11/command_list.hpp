@@ -58,12 +58,13 @@ namespace nrhi {
 
 	struct F_directx11_temp_command_list_state {
 
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
+			TK<A_pipeline_state> pipeline_state_p;
+			b8 is_pipeline_state_binded = false;
+		);
+
 		u32 vertex_buffer_count = 0;
 		u32 instance_buffer_count = 0;
-		NCPP_ENABLE_IF_ASSERTION_ENABLED(
-			K_graphics_pipeline_state_handle graphics_pipeline_state_p;
-			b8 is_graphics_pipeline_state_binded = false;
-		);
 
 		ID3D11Buffer* d3d11_vertex_buffers[NRHI_MAX_VERTEX_BUFFER_COUNT_PER_DRAWCALL];
 		ID3D11Buffer* d3d11_instance_buffers[NRHI_MAX_INSTANCE_BUFFER_COUNT_PER_DRAWCALL];
@@ -135,6 +136,7 @@ namespace nrhi {
 			u8 stencil
 		);
 
+	public:
 		static void bind_graphics_pipeline_state(
 			TKPA_valid<A_command_list> command_list_p,
 			KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p
@@ -144,6 +146,7 @@ namespace nrhi {
 			KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p
 		);
 
+	public:
 		static void ZIA_bind_index_buffer(
 			TKPA_valid<A_command_list> command_list_p,
 			KPA_valid_buffer_handle index_buffer_p,
@@ -174,6 +177,7 @@ namespace nrhi {
 			u32 slot_index
 		);
 
+	public:
 		static void ZVS_bind_constant_buffers(
 			TKPA_valid<A_command_list> command_list_p,
 			const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
@@ -195,6 +199,7 @@ namespace nrhi {
 			u32 slot_index
 		);
 
+	public:
 		static void ZPS_bind_constant_buffers(
 			TKPA_valid<A_command_list> command_list_p,
 			const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
@@ -216,11 +221,45 @@ namespace nrhi {
 			u32 slot_index
 		);
 
+	public:
 		static void ZOM_bind_frame_buffer(
 			TKPA_valid<A_command_list> command_list_p,
 			TKPA_valid<A_frame_buffer> frame_buffer_p
 		);
 
+	public:
+		static void ZCS_bind_constant_buffers(
+			TKPA_valid<A_command_list> command_list_p,
+			const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
+			u32 base_slot_index
+		);
+		static void ZCS_bind_constant_buffer(
+			TKPA_valid<A_command_list> command_list_p,
+			KPA_valid_buffer_handle constant_buffer_p,
+			u32 slot_index
+		);
+		static void ZCS_bind_srvs(
+			TKPA_valid<A_command_list> command_list_p,
+			const TG_span<K_valid_srv_handle>& srv_p_span,
+			u32 base_slot_index
+		);
+		static void ZCS_bind_srv(
+			TKPA_valid<A_command_list> command_list_p,
+			KPA_valid_srv_handle srv_p,
+			u32 slot_index
+		);
+		static void ZCS_bind_uavs(
+			TKPA_valid<A_command_list> command_list_p,
+			const TG_span<K_valid_uav_handle>& uav_p_span,
+			u32 base_slot_index
+		);
+		static void ZCS_bind_uav(
+			TKPA_valid<A_command_list> command_list_p,
+			KPA_valid_uav_handle uav_p,
+			u32 slot_index
+		);
+
+	public:
 		static void draw(
 			TKPA_valid<A_command_list> command_list_p,
 			u32 vertex_count,
@@ -246,6 +285,12 @@ namespace nrhi {
 			u32 base_index_location,
 			u32 base_vertex_location,
 			u32 base_instance_location
+		);
+
+	public:
+		static void dispatch(
+			TKPA_valid<A_command_list> command_list_p,
+			PA_vector3_u32 thread_group_count_3d
 		);
 
 

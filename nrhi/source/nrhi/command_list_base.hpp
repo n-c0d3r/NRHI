@@ -159,6 +159,32 @@ namespace nrhi {
 		void ZOM_bind_frame_buffer(TKPA_valid<A_frame_buffer> frame_buffer_p);
 
 	public:
+		void ZCS_bind_constant_buffers(
+			const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
+			u32 base_slot_index
+		);
+		void ZCS_bind_constant_buffer(
+			KPA_valid_buffer_handle constant_buffer_p,
+			u32 slot_index
+		);
+		void ZCS_bind_srvs(
+			const TG_span<K_valid_srv_handle>& srv_p_span,
+			u32 base_slot_index
+		);
+		void ZCS_bind_srv(
+			KPA_valid_srv_handle srv_p,
+			u32 slot_index
+		);
+		void ZCS_bind_uavs(
+			const TG_span<K_valid_uav_handle>& uav_p_span,
+			u32 base_slot_index
+		);
+		void ZCS_bind_uav(
+			KPA_valid_uav_handle uav_p,
+			u32 slot_index
+		);
+
+	public:
 		void draw(
 			u32 vertex_count,
 			u32 base_vertex_location
@@ -181,6 +207,9 @@ namespace nrhi {
 			u32 base_vertex_location,
 			u32 base_instance_location
 		);
+
+	public:
+		void dispatch(PA_vector3_u32 thread_group_count_3d);
 
     };
 

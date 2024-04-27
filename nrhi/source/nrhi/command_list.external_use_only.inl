@@ -234,6 +234,73 @@ namespace nrhi {
 		H_command_list::ZOM_bind_frame_buffer(NCPP_KTHIS(), frame_buffer_p);
 	}
 
+	NCPP_FORCE_INLINE void A_command_list::ZCS_bind_constant_buffers(
+		const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
+		u32 base_slot_index
+	) {
+
+		H_command_list::ZCS_bind_constant_buffers(
+			NCPP_KTHIS(),
+			constant_buffer_p_span,
+			base_slot_index
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::ZCS_bind_constant_buffer(
+		KPA_valid_buffer_handle constant_buffer_p,
+		u32 slot_index
+	) {
+
+		H_command_list::ZCS_bind_constant_buffer(
+			NCPP_KTHIS(),
+			constant_buffer_p,
+			slot_index
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::ZCS_bind_srvs(
+		const TG_span<K_valid_srv_handle>& srv_p_span,
+		u32 base_slot_index
+	) {
+
+		H_command_list::ZCS_bind_srvs(
+			NCPP_KTHIS(),
+			srv_p_span,
+			base_slot_index
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::ZCS_bind_srv(
+		KPA_valid_srv_handle srv_p,
+		u32 slot_index
+	) {
+
+		H_command_list::ZCS_bind_srv(
+			NCPP_KTHIS(),
+			srv_p,
+			slot_index
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::ZCS_bind_uavs(
+		const TG_span<K_valid_uav_handle>& uav_p_span,
+		u32 base_slot_index
+	) {
+
+		H_command_list::ZCS_bind_uavs(
+			NCPP_KTHIS(),
+			uav_p_span,
+			base_slot_index
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::ZCS_bind_uav(
+		KPA_valid_uav_handle uav_p,
+		u32 slot_index
+	) {
+
+		H_command_list::ZCS_bind_uav(
+			NCPP_KTHIS(),
+			uav_p,
+			slot_index
+		);
+	}
+
 	NCPP_FORCE_INLINE void A_command_list::draw(
 		u32 vertex_count,
 		u32 base_vertex_location
@@ -288,6 +355,14 @@ namespace nrhi {
 			base_index_location,
 			base_vertex_location,
 			base_instance_location
+		);
+	}
+
+	NCPP_FORCE_INLINE void A_command_list::dispatch(PA_vector3_u32 thread_group_count_3d) {
+
+		H_command_list::dispatch(
+			NCPP_KTHIS(),
+			thread_group_count_3d
 		);
 	}
 

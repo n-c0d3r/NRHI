@@ -121,6 +121,36 @@ NRHI_FunctionHelper_CreateFunctionClass(
             TKPA_valid<A_command_list> command_list_p,
             TKPA_valid<A_frame_buffer> frame_buffer_p
         )"
+        "ZCS_bind_constant_buffers" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
+            u32 base_slot_index
+        )"
+        "ZCS_bind_constant_buffer" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            KPA_valid_buffer_handle constant_buffer_p,
+            u32 slot_index
+        )"
+        "ZCS_bind_srvs" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            const TG_span<K_valid_srv_handle>& srv_p_span,
+            u32 base_slot_index
+        )"
+        "ZCS_bind_srv" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            KPA_valid_srv_handle srv_p,
+            u32 slot_index
+        )"
+        "ZCS_bind_uavs" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            const TG_span<K_valid_uav_handle>& uav_p_span,
+            u32 base_slot_index
+        )"
+        "ZCS_bind_uav" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            KPA_valid_uav_handle uav_p,
+            u32 slot_index
+        )"
         "draw" "void(
             TKPA_valid<A_command_list> command_list_p,
             u32 vertex_count,
@@ -146,6 +176,10 @@ NRHI_FunctionHelper_CreateFunctionClass(
 			u32 base_index_location,
 			u32 base_vertex_location,
 			u32 base_instance_location
+        )"
+        "dispatch" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            PA_vector3_u32 thread_group_count_3d
         )"
 )
 
