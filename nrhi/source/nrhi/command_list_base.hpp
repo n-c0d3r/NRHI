@@ -38,6 +38,7 @@
 #include <nrhi/compute_pipeline_state_handle.hpp>
 #include <nrhi/resource_view_handle.hpp>
 #include <nrhi/buffer_handle.hpp>
+#include <nrhi/clear_flag.hpp>
 
 #pragma endregion
 
@@ -82,6 +83,12 @@ namespace nrhi {
 		void clear_state();
 		void set_frame_buffer(TKPA_valid<A_frame_buffer> frame_buffer_p);
 		void clear_rtv(KPA_valid_rtv_handle rtv_p, PA_vector4 color);
+		void clear_dsv(
+			KPA_valid_dsv_handle dsv_p,
+			E_clear_flag flag,
+			f32 depth,
+			u8 stencil
+		);
 		void set_graphics_pipeline_state(KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p);
 		void set_compute_pipeline_state(KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p);
 		void set_vertex_buffers(

@@ -38,6 +38,7 @@
 #include <nrhi/graphics_pipeline_state.hpp>
 #include <nrhi/compute_pipeline_state.hpp>
 #include <nrhi/buffer_handle.hpp>
+#include <nrhi/clear_flag.hpp>
 
 #pragma endregion
 
@@ -114,6 +115,13 @@ namespace nrhi {
 			TKPA_valid<A_command_list> command_list_p,
 			KPA_valid_rtv_handle rtv_p,
 			PA_vector4 color
+		);
+		static void clear_dsv(
+			TKPA_valid<A_command_list> command_list_p,
+			KPA_valid_dsv_handle dsv_p,
+			E_clear_flag flag,
+			f32 depth,
+			u8 stencil
 		);
 		static void set_graphics_pipeline_state(
 			TKPA_valid<A_command_list> command_list_p,

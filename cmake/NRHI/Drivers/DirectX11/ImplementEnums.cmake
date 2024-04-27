@@ -17,6 +17,7 @@ include(NRHI/Drivers/DirectX11/ImplementCullMode)
 include(NRHI/Drivers/DirectX11/ImplementFillMode)
 include(NRHI/Drivers/DirectX11/ImplementDepthComparisonFunc)
 include(NRHI/Drivers/DirectX11/ImplementPrimitiveTopology)
+include(NRHI/Drivers/DirectX11/ImplementClearFlag)
 
 
 

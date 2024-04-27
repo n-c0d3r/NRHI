@@ -122,6 +122,23 @@ namespace nrhi {
 			);
 		}
 	}
+	void HD_directx11_command_list::clear_dsv(
+		TKPA_valid<A_command_list> command_list_p,
+		KPA_valid_dsv_handle dsv_p,
+		E_clear_flag flag,
+		f32 depth,
+		u8 stencil
+	) {
+
+		ID3D11DeviceContext* d3d11_device_context_p = command_list_p.T_cast<F_directx11_command_list>()->d3d11_device_context_p();
+
+		d3d11_device_context_p->ClearDepthStencilView(
+			(ID3D11DepthStencilView*)(dsv_p.T_cast<F_directx11_depth_stencil_view>()->d3d11_view_p()),
+			D3D11_CLEAR_FLAG(flag),
+			depth,
+			stencil
+		);
+	}
 	void HD_directx11_command_list::set_graphics_pipeline_state(
 		TKPA_valid<A_command_list> command_list_p,
 		KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p

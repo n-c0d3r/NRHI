@@ -118,6 +118,10 @@ function(NRHI_EnumHelper_CreateEnum)
 
                             return value___nrhi_internal___;
                         }
+                        NCPP_FORCE_INLINE operator bool () const noexcept {
+
+                            return (value___nrhi_internal___ != 0);
+                        }
 
                         static void update_map();
                 "

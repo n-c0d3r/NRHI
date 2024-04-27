@@ -37,6 +37,13 @@ NRHI_FunctionHelper_CreateFunctionClass(
 			KPA_valid_rtv_handle rtv_p,
 			PA_vector4 color
 		)"
+        "clear_dsv" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            KPA_valid_dsv_handle dsv_p,
+            E_clear_flag flag,
+            f32 depth,
+            u8 stencil
+        )"
         "set_graphics_pipeline_state" "void(
             TKPA_valid<A_command_list> command_list_p,
             KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p
