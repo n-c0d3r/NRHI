@@ -614,6 +614,64 @@ namespace nrhi {
 		);
 	}
 
+	void HD_directx11_command_list::draw(
+		TKPA_valid<A_command_list> command_list_p,
+		u32 vertex_count,
+		u32 base_vertex_location
+	) {
+
+		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
+
+		auto& temp_state = directx11_command_list_p->temp_state_;
+
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
+			NCPP_ASSERT(temp_state.is_graphics_pipeline_state_binded) << "no graphics pipeline state binded";
+		);
+
+		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
+
+		temp_state_apply_vertex_buffers(
+			temp_state,
+			d3d11_device_context_p
+		);
+
+		d3d11_device_context_p->Draw(
+			vertex_count,
+			base_vertex_location
+		);
+
+	}
+	void HD_directx11_command_list::draw_instanced(
+		TKPA_valid<A_command_list> command_list_p,
+		u32 vertex_count_per_instance,
+		u32 instance_count,
+		u32 base_vertex_location,
+		u32 base_instance_location
+	) {
+
+		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
+
+		auto& temp_state = directx11_command_list_p->temp_state_;
+
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
+			NCPP_ASSERT(temp_state.is_graphics_pipeline_state_binded) << "no graphics pipeline state binded";
+		);
+
+		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
+
+		temp_state_apply_vertex_buffers_instance_buffers(
+			temp_state,
+			d3d11_device_context_p
+		);
+
+		d3d11_device_context_p->DrawInstanced(
+			vertex_count_per_instance,
+			instance_count,
+			base_vertex_location,
+			base_instance_location
+		);
+
+	}
 	void HD_directx11_command_list::draw_indexed(
 		TKPA_valid<A_command_list> command_list_p,
 		u32 index_count,
@@ -632,7 +690,7 @@ namespace nrhi {
 
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
 
-		apply_temp_state_for_indexed_drawing(
+		temp_state_apply_vertex_buffers(
 			temp_state,
 			d3d11_device_context_p
 		);
@@ -664,7 +722,7 @@ namespace nrhi {
 
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
 
-		apply_temp_state_for_indexed_instanced_drawing(
+		temp_state_apply_vertex_buffers_instance_buffers(
 			temp_state,
 			d3d11_device_context_p
 		);
@@ -681,7 +739,7 @@ namespace nrhi {
 
 
 
-	void HD_directx11_command_list::apply_temp_state_for_indexed_drawing(
+	void HD_directx11_command_list::temp_state_apply_vertex_buffers(
 		const F_directx11_temp_command_list_state& temp_state,
 		ID3D11DeviceContext* d3d11_device_context_p
 	) {
@@ -703,7 +761,7 @@ namespace nrhi {
 		);
 
 	}
-	void HD_directx11_command_list::apply_temp_state_for_indexed_instanced_drawing(
+	void HD_directx11_command_list::temp_state_apply_vertex_buffers_instance_buffers(
 		const F_directx11_temp_command_list_state& temp_state,
 		ID3D11DeviceContext* d3d11_device_context_p
 	) {

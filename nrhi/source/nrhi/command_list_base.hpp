@@ -159,6 +159,16 @@ namespace nrhi {
 		void ZOM_bind_frame_buffer(TKPA_valid<A_frame_buffer> frame_buffer_p);
 
 	public:
+		void draw(
+			u32 vertex_count,
+			u32 base_vertex_location
+		);
+		void draw_instanced(
+			u32 vertex_count_per_instance,
+			u32 instance_count,
+			u32 base_vertex_location,
+			u32 base_instance_location
+		);
 		void draw_indexed(
 			u32 index_count,
 			u32 base_index_locatio,

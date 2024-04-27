@@ -234,6 +234,32 @@ namespace nrhi {
 		H_command_list::ZOM_bind_frame_buffer(NCPP_KTHIS(), frame_buffer_p);
 	}
 
+	NCPP_FORCE_INLINE void A_command_list::draw(
+		u32 vertex_count,
+		u32 base_vertex_location
+	) {
+
+		H_command_list::draw(
+			NCPP_KTHIS(),
+			vertex_count,
+			base_vertex_location
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::draw_instanced(
+		u32 vertex_count_per_instance,
+		u32 instance_count,
+		u32 base_vertex_location,
+		u32 base_instance_location
+	) {
+
+		H_command_list::draw_instanced(
+			NCPP_KTHIS(),
+			vertex_count_per_instance,
+			instance_count,
+			base_vertex_location,
+			base_instance_location
+		);
+	}
 	NCPP_FORCE_INLINE void A_command_list::draw_indexed(
 		u32 index_count,
 		u32 base_index_location,

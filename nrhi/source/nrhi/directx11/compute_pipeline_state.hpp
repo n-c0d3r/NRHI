@@ -47,11 +47,19 @@ namespace nrhi {
 
 	class NRHI_API F_directx11_compute_pipeline_state : public F_directx11_pipeline_state {
 
+	private:
+		ID3D11ComputeShader* d3d11_compute_shader_p_ = 0;
+
+	public:
+		ID3D11ComputeShader* d3d11_compute_shader_p() const noexcept { return d3d11_compute_shader_p_; }
+
+
+
 	public:
 		F_directx11_compute_pipeline_state(
 			TKPA_valid<A_device> device_p,
 			const F_pipeline_state_desc& desc,
-			E_pipeline_state_type overrided_type
+			E_pipeline_state_type overrided_type = E_pipeline_state_type::COMPUTE
 		);
 		virtual ~F_directx11_compute_pipeline_state();
 

@@ -221,6 +221,18 @@ namespace nrhi {
 			TKPA_valid<A_frame_buffer> frame_buffer_p
 		);
 
+		static void draw(
+			TKPA_valid<A_command_list> command_list_p,
+			u32 vertex_count,
+			u32 base_vertex_location
+		);
+		static void draw_instanced(
+			TKPA_valid<A_command_list> command_list_p,
+			u32 vertex_count_per_instance,
+			u32 instance_count,
+			u32 base_vertex_location,
+			u32 base_instance_location
+		);
 		static void draw_indexed(
 			TKPA_valid<A_command_list> command_list_p,
 			u32 index_count,
@@ -239,11 +251,11 @@ namespace nrhi {
 
 
 	private:
-		static void apply_temp_state_for_indexed_drawing(
+		static void temp_state_apply_vertex_buffers(
 			const F_directx11_temp_command_list_state& temp_state,
 			ID3D11DeviceContext* d3d11_device_context_p
 		);
-		static void apply_temp_state_for_indexed_instanced_drawing(
+		static void temp_state_apply_vertex_buffers_instance_buffers(
 			const F_directx11_temp_command_list_state& temp_state,
 			ID3D11DeviceContext* d3d11_device_context_p
 		);

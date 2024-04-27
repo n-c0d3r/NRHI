@@ -99,6 +99,10 @@ namespace nrhi {
 
 				pixel_shader_blob_desc_ = shader_blob_desc;
 				break;
+
+			default:
+				NCPP_ASSERT(false) << "invalid shader type";
+				break;
 			}
 		}
 		NCPP_ASSERT(d3d11_vertex_shader_p_) << "vertex shader is required";

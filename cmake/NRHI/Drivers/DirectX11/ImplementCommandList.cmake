@@ -121,6 +121,18 @@ NRHI_FunctionHelper_CreateFunctionClass(
             TKPA_valid<A_command_list> command_list_p,
             TKPA_valid<A_frame_buffer> frame_buffer_p
         )"
+        "draw" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            u32 vertex_count,
+            u32 base_vertex_location
+        )"
+        "draw_instanced" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            u32 vertex_count_per_instance,
+            u32 instance_count,
+            u32 base_vertex_location,
+            u32 base_instance_location
+        )"
         "draw_indexed" "void(
             TKPA_valid<A_command_list> command_list_p,
             u32 index_count,
