@@ -111,7 +111,7 @@ namespace nrhi {
 		temp_state.vertex_buffer_count = graphics_pipeline_state_p->vertex_buffer_count();
 		temp_state.instance_buffer_count = graphics_pipeline_state_p->instance_buffer_count();
 
-		NCPP_ENABLE_IF_DEBUG(
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
 			temp_state.is_graphics_pipeline_state_binded = true;
 			temp_state.graphics_pipeline_state_p = graphics_pipeline_state_p.no_requirements();
 		);
@@ -177,7 +177,7 @@ namespace nrhi {
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
-		NCPP_ENABLE_IF_DEBUG(
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
 			auto& temp_state = directx11_command_list_p->temp_state_;
 			temp_state.index_buffer_p = index_buffer_p.no_requirements();
 		);
@@ -235,7 +235,7 @@ namespace nrhi {
 			temp_state.d3d11_vertex_buffer_offsets[slot_index] = offset_span[i];
 			temp_state.d3d11_vertex_buffer_strides[slot_index] = vertex_buffer_p->desc().stride;
 
-			NCPP_ENABLE_IF_DEBUG(
+			NCPP_ENABLE_IF_ASSERTION_ENABLED(
 				temp_state.vertex_buffer_orefs[slot_index] = vertex_buffer_p.no_requirements();
 			);
 		}
@@ -268,7 +268,7 @@ namespace nrhi {
 		temp_state.d3d11_vertex_buffer_offsets[slot_index] = offset;
 		temp_state.d3d11_vertex_buffer_strides[slot_index] = vertex_buffer_p->desc().stride;
 
-		NCPP_ENABLE_IF_DEBUG(
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
 			temp_state.vertex_buffer_orefs[slot_index] = vertex_buffer_p.no_requirements();
 		);
 	}
@@ -308,7 +308,7 @@ namespace nrhi {
 			temp_state.d3d11_instance_buffer_offsets[slot_index] = offset_span[i];
 			temp_state.d3d11_instance_buffer_strides[slot_index] = instance_buffer_p->desc().stride;
 
-			NCPP_ENABLE_IF_DEBUG(
+			NCPP_ENABLE_IF_ASSERTION_ENABLED(
 				temp_state.instance_buffer_orefs[slot_index] = instance_buffer_p.no_requirements();
 			);
 		}
@@ -341,7 +341,7 @@ namespace nrhi {
 		temp_state.d3d11_instance_buffer_offsets[slot_index] = offset;
 		temp_state.d3d11_instance_buffer_strides[slot_index] = instance_buffer_p->desc().stride;
 
-		NCPP_ENABLE_IF_DEBUG(
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
 			temp_state.instance_buffer_orefs[slot_index] = instance_buffer_p.no_requirements();
 		);
 	}
@@ -625,7 +625,7 @@ namespace nrhi {
 
 		auto& temp_state = directx11_command_list_p->temp_state_;
 
-		NCPP_ENABLE_IF_DEBUG(
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
 			NCPP_ASSERT(temp_state.is_graphics_pipeline_state_binded) << "no graphics pipeline state binded";
 			NCPP_ASSERT(temp_state.index_buffer_p.is_valid()) << "index buffer is required";
 		);
@@ -657,7 +657,7 @@ namespace nrhi {
 
 		auto& temp_state = directx11_command_list_p->temp_state_;
 
-		NCPP_ENABLE_IF_DEBUG(
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
 			NCPP_ASSERT(temp_state.is_graphics_pipeline_state_binded) << "no graphics pipeline state binded";
 			NCPP_ASSERT(temp_state.index_buffer_p.is_valid()) << "index buffer is required";
 		);

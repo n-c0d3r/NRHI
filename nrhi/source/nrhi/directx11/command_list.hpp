@@ -60,7 +60,7 @@ namespace nrhi {
 
 		u32 vertex_buffer_count = 0;
 		u32 instance_buffer_count = 0;
-		NCPP_ENABLE_IF_DEBUG(
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
 			K_graphics_pipeline_state_handle graphics_pipeline_state_p;
 			b8 is_graphics_pipeline_state_binded = false;
 		);
@@ -71,16 +71,16 @@ namespace nrhi {
 		u32 d3d11_instance_buffer_offsets[NRHI_MAX_INSTANCE_BUFFER_COUNT_PER_DRAWCALL];
 		u32 d3d11_vertex_buffer_strides[NRHI_MAX_VERTEX_BUFFER_COUNT_PER_DRAWCALL];
 		u32 d3d11_instance_buffer_strides[NRHI_MAX_INSTANCE_BUFFER_COUNT_PER_DRAWCALL];
-		NCPP_ENABLE_IF_DEBUG(
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
 			std::array<K_buffer_handle, NRHI_MAX_VERTEX_BUFFER_COUNT_PER_DRAWCALL> vertex_buffer_orefs;
 			std::array<K_buffer_handle, NRHI_MAX_INSTANCE_BUFFER_COUNT_PER_DRAWCALL> instance_buffer_orefs;
 		);
 
-		NCPP_ENABLE_IF_DEBUG(
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
 			K_buffer_handle index_buffer_p;
 		);
 
-		NCPP_ENABLE_IF_DEBUG(
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
 			std::array<K_buffer_handle, NRHI_MAX_CONSTANT_BUFFER_COUNT_PER_DRAWCALL> constant_buffer_orefs;
 		);
 
