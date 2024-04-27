@@ -5,6 +5,8 @@
 #include <nrhi/directx11/graphics_pipeline_state.hpp>
 #include <nrhi/directx11/render_target_view.hpp>
 #include <nrhi/directx11/depth_stencil_view.hpp>
+#include <nrhi/directx11/unordered_access_view.hpp>
+#include <nrhi/directx11/shader_resource_view.hpp>
 #include <nrhi/directx11/resource.hpp>
 #include <nrhi/directx11/buffer.hpp>
 
@@ -51,51 +53,6 @@ namespace nrhi {
 
 		d3d11_device_context_p->ClearState();
 	}
-	void HD_directx11_command_list::bind_frame_buffer(
-		TKPA_valid<A_command_list> command_list_p,
-		TKPA_valid<A_frame_buffer> frame_buffer_p
-	) {
-
-		const auto& frame_buffer_desc = frame_buffer_p->desc();
-
-		const auto& color_attachment_p_vector = frame_buffer_desc.color_attachment_p_vector;
-		u32 color_attachment_count = color_attachment_p_vector.size();
-
-		ID3D11DeviceContext* d3d11_device_context_p = command_list_p.T_cast<F_directx11_command_list>()->d3d11_device_context_p();
-
-		d3d11_device_context_p->RSSetViewports(
-			1,
-			&(frame_buffer_p.T_cast<F_directx11_frame_buffer>()->d3d11_viewport())
-		);
-
-		ID3D11RenderTargetView* d3d11_rtv_array[NRHI_MAX_RTV_COUNT_PER_DRAWCALL];
-		for(u32 i = 0; i < color_attachment_count; ++i) {
-
-			d3d11_rtv_array[i] = (ID3D11RenderTargetView*)(
-				color_attachment_p_vector[i]
-				.T_cast<F_directx11_render_target_view>()
-				->d3d11_view_p()
-			);
-		}
-
-		ID3D11DepthStencilView* d3d11_depth_stencil_view_p = 0;
-		if(frame_buffer_p->is_has_dsv()) {
-
-			const auto& depth_stencil_attachment_p = frame_buffer_desc.depth_stencil_attachment_p;
-
-			d3d11_depth_stencil_view_p = (ID3D11DepthStencilView*)(
-				depth_stencil_attachment_p
-				.T_cast<F_directx11_depth_stencil_view>()
-				->d3d11_view_p()
-			);
-		}
-
-		d3d11_device_context_p->OMSetRenderTargets(
-			color_attachment_count,
-			d3d11_rtv_array,
-			d3d11_depth_stencil_view_p
-		);
-	}
 	void HD_directx11_command_list::clear_rtv(
 		TKPA_valid<A_command_list> command_list_p,
 		KPA_valid_rtv_handle rtv_p,
@@ -139,6 +96,7 @@ namespace nrhi {
 			stencil
 		);
 	}
+
 	void HD_directx11_command_list::bind_graphics_pipeline_state(
 		TKPA_valid<A_command_list> command_list_p,
 		KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p
@@ -210,13 +168,36 @@ namespace nrhi {
 	) {
 
 	}
-	void HD_directx11_command_list::ZVS_bind_constant_buffers(
-		TKPA_valid<A_command_list> command_list_p,
-		const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
-		u32 base_slot_index
-	)
-	{
 
+	void HD_directx11_command_list::ZIA_bind_index_buffer(
+		TKPA_valid<A_command_list> command_list_p,
+		KPA_valid_buffer_handle index_buffer_p,
+		u32 offset
+	) {
+
+		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
+
+		NCPP_ENABLE_IF_DEBUG(
+			auto& temp_state = directx11_command_list_p->temp_state_;
+			temp_state.index_buffer_p = index_buffer_p.no_requirements();
+		);
+
+		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
+
+		NCPP_ASSERT(
+			u32(
+				flag_combine(
+					index_buffer_p->desc().bind_flags,
+					E_resource_bind_flag::IBV
+				)
+			)
+		) << "invalid resource bind flag";
+
+		d3d11_device_context_p->IASetIndexBuffer(
+			(ID3D11Buffer*)(index_buffer_p.T_cast<F_directx11_buffer>()->d3d11_resource_p()),
+			DXGI_FORMAT(index_buffer_p->desc().format),
+			offset
+		);
 	}
 	void HD_directx11_command_list::ZIA_bind_vertex_buffers(
 		TKPA_valid<A_command_list> command_list_p,
@@ -259,6 +240,38 @@ namespace nrhi {
 			);
 		}
 	}
+	void HD_directx11_command_list::ZIA_bind_vertex_buffer(
+		TKPA_valid<A_command_list> command_list_p,
+		KPA_valid_buffer_handle& vertex_buffer_p,
+		u32 offset,
+		u32 slot_index
+	) {
+
+		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
+
+		auto& temp_state = directx11_command_list_p->temp_state_;
+
+		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
+
+		NCPP_ASSERT(
+			u32(
+				flag_combine(
+					vertex_buffer_p->desc().bind_flags,
+					E_resource_bind_flag::VBV
+				)
+			)
+		) << "invalid resource bind flag";
+
+		temp_state.d3d11_vertex_buffers[slot_index] = (ID3D11Buffer*)(
+			vertex_buffer_p.T_cast<F_directx11_buffer>()->d3d11_resource_p()
+		);
+		temp_state.d3d11_vertex_buffer_offsets[slot_index] = offset;
+		temp_state.d3d11_vertex_buffer_strides[slot_index] = vertex_buffer_p->desc().stride;
+
+		NCPP_ENABLE_IF_DEBUG(
+			temp_state.vertex_buffer_orefs[slot_index] = vertex_buffer_p.no_requirements();
+		);
+	}
 	void HD_directx11_command_list::ZIA_bind_instance_buffers(
 		TKPA_valid<A_command_list> command_list_p,
 		const TG_span<K_valid_buffer_handle>& instance_buffer_p_span,
@@ -300,45 +313,6 @@ namespace nrhi {
 			);
 		}
 	}
-	void HD_directx11_command_list::ZVS_bind_constant_buffer(
-		TKPA_valid<A_command_list> command_list_p,
-		KPA_valid_buffer_handle& constant_buffer_p,
-		u32 slot_index
-	)
-	{
-	}
-	void HD_directx11_command_list::ZIA_bind_vertex_buffer(
-		TKPA_valid<A_command_list> command_list_p,
-		KPA_valid_buffer_handle& vertex_buffer_p,
-		u32 offset,
-		u32 slot_index
-	) {
-
-		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
-
-		auto& temp_state = directx11_command_list_p->temp_state_;
-
-		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
-
-		NCPP_ASSERT(
-			u32(
-				flag_combine(
-					vertex_buffer_p->desc().bind_flags,
-					E_resource_bind_flag::VBV
-				)
-			)
-		) << "invalid resource bind flag";
-
-		temp_state.d3d11_vertex_buffers[slot_index] = (ID3D11Buffer*)(
-			vertex_buffer_p.T_cast<F_directx11_buffer>()->d3d11_resource_p()
-		);
-		temp_state.d3d11_vertex_buffer_offsets[slot_index] = offset;
-		temp_state.d3d11_vertex_buffer_strides[slot_index] = vertex_buffer_p->desc().stride;
-
-		NCPP_ENABLE_IF_DEBUG(
-			temp_state.vertex_buffer_orefs[slot_index] = vertex_buffer_p.no_requirements();
-		);
-	}
 	void HD_directx11_command_list::ZIA_bind_instance_buffer(
 		TKPA_valid<A_command_list> command_list_p,
 		KPA_valid_buffer_handle& instance_buffer_p,
@@ -371,11 +345,50 @@ namespace nrhi {
 			temp_state.instance_buffer_orefs[slot_index] = instance_buffer_p.no_requirements();
 		);
 	}
-	void HD_directx11_command_list::ZIA_bind_index_buffer(
+
+	void HD_directx11_command_list::ZVS_bind_constant_buffers(
 		TKPA_valid<A_command_list> command_list_p,
-		KPA_valid_buffer_handle index_buffer_p,
-		u32 offset
-	) {
+		const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
+		u32 base_slot_index
+	)
+	{
+
+		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
+
+		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
+
+		u32 constant_buffer_count = constant_buffer_p_span.size();
+
+		ID3D11Buffer* d3d11_constant_buffer_p_array[NRHI_MAX_CONSTANT_BUFFER_COUNT_PER_DRAWCALL];
+
+		for(u32 i = 0; i < constant_buffer_count; ++i) {
+
+			const auto& constant_buffer_p = constant_buffer_p_span[i];
+
+			NCPP_ASSERT(
+				u32(
+					flag_combine(
+						constant_buffer_p->desc().bind_flags,
+						E_resource_bind_flag::CBV
+					)
+				)
+			) << "invalid resource bind flag";
+
+			d3d11_constant_buffer_p_array[i] = (ID3D11Buffer*)(constant_buffer_p.T_cast<F_directx11_buffer>()->d3d11_resource_p());
+		}
+
+		d3d11_device_context_p->VSSetConstantBuffers(
+			base_slot_index,
+			constant_buffer_count,
+			d3d11_constant_buffer_p_array
+		);
+	}
+	void HD_directx11_command_list::ZVS_bind_constant_buffer(
+		TKPA_valid<A_command_list> command_list_p,
+		KPA_valid_buffer_handle& constant_buffer_p,
+		u32 slot_index
+	)
+	{
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
@@ -384,18 +397,223 @@ namespace nrhi {
 		NCPP_ASSERT(
 			u32(
 				flag_combine(
-					index_buffer_p->desc().bind_flags,
-					E_resource_bind_flag::IBV
+					constant_buffer_p->desc().bind_flags,
+					E_resource_bind_flag::CBV
 				)
 			)
 		) << "invalid resource bind flag";
 
-		d3d11_device_context_p->IASetIndexBuffer(
-			(ID3D11Buffer*)(index_buffer_p.T_cast<F_directx11_buffer>()->d3d11_resource_p()),
-			DXGI_FORMAT(index_buffer_p->desc().format),
-			offset
+		ID3D11Buffer* d3d11_constant_buffer_p =(ID3D11Buffer*)(constant_buffer_p.T_cast<F_directx11_buffer>()->d3d11_resource_p());
+
+		d3d11_device_context_p->VSSetConstantBuffers(
+			slot_index,
+			1,
+			&d3d11_constant_buffer_p
 		);
 	}
+	void HD_directx11_command_list::ZVS_bind_srvs(
+		TKPA_valid<A_command_list> command_list_p,
+		const TG_span<K_valid_srv_handle>& srv_p_span,
+		u32 base_slot_index
+	) {
+
+		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
+
+		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
+
+		u32 srv_count = srv_p_span.size();
+
+		TG_vector<ID3D11ShaderResourceView*> d3d11_srv_p_vector(srv_count);
+
+		for(u32 i = 0; i < srv_count; ++i) {
+
+			const auto& srv_p = srv_p_span[i];
+
+			d3d11_srv_p_vector[i] = (ID3D11ShaderResourceView*)(srv_p.T_cast<F_directx11_shader_resource_view>()->d3d11_view_p());
+		}
+
+		d3d11_device_context_p->VSSetShaderResources(
+			base_slot_index,
+			srv_count,
+			d3d11_srv_p_vector.data()
+		);
+	}
+	void HD_directx11_command_list::ZVS_bind_srv(
+		TKPA_valid<A_command_list> command_list_p,
+		KPA_valid_srv_handle srv_p,
+		u32 slot_index
+	) {
+
+		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
+
+		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
+
+		ID3D11ShaderResourceView* d3d11_srv_p =(ID3D11ShaderResourceView*)(srv_p.T_cast<F_directx11_unordered_access_view>()->d3d11_view_p());
+
+		d3d11_device_context_p->VSSetShaderResources(
+			slot_index,
+			1,
+			&d3d11_srv_p
+		);
+	}
+
+	void HD_directx11_command_list::ZPS_bind_constant_buffers(
+		TKPA_valid<A_command_list> command_list_p,
+		const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
+		u32 base_slot_index
+	)
+	{
+
+		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
+
+		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
+
+		u32 constant_buffer_count = constant_buffer_p_span.size();
+
+		ID3D11Buffer* d3d11_constant_buffer_p_array[NRHI_MAX_CONSTANT_BUFFER_COUNT_PER_DRAWCALL];
+
+		for(u32 i = 0; i < constant_buffer_count; ++i) {
+
+			const auto& constant_buffer_p = constant_buffer_p_span[i];
+
+			NCPP_ASSERT(
+				u32(
+					flag_combine(
+						constant_buffer_p->desc().bind_flags,
+						E_resource_bind_flag::CBV
+					)
+				)
+			) << "invalid resource bind flag";
+
+			d3d11_constant_buffer_p_array[i] = (ID3D11Buffer*)(constant_buffer_p.T_cast<F_directx11_buffer>()->d3d11_resource_p());
+		}
+
+		d3d11_device_context_p->PSSetConstantBuffers(
+			base_slot_index,
+			constant_buffer_count,
+			d3d11_constant_buffer_p_array
+		);
+	}
+	void HD_directx11_command_list::ZPS_bind_constant_buffer(
+		TKPA_valid<A_command_list> command_list_p,
+		KPA_valid_buffer_handle& constant_buffer_p,
+		u32 slot_index
+	)
+	{
+
+		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
+
+		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
+
+		NCPP_ASSERT(
+			u32(
+				flag_combine(
+					constant_buffer_p->desc().bind_flags,
+					E_resource_bind_flag::CBV
+				)
+			)
+		) << "invalid resource bind flag";
+
+		ID3D11Buffer* d3d11_constant_buffer_p =(ID3D11Buffer*)(constant_buffer_p.T_cast<F_directx11_buffer>()->d3d11_resource_p());
+
+		d3d11_device_context_p->PSSetConstantBuffers(
+			slot_index,
+			1,
+			&d3d11_constant_buffer_p
+		);
+	}
+	void HD_directx11_command_list::ZPS_bind_srvs(
+		TKPA_valid<A_command_list> command_list_p,
+		const TG_span<K_valid_srv_handle>& srv_p_span,
+		u32 base_slot_index
+	) {
+
+		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
+
+		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
+
+		u32 srv_count = srv_p_span.size();
+
+		TG_vector<ID3D11ShaderResourceView*> d3d11_srv_p_vector(srv_count);
+
+		for(u32 i = 0; i < srv_count; ++i) {
+
+			const auto& srv_p = srv_p_span[i];
+
+			d3d11_srv_p_vector[i] = (ID3D11ShaderResourceView*)(srv_p.T_cast<F_directx11_shader_resource_view>()->d3d11_view_p());
+		}
+
+		d3d11_device_context_p->PSSetShaderResources(
+			base_slot_index,
+			srv_count,
+			d3d11_srv_p_vector.data()
+		);
+	}
+	void HD_directx11_command_list::ZPS_bind_srv(
+		TKPA_valid<A_command_list> command_list_p,
+		KPA_valid_srv_handle srv_p,
+		u32 slot_index
+	) {
+
+		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
+
+		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
+
+		ID3D11ShaderResourceView* d3d11_srv_p =(ID3D11ShaderResourceView*)(srv_p.T_cast<F_directx11_unordered_access_view>()->d3d11_view_p());
+
+		d3d11_device_context_p->PSSetShaderResources(
+			slot_index,
+			1,
+			&d3d11_srv_p
+		);
+	}
+
+	void HD_directx11_command_list::ZOM_bind_frame_buffer(
+		TKPA_valid<A_command_list> command_list_p,
+		TKPA_valid<A_frame_buffer> frame_buffer_p
+	) {
+
+		const auto& frame_buffer_desc = frame_buffer_p->desc();
+
+		const auto& color_attachment_p_vector = frame_buffer_desc.color_attachment_p_vector;
+		u32 color_attachment_count = color_attachment_p_vector.size();
+
+		ID3D11DeviceContext* d3d11_device_context_p = command_list_p.T_cast<F_directx11_command_list>()->d3d11_device_context_p();
+
+		d3d11_device_context_p->RSSetViewports(
+			1,
+			&(frame_buffer_p.T_cast<F_directx11_frame_buffer>()->d3d11_viewport())
+		);
+
+		ID3D11RenderTargetView* d3d11_rtv_array[NRHI_MAX_RTV_COUNT_PER_DRAWCALL];
+		for(u32 i = 0; i < color_attachment_count; ++i) {
+
+			d3d11_rtv_array[i] = (ID3D11RenderTargetView*)(
+				color_attachment_p_vector[i]
+					.T_cast<F_directx11_render_target_view>()
+					->d3d11_view_p()
+			);
+		}
+
+		ID3D11DepthStencilView* d3d11_depth_stencil_view_p = 0;
+		if(frame_buffer_p->is_has_dsv()) {
+
+			const auto& depth_stencil_attachment_p = frame_buffer_desc.depth_stencil_attachment_p;
+
+			d3d11_depth_stencil_view_p = (ID3D11DepthStencilView*)(
+				depth_stencil_attachment_p
+					.T_cast<F_directx11_depth_stencil_view>()
+					->d3d11_view_p()
+			);
+		}
+
+		d3d11_device_context_p->OMSetRenderTargets(
+			color_attachment_count,
+			d3d11_rtv_array,
+			d3d11_depth_stencil_view_p
+		);
+	}
+
 	void HD_directx11_command_list::draw_indexed(
 		TKPA_valid<A_command_list> command_list_p,
 		u32 index_count,
@@ -409,6 +627,7 @@ namespace nrhi {
 
 		NCPP_ENABLE_IF_DEBUG(
 			NCPP_ASSERT(temp_state.is_graphics_pipeline_state_binded) << "no graphics pipeline state binded";
+			NCPP_ASSERT(temp_state.index_buffer_p.is_valid()) << "index buffer is required";
 		);
 
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
@@ -440,6 +659,7 @@ namespace nrhi {
 
 		NCPP_ENABLE_IF_DEBUG(
 			NCPP_ASSERT(temp_state.is_graphics_pipeline_state_binded) << "no graphics pipeline state binded";
+			NCPP_ASSERT(temp_state.index_buffer_p.is_valid()) << "index buffer is required";
 		);
 
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();

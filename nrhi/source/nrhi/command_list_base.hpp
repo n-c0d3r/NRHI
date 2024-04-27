@@ -81,7 +81,6 @@ namespace nrhi {
 
 	public:
 		void clear_state();
-		void bind_frame_buffer(TKPA_valid<A_frame_buffer> frame_buffer_p);
 		void clear_rtv(KPA_valid_rtv_handle rtv_p, PA_vector4 color);
 		void clear_dsv(
 			KPA_valid_dsv_handle dsv_p,
@@ -89,15 +88,18 @@ namespace nrhi {
 			f32 depth,
 			u8 stencil
 		);
+
+	public:
 		void bind_graphics_pipeline_state(KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p);
 		void bind_compute_pipeline_state(KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p);
+
+	public:
+		void ZIA_bind_index_buffer(
+			KPA_valid_buffer_handle index_buffer_p,
+			u32 offset
+		);
 		void ZIA_bind_vertex_buffers(
 			const TG_span<K_valid_buffer_handle>& vertex_buffer_p_span,
-			const TG_span<u32>& offset_span,
-			u32 base_slot_index
-		);
-		void ZIA_bind_instance_buffers(
-			const TG_span<K_valid_buffer_handle>& instance_buffer_p_span,
 			const TG_span<u32>& offset_span,
 			u32 base_slot_index
 		);
@@ -106,15 +108,57 @@ namespace nrhi {
 			u32 offset,
 			u32 slot_index
 		);
+		void ZIA_bind_instance_buffers(
+			const TG_span<K_valid_buffer_handle>& instance_buffer_p_span,
+			const TG_span<u32>& offset_span,
+			u32 base_slot_index
+		);
 		void ZIA_bind_instance_buffer(
 			KPA_valid_buffer_handle instance_buffer_p,
 			u32 offset,
 			u32 slot_index
 		);
-		void ZIA_bind_index_buffer(
-			KPA_valid_buffer_handle index_buffer_p,
-			u32 offset
+
+	public:
+		void ZVS_bind_constant_buffers(
+			const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
+			u32 base_slot_index
 		);
+		void ZVS_bind_constant_buffer(
+			KPA_valid_buffer_handle constant_buffer_p,
+			u32 slot_index
+		);
+		void ZVS_bind_srvs(
+			const TG_span<K_valid_srv_handle>& srv_p_span,
+			u32 base_slot_index
+		);
+		void ZVS_bind_srv(
+			KPA_valid_srv_handle srv_p,
+			u32 slot_index
+		);
+
+	public:
+		void ZPS_bind_constant_buffers(
+			const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
+			u32 base_slot_index
+		);
+		void ZPS_bind_constant_buffer(
+			KPA_valid_buffer_handle constant_buffer_p,
+			u32 slot_index
+		);
+		void ZPS_bind_srvs(
+			const TG_span<K_valid_srv_handle>& srv_p_span,
+			u32 base_slot_index
+		);
+		void ZPS_bind_srv(
+			KPA_valid_srv_handle srv_p,
+			u32 slot_index
+		);
+
+	public:
+		void ZOM_bind_frame_buffer(TKPA_valid<A_frame_buffer> frame_buffer_p);
+
+	public:
 		void draw_indexed(
 			u32 index_count,
 			u32 base_index_locatio,

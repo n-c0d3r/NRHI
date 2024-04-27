@@ -28,10 +28,6 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "clear_state" "void(
             TKPA_valid<A_command_list> command_list_p
         )"
-        "bind_frame_buffer" "void(
-            TKPA_valid<A_command_list> command_list_p,
-            TKPA_valid<A_frame_buffer> frame_buffer_p
-        )"
         "clear_rtv" "void(
 			TKPA_valid<A_command_list> command_list_p,
 			KPA_valid_rtv_handle rtv_p,
@@ -52,22 +48,16 @@ NRHI_FunctionHelper_CreateFunctionClass(
             TKPA_valid<A_command_list> command_list_p,
             KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p
         )"
+        "ZIA_bind_index_buffer" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            KPA_valid_buffer_handle index_buffer_p,
+            u32 offset
+        )"
         "ZIA_bind_vertex_buffers" "void(
             TKPA_valid<A_command_list> command_list_p,
             const TG_span<K_valid_buffer_handle>& vertex_buffer_p_span,
             const TG_span<u32>& offset_span,
 			u32 base_slot_index
-        )"
-        "ZIA_bind_instance_buffers" "void(
-            TKPA_valid<A_command_list> command_list_p,
-            const TG_span<K_valid_buffer_handle>& instance_buffer_p_span,
-            const TG_span<u32>& offset_span,
-			u32 base_slot_index
-        )"
-        "ZIA_bind_index_buffer" "void(
-            TKPA_valid<A_command_list> command_list_p,
-            KPA_valid_buffer_handle index_buffer_p,
-            u32 offset
         )"
         "ZIA_bind_vertex_buffer" "void(
             TKPA_valid<A_command_list> command_list_p,
@@ -75,11 +65,61 @@ NRHI_FunctionHelper_CreateFunctionClass(
             u32> offset,
             u32 slot_index
         )"
+        "ZIA_bind_instance_buffers" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            const TG_span<K_valid_buffer_handle>& instance_buffer_p_span,
+            const TG_span<u32>& offset_span,
+			u32 base_slot_index
+        )"
         "ZIA_bind_instance_buffer" "void(
             TKPA_valid<A_command_list> command_list_p,
             KPA_valid_buffer_handle instance_buffer_p,
             u32> offset,
             u32 slot_index
+        )"
+        "ZVS_bind_constant_buffers" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
+            u32 base_slot_index
+        )"
+        "ZVS_bind_constant_buffer" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            KPA_valid_buffer_handle constant_buffer_p,
+            u32 slot_index
+        )"
+        "ZVS_bind_srvs" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            const TG_span<K_valid_srv_handle>& srv_p_span,
+            u32 base_slot_index
+        )"
+        "ZVS_bind_srv" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            KPA_valid_srv_handle srv_p,
+            u32 slot_index
+        )"
+        "ZPS_bind_constant_buffers" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
+            u32 base_slot_index
+        )"
+        "ZPS_bind_constant_buffer" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            KPA_valid_buffer_handle constant_buffer_p,
+            u32 slot_index
+        )"
+        "ZPS_bind_srvs" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            const TG_span<K_valid_srv_handle>& srv_p_span,
+            u32 base_slot_index
+        )"
+        "ZPS_bind_srv" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            KPA_valid_srv_handle srv_p,
+            u32 slot_index
+        )"
+        "ZOM_bind_frame_buffer" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            TKPA_valid<A_frame_buffer> frame_buffer_p
         )"
         "draw_indexed" "void(
             TKPA_valid<A_command_list> command_list_p,

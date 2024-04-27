@@ -317,12 +317,11 @@ int main() {
 			// draw triangle
 			{
 				command_list_p->clear_state();
-				command_list_p->bind_frame_buffer(
-					NCPP_FOREF_VALID(frame_buffer_p)
-				);
+
 				command_list_p->bind_graphics_pipeline_state(
 					NCPP_FHANDLE_VALID(graphics_pipeline_state_p)
 				);
+
 				command_list_p->ZIA_bind_index_buffer(
 					NCPP_FHANDLE_VALID(ibuffer_p),
 					0
@@ -337,6 +336,11 @@ int main() {
 					0,
 					0
 				);
+
+				command_list_p->ZOM_bind_frame_buffer(
+					NCPP_FOREF_VALID(frame_buffer_p)
+				);
+
 				command_list_p->draw_indexed_instanced(
 					indices.size(),
 					instances.size(),
