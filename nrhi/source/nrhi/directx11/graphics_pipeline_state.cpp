@@ -80,17 +80,24 @@ namespace nrhi {
 		// get d3d11 shaders
 		for(auto shader_p : desc.shader_p_vector) {
 
-			switch (shader_p->desc().blob_p->desc().type) {
+			const auto& shader_blob_p = shader_p->desc().blob_p;
+			const auto& shader_blob_desc = shader_blob_p->desc();
+
+			switch (shader_blob_desc.type) {
 
 			case E_shader_type::VERTEX:
 				NCPP_ASSERT(!d3d11_vertex_shader_p_) << "only accept 1 vertex shader";
 				d3d11_vertex_shader_p_ = shader_p.T_cast<F_directx11_vertex_shader>()->d3d11_vertex_shader_p();
 				d3d11_input_layout_p_ = shader_p.T_cast<F_directx11_vertex_shader>()->d3d11_input_layout_p();
+
+				vertex_shader_blob_desc_ = shader_blob_desc;
 				break;
 
 			case E_shader_type::PIXEL:
 				NCPP_ASSERT(!d3d11_pixel_shader_p_) << "only accept 1 pixel shader";
 				d3d11_pixel_shader_p_ = shader_p.T_cast<F_directx11_pixel_shader>()->d3d11_pixel_shader_p();
+
+				pixel_shader_blob_desc_ = shader_blob_desc;
 				break;
 			}
 		}

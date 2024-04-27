@@ -39,6 +39,7 @@
 #include <nrhi/compute_pipeline_state.hpp>
 #include <nrhi/buffer_handle.hpp>
 #include <nrhi/clear_flag.hpp>
+#include <nrhi/shader_blob_desc.hpp>
 
 #pragma endregion
 
@@ -49,6 +50,8 @@ namespace nrhi {
     class A_device;
     class A_pipeline_state;
     class A_frame_buffer;
+
+    class F_directx11_graphics_pipeline_state;
 
 
 
@@ -71,6 +74,10 @@ namespace nrhi {
 
 		NCPP_ENABLE_IF_DEBUG(
 			b8 is_graphics_pipeline_state_binded = false;
+		);
+
+		NCPP_ENABLE_IF_DEBUG(
+			K_graphics_pipeline_state_handle graphics_pipeline_state_p;
 		);
 
 	};
@@ -111,7 +118,7 @@ namespace nrhi {
 		static void clear_state(
 			TKPA_valid<A_command_list> command_list_p
 		);
-		static void set_frame_buffer(
+		static void bind_frame_buffer(
 			TKPA_valid<A_command_list> command_list_p,
 			TKPA_valid<A_frame_buffer> frame_buffer_p
 		);
@@ -127,39 +134,49 @@ namespace nrhi {
 			f32 depth,
 			u8 stencil
 		);
-		static void set_graphics_pipeline_state(
+		static void bind_graphics_pipeline_state(
 			TKPA_valid<A_command_list> command_list_p,
 			KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p
 		);
-		static void set_compute_pipeline_state(
+		static void bind_compute_pipeline_state(
 			TKPA_valid<A_command_list> command_list_p,
 			KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p
 		);
-		static void set_vertex_buffers(
+		static void ZVS_bind_constant_buffers(
+			TKPA_valid<A_command_list> command_list_p,
+			const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
+			u32 base_slot_index
+		);
+		static void ZIA_bind_vertex_buffers(
 			TKPA_valid<A_command_list> command_list_p,
 			const TG_span<K_valid_buffer_handle>& vertex_buffer_p_span,
 			const TG_span<u32>& offset_span,
 			u32 base_slot_index
 		);
-		static void set_instance_buffers(
+		static void ZIA_bind_instance_buffers(
 			TKPA_valid<A_command_list> command_list_p,
 			const TG_span<K_valid_buffer_handle>& instance_buffer_p_span,
 			const TG_span<u32>& offset_span,
 			u32 base_slot_index
 		);
-		static void set_vertex_buffer(
+		static void ZVS_bind_constant_buffer(
+			TKPA_valid<A_command_list> command_list_p,
+			KPA_valid_buffer_handle constant_buffer_p,
+			u32 slot_index
+		);
+		static void ZIA_bind_vertex_buffer(
 			TKPA_valid<A_command_list> command_list_p,
 			KPA_valid_buffer_handle vertex_buffer_p,
 			u32 offset,
 			u32 slot_index
 		);
-		static void set_instance_buffer(
+		static void ZIA_bind_instance_buffer(
 			TKPA_valid<A_command_list> command_list_p,
 			KPA_valid_buffer_handle instance_buffer_p,
 			u32 offset,
 			u32 slot_index
 		);
-		static void set_index_buffer(
+		static void ZIA_bind_index_buffer(
 			TKPA_valid<A_command_list> command_list_p,
 			KPA_valid_buffer_handle index_buffer_p,
 			u32 offset

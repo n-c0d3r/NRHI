@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/shader_blob_desc.hpp
+/** @file nrhi/directx11/unordered_access_view.hpp
 *
-*   Implement shader_blob desc.
+*   Implement directx11 unordered_access_view.
 */
 
 
@@ -33,8 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/shader_type.hpp>
-#include <nrhi/format.hpp>
+#include <nrhi/directx11/resource_view.hpp>
 
 #pragma endregion
 
@@ -43,63 +42,30 @@
 namespace nrhi {
 
 	class A_device;
-	class A_shader_blob;
 
 
 
-	struct F_vertex_attribute_desc {
-
-		G_string name;
-		E_format format;
-		u32 duplicate_count = 1;
-
-	};
-	struct F_instance_attribute_desc {
-
-		G_string name;
-		E_format format;
-		u32 duplicate_count = 1;
-
-	};
-
-	struct F_vertex_attribute_group_desc {
-
-		TG_vector<F_vertex_attribute_desc> attribute_desc_vector;
-
-	};
-	struct F_instance_attribute_group_desc {
-
-		TG_vector<F_instance_attribute_desc> attribute_desc_vector;
-
-	};
-
-
-
-	struct F_shader_blob_desc {
-
-		G_string name;
-		E_shader_type type = E_shader_type::NONE;
-
-		TG_vector<F_vertex_attribute_group_desc> vertex_attribute_group_desc_vector;
-		TG_vector<F_instance_attribute_group_desc> instance_attribute_group_desc_vector;
-
-		u32 constant_buffer_count = 0;
-
-		u32 shader_resource_view_count = 0;
-		u32 unordered_access_view_count = 0;
-		u32 render_target_view_count = 0;
-		u32 depth_stencil_view_count = 0;
-
-	};
-
-	class NRHI_API H_shader_blob_desc {
+	class NRHI_API F_directx11_unordered_access_view : public F_directx11_resource_view {
 
 	public:
-		F_shader_blob_desc create_vertex_shader_blob_desc(V_string name);
-		F_shader_blob_desc create_pixel_shader_blob_desc(V_string name);
+		F_directx11_unordered_access_view(
+			TKPA_valid<A_device> device_p,
+			const F_resource_view_desc& desc,
+			E_resource_view_type overrided_type = E_resource_view_type::SRV
+		);
+		F_directx11_unordered_access_view(
+			TKPA_valid<A_device> device_p,
+			const F_resource_view_desc& desc,
+			E_resource_view_type overrided_type,
+			ID3D11UnorderedAccessView* d3d11_unordered_access_view_p
+		);
+		virtual ~F_directx11_unordered_access_view();
 
-	public:
-		F_shader_blob_desc create_compute_shader_blob_desc(V_string name);
+	private:
+		static ID3D11UnorderedAccessView* create_d3d11_unordered_access_view(
+			TKPA_valid<A_device> device_p,
+			const F_resource_view_desc& desc
+		);
 
 	};
 

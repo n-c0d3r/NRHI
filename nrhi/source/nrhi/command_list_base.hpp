@@ -81,7 +81,7 @@ namespace nrhi {
 
 	public:
 		void clear_state();
-		void set_frame_buffer(TKPA_valid<A_frame_buffer> frame_buffer_p);
+		void bind_frame_buffer(TKPA_valid<A_frame_buffer> frame_buffer_p);
 		void clear_rtv(KPA_valid_rtv_handle rtv_p, PA_vector4 color);
 		void clear_dsv(
 			KPA_valid_dsv_handle dsv_p,
@@ -89,29 +89,29 @@ namespace nrhi {
 			f32 depth,
 			u8 stencil
 		);
-		void set_graphics_pipeline_state(KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p);
-		void set_compute_pipeline_state(KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p);
-		void set_vertex_buffers(
+		void bind_graphics_pipeline_state(KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p);
+		void bind_compute_pipeline_state(KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p);
+		void ZIA_bind_vertex_buffers(
 			const TG_span<K_valid_buffer_handle>& vertex_buffer_p_span,
 			const TG_span<u32>& offset_span,
 			u32 base_slot_index
 		);
-		void set_instance_buffers(
+		void ZIA_bind_instance_buffers(
 			const TG_span<K_valid_buffer_handle>& instance_buffer_p_span,
 			const TG_span<u32>& offset_span,
 			u32 base_slot_index
 		);
-		void set_vertex_buffer(
+		void ZIA_bind_vertex_buffer(
 			KPA_valid_buffer_handle vertex_buffer_p,
 			u32 offset,
 			u32 slot_index
 		);
-		void set_instance_buffer(
+		void ZIA_bind_instance_buffer(
 			KPA_valid_buffer_handle instance_buffer_p,
 			u32 offset,
 			u32 slot_index
 		);
-		void set_index_buffer(
+		void ZIA_bind_index_buffer(
 			KPA_valid_buffer_handle index_buffer_p,
 			u32 offset
 		);

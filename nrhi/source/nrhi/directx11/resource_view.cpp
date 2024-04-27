@@ -4,6 +4,7 @@
 #include <nrhi/directx11/shader_resource_view.hpp>
 #include <nrhi/directx11/render_target_view.hpp>
 #include <nrhi/directx11/depth_stencil_view.hpp>
+#include <nrhi/directx11/unordered_access_view.hpp>
 #include <nrhi/format_helper.hpp>
 
 
@@ -50,7 +51,7 @@ namespace nrhi {
         const F_resource_view_desc& desc
     ){
 
-        return {};
+		return { TU<F_directx11_unordered_access_view>()(device_p, desc) };
     }
     U_rtv_handle HD_directx11_resource_view::create_rtv(
         TKPA_valid<A_device> device_p,
@@ -65,13 +66,6 @@ namespace nrhi {
     ){
 
 		return { TU<F_directx11_depth_stencil_view>()(device_p, desc) };
-    }
-    U_sampler_handle HD_directx11_resource_view::create_sampler(
-        TKPA_valid<A_device> device_p,
-        const F_resource_view_desc& desc
-    ){
-
-        return {};
     }
 
 }

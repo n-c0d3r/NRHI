@@ -101,10 +101,6 @@ namespace nrhi {
 			TKPA_valid<A_device> device_p,
             const F_resource_view_desc& desc
         );
-        static U_sampler_handle create_sampler(
-			TKPA_valid<A_device> device_p,
-            const F_resource_view_desc& desc
-        );
 
     };
 

@@ -35,6 +35,7 @@
 
 #include <nrhi/directx11/pipeline_state.hpp>
 #include <nrhi/utilities/platform_object_pool.hpp>
+#include <nrhi/shader_blob_desc.hpp>
 
 #pragma endregion
 
@@ -91,6 +92,9 @@ namespace nrhi {
 		ID3D11RasterizerState* d3d11_rasterizer_state_p_ = 0;
 		ID3D11DepthStencilState* d3d11_depth_stencil_state_p_ = 0;
 
+		F_shader_blob_desc vertex_shader_blob_desc_;
+		F_shader_blob_desc pixel_shader_blob_desc_;
+
 	public:
 		NCPP_FORCE_INLINE ID3D11VertexShader* d3d11_vertex_shader_p() noexcept { return d3d11_vertex_shader_p_; }
 		NCPP_FORCE_INLINE ID3D11PixelShader* d3d11_pixel_shader_p() noexcept { return d3d11_pixel_shader_p_; }
@@ -99,6 +103,9 @@ namespace nrhi {
 
 		NCPP_FORCE_INLINE ID3D11RasterizerState* d3d11_rasterizer_state_p() noexcept { return d3d11_rasterizer_state_p_; }
 		NCPP_FORCE_INLINE ID3D11DepthStencilState* d3d11_depth_stencil_state_p() noexcept { return d3d11_depth_stencil_state_p_; }
+
+		NCPP_FORCE_INLINE const F_shader_blob_desc& vertex_shader_blob_desc() const noexcept { return vertex_shader_blob_desc_; }
+		NCPP_FORCE_INLINE const F_shader_blob_desc& pixel_shader_blob_desc() const noexcept { return pixel_shader_blob_desc_; }
 
 
 

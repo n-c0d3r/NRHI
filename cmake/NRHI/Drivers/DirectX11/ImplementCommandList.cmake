@@ -28,7 +28,7 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "clear_state" "void(
             TKPA_valid<A_command_list> command_list_p
         )"
-        "set_frame_buffer" "void(
+        "bind_frame_buffer" "void(
             TKPA_valid<A_command_list> command_list_p,
             TKPA_valid<A_frame_buffer> frame_buffer_p
         )"
@@ -44,38 +44,38 @@ NRHI_FunctionHelper_CreateFunctionClass(
             f32 depth,
             u8 stencil
         )"
-        "set_graphics_pipeline_state" "void(
+        "bind_graphics_pipeline_state" "void(
             TKPA_valid<A_command_list> command_list_p,
             KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p
         )"
-        "set_compute_pipeline_state" "void(
+        "bind_compute_pipeline_state" "void(
             TKPA_valid<A_command_list> command_list_p,
             KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p
         )"
-        "set_vertex_buffers" "void(
+        "ZIA_bind_vertex_buffers" "void(
             TKPA_valid<A_command_list> command_list_p,
             const TG_span<K_valid_buffer_handle>& vertex_buffer_p_span,
             const TG_span<u32>& offset_span,
 			u32 base_slot_index
         )"
-        "set_instance_buffers" "void(
+        "ZIA_bind_instance_buffers" "void(
             TKPA_valid<A_command_list> command_list_p,
             const TG_span<K_valid_buffer_handle>& instance_buffer_p_span,
             const TG_span<u32>& offset_span,
 			u32 base_slot_index
         )"
-        "set_index_buffer" "void(
+        "ZIA_bind_index_buffer" "void(
             TKPA_valid<A_command_list> command_list_p,
             KPA_valid_buffer_handle index_buffer_p,
             u32 offset
         )"
-        "set_vertex_buffer" "void(
+        "ZIA_bind_vertex_buffer" "void(
             TKPA_valid<A_command_list> command_list_p,
             KPA_valid_buffer_handle vertex_buffer_p,
             u32> offset,
             u32 slot_index
         )"
-        "set_instance_buffer" "void(
+        "ZIA_bind_instance_buffer" "void(
             TKPA_valid<A_command_list> command_list_p,
             KPA_valid_buffer_handle instance_buffer_p,
             u32> offset,

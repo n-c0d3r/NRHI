@@ -247,7 +247,8 @@ int main() {
 			F_shader_kernel_desc {
 				.blob_desc = {
 					.name = "pmain",
-					.type = E_shader_type::PIXEL
+					.type = E_shader_type::PIXEL,
+					.render_target_view_count = 1
 				}
 			}
 		)
@@ -316,22 +317,22 @@ int main() {
 			// draw triangle
 			{
 				command_list_p->clear_state();
-				command_list_p->set_frame_buffer(
+				command_list_p->bind_frame_buffer(
 					NCPP_FOREF_VALID(frame_buffer_p)
 				);
-				command_list_p->set_graphics_pipeline_state(
+				command_list_p->bind_graphics_pipeline_state(
 					NCPP_FHANDLE_VALID(graphics_pipeline_state_p)
 				);
-				command_list_p->set_index_buffer(
+				command_list_p->ZIA_bind_index_buffer(
 					NCPP_FHANDLE_VALID(ibuffer_p),
 					0
 				);
-				command_list_p->set_vertex_buffer(
+				command_list_p->ZIA_bind_vertex_buffer(
 					NCPP_FHANDLE_VALID(vbuffer_p),
 					0,
 					0
 				);
-				command_list_p->set_instance_buffer(
+				command_list_p->ZIA_bind_instance_buffer(
 					NCPP_FHANDLE_VALID(instance_buffer_p),
 					0,
 					0

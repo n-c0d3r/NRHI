@@ -38,10 +38,6 @@ NRHI_FunctionHelper_CreateFunctionClass(
             TKPA_valid<A_device> device_p,
             const F_resource_view_desc& desc
         )"
-        "create_sampler" "U_sampler_handle(
-            TKPA_valid<A_device> device_p,
-            const F_resource_view_desc& desc
-        )"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX11> Implement resource view done")

@@ -51,7 +51,7 @@ namespace nrhi {
 
 		d3d11_device_context_p->ClearState();
 	}
-	void HD_directx11_command_list::set_frame_buffer(
+	void HD_directx11_command_list::bind_frame_buffer(
 		TKPA_valid<A_command_list> command_list_p,
 		TKPA_valid<A_frame_buffer> frame_buffer_p
 	) {
@@ -139,7 +139,7 @@ namespace nrhi {
 			stencil
 		);
 	}
-	void HD_directx11_command_list::set_graphics_pipeline_state(
+	void HD_directx11_command_list::bind_graphics_pipeline_state(
 		TKPA_valid<A_command_list> command_list_p,
 		KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p
 	) {
@@ -155,6 +155,7 @@ namespace nrhi {
 
 		NCPP_ENABLE_IF_DEBUG(
 			temp_state.is_graphics_pipeline_state_binded = true;
+			temp_state.graphics_pipeline_state_p = graphics_pipeline_state_p.no_requirements();
 		);
 
 		TK_valid<F_directx11_graphics_pipeline_state> directx11_graphics_pipeline_state_p = NCPP_FHANDLE_VALID_AS_OREF(
@@ -203,13 +204,21 @@ namespace nrhi {
 			}
 		}
 	}
-	void HD_directx11_command_list::set_compute_pipeline_state(
+	void HD_directx11_command_list::bind_compute_pipeline_state(
 		TKPA_valid<A_command_list> command_list_p,
 		KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p
 	) {
 
 	}
-	void HD_directx11_command_list::set_vertex_buffers(
+	void HD_directx11_command_list::ZVS_bind_constant_buffers(
+		TKPA_valid<A_command_list> command_list_p,
+		const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
+		u32 base_slot_index
+	)
+	{
+
+	}
+	void HD_directx11_command_list::ZIA_bind_vertex_buffers(
 		TKPA_valid<A_command_list> command_list_p,
 		const TG_span<K_valid_buffer_handle>& vertex_buffer_p_span,
 		const TG_span<u32>& offset_span,
@@ -250,7 +259,7 @@ namespace nrhi {
 			);
 		}
 	}
-	void HD_directx11_command_list::set_instance_buffers(
+	void HD_directx11_command_list::ZIA_bind_instance_buffers(
 		TKPA_valid<A_command_list> command_list_p,
 		const TG_span<K_valid_buffer_handle>& instance_buffer_p_span,
 		const TG_span<u32>& offset_span,
@@ -291,7 +300,14 @@ namespace nrhi {
 			);
 		}
 	}
-	void HD_directx11_command_list::set_vertex_buffer(
+	void HD_directx11_command_list::ZVS_bind_constant_buffer(
+		TKPA_valid<A_command_list> command_list_p,
+		KPA_valid_buffer_handle& constant_buffer_p,
+		u32 slot_index
+	)
+	{
+	}
+	void HD_directx11_command_list::ZIA_bind_vertex_buffer(
 		TKPA_valid<A_command_list> command_list_p,
 		KPA_valid_buffer_handle& vertex_buffer_p,
 		u32 offset,
@@ -323,7 +339,7 @@ namespace nrhi {
 			temp_state.vertex_buffer_orefs[slot_index] = vertex_buffer_p.no_requirements();
 		);
 	}
-	void HD_directx11_command_list::set_instance_buffer(
+	void HD_directx11_command_list::ZIA_bind_instance_buffer(
 		TKPA_valid<A_command_list> command_list_p,
 		KPA_valid_buffer_handle& instance_buffer_p,
 		u32 offset,
@@ -355,7 +371,7 @@ namespace nrhi {
 			temp_state.instance_buffer_orefs[slot_index] = instance_buffer_p.no_requirements();
 		);
 	}
-	void HD_directx11_command_list::set_index_buffer(
+	void HD_directx11_command_list::ZIA_bind_index_buffer(
 		TKPA_valid<A_command_list> command_list_p,
 		KPA_valid_buffer_handle index_buffer_p,
 		u32 offset
