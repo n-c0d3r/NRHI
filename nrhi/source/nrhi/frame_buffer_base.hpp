@@ -74,7 +74,7 @@ namespace nrhi {
 		virtual ~A_frame_buffer();
 
 	public:
-		void update();
+		void update_viewport();
 
 	};
 

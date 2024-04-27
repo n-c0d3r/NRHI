@@ -47,6 +47,11 @@ namespace nrhi {
 
 	class NRHI_API F_directx11_frame_buffer : public A_frame_buffer {
 
+	public:
+		friend class HD_directx11_frame_buffer;
+
+
+
 	private:
 		D3D11_VIEWPORT d3d11_viewport_;
 
@@ -78,7 +83,7 @@ namespace nrhi {
 		);
 
 	public:
-		static void update(TK_valid<A_frame_buffer> frame_bufer_p);
+		static void update_viewport(TK_valid<A_frame_buffer> frame_bufer_p);
 
 	};
 

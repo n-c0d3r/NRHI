@@ -304,14 +304,14 @@ int main() {
 
 		if(swapchain_p.is_valid()) {
 
+			// update frame buffer
+			frame_buffer_p->update_viewport();
+
 			// clear main render target view to cyan (r: 0, g: 255, b:255, a: 1.0)
 			command_list_p->clear_rtv(
 				NCPP_FHANDLE_VALID(back_rtv_p),
 				{ 0.0f, 1.0f, 1.0f, 1.0f }
 			);
-
-			// update frame buffer
-			frame_buffer_p->update();
 
 			// draw triangle
 			{

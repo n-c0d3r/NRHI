@@ -42,9 +42,9 @@
 
 namespace nrhi {
 
-	NCPP_FORCE_INLINE void A_frame_buffer::update() {
+	NCPP_FORCE_INLINE void A_frame_buffer::update_viewport() {
 
-		H_frame_buffer::update(NCPP_KTHIS());
+		H_frame_buffer::update_viewport(NCPP_KTHIS());
 	}
 
 }

@@ -27,7 +27,7 @@ NRHI_FunctionHelper_CreateFunctionClass(
             TKPA_valid<A_device> device_p,
             const F_frame_buffer_desc& desc
         )"
-        "update" "void(TK_valid<A_frame_buffer> frame_bufer_p)"
+        "update_viewport" "void(TK_valid<A_frame_buffer> frame_bufer_p)"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX11> Implement frame buffer done")
