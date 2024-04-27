@@ -215,7 +215,7 @@ int main() {
 		"float4 vmain(float4 vertex_pos : VERTEX_POSITION, float4 instance_pos : INSTANCE_POSITION) : SV_POSITION"
 		"{ return float4(instance_pos.xyz + vertex_pos.xyz, 1); }"
 		"float4 pmain(float4 pos : SV_POSITION) : SV_TARGET"
-		"{ return float4(1,1,1,1); }",
+		"{ return float4(0.2, 0.2, 0.2, 1.0); }",
 		// shader kernel descriptors (each kernel has 1 entry point function and is compiled to 1 shader blob)
 		NCPP_INIL_SPAN(
 			F_shader_kernel_desc {
