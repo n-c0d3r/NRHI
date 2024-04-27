@@ -53,7 +53,7 @@ int main() {
     F_surface_manager surface_manager;
     auto surface_p = surface_manager.create_surface({
         .title = G_wstring(L"Hello NRHI ") + TEXT(NRHI_VERSION_STR),
-        .size = { 1200, 700 }
+        .size = { 700, 700 }
     });
 
 
@@ -78,9 +78,10 @@ int main() {
 
 
     TG_vector<F_vector4> vertices = {
-		{ 0.25f, 0.0f, 0.5f, 1.0f },
+		{ 0.05f, 0.0f, 0.5f, 1.0f },
 		{ 0.0f, 0.0f, 0.5f, 1.0f },
-		{ 0.0f, 0.25f, 0.5f, 1.0f }
+		{ 0.0f, 0.05f, 0.5f, 1.0f },
+		{ 0.05f, 0.05f, 0.5f, 1.0f }
 	};
     U_buffer_handle vbuffer_p = H_buffer::T_create<F_vector4>(
         NCPP_FOREF_VALID(device_p),
@@ -89,9 +90,55 @@ int main() {
     );
 
 	TG_vector<F_vector4> instances = {
-		{ 0.0f, 0.0f, 0.0f, 1.0f },
-		{ -0.5f, -0.5f, 0.0f, 1.0f },
-		{ -1.0f, -1.0f, 0.0f, 1.0f }
+		{ -0.35f, -0.1f, 0.0f, 1.0f },
+		{ -0.35f, -0.05f, 0.0f, 1.0f },
+		{ -0.35f, 0.00f, 0.0f, 1.0f },
+		{ -0.35f, 0.05f, 0.0f, 1.0f },
+		{ -0.35f, 0.1f, 0.0f, 1.0f },
+		{ -0.35f, 0.15f, 0.0f, 1.0f },
+
+		{ -0.25f, 0.15f, 0.0f, 1.0f },
+		{ -0.30f, 0.15f, 0.0f, 1.0f },
+
+		{ -0.20f, -0.1f, 0.0f, 1.0f },
+		{ -0.20f, -0.05f, 0.0f, 1.0f },
+		{ -0.20f, 0.00f, 0.0f, 1.0f },
+		{ -0.20f, 0.05f, 0.0f, 1.0f },
+		{ -0.20f, 0.1f, 0.0f, 1.0f },
+
+		{ -0.10f, -0.1f, 0.0f, 1.0f },
+		{ -0.10f, -0.05f, 0.0f, 1.0f },
+		{ -0.10f, 0.00f, 0.0f, 1.0f },
+		{ -0.10f, 0.05f, 0.0f, 1.0f },
+		{ -0.10f, 0.1f, 0.0f, 1.0f },
+		{ -0.10f, 0.15f, 0.0f, 1.0f },
+
+		{ 0.00f, 0.15f, 0.0f, 1.0f },
+		{ -0.05f, 0.10f, 0.0f, 1.0f },
+
+		{ 0.10f, -0.1f, 0.0f, 1.0f },
+		{ 0.10f, -0.05f, 0.0f, 1.0f },
+		{ 0.10f, 0.00f, 0.0f, 1.0f },
+		{ 0.10f, 0.05f, 0.0f, 1.0f },
+		{ 0.10f, 0.1f, 0.0f, 1.0f },
+		{ 0.10f, 0.15f, 0.0f, 1.0f },
+
+		{ 0.20f, 0.05f, 0.0f, 1.0f },
+		{ 0.15f, 0.05f, 0.0f, 1.0f },
+
+		{ 0.25f, -0.1f, 0.0f, 1.0f },
+		{ 0.25f, -0.05f, 0.0f, 1.0f },
+		{ 0.25f, 0.00f, 0.0f, 1.0f },
+		{ 0.25f, 0.05f, 0.0f, 1.0f },
+		{ 0.25f, 0.1f, 0.0f, 1.0f },
+		{ 0.25f, 0.15f, 0.0f, 1.0f },
+
+		{ 0.35f, -0.1f, 0.0f, 1.0f },
+		{ 0.35f, -0.05f, 0.0f, 1.0f },
+		{ 0.35f, 0.00f, 0.0f, 1.0f },
+		{ 0.35f, 0.05f, 0.0f, 1.0f },
+		{ 0.35f, 0.1f, 0.0f, 1.0f },
+		{ 0.35f, 0.15f, 0.0f, 1.0f }
 	};
 	U_buffer_handle instance_buffer_p = H_buffer::T_create<F_vector4>(
 		NCPP_FOREF_VALID(device_p),
@@ -102,7 +149,10 @@ int main() {
     TG_vector<u32> indices = {
 		0,
 		1,
-		2
+		2,
+		0,
+		2,
+		3
 	};
     U_buffer_handle ibuffer_p = H_buffer::T_create<u32>(
         NCPP_FOREF_VALID(device_p),
@@ -287,8 +337,8 @@ int main() {
 					0
 				);
 				command_list_p->draw_indexed_instanced(
-					3,
-					3,
+					indices.size(),
+					instances.size(),
 					0,
 					0,
 					0
