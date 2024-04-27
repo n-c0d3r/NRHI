@@ -69,6 +69,10 @@ namespace nrhi {
 		u32 vertex_buffer_count = 0;
 		u32 instance_buffer_count = 0;
 
+		NCPP_ENABLE_IF_DEBUG(
+			b8 is_graphics_pipeline_state_binded = false;
+		);
+
 	};
 
 

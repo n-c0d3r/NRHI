@@ -153,6 +153,10 @@ namespace nrhi {
 		temp_state.vertex_buffer_count = graphics_pipeline_state_p->vertex_buffer_count();
 		temp_state.instance_buffer_count = graphics_pipeline_state_p->instance_buffer_count();
 
+		NCPP_ENABLE_IF_DEBUG(
+			temp_state.is_graphics_pipeline_state_binded = true;
+		);
+
 		TK_valid<F_directx11_graphics_pipeline_state> directx11_graphics_pipeline_state_p = NCPP_FHANDLE_VALID_AS_OREF(
 			graphics_pipeline_state_p
 		).T_cast<F_directx11_graphics_pipeline_state>();
@@ -387,6 +391,10 @@ namespace nrhi {
 
 		auto& temp_state = directx11_command_list_p->temp_state_;
 
+		NCPP_ENABLE_IF_DEBUG(
+			NCPP_ASSERT(temp_state.is_graphics_pipeline_state_binded) << "no graphics pipeline state binded";
+		);
+
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
 
 		apply_temp_state_for_indexed_drawing(
@@ -413,6 +421,10 @@ namespace nrhi {
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
 		auto& temp_state = directx11_command_list_p->temp_state_;
+
+		NCPP_ENABLE_IF_DEBUG(
+			NCPP_ASSERT(temp_state.is_graphics_pipeline_state_binded) << "no graphics pipeline state binded";
+		);
 
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
 
