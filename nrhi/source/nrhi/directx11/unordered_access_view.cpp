@@ -56,10 +56,14 @@ namespace nrhi {
 		ID3D11Resource* d3d11_resource_p = resource_p.T_cast<F_directx11_resource>()->d3d11_resource_p();
 		ID3D11View* d3d11_view_p = 0;
 
+		E_resource_type target_resource_type = desc.overrided_resource_type;
+		if(target_resource_type == E_resource_type::NONE)
+			target_resource_type = resource_desc.type;
+
 		D3D11_UNORDERED_ACCESS_VIEW_DESC d3d11_uav_desc;
 		memset(&d3d11_uav_desc, 0, sizeof(D3D11_UNORDERED_ACCESS_VIEW_DESC));
 		d3d11_uav_desc.Format = DXGI_FORMAT(resource_desc.format);
-		switch (resource_desc.type) {
+		switch (target_resource_type) {
 		case E_resource_type::BUFFER:
 			d3d11_uav_desc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
 			d3d11_uav_desc.Buffer.FirstElement = desc.mem_offset / resource_desc.stride;
@@ -82,7 +86,7 @@ namespace nrhi {
 			d3d11_uav_desc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE3D;
 			d3d11_uav_desc.Texture3D.MipSlice = desc.base_mip_level;
 			break;
-		case E_resource_type::TEXTURE_CUBE:
+		case E_resource_type::TEXTURE_2D_ARRAY:
 			d3d11_uav_desc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2DARRAY;
 			d3d11_uav_desc.Texture2DArray.MipSlice = desc.base_mip_level;
 			d3d11_uav_desc.Texture2DArray.FirstArraySlice = desc.index;

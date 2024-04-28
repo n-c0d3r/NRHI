@@ -56,7 +56,11 @@ namespace nrhi {
 		ID3D11Resource* d3d11_resource_p = resource_p.T_cast<F_directx11_resource>()->d3d11_resource_p();
 		ID3D11View* d3d11_view_p = 0;
 
-		NCPP_ASSERT(resource_desc.type == E_resource_type::TEXTURE_2D) << "only support texture 2d";
+		E_resource_type target_resource_type = desc.overrided_resource_type;
+		if(target_resource_type == E_resource_type::NONE)
+			target_resource_type = resource_desc.type;
+
+		NCPP_ASSERT(target_resource_type == E_resource_type::TEXTURE_2D) << "only support texture 2d";
 
 		D3D11_DEPTH_STENCIL_VIEW_DESC d3d11_dsv_desc;
 		memset(&d3d11_dsv_desc, 0, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));

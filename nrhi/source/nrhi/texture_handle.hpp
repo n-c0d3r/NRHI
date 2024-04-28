@@ -29,6 +29,13 @@
 
 #include <nrhi/prerequisites.hpp>
 
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+#include <nrhi/resource_view_handle.hpp>
+#include <nrhi/texture_cube_face.hpp>
+
 #pragma endregion
 
 
@@ -61,11 +68,19 @@ namespace nrhi {
 
 		NCPP_FHANDLE_GENERATED_BODY(texture_2d_array_handle, A_resource);
 
+		U_srv_handle create_sub_array_srv(u32 index, u32 count, u32 base_mip_level = 0) const noexcept;
+		U_uav_handle create_sub_array_uav(u32 index, u32 count, u32 base_mip_level = 0) const noexcept;
+		U_rtv_handle create_element_rtv(u32 index, u32 target_mip_level = 0) const noexcept;
+
 	};
 
 	NCPP_FHANDLE_TEMPLATE(texture_cube_handle, A_resource) {
 
 		NCPP_FHANDLE_GENERATED_BODY(texture_cube_handle, A_resource);
+
+		U_srv_handle create_face_srv(E_texture_cube_face face, u32 base_mip_level = 0) const noexcept;
+		U_uav_handle create_face_uav(E_texture_cube_face face, u32 base_mip_level = 0) const noexcept;
+		U_rtv_handle create_face_rtv(E_texture_cube_face face, u32 target_mip_level = 0) const noexcept;
 
 	};
 

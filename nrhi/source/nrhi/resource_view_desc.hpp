@@ -34,6 +34,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/resource_view_type.hpp>
+#include <nrhi/resource_type.hpp>
 
 #pragma endregion
 
@@ -50,6 +51,8 @@ namespace nrhi {
     struct F_resource_view_desc {
 
         E_resource_view_type type = E_resource_view_type::NONE;
+
+		E_resource_type overrided_resource_type = E_resource_type::NONE;
 
         TK_valid<A_resource> resource_p;
 

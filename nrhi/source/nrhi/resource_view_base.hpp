@@ -55,10 +55,12 @@ namespace nrhi {
     private:
         TK_valid<A_device> device_p_;
         F_resource_view_desc desc_;
+		E_resource_type resource_type_;
 
     public:
         NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
-        NCPP_FORCE_INLINE F_resource_view_desc desc() noexcept { return desc_; }
+        NCPP_FORCE_INLINE const F_resource_view_desc& desc() const noexcept { return desc_; }
+        NCPP_FORCE_INLINE E_resource_type resource_type() const noexcept { return resource_type_; }
 
 
 

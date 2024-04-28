@@ -66,6 +66,8 @@ namespace nrhi { }
 #include <nrhi/depth_comparison_func.hpp>
 #include <nrhi/primitive_topology.hpp>
 #include <nrhi/clear_flag.hpp>
+#include <nrhi/texture_cube_face.hpp>
+
 #include <nrhi/descriptor_base.hpp>
 #include <nrhi/root_signature_base.hpp>
 #include <nrhi/resource_base.hpp>
@@ -110,6 +112,8 @@ namespace nrhi { }
 #include <nrhi/command_queue.external_use_only.inl>
 #include <nrhi/swapchain.external_use_only.inl>
 #include <nrhi/frame_buffer.external_use_only.inl>
+
+#include <nrhi/texture_handle.external_use_only.inl>
 
 #pragma endregion
 

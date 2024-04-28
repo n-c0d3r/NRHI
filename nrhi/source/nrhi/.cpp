@@ -85,6 +85,7 @@ namespace nrhi {
             NRHI_ENUM_TRY_UPDATE_MAP(E_fill_mode);
             NRHI_ENUM_TRY_UPDATE_MAP(E_primitive_topology);
             NRHI_ENUM_TRY_UPDATE_MAP(E_clear_flag);
+            NRHI_ENUM_TRY_UPDATE_MAP(E_texture_cube_face);
 
         }
         void try_update_map_functions(bool clear){
