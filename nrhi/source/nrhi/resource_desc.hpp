@@ -172,7 +172,6 @@ namespace nrhi {
             u32 width,
             E_format format = E_format::R8G8B8A8_UNORM,
             u32 mip_level_count = 1,
-            F_sample_desc sample_desc = F_sample_desc{},
             E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
             E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
         );
@@ -183,7 +182,7 @@ namespace nrhi {
             u32 height,
             E_format format = E_format::R8G8B8A8_UNORM,
             u32 mip_level_count = 1,
-            F_sample_desc sample_desc = F_sample_desc{},
+			F_sample_desc sample_desc = F_sample_desc{},
             E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
             E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
         );
@@ -195,10 +194,31 @@ namespace nrhi {
             u32 depth,
             E_format format = E_format::R8G8B8A8_UNORM,
             u32 mip_level_count = 1,
-            F_sample_desc sample_desc = F_sample_desc{},
             E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
             E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
         );
+
+	public:
+		static F_resource_desc create_texture_2d_array_desc(
+			u32 width,
+			u32 height,
+			u32 count,
+			E_format format = E_format::R8G8B8A8_UNORM,
+			u32 mip_level_count = 1,
+			F_sample_desc sample_desc = F_sample_desc{},
+			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
+			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+		);
+
+	public:
+		static F_resource_desc create_texture_cube_desc(
+			u32 width,
+			E_format format = E_format::R8G8B8A8_UNORM,
+			u32 mip_level_count = 1,
+			F_sample_desc sample_desc = F_sample_desc{},
+			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
+			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+		);
 
 	public:
 		static F_resource_desc create_indirect_buffer_desc(

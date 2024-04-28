@@ -45,19 +45,27 @@ namespace nrhi {
 
 	};
 
-
-
 	NCPP_FHANDLE_TEMPLATE(texture_2d_handle, A_resource) {
 
 		NCPP_FHANDLE_GENERATED_BODY(texture_2d_handle, A_resource);
 
 	};
 
-
-
 	NCPP_FHANDLE_TEMPLATE(texture_3d_handle, A_resource) {
 
 		NCPP_FHANDLE_GENERATED_BODY(texture_3d_handle, A_resource);
+
+	};
+
+	NCPP_FHANDLE_TEMPLATE(texture_2d_array_handle, A_resource) {
+
+		NCPP_FHANDLE_GENERATED_BODY(texture_2d_array_handle, A_resource);
+
+	};
+
+	NCPP_FHANDLE_TEMPLATE(texture_cube_handle, A_resource) {
+
+		NCPP_FHANDLE_GENERATED_BODY(texture_cube_handle, A_resource);
 
 	};
 

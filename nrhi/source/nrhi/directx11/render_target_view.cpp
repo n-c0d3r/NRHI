@@ -61,8 +61,21 @@ namespace nrhi {
         D3D11_RENDER_TARGET_VIEW_DESC d3d11_rtv_desc;
         memset(&d3d11_rtv_desc, 0, sizeof(D3D11_RENDER_TARGET_VIEW_DESC));
         d3d11_rtv_desc.Format = DXGI_FORMAT(resource_desc.format);
-        d3d11_rtv_desc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
-        d3d11_rtv_desc.Texture2D.MipSlice = desc.target_mip_level;
+		switch (resource_desc.type) {
+		case E_resource_type::TEXTURE_2D:
+			d3d11_rtv_desc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+			d3d11_rtv_desc.Texture2D.MipSlice = desc.target_mip_level;
+			break;
+		case E_resource_type::TEXTURE_CUBE:
+			d3d11_rtv_desc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2DARRAY;
+			d3d11_rtv_desc.Texture2DArray.MipSlice = desc.base_mip_level;
+			d3d11_rtv_desc.Texture2DArray.FirstArraySlice = desc.index;
+			d3d11_rtv_desc.Texture2DArray.ArraySize = desc.count;
+			break;
+		default:
+			NCPP_ASSERT(false) << "invalid resource type";
+			break;
+		}
 
         d3d11_device_p->CreateRenderTargetView(
             d3d11_resource_p,

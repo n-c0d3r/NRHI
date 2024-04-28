@@ -25,7 +25,7 @@ namespace nrhi {
             .bind_flags = bind_flags,
             .heap_type = heap_type,
 
-            .type = E_resource_type::BUFFER,
+            .type = E_resource_type::BUFFER
 
         };
     }
@@ -51,7 +51,7 @@ namespace nrhi {
             .bind_flags = bind_flags,
             .heap_type = heap_type,
 
-            .type = E_resource_type::BUFFER,
+            .type = E_resource_type::BUFFER
 
         };
     }
@@ -76,7 +76,7 @@ namespace nrhi {
             .bind_flags = bind_flags,
             .heap_type = heap_type,
 
-            .type = E_resource_type::STRUCTURED_BUFFER,
+            .type = E_resource_type::STRUCTURED_BUFFER
 
         };
     }
@@ -100,7 +100,7 @@ namespace nrhi {
             .bind_flags = bind_flags,
             .heap_type = heap_type,
 
-            .type = E_resource_type::SINGLE_ELEMENTED_BUFFER,
+            .type = E_resource_type::SINGLE_ELEMENTED_BUFFER
 
         };
     }
@@ -109,7 +109,6 @@ namespace nrhi {
         u32 width,
         E_format format,
         u32 mip_level_count,
-        F_sample_desc sample_desc,
         E_resource_bind_flag bind_flags,
         E_resource_heap_type heap_type
     ) {
@@ -124,12 +123,11 @@ namespace nrhi {
             .stride = H_format::stride(format),
 
             .mip_level_count = mip_level_count,
-            .sample_desc = sample_desc,
 
             .bind_flags = bind_flags,
             .heap_type = heap_type,
 
-            .type = E_resource_type::TEXTURE_1D,
+            .type = E_resource_type::TEXTURE_1D
 
         };
     }
@@ -159,7 +157,7 @@ namespace nrhi {
             .bind_flags = bind_flags,
             .heap_type = heap_type,
 
-            .type = E_resource_type::TEXTURE_2D,
+            .type = E_resource_type::TEXTURE_2D
 
         };
     }
@@ -170,7 +168,6 @@ namespace nrhi {
         u32 depth,
         E_format format,
         u32 mip_level_count,
-        F_sample_desc sample_desc,
         E_resource_bind_flag bind_flags,
         E_resource_heap_type heap_type
     ) {
@@ -185,15 +182,74 @@ namespace nrhi {
             .stride = H_format::stride(format),
 
             .mip_level_count = mip_level_count,
-            .sample_desc = sample_desc,
 
             .bind_flags = bind_flags,
             .heap_type = heap_type,
 
-            .type = E_resource_type::TEXTURE_3D,
+            .type = E_resource_type::TEXTURE_3D
 
         };
     }
+
+	F_resource_desc H_resource_desc::create_texture_2d_array_desc(
+		u32 width,
+		u32 height,
+		u32 count,
+		E_format format,
+		u32 mip_level_count,
+		F_sample_desc sample_desc,
+		E_resource_bind_flag bind_flags,
+		E_resource_heap_type heap_type
+	) {
+
+		return {
+
+			.width = width,
+			.height = height,
+			.array_size = count,
+
+			.format = format,
+			.stride = H_format::stride(format),
+
+			.mip_level_count = mip_level_count,
+			.sample_desc = sample_desc,
+
+			.bind_flags = bind_flags,
+			.heap_type = heap_type,
+
+			.type = E_resource_type::TEXTURE_2D
+
+		};
+	}
+
+	F_resource_desc H_resource_desc::create_texture_cube_desc(
+		u32 width,
+		E_format format,
+		u32 mip_level_count,
+		F_sample_desc sample_desc,
+		E_resource_bind_flag bind_flags,
+		E_resource_heap_type heap_type
+	) {
+
+		return {
+
+			.width = width,
+			.height = width,
+			.array_size = 6,
+
+			.format = format,
+			.stride = H_format::stride(format),
+
+			.mip_level_count = mip_level_count,
+			.sample_desc = sample_desc,
+
+			.bind_flags = bind_flags,
+			.heap_type = heap_type,
+
+			.type = E_resource_type::TEXTURE_CUBE
+
+		};
+	}
 
 	F_resource_desc H_resource_desc::create_indirect_buffer_desc(
 		u32 count,
@@ -203,7 +259,7 @@ namespace nrhi {
 
 		return {
 
-			.width = count * sizeof(u32),
+			.width = count * u32(sizeof(u32)),
 			.height = 1,
 			.depth = 1,
 
@@ -215,7 +271,7 @@ namespace nrhi {
 			.bind_flags = bind_flags,
 			.heap_type = heap_type,
 
-			.type = E_resource_type::INDIRECT_BUFFER,
+			.type = E_resource_type::INDIRECT_BUFFER
 
 		};
 	}

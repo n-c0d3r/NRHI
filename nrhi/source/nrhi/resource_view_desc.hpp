@@ -54,10 +54,18 @@ namespace nrhi {
         TK_valid<A_resource> resource_p;
 
         union {
-            u32 mem_offset = 0;
-            u32 base_mip_level;
+            u32 base_mip_level = 0;
             u32 target_mip_level;
         };
+
+		union {
+			u32 mem_offset = 0;
+			u32 index;
+		};
+
+		union {
+			u32 count = 0;
+		};
 
     };
 

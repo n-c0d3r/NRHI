@@ -82,6 +82,15 @@ namespace nrhi {
 			d3d11_uav_desc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE3D;
 			d3d11_uav_desc.Texture3D.MipSlice = desc.base_mip_level;
 			break;
+		case E_resource_type::TEXTURE_CUBE:
+			d3d11_uav_desc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2DARRAY;
+			d3d11_uav_desc.Texture2DArray.MipSlice = desc.base_mip_level;
+			d3d11_uav_desc.Texture2DArray.FirstArraySlice = desc.index;
+			d3d11_uav_desc.Texture2DArray.ArraySize = desc.count;
+			break;
+		default:
+			NCPP_ASSERT(false) << "invalid resource type";
+			break;
 		}
 
 		d3d11_device_p->CreateUnorderedAccessView(

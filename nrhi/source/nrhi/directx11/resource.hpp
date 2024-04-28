@@ -125,6 +125,16 @@ namespace nrhi {
             const F_initial_resource_data& initial_resource_data,
             const F_resource_desc& desc
         );
+		static U_texture_2d_array_handle create_texture_2d_array(
+			TKPA_valid<A_device> device_p,
+			const F_initial_resource_data& initial_resource_data,
+			const F_resource_desc& desc
+		);
+		static U_texture_cube_handle create_texture_cube(
+			TKPA_valid<A_device> device_p,
+			const F_initial_resource_data& initial_resource_data,
+			const F_resource_desc& desc
+		);
 
     };
 

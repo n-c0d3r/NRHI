@@ -11,7 +11,6 @@ namespace nrhi {
         u32 width,
         E_format format,
         u32 mip_level_count,
-        F_sample_desc sample_desc,
         E_resource_bind_flag bind_flags,
         E_resource_heap_type heap_type
     ) {
@@ -23,7 +22,6 @@ namespace nrhi {
                 width,
                 format,
                 mip_level_count,
-                sample_desc,
                 bind_flags,
                 heap_type
             )
@@ -65,7 +63,6 @@ namespace nrhi {
         u32 depth,
         E_format format,
         u32 mip_level_count,
-        F_sample_desc sample_desc,
         E_resource_bind_flag bind_flags,
         E_resource_heap_type heap_type
     ) {
@@ -79,11 +76,35 @@ namespace nrhi {
                 depth,
                 format,
                 mip_level_count,
-                sample_desc,
                 bind_flags,
                 heap_type
             )
         );
     }
+
+	U_texture_cube_handle H_texture::create_cube(
+		TKPA_valid<A_device> device_p,
+		F_initial_resource_data initial_data,
+		u32 width,
+		E_format format,
+		u32 mip_level_count,
+		F_sample_desc sample_desc,
+		E_resource_bind_flag bind_flags,
+		E_resource_heap_type heap_type
+	) {
+
+		return H_resource::create_texture_cube(
+			device_p,
+			initial_data,
+			H_resource_desc::create_texture_cube_desc(
+				width,
+				format,
+				mip_level_count,
+				sample_desc,
+				bind_flags,
+				heap_type
+			)
+		);
+	}
 
 }
