@@ -83,13 +83,6 @@ namespace nrhi {
 		TG_vector<F_vertex_attribute_group_desc> vertex_attribute_group_desc_vector;
 		TG_vector<F_instance_attribute_group_desc> instance_attribute_group_desc_vector;
 
-		u32 constant_buffer_count = 0;
-
-		u32 shader_resource_view_count = 0;
-		u32 unordered_access_view_count = 0;
-		u32 render_target_view_count = 0;
-		u32 depth_stencil_view_count = 0;
-
 	};
 
 	class NRHI_API H_shader_blob_desc {

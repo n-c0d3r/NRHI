@@ -247,8 +247,7 @@ int main() {
 			F_shader_kernel_desc {
 				.blob_desc = {
 					.name = "pmain",
-					.type = E_shader_type::PIXEL,
-					.render_target_view_count = 1
+					.type = E_shader_type::PIXEL
 				}
 			}
 		)
