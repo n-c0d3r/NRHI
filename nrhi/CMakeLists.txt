@@ -253,6 +253,7 @@ endif()
 add_dependencies(nrhi
     ncpp
     nmath
+    nsurface
 )
 
 
