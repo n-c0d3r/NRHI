@@ -31,8 +31,8 @@ namespace nrhi {
 
 			d3d11_viewport_.TopLeftX = 0;
 			d3d11_viewport_.TopLeftY = 0;
-			d3d11_viewport_.Width = texture_desc.width;
-			d3d11_viewport_.Height = texture_desc.height;
+			d3d11_viewport_.Width = (f32)(texture_desc.width);
+			d3d11_viewport_.Height = (f32)(texture_desc.height);
 			d3d11_viewport_.MinDepth = 0.0f;
 			d3d11_viewport_.MaxDepth = 1.0f;
 		}
@@ -46,8 +46,8 @@ namespace nrhi {
 
 				d3d11_viewport_.TopLeftX = 0;
 				d3d11_viewport_.TopLeftY = 0;
-				d3d11_viewport_.Width = texture_desc.width;
-				d3d11_viewport_.Height = texture_desc.height;
+				d3d11_viewport_.Width = (f32)(texture_desc.width);
+				d3d11_viewport_.Height = (f32)(texture_desc.height);
 				d3d11_viewport_.MinDepth = 0.0f;
 				d3d11_viewport_.MaxDepth = 1.0f;
 			}

@@ -195,4 +195,29 @@ namespace nrhi {
         };
     }
 
+	F_resource_desc H_resource_desc::create_indirect_buffer_desc(
+		u32 count,
+		E_resource_bind_flag bind_flags,
+		E_resource_heap_type heap_type
+	) {
+
+		return {
+
+			.width = count * sizeof(u32),
+			.height = 1,
+			.depth = 1,
+
+			.format = E_format::R32_UINT,
+			.stride = sizeof(u32),
+
+			.mip_level_count = 1,
+
+			.bind_flags = bind_flags,
+			.heap_type = heap_type,
+
+			.type = E_resource_type::INDIRECT_BUFFER,
+
+		};
+	}
+
 }

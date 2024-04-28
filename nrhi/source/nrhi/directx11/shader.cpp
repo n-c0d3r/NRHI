@@ -74,7 +74,7 @@ namespace nrhi {
 		for(u32 i = 0; i < vertex_attribute_group_count; ++i) {
 
 			const auto& vertex_attribute_group_desc = blob_desc.vertex_attribute_group_desc_vector[i];
-			u32 attribute_count = vertex_attribute_group_desc.attribute_desc_vector.size();
+			u32 attribute_count = (u32)(vertex_attribute_group_desc.attribute_desc_vector.size());
 
 			for(u32 j = 0; j < attribute_count; ++j) {
 
@@ -84,7 +84,7 @@ namespace nrhi {
 		for(u32 i = 0; i < instance_attribute_group_count; ++i) {
 
 			const auto& instance_attribute_group_desc = blob_desc.instance_attribute_group_desc_vector[i];
-			u32 attribute_count = instance_attribute_group_desc.attribute_desc_vector.size();
+			u32 attribute_count = (u32)(instance_attribute_group_desc.attribute_desc_vector.size());
 
 			for(u32 j = 0; j < attribute_count; ++j) {
 
@@ -99,7 +99,7 @@ namespace nrhi {
 		for(u32 i = 0; i < vertex_attribute_group_count; ++i) {
 
 			const auto& vertex_attribute_group_desc = blob_desc.vertex_attribute_group_desc_vector[i];
-			u32 attribute_count = vertex_attribute_group_desc.attribute_desc_vector.size();
+			u32 attribute_count = (u32)(vertex_attribute_group_desc.attribute_desc_vector.size());
 
 			for(u32 j = 0; j < attribute_count; ++j) {
 
@@ -128,7 +128,7 @@ namespace nrhi {
 		for(u32 i = 0; i < instance_attribute_group_count; ++i) {
 
 			const auto& instance_attribute_group_desc = blob_desc.instance_attribute_group_desc_vector[i];
-			u32 attribute_count = instance_attribute_group_desc.attribute_desc_vector.size();
+			u32 attribute_count = (u32)(instance_attribute_group_desc.attribute_desc_vector.size());
 
 			for(u32 j = 0; j < attribute_count; ++j) {
 

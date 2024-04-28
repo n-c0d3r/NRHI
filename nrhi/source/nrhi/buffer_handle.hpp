@@ -57,4 +57,10 @@ namespace nrhi {
 
 	};
 
+	NCPP_FHANDLE_TEMPLATE(indirect_buffer_handle, A_resource) {
+
+		NCPP_FHANDLE_GENERATED_BODY(indirect_buffer_handle, A_resource);
+
+	};
+
 }

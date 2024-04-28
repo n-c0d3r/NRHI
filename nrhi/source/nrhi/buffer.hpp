@@ -91,8 +91,8 @@ namespace nrhi {
             return create(
                 device_p,
                 { .system_mem_p = (void*)data.data() },
-                data.size(),
-                sizeof(F_element__),
+				(u32)(data.size()),
+				(u32)(sizeof(F_element__)),
                 bind_flags,
                 heap_type
             );
@@ -121,7 +121,7 @@ namespace nrhi {
             return create(
                 device_p,
                 { .system_mem_p = (void*)data.data() },
-                data.size(),
+				(u32)(data.size()),
                 format,
                 bind_flags,
                 heap_type
@@ -170,8 +170,8 @@ namespace nrhi {
             return create_structured(
                 device_p,
                 { .system_mem_p = (void*)data.data() },
-                data.size(),
-                sizeof(F_element__),
+				(u32)(data.size()),
+				(u32)(sizeof(F_element__)),
                 bind_flags,
                 heap_type
             );
@@ -221,6 +221,32 @@ namespace nrhi {
                 heap_type
             );
         }
+
+	public:
+		static U_indirect_buffer_handle create_indirect(
+			TKPA_valid<A_device> device_p,
+			F_initial_resource_data initial_data,
+			u32 count,
+			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
+			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+		);
+
+	public:
+		static U_indirect_buffer_handle create_indirect(
+			TKPA_valid<A_device> device_p,
+			const TG_span<u32>& data,
+			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
+			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+		) {
+
+			return create_indirect(
+				device_p,
+				{ .system_mem_p = (void*)(data.data()) },
+				(u32)(data.size()),
+				bind_flags,
+				heap_type
+			);
+		}
 
     };
 

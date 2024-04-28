@@ -358,6 +358,41 @@ namespace nrhi {
 		);
 	}
 
+	NCPP_FORCE_INLINE void A_command_list::draw_instanced_indirect(
+		KPA_indirect_buffer_handle indirect_buffer_p,
+		u32 indirect_buffer_offset
+	) {
+
+		H_command_list::draw_instanced_indirect(
+			NCPP_KTHIS(),
+			indirect_buffer_p,
+			indirect_buffer_offset
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::draw_indexed_instanced_indirect(
+		KPA_indirect_buffer_handle indirect_buffer_p,
+		u32 indirect_buffer_offset
+	) {
+
+		H_command_list::draw_indexed_instanced_indirect(
+			NCPP_KTHIS(),
+			indirect_buffer_p,
+			indirect_buffer_offset
+		);
+	}
+
+	NCPP_FORCE_INLINE void A_command_list::dispatch_indirect(
+		KPA_indirect_buffer_handle indirect_buffer_p,
+		u32 indirect_buffer_offset
+	) {
+
+		H_command_list::dispatch_indirect(
+			NCPP_KTHIS(),
+			indirect_buffer_p,
+			indirect_buffer_offset
+		);
+	}
+
 	NCPP_FORCE_INLINE void A_command_list::dispatch(PA_vector3_u32 thread_group_count_3d) {
 
 		H_command_list::dispatch(

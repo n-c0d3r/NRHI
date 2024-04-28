@@ -200,6 +200,13 @@ namespace nrhi {
             E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
         );
 
+	public:
+		static F_resource_desc create_indirect_buffer_desc(
+			u32 count,
+			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
+			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+		);
+
     };
 
 }

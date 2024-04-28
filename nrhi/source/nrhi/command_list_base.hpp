@@ -209,6 +209,22 @@ namespace nrhi {
 		);
 
 	public:
+		void draw_instanced_indirect(
+			KPA_indirect_buffer_handle indirect_buffer_p,
+			u32 indirect_buffer_offset
+		);
+		void draw_indexed_instanced_indirect(
+			KPA_indirect_buffer_handle indirect_buffer_p,
+			u32 indirect_buffer_offset
+		);
+
+	public:
+		void dispatch_indirect(
+			KPA_indirect_buffer_handle indirect_buffer_p,
+			u32 indirect_buffer_offset
+		);
+
+	public:
 		void dispatch(PA_vector3_u32 thread_group_count_3d);
 
     };

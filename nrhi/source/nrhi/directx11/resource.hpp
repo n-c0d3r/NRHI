@@ -103,6 +103,11 @@ namespace nrhi {
             const F_initial_resource_data& initial_resource_data,
             const F_resource_desc& desc
         );
+		static U_indirect_buffer_handle create_indirect_buffer(
+			TKPA_valid<A_device> device_p,
+			const F_initial_resource_data& initial_resource_data,
+			const F_resource_desc& desc
+		);
 
     public:
         static U_texture_1d_handle create_texture_1d(
