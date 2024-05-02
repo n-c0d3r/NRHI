@@ -147,27 +147,6 @@ namespace nrhi {
         }
 
     public:
-        static F_resource_desc create_single_elemented_buffer_desc(
-            u32 width,
-            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
-        );
-
-    public:
-        template<typename F__>
-        static F_resource_desc T_create_single_elemented_buffer_desc(
-            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
-        ) {
-
-            return create_single_elemented_buffer_desc(
-                sizeof(F__),
-                bind_flags,
-                heap_type
-            );
-        }
-
-    public:
         static F_resource_desc create_texture_1d_desc(
             u32 width,
             E_format format = E_format::R8G8B8A8_UNORM,

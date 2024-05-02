@@ -81,30 +81,6 @@ namespace nrhi {
         };
     }
 
-    F_resource_desc H_resource_desc::create_single_elemented_buffer_desc(
-        u32 width,
-        E_resource_bind_flag bind_flags,
-        E_resource_heap_type heap_type
-    ) {
-
-        return {
-
-            .width = width,
-            .height = 1,
-            .depth = 1,
-
-            .stride = 0,
-
-            .mip_level_count = 1,
-
-            .bind_flags = bind_flags,
-            .heap_type = heap_type,
-
-            .type = E_resource_type::SINGLE_ELEMENTED_BUFFER
-
-        };
-    }
-
     F_resource_desc H_resource_desc::create_texture_1d_desc(
         u32 width,
         E_format format,

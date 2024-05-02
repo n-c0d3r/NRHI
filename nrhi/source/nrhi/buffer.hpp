@@ -177,51 +177,6 @@ namespace nrhi {
             );
         }
 
-    public:
-        static U_single_elemented_buffer_handle create_single_elemented(
-            TKPA_valid<A_device> device_p,
-            F_initial_resource_data initial_data,
-            u32 width,
-            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
-        );
-
-    public:
-        template<typename F__>
-        static U_single_elemented_buffer_handle T_create_single_elemented(
-            TKPA_valid<A_device> device_p,
-            F_initial_resource_data initial_data,
-            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
-        ) {
-
-            return create_single_elemented(
-                device_p,
-                initial_data,
-                sizeof(F__),
-                bind_flags,
-                heap_type
-            );
-        }
-
-    public:
-        template<typename F__>
-        static U_single_elemented_buffer_handle T_create_single_elemented(
-            TKPA_valid<A_device> device_p,
-            const F__* data,
-            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
-        ) {
-
-            return create_single_elemented(
-                device_p,
-                { .system_mem_p = (void*)data },
-                sizeof(F__),
-                bind_flags,
-                heap_type
-            );
-        }
-
 	public:
 		static U_indirect_buffer_handle create_indirect(
 			TKPA_valid<A_device> device_p,
