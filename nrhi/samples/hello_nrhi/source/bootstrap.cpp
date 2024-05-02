@@ -286,7 +286,7 @@ int main() {
 	auto frame_buffer_p = H_frame_buffer::create(
 		NCPP_FOREF_VALID(device_p),
 		{
-			.color_attachment_p_vector = {
+			.color_attachments = {
 				swapchain_p->back_rtv_p()
 			}
 		}

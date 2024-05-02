@@ -11,11 +11,11 @@ namespace nrhi {
 		device_p_(device_p),
 		desc_(desc),
 
-		is_has_dsv_(desc.depth_stencil_attachment_p.is_valid())
+		is_has_dsv_(desc.depth_stencil_attachment.is_valid())
 	{
 
 		NCPP_ASSERT(
-			desc.color_attachment_p_vector.size()
+			desc.color_attachments.size()
 			|| is_has_dsv_
 		) << "invalid frame buffer, require at least 1 attachment";
 	}

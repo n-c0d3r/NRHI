@@ -23,11 +23,11 @@ namespace nrhi {
 
 		const auto& desc_ = desc();
 
-		const auto& color_attachment_p_vector = desc_.color_attachment_p_vector;
+		const auto& color_attachments = desc_.color_attachments;
 
-		if(color_attachment_p_vector.size()) {
+		if(color_attachments.size()) {
 
-			const auto& texture_desc = color_attachment_p_vector[0]->desc().resource_p->desc();
+			const auto& texture_desc = color_attachments[0]->desc().resource_p->desc();
 
 			d3d11_viewport_.TopLeftX = 0;
 			d3d11_viewport_.TopLeftY = 0;
@@ -40,9 +40,9 @@ namespace nrhi {
 
 			if(is_has_dsv()) {
 
-				const auto& depth_stencil_attachment_p = desc_.depth_stencil_attachment_p;
+				const auto& depth_stencil_attachment = desc_.depth_stencil_attachment;
 
-				const auto& texture_desc = depth_stencil_attachment_p->desc().resource_p->desc();
+				const auto& texture_desc = depth_stencil_attachment->desc().resource_p->desc();
 
 				d3d11_viewport_.TopLeftX = 0;
 				d3d11_viewport_.TopLeftY = 0;

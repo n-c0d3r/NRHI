@@ -96,7 +96,7 @@ namespace nrhi {
 
 		E_pipeline_state_type type = E_pipeline_state_type::NONE;
 
-		TG_vector<E_format> color_format_vector = {
+		TG_vector<E_format> color_formats = {
 			E_format::R8G8B8A8_UNORM
 		};
 		F_depth_stencil_desc depth_stencil_desc;

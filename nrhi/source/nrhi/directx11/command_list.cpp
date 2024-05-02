@@ -646,8 +646,8 @@ namespace nrhi {
 
 		const auto& frame_buffer_desc = frame_buffer_p->desc();
 
-		const auto& color_attachment_p_vector = frame_buffer_desc.color_attachment_p_vector;
-		u32 color_attachment_count = (u32)(color_attachment_p_vector.size());
+		const auto& color_attachments = frame_buffer_desc.color_attachments;
+		u32 color_attachment_count = (u32)(color_attachments.size());
 
 		ID3D11DeviceContext* d3d11_device_context_p = command_list_p.T_cast<F_directx11_command_list>()->d3d11_device_context_p();
 
@@ -660,7 +660,7 @@ namespace nrhi {
 		for(u32 i = 0; i < color_attachment_count; ++i) {
 
 			d3d11_rtv_array[i] = (ID3D11RenderTargetView*)(
-				color_attachment_p_vector[i]
+				color_attachments[i]
 					.T_cast<F_directx11_render_target_view>()
 					->d3d11_view_p()
 			);
@@ -669,10 +669,10 @@ namespace nrhi {
 		ID3D11DepthStencilView* d3d11_depth_stencil_view_p = 0;
 		if(frame_buffer_p->is_has_dsv()) {
 
-			const auto& depth_stencil_attachment_p = frame_buffer_desc.depth_stencil_attachment_p;
+			const auto& depth_stencil_attachment = frame_buffer_desc.depth_stencil_attachment;
 
 			d3d11_depth_stencil_view_p = (ID3D11DepthStencilView*)(
-				depth_stencil_attachment_p
+				depth_stencil_attachment
 					.T_cast<F_directx11_depth_stencil_view>()
 					->d3d11_view_p()
 			);
