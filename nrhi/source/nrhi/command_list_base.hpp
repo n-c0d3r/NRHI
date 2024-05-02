@@ -227,6 +227,12 @@ namespace nrhi {
 	public:
 		void dispatch(PA_vector3_u32 thread_group_count_3d);
 
+	public:
+		void update_resource_data(
+			TKPA_valid<A_resource> resource_p,
+			void* data_p
+		);
+
     };
 
 }

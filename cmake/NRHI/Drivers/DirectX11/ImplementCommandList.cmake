@@ -196,6 +196,11 @@ NRHI_FunctionHelper_CreateFunctionClass(
             KPA_indirect_buffer_handle indirect_buffer_p,
             u32 indirect_buffer_offset
         )"
+        "update_resource_data" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			TKPA_valid<A_resource> resource_p,
+			void* data_p
+		)"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX11> Implement command_list done")

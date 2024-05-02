@@ -914,6 +914,36 @@ namespace nrhi {
 		);
 	}
 
+	void HD_directx11_command_list::update_resource_data(
+		TKPA_valid<A_command_list> command_list_p,
+		TKPA_valid<A_resource> resource_p,
+		void* data_p
+	) {
+
+		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
+		const auto& directx11_resource_p = resource_p.T_cast<F_directx11_resource>();
+
+		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
+		ID3D11Resource* d3d11_resource_p = directx11_resource_p->d3d11_resource_p();
+
+		NCPP_ASSERT(data_p) << "invalid data";
+		NCPP_ASSERT(resource_p->desc().heap_type == E_resource_heap_type::GREAD_CWRITE) << "invalid resource heap type";
+
+		D3D11_MAPPED_SUBRESOURCE d3d11_mapped_resource;
+		d3d11_device_context_p->Map(
+			d3d11_resource_p,
+			0,
+			D3D11_MAP_WRITE_DISCARD,
+			0,
+			&d3d11_mapped_resource
+		);
+		memcpy(d3d11_mapped_resource.pData, data_p, resource_p->desc().size);
+		d3d11_device_context_p->Unmap(
+			d3d11_resource_p,
+			0
+		);
+	}
+
 
 
 	void HD_directx11_command_list::temp_state_apply_vertex_buffers(

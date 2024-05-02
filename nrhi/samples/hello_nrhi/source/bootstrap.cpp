@@ -174,11 +174,12 @@ int main() {
         }
     );
 
-    F_vector4 cdata;
+    F_vector4 output_color = { 0.5f, 0.5f, 0.5f, 1.0f };
     U_buffer_handle cbuffer_p = H_buffer::T_create<F_vector4>(
         NCPP_FOREF_VALID(device_p),
-        NCPP_INIL_SPAN(cdata),
-        E_resource_bind_flag::CBV
+        NCPP_INIL_SPAN(output_color),
+        E_resource_bind_flag::CBV,
+        E_resource_heap_type::GREAD_CWRITE
     );
 
     U_texture_2d_handle texture_2d_p = H_texture::create_2d(
@@ -212,10 +213,11 @@ int main() {
 		// shader class name
 		"DemoShaderClass",
 		// shader class source content
+		"cbuffer uniform_data : register(b0) { float4 output_color; };"
 		"float4 vmain(float4 vertex_pos : VERTEX_POSITION, float4 instance_pos : INSTANCE_POSITION) : SV_POSITION"
 		"{ return float4(instance_pos.xyz + vertex_pos.xyz, 1); }"
 		"float4 pmain(float4 pos : SV_POSITION) : SV_TARGET"
-		"{ return float4(0.2, 0.2, 0.2, 1.0); }",
+		"{ return output_color; }",
 		// shader kernel descriptors (each kernel has 1 entry point function and is compiled to 1 shader blob)
 		NCPP_INIL_SPAN(
 			F_shader_kernel_desc {
@@ -297,6 +299,8 @@ int main() {
 		}
 	);
 
+	f32 delta_time = 0.0f;
+
     // run app
     surface_manager.T_run([&](F_surface_manager& surface_manager){
 
@@ -312,6 +316,22 @@ int main() {
 				NCPP_FHANDLE_VALID(back_rtv_p),
 				{ 0.0f, 1.0f, 1.0f, 1.0f }
 			);
+
+			// update uniform data
+			{
+				static f64 t = 0.0;
+				t += delta_time;
+
+				output_color = lerp(
+					F_vector4 { 0.2f, 0.2f, 0.2f, 1.0f },
+					F_vector4 { 0.2f, 0.5f, 0.5f, 1.0f },
+					sin(t * 15.0) * 0.5f + 0.5f
+				);
+				command_list_p->update_resource_data(
+					NCPP_FHANDLE_VALID(cbuffer_p),
+					&output_color
+				);
+			}
 
 			// draw triangle
 			{
@@ -333,6 +353,11 @@ int main() {
 				command_list_p->ZIA_bind_instance_buffer(
 					NCPP_FHANDLE_VALID(instance_buffer_p),
 					0,
+					0
+				);
+
+				command_list_p->ZPS_bind_constant_buffer(
+					NCPP_FHANDLE_VALID(cbuffer_p),
 					0
 				);
 
@@ -363,8 +388,9 @@ int main() {
 		auto end_time = std::chrono::high_resolution_clock::now();
 
 		u64 nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(end_time - start_time).count();
+		delta_time = (((f32)nanoseconds) * 0.000000001f);
 
-		f32 fps = 1.0f / (((f32)nanoseconds) * 0.000000001f);
+		f32 fps = 1.0f / delta_time;
 
 		NCPP_INFO() << "FPS: " << T_cout_value(fps);
 	});

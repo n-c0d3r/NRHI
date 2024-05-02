@@ -14,13 +14,11 @@ namespace nrhi {
 
         return {
 
-            .width = count * stride,
-            .height = 1,
-            .depth = 1,
+            .element_count = count,
+
+			.size = count * stride,
 
             .stride = stride,
-
-            .mip_level_count = 1,
 
             .bind_flags = bind_flags,
             .heap_type = heap_type,
@@ -37,16 +35,16 @@ namespace nrhi {
         E_resource_heap_type heap_type
     ) {
 
+		u32 stride = H_format::stride(format);
+
         return {
 
-            .width = count * H_format::stride(format),
-            .height = 1,
-            .depth = 1,
+            .element_count = count,
+
+			.size = count * stride,
 
             .format = format,
-            .stride = H_format::stride(format),
-
-            .mip_level_count = 1,
+            .stride = stride,
 
             .bind_flags = bind_flags,
             .heap_type = heap_type,
@@ -65,13 +63,11 @@ namespace nrhi {
 
         return {
 
-            .width = count * stride,
-            .height = 1,
-            .depth = 1,
+            .element_count = count,
+
+            .size = count * stride,
 
             .stride = stride,
-
-            .mip_level_count = 1,
 
             .bind_flags = bind_flags,
             .heap_type = heap_type,
@@ -89,14 +85,19 @@ namespace nrhi {
         E_resource_heap_type heap_type
     ) {
 
+		u32 stride = H_format::stride(format);
+		u32 size = width * stride;
+
         return {
 
             .width = width,
             .height = 1,
             .depth = 1,
 
+            .size = size,
+
             .format = format,
-            .stride = H_format::stride(format),
+            .stride = stride,
 
             .mip_level_count = mip_level_count,
 
@@ -118,14 +119,19 @@ namespace nrhi {
         E_resource_heap_type heap_type
     ) {
 
+		u32 stride = H_format::stride(format);
+		u32 size = width * height * stride;
+
         return {
 
             .width = width,
             .height = height,
             .depth = 1,
 
+            .size = size,
+
             .format = format,
-            .stride = H_format::stride(format),
+            .stride = stride,
 
             .mip_level_count = mip_level_count,
             .sample_desc = sample_desc,
@@ -148,14 +154,19 @@ namespace nrhi {
         E_resource_heap_type heap_type
     ) {
 
+		u32 stride = H_format::stride(format);
+		u32 size = width * height * depth * stride;
+
         return {
 
             .width = width,
             .height = height,
             .depth = depth,
 
+            .size = size,
+
             .format = format,
-            .stride = H_format::stride(format),
+            .stride = stride,
 
             .mip_level_count = mip_level_count,
 
@@ -178,14 +189,19 @@ namespace nrhi {
 		E_resource_heap_type heap_type
 	) {
 
+		u32 stride = H_format::stride(format);
+		u32 size = width * height * count * stride;
+
 		return {
 
 			.width = width,
 			.height = height,
 			.array_size = count,
 
+			.size = size,
+
 			.format = format,
-			.stride = H_format::stride(format),
+			.stride = stride,
 
 			.mip_level_count = mip_level_count,
 			.sample_desc = sample_desc,
@@ -207,14 +223,19 @@ namespace nrhi {
 		E_resource_heap_type heap_type
 	) {
 
+		u32 stride = H_format::stride(format);
+		u32 size = width * width * 6 * stride;
+
 		return {
 
 			.width = width,
 			.height = width,
 			.array_size = 6,
 
+			.size = size,
+
 			.format = format,
-			.stride = H_format::stride(format),
+			.stride = stride,
 
 			.mip_level_count = mip_level_count,
 			.sample_desc = sample_desc,
@@ -235,9 +256,9 @@ namespace nrhi {
 
 		return {
 
-			.width = count * u32(sizeof(u32)),
-			.height = 1,
-			.depth = 1,
+			.element_count = count,
+
+			.size = count * u32(sizeof(u32)),
 
 			.format = E_format::R32_UINT,
 			.stride = sizeof(u32),

@@ -401,4 +401,16 @@ namespace nrhi {
 		);
 	}
 
+	NCPP_FORCE_INLINE void A_command_list::update_resource_data(
+		TKPA_valid<A_resource> resource_p,
+		void* data_p
+	) {
+
+		H_command_list::update_resource_data(
+			NCPP_KTHIS(),
+			resource_p,
+			data_p
+		);
+	}
+
 }

@@ -312,6 +312,13 @@ namespace nrhi {
 			u32 indirect_buffer_offset
 		);
 
+	public:
+		static void update_resource_data(
+			TKPA_valid<A_command_list> command_list_p,
+			TKPA_valid<A_resource> resource_p,
+			void* data_p
+		);
+
 
 
 	private:

@@ -64,17 +64,21 @@ namespace nrhi {
 
     struct F_resource_desc {
 
-        u32 width;
-        u32 height;
+		union {
+			u32 width = 0;
+			u32 element_count;
+		};
+        u32 height = 0;
         union {
-            u32 array_size = 1;
+            u32 array_size = 0;
             u32 depth;
         };
+		u32 size = 0;
 
         E_format format = E_format::NONE;
         u32 stride = 0;
 
-        u32 mip_level_count = 1;
+        u32 mip_level_count = 0;
 
         F_sample_desc sample_desc;
 

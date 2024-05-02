@@ -51,7 +51,7 @@ namespace nrhi {
 
         D3D11_BUFFER_DESC d3d11_buffer_desc;
         d3d11_buffer_desc.BindFlags = D3D11_BIND_FLAG(desc_.bind_flags);
-        d3d11_buffer_desc.ByteWidth = desc_.width;
+        d3d11_buffer_desc.ByteWidth = desc_.size;
         switch (desc_.heap_type) {
             case E_resource_heap_type::GREAD_GWRITE:
                 d3d11_buffer_desc.CPUAccessFlags = 0;
@@ -137,7 +137,7 @@ namespace nrhi {
 
         D3D11_BUFFER_DESC d3d11_buffer_desc;
         d3d11_buffer_desc.BindFlags = D3D11_BIND_FLAG(desc_.bind_flags);
-        d3d11_buffer_desc.ByteWidth = desc_.width;
+        d3d11_buffer_desc.ByteWidth = desc_.size;
         switch (desc_.heap_type) {
             case E_resource_heap_type::GREAD_GWRITE:
                 d3d11_buffer_desc.CPUAccessFlags = 0;
@@ -223,7 +223,7 @@ namespace nrhi {
 
 		D3D11_BUFFER_DESC d3d11_buffer_desc;
 		d3d11_buffer_desc.BindFlags = D3D11_BIND_FLAG(desc_.bind_flags);
-		d3d11_buffer_desc.ByteWidth = desc_.width;
+		d3d11_buffer_desc.ByteWidth = desc_.size;
 		switch (desc_.heap_type) {
 		case E_resource_heap_type::GREAD_GWRITE:
 			d3d11_buffer_desc.CPUAccessFlags = 0;
