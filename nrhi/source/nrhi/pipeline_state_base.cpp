@@ -19,10 +19,11 @@ namespace nrhi {
 		for(const auto& shader_p : desc.shader_p_vector) {
 
 			const auto& shader_blob_desc = shader_p->desc().blob_p->desc();
+			const auto& input_assembler_desc = shader_blob_desc.input_assembler_desc;
 			if(shader_blob_desc.type == E_shader_type::VERTEX) {
 
-				vertex_buffer_count_ = (u32)(shader_blob_desc.vertex_attribute_group_desc_vector.size());
-				instance_buffer_count_ = (u32)(shader_blob_desc.instance_attribute_group_desc_vector.size());
+				vertex_buffer_count_ = (u32)(input_assembler_desc.vertex_attribute_groups.size());
+				instance_buffer_count_ = (u32)(input_assembler_desc.instance_attribute_groups.size());
 
 				break;
 			}

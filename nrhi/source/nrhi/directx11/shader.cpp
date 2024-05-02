@@ -28,6 +28,7 @@ namespace nrhi {
 		NCPP_ASSERT(desc.blob_p->desc().type == E_shader_type::VERTEX) << "invalid blob's shader type";
 
 		const auto& blob_desc = desc.blob_p->desc();
+		const auto& input_assembler_desc = blob_desc.input_assembler_desc;
 
 		const auto& d3d11_shader_blob_p = desc.blob_p.T_cast<F_directx11_shader_blob>();
 
@@ -49,8 +50,8 @@ namespace nrhi {
 
 
 		// create input layout
-		u32 vertex_attribute_group_count = (u32)(blob_desc.vertex_attribute_group_desc_vector.size());
-		u32 instance_attribute_group_count = (u32)(blob_desc.instance_attribute_group_desc_vector.size());
+		u32 vertex_attribute_group_count = (u32)(input_assembler_desc.vertex_attribute_groups.size());
+		u32 instance_attribute_group_count = (u32)(input_assembler_desc.instance_attribute_groups.size());
 
 		NCPP_ASSERT(
 			vertex_attribute_group_count
@@ -73,22 +74,22 @@ namespace nrhi {
 		u32 element_count = 0;
 		for(u32 i = 0; i < vertex_attribute_group_count; ++i) {
 
-			const auto& vertex_attribute_group_desc = blob_desc.vertex_attribute_group_desc_vector[i];
-			u32 attribute_count = (u32)(vertex_attribute_group_desc.attribute_desc_vector.size());
+			const auto& vertex_attribute_group = input_assembler_desc.vertex_attribute_groups[i];
+			u32 attribute_count = (u32)(vertex_attribute_group.size());
 
 			for(u32 j = 0; j < attribute_count; ++j) {
 
-				element_count += vertex_attribute_group_desc.attribute_desc_vector[j].duplicate_count;
+				element_count += vertex_attribute_group[j].duplicate_count;
 			}
 		}
 		for(u32 i = 0; i < instance_attribute_group_count; ++i) {
 
-			const auto& instance_attribute_group_desc = blob_desc.instance_attribute_group_desc_vector[i];
-			u32 attribute_count = (u32)(instance_attribute_group_desc.attribute_desc_vector.size());
+			const auto& instance_attribute_group = input_assembler_desc.instance_attribute_groups[i];
+			u32 attribute_count = (u32)(instance_attribute_group.size());
 
 			for(u32 j = 0; j < attribute_count; ++j) {
 
-				element_count += instance_attribute_group_desc.attribute_desc_vector[j].duplicate_count;
+				element_count += instance_attribute_group[j].duplicate_count;
 			}
 		}
 
@@ -98,12 +99,12 @@ namespace nrhi {
 		u32 byte_offset = 0;
 		for(u32 i = 0; i < vertex_attribute_group_count; ++i) {
 
-			const auto& vertex_attribute_group_desc = blob_desc.vertex_attribute_group_desc_vector[i];
-			u32 attribute_count = (u32)(vertex_attribute_group_desc.attribute_desc_vector.size());
+			const auto& vertex_attribute_group = input_assembler_desc.vertex_attribute_groups[i];
+			u32 attribute_count = (u32)(vertex_attribute_group.size());
 
 			for(u32 j = 0; j < attribute_count; ++j) {
 
-				const auto& vertex_attribute_desc = vertex_attribute_group_desc.attribute_desc_vector[j];
+				const auto& vertex_attribute_desc = vertex_attribute_group[j];
 
 				for(u32 t = 0; t < vertex_attribute_desc.duplicate_count; ++t) {
 
@@ -127,12 +128,12 @@ namespace nrhi {
 
 		for(u32 i = 0; i < instance_attribute_group_count; ++i) {
 
-			const auto& instance_attribute_group_desc = blob_desc.instance_attribute_group_desc_vector[i];
-			u32 attribute_count = (u32)(instance_attribute_group_desc.attribute_desc_vector.size());
+			const auto& instance_attribute_group = input_assembler_desc.instance_attribute_groups[i];
+			u32 attribute_count = (u32)(instance_attribute_group.size());
 
 			for(u32 j = 0; j < attribute_count; ++j) {
 
-				const auto& instance_attribute_desc = instance_attribute_group_desc.attribute_desc_vector[j];
+				const auto& instance_attribute_desc = instance_attribute_group[j];
 
 				for(u32 t = 0; t < instance_attribute_desc.duplicate_count; ++t) {
 

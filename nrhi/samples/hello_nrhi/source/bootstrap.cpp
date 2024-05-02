@@ -208,6 +208,30 @@ int main() {
         }
     );
 
+	// input assembler desc
+	F_input_assembler_desc input_assembler_desc = {
+		.vertex_attribute_groups = {
+			{
+				{
+					{
+						.name = "VERTEX_POSITION",
+						.format = E_format::R32G32B32A32_FLOAT
+					}
+				}
+			}
+		},
+		.instance_attribute_groups = {
+			{
+				{
+					{
+						.name = "INSTANCE_POSITION",
+						.format = E_format::R32G32B32A32_FLOAT
+					}
+				}
+			}
+		}
+	};
+
 	// create demo shader class
 	auto shader_class_p = H_shader_compiler::compile_hlsl(
 		// shader class name
@@ -224,26 +248,7 @@ int main() {
 				.blob_desc = {
 					.name = "vmain",
 					.type = E_shader_type::VERTEX,
-					.vertex_attribute_group_desc_vector = {
-						{
-							.attribute_desc_vector = {
-								{
-									.name = "VERTEX_POSITION",
-									.format = E_format::R32G32B32A32_FLOAT
-								}
-							}
-						}
-					},
-					.instance_attribute_group_desc_vector = {
-						{
-							.attribute_desc_vector = {
-								{
-									.name = "INSTANCE_POSITION",
-									.format = E_format::R32G32B32A32_FLOAT
-								}
-							}
-						}
-					}
+					.input_assembler_desc = input_assembler_desc
 				}
 			},
 			F_shader_kernel_desc {

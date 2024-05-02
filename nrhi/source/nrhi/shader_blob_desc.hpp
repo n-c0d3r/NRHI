@@ -47,14 +47,14 @@ namespace nrhi {
 
 
 
-	struct F_vertex_attribute_desc {
+	struct F_vertex_attribute {
 
 		G_string name;
 		E_format format;
 		u32 duplicate_count = 1;
 
 	};
-	struct F_instance_attribute_desc {
+	struct F_instance_attribute {
 
 		G_string name;
 		E_format format;
@@ -62,14 +62,10 @@ namespace nrhi {
 
 	};
 
-	struct F_vertex_attribute_group_desc {
+	struct F_input_assembler_desc {
 
-		TG_vector<F_vertex_attribute_desc> attribute_desc_vector;
-
-	};
-	struct F_instance_attribute_group_desc {
-
-		TG_vector<F_instance_attribute_desc> attribute_desc_vector;
+		TG_vector<TG_vector<F_vertex_attribute>> vertex_attribute_groups;
+		TG_vector<TG_vector<F_vertex_attribute>> instance_attribute_groups;
 
 	};
 
@@ -80,19 +76,7 @@ namespace nrhi {
 		G_string name;
 		E_shader_type type = E_shader_type::NONE;
 
-		TG_vector<F_vertex_attribute_group_desc> vertex_attribute_group_desc_vector;
-		TG_vector<F_instance_attribute_group_desc> instance_attribute_group_desc_vector;
-
-	};
-
-	class NRHI_API H_shader_blob_desc {
-
-	public:
-		F_shader_blob_desc create_vertex_shader_blob_desc(V_string name);
-		F_shader_blob_desc create_pixel_shader_blob_desc(V_string name);
-
-	public:
-		F_shader_blob_desc create_compute_shader_blob_desc(V_string name);
+		F_input_assembler_desc input_assembler_desc;
 
 	};
 
