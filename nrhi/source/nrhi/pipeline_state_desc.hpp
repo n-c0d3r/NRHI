@@ -66,8 +66,8 @@ namespace nrhi {
 
 			return (
 				(cull_mode == b.cull_mode)
-				|| (fill_mode == b.fill_mode)
-				|| (font_counter_clock_wise == b.font_counter_clock_wise)
+				&& (fill_mode == b.fill_mode)
+				&& (font_counter_clock_wise == b.font_counter_clock_wise)
 			);
 		}
 
@@ -84,9 +84,9 @@ namespace nrhi {
 
 			return (
 				(enable_depth_test == b.enable_depth_test)
-				|| (format == b.format)
-				|| (depth_comparison_func == b.depth_comparison_func)
-				|| (depth_buffer_write == b.depth_buffer_write)
+				&& (format == b.format)
+				&& (depth_comparison_func == b.depth_comparison_func)
+				&& (depth_buffer_write == b.depth_buffer_write)
 			);
 		}
 
