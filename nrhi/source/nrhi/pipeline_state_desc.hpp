@@ -103,7 +103,7 @@ namespace nrhi {
 
 		F_rasterizer_desc rasterizer_desc;
 
-		E_primitive_topology primitive_topology = E_primitive_topology::NONE;
+		E_primitive_topology primitive_topology = E_primitive_topology::TRIANGLE_LIST;
 
 		TG_vector<TK_valid<A_shader>> shader_p_vector;
 

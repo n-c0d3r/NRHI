@@ -296,7 +296,6 @@ int main() {
 	auto graphics_pipeline_state_p = H_graphics_pipeline_state::create(
 		NCPP_FOREF_VALID(device_p),
 		{
-			.primitive_topology = E_primitive_topology::TRIANGLE_LIST,
 			.shader_p_vector = {
 				NCPP_FHANDLE_VALID_AS_OREF(vshader_p),
 				NCPP_FHANDLE_VALID_AS_OREF(pshader_p)
