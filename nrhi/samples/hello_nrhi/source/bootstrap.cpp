@@ -329,7 +329,8 @@ int main() {
 				);
 				command_list_p->update_resource_data(
 					NCPP_FHANDLE_VALID(cbuffer_p),
-					&output_color
+					&output_color,
+					sizeof(F_vector4)
 				);
 			}
 

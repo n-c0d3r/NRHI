@@ -403,13 +403,19 @@ namespace nrhi {
 
 	NCPP_FORCE_INLINE void A_command_list::update_resource_data(
 		TKPA_valid<A_resource> resource_p,
-		void* data_p
+		void* data_p,
+		u32 data_size,
+		u32 src_data_offset,
+		u32 dst_data_offset
 	) {
 
 		H_command_list::update_resource_data(
 			NCPP_KTHIS(),
 			resource_p,
-			data_p
+			data_p,
+			data_size,
+			src_data_offset,
+			dst_data_offset
 		);
 	}
 

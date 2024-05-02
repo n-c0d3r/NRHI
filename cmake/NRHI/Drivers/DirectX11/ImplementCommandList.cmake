@@ -199,7 +199,10 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "update_resource_data" "void(
 			TKPA_valid<A_command_list> command_list_p,
 			TKPA_valid<A_resource> resource_p,
-			void* data_p
+			void* data_p,
+            u32 data_size,
+            u32 src_data_offset,
+            u32 dst_data_offset
 		)"
 )
 

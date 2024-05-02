@@ -917,7 +917,10 @@ namespace nrhi {
 	void HD_directx11_command_list::update_resource_data(
 		TKPA_valid<A_command_list> command_list_p,
 		TKPA_valid<A_resource> resource_p,
-		void* data_p
+		void* data_p,
+		u32 data_size,
+		u32 src_data_offset,
+		u32 dst_data_offset
 	) {
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
@@ -926,8 +929,12 @@ namespace nrhi {
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
 		ID3D11Resource* d3d11_resource_p = directx11_resource_p->d3d11_resource_p();
 
-		NCPP_ASSERT(data_p) << "invalid data";
 		NCPP_ASSERT(resource_p->desc().heap_type == E_resource_heap_type::GREAD_CWRITE) << "invalid resource heap type";
+
+		NCPP_ASSERT(data_p) << "invalid data";
+		NCPP_ASSERT(data_size) << "invalid data size";
+		NCPP_ASSERT((src_data_offset + data_size) <= resource_p->desc().size) << "invalid src data range";
+		NCPP_ASSERT((dst_data_offset + data_size) <= resource_p->desc().size) << "invalid dst data range";
 
 		D3D11_MAPPED_SUBRESOURCE d3d11_mapped_resource;
 		d3d11_device_context_p->Map(
@@ -937,7 +944,7 @@ namespace nrhi {
 			0,
 			&d3d11_mapped_resource
 		);
-		memcpy(d3d11_mapped_resource.pData, data_p, resource_p->desc().size);
+		memcpy(((u8*)(d3d11_mapped_resource.pData)) + dst_data_offset, ((u8*)data_p) + src_data_offset, data_size);
 		d3d11_device_context_p->Unmap(
 			d3d11_resource_p,
 			0
