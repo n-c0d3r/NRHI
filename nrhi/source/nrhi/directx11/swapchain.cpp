@@ -101,8 +101,7 @@ namespace nrhi {
             if(d3d11_back_rtv_p->d3d11_view_p())
                 d3d11_back_rtv_p->d3d11_view_p()->Release();
 
-            auto& resize_event = (F_surface_resize_event&)event;
-			auto surface_size = resize_event.size();
+			auto surface_size = this->surface_p()->desc().size;
 
 		  	auto& back_texture_2d_desc = inject_resource_desc(NCPP_FHANDLE_VALID_AS_OREF(back_texture_2d_p_));
 		  	back_texture_2d_desc.width = surface_size.x;
