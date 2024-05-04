@@ -74,6 +74,9 @@ namespace nrhi {
     public:
         virtual ~A_resource_view();
 
+	public:
+		NCPP_DISABLE_COPY(A_resource_view);
+
     };
 
 

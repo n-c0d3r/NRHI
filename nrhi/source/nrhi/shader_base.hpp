@@ -115,6 +115,9 @@ namespace nrhi {
 	public:
 		virtual ~A_shader();
 
+	public:
+		NCPP_DISABLE_COPY(A_shader);
+
 	};
 
 }

@@ -72,6 +72,9 @@ namespace nrhi {
     public:
         virtual ~A_command_queue();
 
+	public:
+		NCPP_DISABLE_COPY(A_command_queue);
+
 
 
 	public:

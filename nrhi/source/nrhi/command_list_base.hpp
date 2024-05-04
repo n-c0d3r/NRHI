@@ -77,6 +77,9 @@ namespace nrhi {
     public:
         virtual ~A_command_list();
 
+	public:
+		NCPP_DISABLE_COPY(A_command_list);
+
 
 
 	public:
