@@ -372,10 +372,8 @@ int main() {
 			}
 
 			// submit command lists to GPU
-			command_queue_p->execute_command_lists(
-				NCPP_INIL_SPAN(
-					NCPP_FOREF_VALID(command_list_p)
-				)
+			command_queue_p->execute_command_list(
+				NCPP_FOREF_VALID(command_list_p)
 			);
 
 			// finalize rendering, swap back buffer and front buffer

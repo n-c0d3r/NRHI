@@ -67,5 +67,26 @@ namespace nrhi {
             d3d11_command_list_p_vector[i]->Release();
         }
     }
+	void HD_directx11_command_queue::execute_command_list(
+		TKPA_valid<A_command_queue> command_queue_p,
+		TKPA_valid<A_command_list> command_list_p
+	) {
+
+		ID3D11CommandList* d3d11_command_list_p = 0;
+
+		ID3D11DeviceContext* d3d11_deferred_ctx_p = command_list_p.T_cast<F_directx11_command_list>()->d3d11_device_context_p();
+
+		d3d11_deferred_ctx_p->FinishCommandList(false, &d3d11_command_list_p);
+
+		command_queue_p
+			.T_cast<F_directx11_command_queue>()
+			->d3d11_device_context_p()
+			->ExecuteCommandList(
+				d3d11_command_list_p,
+				false
+			);
+
+		d3d11_command_list_p->Release();
+	}
 
 }

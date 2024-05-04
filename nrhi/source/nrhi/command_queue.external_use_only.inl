@@ -46,4 +46,8 @@ namespace nrhi {
 
 		H_command_queue::execute_command_lists(NCPP_KTHIS(), command_list_p_span);
 	}
+	NCPP_FORCE_INLINE void A_command_queue::execute_command_list(TKPA_valid<A_command_list> command_list_p) {
+
+		H_command_queue::execute_command_list(NCPP_KTHIS(), command_list_p);
+	}
 }

@@ -76,6 +76,7 @@ namespace nrhi {
 
 	public:
 		void execute_command_lists(TG_span<TK_valid<A_command_list>> command_list_p_span);
+		void execute_command_list(TKPA_valid<A_command_list> command_list_p);
 
     };
 
