@@ -260,26 +260,18 @@ int main() {
 		)
 	);
 
-	// get vertex shader blob (the object storing compiled shader binary from hlsl)
-	auto vshader_blob_p = shader_class_p->shader_blob_p("vmain");
-
 	// create vertex shader from vertex shader blob
 	auto vshader_p = H_vertex_shader::create(
 		NCPP_FOREF_VALID(device_p),
-		{
-			.blob_p = NCPP_FOREF_VALID(vshader_blob_p)
-		}
+		NCPP_FOREF_VALID(shader_class_p),
+		"vmain"
 	);
-
-	// get pixel shader blob (the object storing compiled shader binary from hlsl)
-	auto pshader_blob_p = shader_class_p->shader_blob_p("pmain");
 
 	// create pixel shader from pixel shader blob
 	auto pshader_p = H_pixel_shader::create(
 		NCPP_FOREF_VALID(device_p),
-		{
-			.blob_p = NCPP_FOREF_VALID(pshader_blob_p)
-		}
+		NCPP_FOREF_VALID(shader_class_p),
+		"pmain"
 	);
 
 	// create frame buffer
