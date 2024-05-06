@@ -39,6 +39,11 @@ namespace nrhi {
 
 		finalize_rebuild();
 	}
+	void A_frame_buffer::guarantee_generation() {
+
+		if(!is_valid_generation())
+			rebuild();
+	}
 	void A_frame_buffer::finalize_rebuild() {
 
 		u32 color_attachment_count = desc_.color_attachments.size();

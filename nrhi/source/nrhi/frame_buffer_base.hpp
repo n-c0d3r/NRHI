@@ -110,6 +110,7 @@ namespace nrhi {
 
 	public:
 		virtual void rebuild();
+		void guarantee_generation();
 
 	protected:
 		void finalize_rebuild();

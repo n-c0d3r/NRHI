@@ -31,6 +31,11 @@ namespace nrhi {
 
 		finalize_rebuild();
 	}
+	void A_resource_view::guarantee_generation() {
+
+		if(!is_valid_generation())
+			rebuild();
+	}
 	void A_resource_view::finalize_rebuild() {
 
 		generation_ = desc_.resource_p->generation();

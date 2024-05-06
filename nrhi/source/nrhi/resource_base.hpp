@@ -94,6 +94,7 @@ namespace nrhi {
 			const F_initial_resource_data& initial_data,
 			const F_resource_desc& desc
 		);
+		void guarantee_generation();
 
 	protected:
 		void finalize_rebuild(
