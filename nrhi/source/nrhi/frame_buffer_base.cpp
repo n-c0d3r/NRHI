@@ -15,6 +15,7 @@ namespace nrhi {
 	{
 
 		u32 color_attachment_count = desc_.color_attachments.size();
+		color_attachment_generations_.resize(color_attachment_count);
 		for(u32 i = 0; i < color_attachment_count; ++i) {
 
 			auto& color_attachment = desc_.color_attachments[i];
