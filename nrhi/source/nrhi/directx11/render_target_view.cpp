@@ -90,4 +90,14 @@ namespace nrhi {
         return (ID3D11RenderTargetView*)d3d11_view_p;
     }
 
+	void F_directx11_render_target_view::rebuild() {
+
+		d3d11_view_p_ = create_d3d11_render_target_view(
+			device_p(),
+			desc()
+		);
+
+		finalize_rebuild();
+	}
+
 }

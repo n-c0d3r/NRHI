@@ -34,6 +34,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/resource_view_base.hpp>
+#include <nrhi/resource_base.hpp>
 #include <nrhi/texture.hpp>
 
 #pragma endregion
@@ -49,11 +50,16 @@ namespace nrhi {
 
     class NRHI_API F_directx11_resource_view : public A_resource_view {
 
-    private:
+	protected:
         ID3D11View* d3d11_view_p_ = 0;
 
     public:
-        NCPP_FORCE_INLINE ID3D11View* d3d11_view_p() noexcept { return d3d11_view_p_; }
+        NCPP_FORCE_INLINE ID3D11View* d3d11_view_p() noexcept {
+
+			NCPP_ASSERT(is_valid_generation()) << "invalid generation, have to be rebuilt";
+
+			return d3d11_view_p_;
+		}
         NCPP_FORCE_INLINE void set_d3d11_view_p(ID3D11View* value) noexcept {
             d3d11_view_p_ = value;
         }

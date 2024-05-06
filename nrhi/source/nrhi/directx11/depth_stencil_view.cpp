@@ -79,4 +79,14 @@ namespace nrhi {
 		return (ID3D11DepthStencilView*)d3d11_view_p;
 	}
 
+	void F_directx11_depth_stencil_view::rebuild() {
+
+		d3d11_view_p_ = create_d3d11_depth_stencil_view(
+			device_p(),
+			desc()
+		);
+
+		finalize_rebuild();
+	}
+
 }

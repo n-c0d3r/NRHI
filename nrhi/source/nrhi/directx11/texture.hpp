@@ -70,6 +70,12 @@ namespace nrhi {
             const F_resource_desc& desc
         );
 
+	public:
+		virtual void rebuild(
+			const F_initial_resource_data& initial_data,
+			const F_resource_desc& desc
+		) override;
+
     };
 
 
@@ -98,6 +104,12 @@ namespace nrhi {
             const F_initial_resource_data& initial_data,
             const F_resource_desc& desc
         );
+
+	public:
+		virtual void rebuild(
+			const F_initial_resource_data& initial_data,
+			const F_resource_desc& desc
+		) override;
 
     };
 
@@ -128,6 +140,12 @@ namespace nrhi {
             const F_resource_desc& desc
         );
 
+	public:
+		virtual void rebuild(
+			const F_initial_resource_data& initial_data,
+			const F_resource_desc& desc
+		) override;
+
     };
 
 
@@ -157,6 +175,12 @@ namespace nrhi {
 			const F_resource_desc& desc
 		);
 
+	public:
+		virtual void rebuild(
+			const F_initial_resource_data& initial_data,
+			const F_resource_desc& desc
+		) override;
+
 	};
 
 
@@ -185,6 +209,12 @@ namespace nrhi {
 			const F_initial_resource_data& initial_data,
 			const F_resource_desc& desc
 		);
+
+	public:
+		virtual void rebuild(
+			const F_initial_resource_data& initial_data,
+			const F_resource_desc& desc
+		) override;
 
 	};
 

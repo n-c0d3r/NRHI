@@ -21,4 +21,22 @@ namespace nrhi {
 
     }
 
+	void A_resource::rebuild(
+		const F_initial_resource_data& initial_data,
+		const F_resource_desc& desc
+	) {
+		finalize_rebuild(
+			initial_data,
+			desc
+		);
+	}
+	void A_resource::finalize_rebuild(
+		const F_initial_resource_data& initial_data,
+		const F_resource_desc& desc
+	) {
+		initial_data_ = initial_data;
+		desc_ = desc;
+		++generation_;
+	}
+
 }

@@ -108,4 +108,14 @@ namespace nrhi {
 		return (ID3D11UnorderedAccessView*)d3d11_view_p;
 	}
 
+	void F_directx11_unordered_access_view::rebuild() {
+
+		d3d11_view_p_ = create_d3d11_unordered_access_view(
+			device_p(),
+			desc()
+		);
+
+		finalize_rebuild();
+	}
+
 }

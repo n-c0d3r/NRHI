@@ -136,4 +136,132 @@ namespace nrhi {
 		);
 	}
 
+
+
+	void H_texture::rebuild_1d(
+		KPA_valid_texture_1d_handle texture_1d_p,
+		F_initial_resource_data initial_data,
+		u32 width,
+		E_format format,
+		u32 mip_level_count,
+		E_resource_bind_flag bind_flags,
+		E_resource_heap_type heap_type
+	) {
+
+		texture_1d_p->rebuild(
+			initial_data,
+			H_resource_desc::create_texture_1d_desc(
+				width,
+				format,
+				mip_level_count,
+				bind_flags,
+				heap_type
+			)
+		);
+	}
+
+	void H_texture::rebuild_2d(
+		KPA_valid_texture_2d_handle texture_2d_p,
+		F_initial_resource_data initial_data,
+		u32 width,
+		u32 height,
+		E_format format,
+		u32 mip_level_count,
+		F_sample_desc sample_desc,
+		E_resource_bind_flag bind_flags,
+		E_resource_heap_type heap_type
+	) {
+
+		texture_2d_p->rebuild(
+			initial_data,
+			H_resource_desc::create_texture_2d_desc(
+				width,
+				height,
+				format,
+				mip_level_count,
+				sample_desc,
+				bind_flags,
+				heap_type
+			)
+		);
+	}
+
+	void H_texture::rebuild_3d(
+		KPA_valid_texture_3d_handle texture_3d_p,
+		F_initial_resource_data initial_data,
+		u32 width,
+		u32 height,
+		u32 depth,
+		E_format format,
+		u32 mip_level_count,
+		E_resource_bind_flag bind_flags,
+		E_resource_heap_type heap_type
+	) {
+
+		texture_3d_p->rebuild(
+			initial_data,
+			H_resource_desc::create_texture_3d_desc(
+				width,
+				height,
+				depth,
+				format,
+				mip_level_count,
+				bind_flags,
+				heap_type
+			)
+		);
+	}
+
+	void H_texture::rebuild_2d_array(
+		KPA_valid_texture_2d_array_handle texture_2d_array_p,
+		F_initial_resource_data initial_data,
+		u32 width,
+		u32 height,
+		u32 count,
+		E_format format,
+		u32 mip_level_count,
+		F_sample_desc sample_desc,
+		E_resource_bind_flag bind_flags,
+		E_resource_heap_type heap_type
+	) {
+
+		texture_2d_array_p->rebuild(
+			initial_data,
+			H_resource_desc::create_texture_2d_array_desc(
+				width,
+				height,
+				count,
+				format,
+				mip_level_count,
+				sample_desc,
+				bind_flags,
+				heap_type
+			)
+		);
+	}
+
+	void H_texture::rebuild_cube(
+		KPA_valid_texture_cube_handle texture_cube_p,
+		F_initial_resource_data initial_data,
+		u32 width,
+		E_format format,
+		u32 mip_level_count,
+		F_sample_desc sample_desc,
+		E_resource_bind_flag bind_flags,
+		E_resource_heap_type heap_type
+	) {
+
+		texture_cube_p->rebuild(
+			initial_data,
+			H_resource_desc::create_texture_cube_desc(
+				width,
+				format,
+				mip_level_count,
+				sample_desc,
+				bind_flags,
+				heap_type
+			)
+		);
+	}
+
 }

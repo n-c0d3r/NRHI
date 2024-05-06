@@ -33,6 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+#include <nrhi/resource_base.hpp>
 #include <nrhi/resource_desc.hpp>
 #include <nrhi/resource_view_desc.hpp>
 #include <nrhi/resource_view_type.hpp>
@@ -57,10 +58,19 @@ namespace nrhi {
         F_resource_view_desc desc_;
 		E_resource_type resource_type_;
 
+	protected:
+		u64 generation_ = 0;
+
     public:
         NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
         NCPP_FORCE_INLINE const F_resource_view_desc& desc() const noexcept { return desc_; }
         NCPP_FORCE_INLINE E_resource_type resource_type() const noexcept { return resource_type_; }
+
+		NCPP_FORCE_INLINE u64 generation() const noexcept { return generation_; }
+		NCPP_FORCE_INLINE b8 is_valid_generation() const noexcept {
+
+			return (generation_ == desc_.resource_p->generation());
+		}
 
 
 
@@ -76,6 +86,12 @@ namespace nrhi {
 
 	public:
 		NCPP_DISABLE_COPY(A_resource_view);
+
+	public:
+		virtual void rebuild();
+
+	protected:
+		void finalize_rebuild();
 
     };
 

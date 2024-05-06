@@ -49,7 +49,7 @@ namespace nrhi {
 
     class NRHI_API F_directx11_resource : public A_resource {
 
-    private:
+    protected:
         ID3D11Resource* d3d11_resource_p_ = 0;
 
     public:

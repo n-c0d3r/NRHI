@@ -203,6 +203,162 @@ namespace nrhi {
 			);
 		}
 
+
+
+	public:
+		static void rebuild(
+			KPA_valid_buffer_handle buffer_p,
+			F_initial_resource_data initial_data,
+			u32 count,
+			u32 stride,
+			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
+			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+		);
+
+	public:
+		template<typename F_element__>
+		static void T_rebuild(
+			KPA_valid_buffer_handle buffer_p,
+			F_initial_resource_data initial_data,
+			u32 count,
+			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
+			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+		) {
+
+			return rebuild(
+				buffer_p,
+				initial_data,
+				count,
+				sizeof(F_element__),
+				bind_flags,
+				heap_type
+			);
+		}
+
+	public:
+		template<typename F_element__>
+		static void T_rebuild(
+			KPA_valid_buffer_handle buffer_p,
+			const TG_span<F_element__>& data,
+			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
+			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+		) {
+
+			return rebuild(
+				buffer_p,
+				{ .system_mem_p = (void*)data.data() },
+				(u32)(data.size()),
+				(u32)(sizeof(F_element__)),
+				bind_flags,
+				heap_type
+			);
+		}
+
+	public:
+		static void rebuild(
+			KPA_valid_buffer_handle buffer_p,
+			F_initial_resource_data initial_data,
+			u32 count,
+			E_format format,
+			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
+			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+		);
+
+	public:
+		template<typename F_element__>
+		static void T_rebuild(
+			KPA_valid_buffer_handle buffer_p,
+			const TG_span<F_element__>& data,
+			E_format format,
+			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
+			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+		) {
+
+			return rebuild(
+				buffer_p,
+				{ .system_mem_p = (void*)data.data() },
+				(u32)(data.size()),
+				format,
+				bind_flags,
+				heap_type
+			);
+		}
+
+	public:
+		static void rebuild_structured(
+			KPA_valid_structured_buffer_handle structured_buffer_p,
+			F_initial_resource_data initial_data,
+			u32 count,
+			u32 stride,
+			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
+			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+		);
+
+	public:
+		template<typename F_element__>
+		static void T_rebuild_structured(
+			KPA_valid_structured_buffer_handle structured_buffer_p,
+			F_initial_resource_data initial_data,
+			u32 count,
+			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
+			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+		) {
+
+			return rebuild_structured(
+				structured_buffer_p,
+				initial_data,
+				count,
+				sizeof(F_element__),
+				bind_flags,
+				heap_type
+			);
+		}
+
+	public:
+		template<typename F_element__>
+		static void T_rebuild_structured(
+			KPA_valid_structured_buffer_handle structured_buffer_p,
+			const TG_span<F_element__>& data,
+			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
+			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+		) {
+
+			return rebuild_structured(
+				structured_buffer_p,
+				{ .system_mem_p = (void*)data.data() },
+				(u32)(data.size()),
+				(u32)(sizeof(F_element__)),
+				bind_flags,
+				heap_type
+			);
+		}
+
+	public:
+		static void rebuild_indirect(
+			KPA_valid_indirect_buffer_handle indirect_buffer_p,
+			F_initial_resource_data initial_data,
+			u32 count,
+			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
+			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+		);
+
+	public:
+		static void rebuild_indirect(
+			KPA_valid_indirect_buffer_handle indirect_buffer_p,
+			const TG_span<u32>& data,
+			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
+			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+		) {
+
+			return rebuild_indirect(
+				indirect_buffer_p,
+				{ .system_mem_p = (void*)(data.data()) },
+				(u32)(data.size()),
+				bind_flags,
+				heap_type
+			);
+		}
+
     };
 
 }

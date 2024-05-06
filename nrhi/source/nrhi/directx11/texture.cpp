@@ -92,6 +92,21 @@ namespace nrhi {
         return d3d11_texture_1d_p;
     }
 
+	void F_directx11_texture_1d::rebuild(
+		const F_initial_resource_data& initial_data,
+		const F_resource_desc& desc
+	) {
+		d3d11_resource_p_ = create_d3d11_texture_1d(
+			device_p(),
+			initial_data,
+			desc
+		);
+		finalize_rebuild(
+			initial_data,
+			desc
+		);
+	}
+
 
 
     F_directx11_texture_2d::F_directx11_texture_2d(
@@ -183,6 +198,21 @@ namespace nrhi {
         return d3d11_texture_2d_p;
     }
 
+	void F_directx11_texture_2d::rebuild(
+		const F_initial_resource_data& initial_data,
+		const F_resource_desc& desc
+	) {
+		d3d11_resource_p_ = create_d3d11_texture_2d(
+			device_p(),
+			initial_data,
+			desc
+		);
+		finalize_rebuild(
+			initial_data,
+			desc
+		);
+	}
+
 
 
     F_directx11_texture_3d::F_directx11_texture_3d(
@@ -271,6 +301,21 @@ namespace nrhi {
 
         return d3d11_texture_3d_p;
     }
+
+	void F_directx11_texture_3d::rebuild(
+		const F_initial_resource_data& initial_data,
+		const F_resource_desc& desc
+	) {
+		d3d11_resource_p_ = create_d3d11_texture_3d(
+			device_p(),
+			initial_data,
+			desc
+		);
+		finalize_rebuild(
+			initial_data,
+			desc
+		);
+	}
 
 
 
@@ -363,6 +408,21 @@ namespace nrhi {
 		return d3d11_texture_2d_array_p;
 	}
 
+	void F_directx11_texture_2d_array::rebuild(
+		const F_initial_resource_data& initial_data,
+		const F_resource_desc& desc
+	) {
+		d3d11_resource_p_ = create_d3d11_texture_2d_array(
+			device_p(),
+			initial_data,
+			desc
+		);
+		finalize_rebuild(
+			initial_data,
+			desc
+		);
+	}
+
 
 
 	F_directx11_texture_cube::F_directx11_texture_cube(
@@ -452,6 +512,21 @@ namespace nrhi {
 		NCPP_ASSERT(d3d11_texture_cube_p) << "texture cube creation failed";
 
 		return d3d11_texture_cube_p;
+	}
+
+	void F_directx11_texture_cube::rebuild(
+		const F_initial_resource_data& initial_data,
+		const F_resource_desc& desc
+	) {
+		d3d11_resource_p_ = create_d3d11_texture_cube(
+			device_p(),
+			initial_data,
+			desc
+		);
+		finalize_rebuild(
+			initial_data,
+			desc
+		);
 	}
 
 }

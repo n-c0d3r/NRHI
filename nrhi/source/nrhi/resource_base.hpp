@@ -54,10 +54,15 @@ namespace nrhi {
         F_resource_desc desc_;
         F_initial_resource_data initial_data_;
 
+	protected:
+		u64 generation_ = 0;
+
     public:
         NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
         NCPP_FORCE_INLINE const F_resource_desc& desc() const noexcept { return desc_; }
         NCPP_FORCE_INLINE const F_initial_resource_data& initial_data() const noexcept { return initial_data_; }
+
+		NCPP_FORCE_INLINE u64 generation() const noexcept { return generation_; }
 
 
 
@@ -74,6 +79,18 @@ namespace nrhi {
 
 	public:
 		NCPP_DISABLE_COPY(A_resource);
+
+	public:
+		virtual void rebuild(
+			const F_initial_resource_data& initial_data,
+			const F_resource_desc& desc
+		);
+
+	protected:
+		void finalize_rebuild(
+			const F_initial_resource_data& initial_data,
+			const F_resource_desc& desc
+		);
 
     };
 

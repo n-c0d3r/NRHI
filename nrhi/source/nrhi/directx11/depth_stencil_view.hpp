@@ -67,6 +67,9 @@ namespace nrhi {
 			const F_resource_view_desc& desc
 		);
 
+	public:
+		virtual void rebuild() override;
+
 	};
 
 }

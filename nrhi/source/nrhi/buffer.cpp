@@ -87,4 +87,84 @@ namespace nrhi {
 		);
 	}
 
+
+
+	void H_buffer::rebuild(
+		KPA_valid_buffer_handle buffer_p,
+		F_initial_resource_data initial_data,
+		u32 count,
+		u32 stride,
+		E_resource_bind_flag bind_flags,
+		E_resource_heap_type heap_type
+	) {
+
+		buffer_p->rebuild(
+			initial_data,
+			H_resource_desc::create_buffer_desc(
+				count,
+				stride,
+				bind_flags,
+				heap_type
+			)
+		);
+	}
+
+	void H_buffer::rebuild(
+		KPA_valid_buffer_handle buffer_p,
+		F_initial_resource_data initial_data,
+		u32 count,
+		E_format format,
+		E_resource_bind_flag bind_flags,
+		E_resource_heap_type heap_type
+	) {
+
+		buffer_p->rebuild(
+			initial_data,
+			H_resource_desc::create_buffer_desc(
+				count,
+				format,
+				bind_flags,
+				heap_type
+			)
+		);
+	}
+
+	void H_buffer::rebuild_structured(
+		KPA_valid_structured_buffer_handle structured_buffer_p,
+		F_initial_resource_data initial_data,
+		u32 count,
+		u32 stride,
+		E_resource_bind_flag bind_flags,
+		E_resource_heap_type heap_type
+	) {
+
+		structured_buffer_p->rebuild(
+			initial_data,
+			H_resource_desc::create_structured_buffer_desc(
+				count,
+				stride,
+				bind_flags,
+				heap_type
+			)
+		);
+	}
+
+	void H_buffer::rebuild_indirect(
+		KPA_valid_indirect_buffer_handle indirect_buffer_p,
+		F_initial_resource_data initial_data,
+		u32 count,
+		E_resource_bind_flag bind_flags,
+		E_resource_heap_type heap_type
+	) {
+
+		indirect_buffer_p->rebuild(
+			initial_data,
+			H_resource_desc::create_indirect_buffer_desc(
+				count,
+				bind_flags,
+				heap_type
+			)
+		);
+	}
+
 }

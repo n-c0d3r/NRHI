@@ -90,6 +90,21 @@ namespace nrhi {
         return d3d11_buffer_p;
     }
 
+	void F_directx11_buffer::rebuild(
+		const F_initial_resource_data& initial_data,
+		const F_resource_desc& desc
+	) {
+		d3d11_resource_p_ = create_d3d11_buffer(
+			device_p(),
+			initial_data,
+			desc
+		);
+		finalize_rebuild(
+			initial_data,
+			desc
+		);
+	}
+
 
 
     F_directx11_structured_buffer::F_directx11_structured_buffer(
@@ -176,6 +191,21 @@ namespace nrhi {
         return d3d11_buffer_p;
     }
 
+	void F_directx11_structured_buffer::rebuild(
+		const F_initial_resource_data& initial_data,
+		const F_resource_desc& desc
+	) {
+		d3d11_resource_p_ = create_d3d11_structured_buffer(
+			device_p(),
+			initial_data,
+			desc
+		);
+		finalize_rebuild(
+			initial_data,
+			desc
+		);
+	}
+
 
 
 	F_directx11_indirect_buffer::F_directx11_indirect_buffer(
@@ -260,6 +290,21 @@ namespace nrhi {
 		NCPP_ASSERT(d3d11_buffer_p) << "indirect buffer creation failed";
 
 		return d3d11_buffer_p;
+	}
+
+	void F_directx11_indirect_buffer::rebuild(
+		const F_initial_resource_data& initial_data,
+		const F_resource_desc& desc
+	) {
+		d3d11_resource_p_ = create_d3d11_indirect_buffer(
+			device_p(),
+			initial_data,
+			desc
+		);
+		finalize_rebuild(
+			initial_data,
+			desc
+		);
 	}
 
 }

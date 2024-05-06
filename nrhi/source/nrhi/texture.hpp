@@ -112,6 +112,71 @@ namespace nrhi {
 			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
 		);
 
+
+
+	public:
+		static void rebuild_1d(
+			KPA_valid_texture_1d_handle texture_1d_p,
+			F_initial_resource_data initial_data,
+			u32 width,
+			E_format format = E_format::R8G8B8A8_UNORM,
+			u32 mip_level_count = 1,
+			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
+			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+		);
+
+	public:
+		static void rebuild_2d(
+			KPA_valid_texture_2d_handle texture_2d_p,
+			F_initial_resource_data initial_data,
+			u32 width,
+			u32 height,
+			E_format format = E_format::R8G8B8A8_UNORM,
+			u32 mip_level_count = 1,
+			F_sample_desc sample_desc = F_sample_desc{},
+			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
+			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+		);
+
+	public:
+		static void rebuild_3d(
+			KPA_valid_texture_3d_handle texture_3d_p,
+			F_initial_resource_data initial_data,
+			u32 width,
+			u32 height,
+			u32 depth,
+			E_format format = E_format::R8G8B8A8_UNORM,
+			u32 mip_level_count = 1,
+			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
+			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+		);
+
+	public:
+		static void rebuild_2d_array(
+			KPA_valid_texture_2d_array_handle texture_2d_array_p,
+			F_initial_resource_data initial_data,
+			u32 width,
+			u32 height,
+			u32 count,
+			E_format format = E_format::R8G8B8A8_UNORM,
+			u32 mip_level_count = 1,
+			F_sample_desc sample_desc = F_sample_desc{},
+			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
+			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+		);
+
+	public:
+		static void rebuild_cube(
+			KPA_valid_texture_cube_handle texture_cube_p,
+			F_initial_resource_data initial_data,
+			u32 width,
+			E_format format = E_format::R8G8B8A8_UNORM,
+			u32 mip_level_count = 1,
+			F_sample_desc sample_desc = F_sample_desc{},
+			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
+			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+		);
+
     };
 
 }

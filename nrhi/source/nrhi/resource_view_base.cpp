@@ -11,7 +11,8 @@ namespace nrhi {
         E_resource_view_type overrided_type
     ) :
         device_p_(device_p),
-        desc_(desc)
+        desc_(desc),
+		generation_(desc.resource_p->generation())
     {
 
         desc_.type = overrided_type;
@@ -25,5 +26,14 @@ namespace nrhi {
     A_resource_view::~A_resource_view() {
 
     }
+
+	void A_resource_view::rebuild() {
+
+		finalize_rebuild();
+	}
+	void A_resource_view::finalize_rebuild() {
+
+		generation_ = desc_.resource_p->generation();
+	}
 
 }

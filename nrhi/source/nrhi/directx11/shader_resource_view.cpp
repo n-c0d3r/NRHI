@@ -117,4 +117,14 @@ namespace nrhi {
         return (ID3D11ShaderResourceView*)d3d11_view_p;
     }
 
+	void F_directx11_shader_resource_view::rebuild() {
+
+		d3d11_view_p_ = create_d3d11_shader_resource_view(
+			device_p(),
+			desc()
+		);
+
+		finalize_rebuild();
+	}
+
 }
