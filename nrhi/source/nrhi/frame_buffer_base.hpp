@@ -56,11 +56,39 @@ namespace nrhi {
 
 		b8 is_has_dsv_;
 
+	protected:
+		TG_vector<u64> color_attachment_generations_;
+		u64 depth_stencil_attachment_generation_ = 0xFFFFFFFFFFFFFFFF;
+
 	public:
 		NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
 		NCPP_FORCE_INLINE const F_frame_buffer_desc& desc() const noexcept { return desc_; }
 
 		NCPP_FORCE_INLINE b8 is_has_dsv() const noexcept { return is_has_dsv_; }
+
+		NCPP_FORCE_INLINE const TG_vector<u64>& color_attachment_generations() const noexcept { return color_attachment_generations_; }
+		NCPP_FORCE_INLINE u32 depth_stencil_attachment_generation() const noexcept { return depth_stencil_attachment_generation_; }
+		NCPP_FORCE_INLINE b8 is_valid_generation() const noexcept {
+
+			u32 color_attachment_count = desc_.color_attachments.size();
+			for(u32 i = 0; i < color_attachment_count; ++i) {
+
+				const auto& color_attachment = desc_.color_attachments[i];
+
+				return (
+					color_attachment->generation()
+					== color_attachment_generations_[i]
+				);
+			}
+
+			if(is_has_dsv_)
+				return (
+					desc_.depth_stencil_attachment->generation()
+					== depth_stencil_attachment_generation_
+				);
+
+			return true;
+		}
 
 
 
@@ -78,6 +106,12 @@ namespace nrhi {
 
 	public:
 		void update_viewport();
+
+	public:
+		virtual void rebuild();
+
+	protected:
+		void finalize_rebuild();
 
 	};
 

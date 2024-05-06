@@ -54,6 +54,13 @@ namespace nrhi {
 		}
 	}
 
+	void F_directx11_frame_buffer::rebuild() {
+
+		update_d3d11_viewport();
+
+		finalize_rebuild();
+	}
+
 
 
 	TU<A_frame_buffer> HD_directx11_frame_buffer::create(

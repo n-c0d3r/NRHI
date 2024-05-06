@@ -70,6 +70,9 @@ namespace nrhi {
 	public:
 		void update_d3d11_viewport();
 
+	public:
+		virtual void rebuild() override;
+
 	};
 
 
