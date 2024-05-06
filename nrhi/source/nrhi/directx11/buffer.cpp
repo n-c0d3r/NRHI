@@ -94,6 +94,8 @@ namespace nrhi {
 		const F_initial_resource_data& initial_data,
 		const F_resource_desc& desc
 	) {
+		if(d3d11_resource_p_)
+			d3d11_resource_p_->Release();
 		d3d11_resource_p_ = create_d3d11_buffer(
 			device_p(),
 			initial_data,
@@ -195,6 +197,8 @@ namespace nrhi {
 		const F_initial_resource_data& initial_data,
 		const F_resource_desc& desc
 	) {
+		if(d3d11_resource_p_)
+			d3d11_resource_p_->Release();
 		d3d11_resource_p_ = create_d3d11_structured_buffer(
 			device_p(),
 			initial_data,
@@ -296,6 +300,8 @@ namespace nrhi {
 		const F_initial_resource_data& initial_data,
 		const F_resource_desc& desc
 	) {
+		if(d3d11_resource_p_)
+			d3d11_resource_p_->Release();
 		d3d11_resource_p_ = create_d3d11_indirect_buffer(
 			device_p(),
 			initial_data,

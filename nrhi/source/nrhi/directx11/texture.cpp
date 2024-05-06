@@ -96,6 +96,8 @@ namespace nrhi {
 		const F_initial_resource_data& initial_data,
 		const F_resource_desc& desc
 	) {
+		if(d3d11_resource_p_)
+			d3d11_resource_p_->Release();
 		d3d11_resource_p_ = create_d3d11_texture_1d(
 			device_p(),
 			initial_data,
@@ -202,6 +204,8 @@ namespace nrhi {
 		const F_initial_resource_data& initial_data,
 		const F_resource_desc& desc
 	) {
+		if(d3d11_resource_p_)
+			d3d11_resource_p_->Release();
 		d3d11_resource_p_ = create_d3d11_texture_2d(
 			device_p(),
 			initial_data,
@@ -306,6 +310,8 @@ namespace nrhi {
 		const F_initial_resource_data& initial_data,
 		const F_resource_desc& desc
 	) {
+		if(d3d11_resource_p_)
+			d3d11_resource_p_->Release();
 		d3d11_resource_p_ = create_d3d11_texture_3d(
 			device_p(),
 			initial_data,
@@ -412,6 +418,8 @@ namespace nrhi {
 		const F_initial_resource_data& initial_data,
 		const F_resource_desc& desc
 	) {
+		if(d3d11_resource_p_)
+			d3d11_resource_p_->Release();
 		d3d11_resource_p_ = create_d3d11_texture_2d_array(
 			device_p(),
 			initial_data,
@@ -518,6 +526,8 @@ namespace nrhi {
 		const F_initial_resource_data& initial_data,
 		const F_resource_desc& desc
 	) {
+		if(d3d11_resource_p_)
+			d3d11_resource_p_->Release();
 		d3d11_resource_p_ = create_d3d11_texture_cube(
 			device_p(),
 			initial_data,

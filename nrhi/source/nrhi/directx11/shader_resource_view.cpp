@@ -119,6 +119,8 @@ namespace nrhi {
 
 	void F_directx11_shader_resource_view::rebuild() {
 
+		if(d3d11_view_p_)
+			d3d11_view_p_->Release();
 		d3d11_view_p_ = create_d3d11_shader_resource_view(
 			device_p(),
 			desc()

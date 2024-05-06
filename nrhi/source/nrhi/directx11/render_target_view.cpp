@@ -92,6 +92,8 @@ namespace nrhi {
 
 	void F_directx11_render_target_view::rebuild() {
 
+		if(d3d11_view_p_)
+			d3d11_view_p_->Release();
 		d3d11_view_p_ = create_d3d11_render_target_view(
 			device_p(),
 			desc()
