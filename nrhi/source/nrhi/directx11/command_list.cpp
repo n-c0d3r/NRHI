@@ -60,6 +60,8 @@ namespace nrhi {
 		PA_vector4 color
 	) {
 
+		NCPP_ASSERT(rtv_p->is_valid_generation()) << "render target view's generation is not valid";
+
 		ID3D11DeviceContext* d3d11_device_context_p = command_list_p.T_cast<F_directx11_command_list>()->d3d11_device_context_p();
 
 		if constexpr (std::is_same_v<F_vector4, F_vector4_f32>)
@@ -441,6 +443,11 @@ namespace nrhi {
 		u32 base_slot_index
 	) {
 
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
+			for(const auto& srv_p : srv_p_span)
+				NCPP_ASSERT(srv_p->is_valid_generation()) << "shader resource view's generation is not valid";
+		);
+
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
@@ -467,6 +474,8 @@ namespace nrhi {
 		KPA_valid_srv_handle srv_p,
 		u32 slot_index
 	) {
+
+		NCPP_ASSERT(srv_p->is_valid_generation()) << "shader resource view's generation is not valid";
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
@@ -552,6 +561,11 @@ namespace nrhi {
 		u32 base_slot_index
 	) {
 
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
+			for(const auto& srv_p : srv_p_span)
+				NCPP_ASSERT(srv_p->is_valid_generation()) << "shader resource view's generation is not valid";
+		);
+
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
@@ -579,6 +593,8 @@ namespace nrhi {
 		u32 slot_index
 	) {
 
+		NCPP_ASSERT(srv_p->is_valid_generation()) << "shader resource view's generation is not valid";
+
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
@@ -596,6 +612,11 @@ namespace nrhi {
 		const TG_span<K_valid_uav_handle>& uav_p_span,
 		u32 base_slot_index
 	) {
+
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
+			for(const auto& uav_p : uav_p_span)
+				NCPP_ASSERT(uav_p->is_valid_generation()) << "unordered access view's generation is not valid";
+		);
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
@@ -625,6 +646,8 @@ namespace nrhi {
 		u32 slot_index
 	) {
 
+		NCPP_ASSERT(uav_p->is_valid_generation()) << "unordered access view's generation is not valid";
+
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
@@ -644,6 +667,8 @@ namespace nrhi {
 		TKPA_valid<A_frame_buffer> frame_buffer_p
 	) {
 
+		NCPP_ASSERT(frame_buffer_p->is_valid_generation()) << "frame buffer's generation is not valid";
+
 		const auto& frame_buffer_desc = frame_buffer_p->desc();
 
 		const auto& color_attachments = frame_buffer_desc.color_attachments;
@@ -659,6 +684,8 @@ namespace nrhi {
 		ID3D11RenderTargetView* d3d11_rtv_array[NRHI_MAX_RTV_COUNT_PER_DRAWCALL];
 		for(u32 i = 0; i < color_attachment_count; ++i) {
 
+			NCPP_ASSERT(color_attachments[i]->is_valid_generation()) << "color attachment's generation is not valid";
+
 			d3d11_rtv_array[i] = (ID3D11RenderTargetView*)(
 				color_attachments[i]
 					.T_cast<F_directx11_render_target_view>()
@@ -670,6 +697,8 @@ namespace nrhi {
 		if(frame_buffer_p->is_has_dsv()) {
 
 			const auto& depth_stencil_attachment = frame_buffer_desc.depth_stencil_attachment;
+
+			NCPP_ASSERT(depth_stencil_attachment->is_valid_generation()) << "depth stencil attachment's generation is not valid";
 
 			d3d11_depth_stencil_view_p = (ID3D11DepthStencilView*)(
 				depth_stencil_attachment

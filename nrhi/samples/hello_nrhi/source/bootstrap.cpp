@@ -284,6 +284,12 @@ int main() {
 		}
 	);
 
+	// resize frame buffer when surface is sized
+	surface_p->T_get_event<F_surface_resize_event>().T_push_back_listener([&](auto& e){
+
+	  	frame_buffer_p->rebuild();
+	});
+
 	// create graphics pipeline state
 	auto graphics_pipeline_state_p = H_graphics_pipeline_state::create(
 		NCPP_FOREF_VALID(device_p),

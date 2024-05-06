@@ -47,7 +47,16 @@ namespace nrhi {
 
 
 
+	u64& inject_resource_generation(TKPA_valid<A_resource> resource_p) noexcept;
+
+
+
     class NRHI_API A_resource {
+
+	public:
+		friend u64& nrhi::inject_resource_generation(TKPA_valid<A_resource> resource_p) noexcept;
+
+
 
     private:
         TK_valid<A_device> device_p_;
@@ -99,6 +108,10 @@ namespace nrhi {
 	NCPP_FORCE_INLINE F_resource_desc& inject_resource_desc(TKPA_valid<A_resource> resource_p) noexcept {
 
 		return (F_resource_desc&)(resource_p->desc());
+	}
+	NCPP_FORCE_INLINE u64& inject_resource_generation(TKPA_valid<A_resource> resource_p) noexcept {
+
+		return resource_p->generation_;
 	}
 
 }

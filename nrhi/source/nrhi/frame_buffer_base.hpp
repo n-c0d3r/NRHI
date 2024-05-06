@@ -75,10 +75,11 @@ namespace nrhi {
 
 				const auto& color_attachment = desc_.color_attachments[i];
 
-				return (
+				if(
 					color_attachment->generation()
-					== color_attachment_generations_[i]
-				);
+					!= color_attachment_generations_[i]
+				)
+					return false;
 			}
 
 			if(is_has_dsv_)

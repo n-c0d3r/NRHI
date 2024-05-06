@@ -147,6 +147,9 @@ namespace nrhi {
         main_rtbuffer_p->Release();
 
         d3d11_back_rtv_p->set_d3d11_view_p(main_rtview_p);
+
+		++inject_resource_generation(NCPP_FOH_VALID(back_texture_2d_p_));
+		++inject_resource_view_generation(NCPP_FOH_VALID(back_rtv_p_));
     }
 
 
