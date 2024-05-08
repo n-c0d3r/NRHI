@@ -83,11 +83,11 @@ option(NRHI_ENABLE_DOCUMENTATIONS "If enabled, creating a target being capable o
 if(NRHI_ENABLE_DOCUMENTATIONS)
     option(NRHI_INTERNAL_DOCS "Generate docs for anything" OFF)
 
-    include(NCPP/DocsUtils)
+    include(NCPP/Utilities/DocsHelper)
 
-    NCPP_DocsUtils_CreateTarget(
+    NCPP_DocsHelper_CreateTarget(
         NAME NRHI
-        BRIEF "Ncoder's Learning Aimed C++ Surface Library."
+        BRIEF "Ncoder's Learning Aimed C++ Render Hardware Interface Library."
 
         TARGET_NAME nrhi.documentations
         TARGET_FOLDER nrhi

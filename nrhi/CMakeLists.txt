@@ -177,7 +177,7 @@ add_library(nrhi ${nrhiLinkingMode}
 #####################################################################################
 set_target_properties(nrhi
     PROPERTIES 
-        FOLDER "nrhi"
+        FOLDER "NCoder/nrhi"
 )
 
 target_precompile_headers(nrhi

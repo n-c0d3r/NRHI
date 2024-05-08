@@ -18,7 +18,7 @@ add_executable(nrhi.samples.hello_nrhi
 # nrhi.samples.hello_nrhi target settings
 set_target_properties(nrhi.samples.hello_nrhi
     PROPERTIES 
-        FOLDER "nrhi/samples"
+        FOLDER "NCoder/nrhi/samples"
         PROJECT_LABEL "hello_nrhi"
 )
 target_link_libraries(nrhi.samples.hello_nrhi
