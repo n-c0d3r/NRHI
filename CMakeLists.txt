@@ -90,7 +90,7 @@ if(NRHI_ENABLE_DOCUMENTATIONS)
         BRIEF "Ncoder's Learning Aimed C++ Render Hardware Interface Library."
 
         TARGET_NAME nrhi.documentations
-        TARGET_FOLDER nrhi
+        TARGET_FOLDER NCoder/nrhi
         TARGET_LABEL documentations
 
         INPUT_DIRS 
