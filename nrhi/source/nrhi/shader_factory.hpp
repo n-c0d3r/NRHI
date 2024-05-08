@@ -61,7 +61,7 @@ namespace nrhi {
 		static NCPP_FORCE_INLINE U_vertex_shader_handle create(
 			TKPA_valid<A_device> device_p,
 			TKPA_valid<A_shader_class> shader_class_p,
-			V_string shader_blob_name
+			const G_string& shader_blob_name
 		) {
 
 			return H_shader::create_vertex_shader(
@@ -84,7 +84,7 @@ namespace nrhi {
 		static NCPP_FORCE_INLINE U_pixel_shader_handle create(
 			TKPA_valid<A_device> device_p,
 			TKPA_valid<A_shader_class> shader_class_p,
-			V_string shader_blob_name
+			const G_string& shader_blob_name
 		) {
 
 			return H_shader::create_pixel_shader(
@@ -107,7 +107,7 @@ namespace nrhi {
 		static NCPP_FORCE_INLINE U_compute_shader_handle create(
 			TKPA_valid<A_device> device_p,
 			TKPA_valid<A_shader_class> shader_class_p,
-			V_string shader_blob_name
+			const G_string& shader_blob_name
 		) {
 
 			return H_shader::create_compute_shader(

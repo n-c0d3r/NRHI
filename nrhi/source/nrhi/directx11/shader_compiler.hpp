@@ -51,8 +51,8 @@ namespace nrhi {
 
 	public:
 		static TU<A_shader_class> compile_hlsl(
-			V_string name,
-			V_string src_content,
+			const G_string& name,
+			const G_string& src_content,
 			TG_span<F_shader_kernel_desc> kernel_descs
 		);
 

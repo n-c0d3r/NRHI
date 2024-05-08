@@ -79,7 +79,7 @@ namespace nrhi {
 	public:
 		NCPP_FORCE_INLINE const F_shader_class_desc& desc() noexcept { return desc_; }
 		NCPP_FORCE_INLINE const F_shader_blob_p_map& shader_blob_p_map() noexcept { return shader_blob_p_map_; }
-		NCPP_FORCE_INLINE TK_valid<A_shader_blob> shader_blob_p(V_string name) const noexcept {
+		NCPP_FORCE_INLINE TK_valid<A_shader_blob> shader_blob_p(const G_string& name) const noexcept {
 
 			NCPP_ASSERT(shader_blob_p_map_.find(name) != shader_blob_p_map_.end()) << "not found shader blob named " << T_cout_value(name);
 

@@ -9,8 +9,8 @@
 namespace nrhi {
 
 	TU<A_shader_class> HD_directx11_shader_compiler::compile_hlsl(
-		V_string name,
-		V_string src_content,
+		const G_string& name,
+		const G_string& src_content,
 		TG_span<F_shader_kernel_desc> kernel_descs
 	) {
 
@@ -30,8 +30,8 @@ namespace nrhi {
 			{
 			case E_shader_type::VERTEX:
 				hr = D3DCompile(
-					src_content->data(),
-					src_content->size() * sizeof(char),
+					src_content.data(),
+					src_content.size() * sizeof(char),
 					(name + "::" + blob_desc.name).data(),
 					0,
 					0,
@@ -53,8 +53,8 @@ namespace nrhi {
 				break;
 			case E_shader_type::PIXEL:
 				hr = D3DCompile(
-					src_content->data(),
-					src_content->size() * sizeof(char),
+					src_content.data(),
+					src_content.size() * sizeof(char),
 					(name + "::" + blob_desc.name).data(),
 					0,
 					0,
@@ -76,8 +76,8 @@ namespace nrhi {
 				break;
 			case E_shader_type::COMPUTE:
 				hr = D3DCompile(
-					src_content->data(),
-					src_content->size() * sizeof(char),
+					src_content.data(),
+					src_content.size() * sizeof(char),
 					(name + "::" + blob_desc.name).data(),
 					0,
 					0,
