@@ -108,6 +108,20 @@ namespace nrhi {
             const F_resource_view_desc& desc
         );
 
+	public:
+		static U_srv_handle create_srv(
+			TKPA_valid<A_resource> resource_p
+		);
+		static U_uav_handle create_uav(
+			TKPA_valid<A_resource> resource_p
+		);
+		static U_rtv_handle create_rtv(
+			TKPA_valid<A_resource> resource_p
+		);
+		static U_dsv_handle create_dsv(
+			TKPA_valid<A_resource> resource_p
+		);
+
     };
 
 }

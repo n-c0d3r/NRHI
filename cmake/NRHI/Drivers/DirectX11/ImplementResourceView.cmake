@@ -22,6 +22,10 @@ NRHI_FunctionHelper_CreateFunctionClass(
     ADDITIONAL_CODE
         ""
     VALUES
+        "create" "TU<A_resource_view>(
+            TKPA_valid<A_device> device_p,
+            const F_resource_view_desc& desc
+        )"
         "create_srv" "U_srv_handle(
             TKPA_valid<A_device> device_p,
             const F_resource_view_desc& desc
@@ -37,6 +41,18 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "create_dsv" "U_dsv_handle(
             TKPA_valid<A_device> device_p,
             const F_resource_view_desc& desc
+        )"
+        "create_srv" "U_srv_handle(
+            TKPA_valid<A_resource> resource_p
+        )"
+        "create_uav" "U_uav_handle(
+            TKPA_valid<A_resource> resource_p
+        )"
+        "create_rtv" "U_rtv_handle(
+            TKPA_valid<A_resource> resource_p
+        )"
+        "create_dsv" "U_dsv_handle(
+            TKPA_valid<A_resource> resource_p
         )"
 )
 

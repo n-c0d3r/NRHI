@@ -39,6 +39,27 @@ namespace nrhi {
 
 
 
+	TU<A_resource_view> HD_directx11_resource_view::create(
+		TKPA_valid<A_device> device_p,
+		const F_resource_view_desc& desc
+	){
+
+		switch(desc.type) {
+		case E_resource_view_type::SRV:
+			return { TU<F_directx11_shader_resource_view>()(device_p, desc) };
+			break;
+		case E_resource_view_type::UAV:
+			return { TU<F_directx11_unordered_access_view>()(device_p, desc) };
+			break;
+		case E_resource_view_type::RTV:
+			return { TU<F_directx11_render_target_view>()(device_p, desc) };
+			break;
+		case E_resource_view_type::DSV:
+			return { TU<F_directx11_depth_stencil_view>()(device_p, desc) };
+			break;
+		}
+	}
+
     U_srv_handle HD_directx11_resource_view::create_srv(
         TKPA_valid<A_device> device_p,
         const F_resource_view_desc& desc
@@ -67,5 +88,58 @@ namespace nrhi {
 
 		return { TU<F_directx11_depth_stencil_view>()(device_p, desc) };
     }
+
+	U_srv_handle HD_directx11_resource_view::create_srv(
+		TKPA_valid<A_resource> resource_p
+	) {
+
+		return {
+			TU<F_directx11_shader_resource_view>()(
+				resource_p->device_p(),
+				F_resource_view_desc {
+					.resource_p = resource_p
+				}
+			)
+		};
+	}
+	U_uav_handle HD_directx11_resource_view::create_uav(
+		TKPA_valid<A_resource> resource_p
+	) {
+
+		return {
+			TU<F_directx11_unordered_access_view>()(
+				resource_p->device_p(),
+				F_resource_view_desc {
+					.resource_p = resource_p
+				}
+			)
+		};
+	}
+	U_rtv_handle HD_directx11_resource_view::create_rtv(
+		TKPA_valid<A_resource> resource_p
+	) {
+
+		return {
+			TU<F_directx11_render_target_view>()(
+				resource_p->device_p(),
+				F_resource_view_desc {
+					.resource_p = resource_p
+				}
+			)
+		};
+	}
+	U_dsv_handle HD_directx11_resource_view::create_dsv(
+		TKPA_valid<A_resource> resource_p
+	) {
+
+		return {
+			TU<F_directx11_depth_stencil_view>()(
+				resource_p->device_p(),
+				F_resource_view_desc {
+					.resource_p = resource_p
+				}
+			)
+		};
+	}
 
 }
