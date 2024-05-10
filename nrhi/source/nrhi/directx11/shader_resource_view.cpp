@@ -95,6 +95,7 @@ namespace nrhi {
 			d3d11_srv_desc.Texture2DArray.FirstArraySlice = desc.index;
 			d3d11_srv_desc.Texture2DArray.ArraySize = desc.count;
 			d3d11_srv_desc.Texture2DArray.MostDetailedMip = desc.base_mip_level;
+			NCPP_ASSERT(desc.count) << "texture 2d array size can't be zero";
 			break;
 		case E_resource_type::TEXTURE_CUBE:
 			d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;

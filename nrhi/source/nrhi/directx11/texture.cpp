@@ -393,6 +393,8 @@ namespace nrhi {
 		}
 		d3d11_texture_2d_array_desc.MiscFlags = 0;
 
+		NCPP_ASSERT(desc_.array_size) << "texture 2d array size can't be zero";
+
 		D3D11_SUBRESOURCE_DATA* d3d11_subresource_data_p = 0;
 		if(initial_data_.is_valid()) {
 
