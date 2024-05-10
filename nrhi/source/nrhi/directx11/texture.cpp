@@ -393,14 +393,22 @@ namespace nrhi {
 		}
 		d3d11_texture_2d_array_desc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
 
-		D3D11_SUBRESOURCE_DATA d3d11_subresource_data;
 		D3D11_SUBRESOURCE_DATA* d3d11_subresource_data_p = 0;
 		if(initial_data_.is_valid()) {
 
-			d3d11_subresource_data.pSysMem = initial_data_.data_p;
-			d3d11_subresource_data.SysMemPitch = desc_.width * desc_.stride;
-			d3d11_subresource_data.SysMemSlicePitch = desc_.width * desc_.height * desc_.stride;
-			d3d11_subresource_data_p = &d3d11_subresource_data;
+			d3d11_subresource_data_p = new D3D11_SUBRESOURCE_DATA[desc_.array_size];
+			u32 sys_mem_pitch = desc_.width * desc_.stride;
+			u32 sys_mem_slice_pitch = desc_.width * desc_.height * desc_.stride;
+			for(u32 i = 0; i < desc_.array_size; ++i) {
+
+				auto& current = d3d11_subresource_data_p[i];
+				current.pSysMem = (void*)(
+					(u8*)(initial_data_.data_p)
+					+ sys_mem_slice_pitch * i
+				);
+				current.SysMemPitch = sys_mem_pitch;
+				current.SysMemSlicePitch = sys_mem_slice_pitch;
+			}
 		}
 
 		d3d11_device_p->CreateTexture2D(
@@ -408,6 +416,11 @@ namespace nrhi {
 			d3d11_subresource_data_p,
 			&d3d11_texture_2d_array_p
 		);
+
+		if(initial_data_.is_valid()) {
+
+			delete[] d3d11_subresource_data_p;
+		}
 
 		NCPP_ASSERT(d3d11_texture_2d_array_p) << "texture 2d array creation failed";
 
@@ -501,14 +514,21 @@ namespace nrhi {
 		}
 		d3d11_texture_cube_desc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
 
-		D3D11_SUBRESOURCE_DATA d3d11_subresource_data;
-		D3D11_SUBRESOURCE_DATA* d3d11_subresource_data_p = 0;
+		D3D11_SUBRESOURCE_DATA d3d11_subresource_data_p[6];
 		if(initial_data_.is_valid()) {
 
-			d3d11_subresource_data.pSysMem = initial_data_.data_p;
-			d3d11_subresource_data.SysMemPitch = desc_.width * desc_.stride;
-			d3d11_subresource_data.SysMemSlicePitch = desc_.width * desc_.height * desc_.stride;
-			d3d11_subresource_data_p = &d3d11_subresource_data;
+			u32 sys_mem_pitch = desc_.width * desc_.stride;
+			u32 sys_mem_slice_pitch = desc_.width * desc_.height * desc_.stride;
+			for(u32 i = 0; i < 6; ++i) {
+
+				auto& current = d3d11_subresource_data_p[i];
+				current.pSysMem = (void*)(
+					(u8*)(initial_data_.data_p)
+					+ sys_mem_slice_pitch * i
+				);
+				current.SysMemPitch = sys_mem_pitch;
+				current.SysMemSlicePitch = sys_mem_slice_pitch;
+			}
 		}
 
 		d3d11_device_p->CreateTexture2D(
