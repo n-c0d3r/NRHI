@@ -395,10 +395,9 @@ namespace nrhi {
 
 		NCPP_ASSERT(desc_.array_size) << "texture 2d array size can't be zero";
 
-		D3D11_SUBRESOURCE_DATA* d3d11_subresource_data_p = 0;
+		TG_vector<D3D11_SUBRESOURCE_DATA> d3d11_subresource_data_p(desc_.array_size);
 		if(initial_data_.is_valid()) {
 
-			d3d11_subresource_data_p = (D3D11_SUBRESOURCE_DATA*)malloc(sizeof(D3D11_SUBRESOURCE_DATA) * desc_.array_size);
 			u32 sys_mem_pitch = desc_.width * desc_.stride;
 			u32 sys_mem_slice_pitch = desc_.width * desc_.height * desc_.stride;
 			for(u32 i = 0; i < desc_.array_size; ++i) {
@@ -415,14 +414,9 @@ namespace nrhi {
 
 		d3d11_device_p->CreateTexture2D(
 			&d3d11_texture_2d_array_desc,
-			d3d11_subresource_data_p,
+			d3d11_subresource_data_p.data(),
 			&d3d11_texture_2d_array_p
 		);
-
-		if(initial_data_.is_valid()) {
-
-			free(d3d11_subresource_data_p);
-		}
 
 		NCPP_ASSERT(d3d11_texture_2d_array_p) << "texture 2d array creation failed";
 
