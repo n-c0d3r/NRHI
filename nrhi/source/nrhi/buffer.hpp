@@ -90,7 +90,7 @@ namespace nrhi {
 
             return create(
                 device_p,
-                { .system_mem_p = (void*)data.data() },
+                { .data_p = (void*)data.data() },
 				(u32)(data.size()),
 				(u32)(sizeof(F_element__)),
                 bind_flags,
@@ -120,7 +120,7 @@ namespace nrhi {
 
             return create(
                 device_p,
-                { .system_mem_p = (void*)data.data() },
+                { .data_p = (void*)data.data() },
 				(u32)(data.size()),
                 format,
                 bind_flags,
@@ -169,7 +169,7 @@ namespace nrhi {
 
             return create_structured(
                 device_p,
-                { .system_mem_p = (void*)data.data() },
+                { .data_p = (void*)data.data() },
 				(u32)(data.size()),
 				(u32)(sizeof(F_element__)),
                 bind_flags,
@@ -196,7 +196,7 @@ namespace nrhi {
 
 			return create_indirect(
 				device_p,
-				{ .system_mem_p = (void*)(data.data()) },
+				{ .data_p = (void*)(data.data()) },
 				(u32)(data.size()),
 				bind_flags,
 				heap_type
@@ -246,7 +246,7 @@ namespace nrhi {
 
 			return rebuild(
 				buffer_p,
-				{ .system_mem_p = (void*)data.data() },
+				{ .data_p = (void*)data.data() },
 				(u32)(data.size()),
 				(u32)(sizeof(F_element__)),
 				bind_flags,
@@ -276,7 +276,7 @@ namespace nrhi {
 
 			return rebuild(
 				buffer_p,
-				{ .system_mem_p = (void*)data.data() },
+				{ .data_p = (void*)data.data() },
 				(u32)(data.size()),
 				format,
 				bind_flags,
@@ -325,7 +325,7 @@ namespace nrhi {
 
 			return rebuild_structured(
 				structured_buffer_p,
-				{ .system_mem_p = (void*)data.data() },
+				{ .data_p = (void*)data.data() },
 				(u32)(data.size()),
 				(u32)(sizeof(F_element__)),
 				bind_flags,
@@ -352,7 +352,7 @@ namespace nrhi {
 
 			return rebuild_indirect(
 				indirect_buffer_p,
-				{ .system_mem_p = (void*)(data.data()) },
+				{ .data_p = (void*)(data.data()) },
 				(u32)(data.size()),
 				bind_flags,
 				heap_type

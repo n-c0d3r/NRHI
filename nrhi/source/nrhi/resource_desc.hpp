@@ -52,11 +52,11 @@ namespace nrhi {
 
     struct F_initial_resource_data {
 
-        void* system_mem_p = 0;
+        void* data_p = 0;
         u32 system_mem_pitch = 0;
         u32 system_mem_slice_pitch = 0;
 
-        NCPP_FORCE_INLINE b8 is_valid() const noexcept { return system_mem_p; }
+        NCPP_FORCE_INLINE b8 is_valid() const noexcept { return data_p; }
 
     };
 
