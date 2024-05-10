@@ -391,7 +391,7 @@ namespace nrhi {
 			d3d11_texture_2d_array_desc.Usage = D3D11_USAGE_STAGING;
 			break;
 		}
-		d3d11_texture_2d_array_desc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
+		d3d11_texture_2d_array_desc.MiscFlags = 0;
 
 		D3D11_SUBRESOURCE_DATA* d3d11_subresource_data_p = 0;
 		if(initial_data_.is_valid()) {
