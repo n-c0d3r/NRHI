@@ -93,11 +93,24 @@ namespace nrhi {
 		TKPA_valid<A_resource> resource_p
 	) {
 
+		u32 count = 0;
+
+		switch(resource_p->desc().type) {
+
+		case E_resource_type::TEXTURE_2D_ARRAY:
+			count = resource_p->desc().array_size;
+			break;
+		case E_resource_type::TEXTURE_CUBE:
+			count = 6;
+			break;
+		};
+
 		return {
 			TU<F_directx11_shader_resource_view>()(
 				resource_p->device_p(),
 				F_resource_view_desc {
-					.resource_p = resource_p
+					.resource_p = resource_p,
+					.count = count
 				}
 			)
 		};
@@ -106,11 +119,24 @@ namespace nrhi {
 		TKPA_valid<A_resource> resource_p
 	) {
 
+		u32 count = 0;
+
+		switch(resource_p->desc().type) {
+
+		case E_resource_type::TEXTURE_2D_ARRAY:
+			count = resource_p->desc().array_size;
+			break;
+		case E_resource_type::TEXTURE_CUBE:
+			count = 6;
+			break;
+		};
+
 		return {
 			TU<F_directx11_unordered_access_view>()(
 				resource_p->device_p(),
 				F_resource_view_desc {
-					.resource_p = resource_p
+					.resource_p = resource_p,
+					.count = count
 				}
 			)
 		};
@@ -119,11 +145,24 @@ namespace nrhi {
 		TKPA_valid<A_resource> resource_p
 	) {
 
+		u32 count = 0;
+
+		switch(resource_p->desc().type) {
+
+		case E_resource_type::TEXTURE_2D_ARRAY:
+			count = resource_p->desc().array_size;
+			break;
+		case E_resource_type::TEXTURE_CUBE:
+			count = 6;
+			break;
+		};
+
 		return {
 			TU<F_directx11_render_target_view>()(
 				resource_p->device_p(),
 				F_resource_view_desc {
-					.resource_p = resource_p
+					.resource_p = resource_p,
+					.count = count
 				}
 			)
 		};
@@ -132,11 +171,24 @@ namespace nrhi {
 		TKPA_valid<A_resource> resource_p
 	) {
 
+		u32 count = 0;
+
+		switch(resource_p->desc().type) {
+
+		case E_resource_type::TEXTURE_2D_ARRAY:
+			count = resource_p->desc().array_size;
+			break;
+		case E_resource_type::TEXTURE_CUBE:
+			count = 6;
+			break;
+		};
+
 		return {
 			TU<F_directx11_depth_stencil_view>()(
 				resource_p->device_p(),
 				F_resource_view_desc {
-					.resource_p = resource_p
+					.resource_p = resource_p,
+					.count = count
 				}
 			)
 		};
