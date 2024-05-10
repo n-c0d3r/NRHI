@@ -398,7 +398,7 @@ namespace nrhi {
 		D3D11_SUBRESOURCE_DATA* d3d11_subresource_data_p = 0;
 		if(initial_data_.is_valid()) {
 
-			d3d11_subresource_data_p = new D3D11_SUBRESOURCE_DATA[desc_.array_size];
+			d3d11_subresource_data_p = (D3D11_SUBRESOURCE_DATA*)malloc(sizeof(D3D11_SUBRESOURCE_DATA) * desc_.array_size);
 			u32 sys_mem_pitch = desc_.width * desc_.stride;
 			u32 sys_mem_slice_pitch = desc_.width * desc_.height * desc_.stride;
 			for(u32 i = 0; i < desc_.array_size; ++i) {
@@ -421,7 +421,7 @@ namespace nrhi {
 
 		if(initial_data_.is_valid()) {
 
-			delete[] d3d11_subresource_data_p;
+			free(d3d11_subresource_data_p);
 		}
 
 		NCPP_ASSERT(d3d11_texture_2d_array_p) << "texture 2d array creation failed";
