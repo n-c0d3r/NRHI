@@ -91,6 +91,7 @@ namespace nrhi {
 			d3d11_uav_desc.Texture2DArray.MipSlice = desc.base_mip_level;
 			d3d11_uav_desc.Texture2DArray.FirstArraySlice = desc.index;
 			d3d11_uav_desc.Texture2DArray.ArraySize = desc.count;
+			NCPP_ASSERT(desc.count) << "texture 2d array size can't be zero";
 			break;
 		default:
 			NCPP_ASSERT(false) << "invalid resource type";

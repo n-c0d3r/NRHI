@@ -90,7 +90,7 @@ namespace nrhi {
 			d3d11_srv_desc.Texture3D.MostDetailedMip = desc.base_mip_level;
 			break;
 		case E_resource_type::TEXTURE_2D_ARRAY:
-			d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+			d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
 			d3d11_srv_desc.Texture2DArray.MipLevels = resource_desc.mip_level_count;
 			d3d11_srv_desc.Texture2DArray.FirstArraySlice = desc.index;
 			d3d11_srv_desc.Texture2DArray.ArraySize = desc.count;
