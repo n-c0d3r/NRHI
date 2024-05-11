@@ -196,6 +196,7 @@ target_link_libraries(nrhi
         ncpp
         nmath
         nsurface
+        spirv-cross-cpp
 )
 
 if(NRHI_DRIVER_DIRECTX_12)
@@ -254,6 +255,7 @@ add_dependencies(nrhi
     ncpp
     nmath
     nsurface
+    spirv-cross-cpp
 )
 
 
