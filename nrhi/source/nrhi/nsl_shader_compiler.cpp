@@ -140,9 +140,19 @@ namespace nrhi {
 
 					if (
 						is_found
-						&& (
-							(src_content[j] == ' ')
-							|| (src_content[j] == '(')
+						&& !(
+							(
+								(src_content[j] >= '0')
+								&& (src_content[j] <= '9')
+							)
+							|| (
+								(src_content[j] >= 'a')
+								&& (src_content[j] <= 'z')
+							)
+							|| (
+								(src_content[j] >= 'A')
+								&& (src_content[j] <= 'Z')
+							)
 						)
 					)
 					{

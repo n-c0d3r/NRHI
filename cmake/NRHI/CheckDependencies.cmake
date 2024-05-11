@@ -58,20 +58,6 @@ if(NOT TARGET spirv-cross)
     endif()
 endif()
 
-#####################################################################################
-#   DirectXShaderCompiler checking
-#####################################################################################
-#if(NOT TARGET spirv-cross)
-    if(NOT EXISTS "${NRHI_SUBMODULES_DIR}/DirectXShaderCompiler")
-        if(WIN32)
-            execute_process(COMMAND "${NRHI_SCRIPTS_DIR}/check_submodules.bat")
-        elseif(UNIX)
-            execute_process(COMMAND "${NRHI_SCRIPTS_DIR}/check_submodules.sh")
-        endif()
-        execute_process(COMMAND "${NRHI_SUBMODULES_DIR}/DirectXShaderCompiler/external")
-    endif()
-#endif()
-
 
 
 message(STATUS "<NRHI::CheckDependencies> Check dependencies done")
