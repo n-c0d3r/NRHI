@@ -35,6 +35,7 @@
 
 #include <nrhi/resource_view_type.hpp>
 #include <nrhi/resource_type.hpp>
+#include <nrhi/format.hpp>
 
 #pragma endregion
 
