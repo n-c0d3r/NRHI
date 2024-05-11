@@ -37,4 +37,13 @@ endif()
 
 
 
+#####################################################################################
+#   Add DirectXShaderCompiler subdirectory
+#####################################################################################
+#if(NOT TARGET spirv-cross)
+    add_subdirectory("${NRHI_SUBMODULES_DIR}/DirectXShaderCompiler" "${NRHI_BINARY_DIR}/submodules/DirectXShaderCompiler")
+#endif()
+
+
+
 message(STATUS "<NRHI::ConfigureDependencies> Configure dependencies done")
