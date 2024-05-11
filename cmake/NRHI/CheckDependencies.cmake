@@ -45,6 +45,19 @@ if(NOT TARGET nsurface)
     endif()    
 endif()
 
+#####################################################################################
+#   NShaderConductor checking
+#####################################################################################
+if(NOT TARGET ShaderConductor)
+    if(NOT EXISTS "${NRHI_SUBMODULES_DIR}/NShaderConductor")
+        if(WIN32)
+            execute_process(COMMAND "${NRHI_SCRIPTS_DIR}/check_submodules.bat")
+        elseif(UNIX)
+            execute_process(COMMAND "${NRHI_SCRIPTS_DIR}/check_submodules.sh")
+        endif()
+    endif()
+endif()
+
 
 
 message(STATUS "<NRHI::CheckDependencies> Check dependencies done")
