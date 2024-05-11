@@ -7,6 +7,6 @@
 [submodule "submodules/NSurface"]
 	path = submodules/NSurface
 	url = https://github.com/n-c0d3r/NSurface
-[submodule "submodules/NShaderConductor"]
-	path = submodules/NShaderConductor
-	url = https://github.com/n-c0d3r/NShaderConductor
+[submodule "submodules/SPIRV-Cross"]
+	path = submodules/SPIRV-Cross
+	url = https://github.com/KhronosGroup/SPIRV-Cross

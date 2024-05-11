@@ -28,19 +28,4 @@ endif()
 
 
 
-#####################################################################################
-#   Add NShaderConductor subdirectory
-#####################################################################################
-if(NOT TARGET ShaderConductor)
-    add_subdirectory("${NRHI_SUBMODULES_DIR}/NShaderConductor" "${NRHI_BINARY_DIR}/submodules/NShaderConductor")
-endif()
-if(MSVC)
-    target_compile_options(LLVMDxilDia
-        PRIVATE
-            "/WX-"
-    )
-endif()
-
-
-
 message(STATUS "<NRHI::ConfigureDependencies> Configure dependencies done")

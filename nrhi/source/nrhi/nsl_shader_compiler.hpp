@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/shader_compiler_base.hpp
+/** @file nrhi/nsl_shader_compiler.hpp
 *
-*   Implement shader compiler base.
+*   Implement nsl shader compiler.
 */
 
 
@@ -33,8 +33,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/shader_type.hpp>
-#include <nrhi/shader_blob_desc.hpp>
+#include <nrhi/shader_compiler_base.hpp>
+#include <nrhi/shader_class_base.hpp>
 
 #pragma endregion
 
@@ -44,5 +44,52 @@ namespace nrhi {
 
 	class A_shader;
 	class A_shader_class;
+
+
+
+	struct F_nsl_include_blob {
+
+	};
+
+
+
+	class NRHI_API F_nsl_shader_compiler {
+
+	public:
+		F_nsl_shader_compiler();
+		~F_nsl_shader_compiler();
+
+	public:
+		NCPP_DISABLE_COPY(F_nsl_shader_compiler);
+
+	protected:
+		virtual F_nsl_include_blob load_include_blob(const G_string& abs_path);
+		virtual eastl::optional<G_string> process_source(
+			const G_string& src_content,
+			const G_string& abs_path,
+			const TG_span<F_shader_kernel_desc>& kernel_descs,
+			u32 kernel_index
+		);
+		virtual TU<A_shader_blob> compile_processed_source(
+			const G_string& processed_src_content,
+			const G_string& abs_path,
+			const TG_span<F_shader_kernel_desc>& kernel_descs,
+			u32 kernel_index
+		);
+		virtual TU<A_shader_blob> compile_source(
+			const G_string& src_content,
+			const G_string& abs_path,
+			const TG_span<F_shader_kernel_desc>& kernel_descs,
+			u32 kernel_index
+		);
+
+	public:
+		TU<A_shader_class> compile(
+			const G_string& src_content,
+			const G_string& abs_path,
+			const TG_span<F_shader_kernel_desc>& kernel_descs
+		);
+
+	};
 
 }

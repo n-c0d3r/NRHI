@@ -196,7 +196,6 @@ target_link_libraries(nrhi
         ncpp
         nmath
         nsurface
-        ShaderConductor
 )
 
 if(NRHI_DRIVER_DIRECTX_12)
@@ -241,7 +240,7 @@ endif()
 
 if(${NRHI_DLL})
     target_compile_definitions(nrhi
-            PRIVATE
+        PRIVATE
             -DNRHI_DLL_IMPLEMENTATION
     )
 endif()
@@ -255,7 +254,6 @@ add_dependencies(nrhi
     ncpp
     nmath
     nsurface
-    ShaderConductor
 )
 
 
