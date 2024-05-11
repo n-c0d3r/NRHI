@@ -70,13 +70,15 @@ namespace nrhi {
 			const TG_span<F_shader_kernel_desc>& kernel_descs,
 			u32 kernel_index
 		);
-		virtual TU<A_shader_blob> compile_processed_source(
+
+	private:
+		TU<A_shader_blob> compile_processed_source(
 			const G_string& processed_src_content,
 			const G_string& abs_path,
 			const TG_span<F_shader_kernel_desc>& kernel_descs,
 			u32 kernel_index
 		);
-		virtual TU<A_shader_blob> compile_source(
+		TU<A_shader_blob> compile_source(
 			const G_string& src_content,
 			const G_string& abs_path,
 			const TG_span<F_shader_kernel_desc>& kernel_descs,

@@ -190,6 +190,7 @@ namespace nrhi {
 		// kernel location is not found, return null opt
 		return eastl::nullopt;
 	}
+
 	TU<A_shader_blob> F_nsl_shader_compiler::compile_processed_source(
 		const G_string& processed_src_content,
 		const G_string& abs_path,
@@ -204,6 +205,21 @@ namespace nrhi {
 		const TG_span<F_shader_kernel_desc>& kernel_descs,
 		u32 kernel_index
 	) {
+		eastl::optional<G_string> processed_src_content_opt = process_source(
+			src_content,
+			abs_path,
+			kernel_descs,
+			kernel_index
+		);
+
+		if(processed_src_content_opt)
+			return compile_processed_source(
+				processed_src_content_opt.value(),
+				abs_path,
+				kernel_descs,
+				kernel_index
+			);
+
 		return null;
 	}
 
