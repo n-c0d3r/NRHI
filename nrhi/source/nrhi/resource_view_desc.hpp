@@ -66,9 +66,8 @@ namespace nrhi {
 			u32 index;
 		};
 
-		union {
-			u32 count = 0;
-		};
+		u32 count = 0;
+		E_format overrided_format = E_format::NONE;
 
     };
 

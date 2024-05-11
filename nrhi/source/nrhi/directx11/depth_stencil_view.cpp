@@ -62,9 +62,13 @@ namespace nrhi {
 
 		NCPP_ASSERT(target_resource_type == E_resource_type::TEXTURE_2D) << "only support texture 2d";
 
+		E_format target_format = desc.overrided_format;
+		if(target_format == E_format::NONE)
+			target_format = resource_desc.format;
+
 		D3D11_DEPTH_STENCIL_VIEW_DESC d3d11_dsv_desc;
 		memset(&d3d11_dsv_desc, 0, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
-		d3d11_dsv_desc.Format = DXGI_FORMAT(resource_desc.format);
+		d3d11_dsv_desc.Format = DXGI_FORMAT(target_format);
 		d3d11_dsv_desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 		d3d11_dsv_desc.Texture2D.MipSlice = desc.target_mip_level;
 

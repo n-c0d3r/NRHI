@@ -60,9 +60,13 @@ namespace nrhi {
 		if(target_resource_type == E_resource_type::NONE)
 			target_resource_type = resource_desc.type;
 
+		E_format target_format = desc.overrided_format;
+		if(target_format == E_format::NONE)
+			target_format = resource_desc.format;
+
         D3D11_SHADER_RESOURCE_VIEW_DESC d3d11_srv_desc;
         memset(&d3d11_srv_desc, 0, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
-        d3d11_srv_desc.Format = DXGI_FORMAT(resource_desc.format);
+        d3d11_srv_desc.Format = DXGI_FORMAT(target_format);
         switch (target_resource_type) {
 		case E_resource_type::BUFFER:
 			d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
