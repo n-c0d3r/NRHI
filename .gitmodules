@@ -7,3 +7,6 @@
 [submodule "submodules/NSurface"]
 	path = submodules/NSurface
 	url = https://github.com/n-c0d3r/NSurface
+[submodule "submodules/NShaderConductor"]
+	path = submodules/NShaderConductor
+	url = https://github.com/n-c0d3r/NShaderConductor

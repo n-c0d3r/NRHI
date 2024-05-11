@@ -245,17 +245,13 @@ int main() {
 		// shader kernel descriptors (each kernel has 1 entry point function and is compiled to 1 shader blob)
 		NCPP_INIL_SPAN(
 			F_shader_kernel_desc {
-				.blob_desc = {
-					.name = "vmain",
-					.type = E_shader_type::VERTEX,
-					.input_assembler_desc = input_assembler_desc
-				}
+				.name = "vmain",
+				.type = E_shader_type::VERTEX,
+				.input_assembler_desc = input_assembler_desc
 			},
 			F_shader_kernel_desc {
-				.blob_desc = {
-					.name = "pmain",
-					.type = E_shader_type::PIXEL
-				}
+				.name = "pmain",
+				.type = E_shader_type::PIXEL
 			}
 		)
 	);

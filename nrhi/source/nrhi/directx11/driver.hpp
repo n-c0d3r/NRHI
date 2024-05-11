@@ -46,12 +46,6 @@ namespace nrhi {
     public:
         static constexpr b8 is_support_descriptor_management() { return false; }
         static constexpr b8 is_support_advanced_resource() { return false; }
-        static constexpr b8 is_support_direct_constants() { return false; }
-		static constexpr b8 is_support_constant_buffer() { return true; }
-		static constexpr b8 is_support_vertex_buffer() { return true; }
-		static constexpr b8 is_support_instance_buffer() { return true; }
-        static constexpr b8 is_support_multiple_vertex_buffers() { return true; }
-        static constexpr b8 is_support_multiple_instance_buffers() { return true; }
 
     };
 

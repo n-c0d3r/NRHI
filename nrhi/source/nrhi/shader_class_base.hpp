@@ -49,12 +49,7 @@ namespace nrhi {
 
 
 
-	struct F_shader_kernel_desc {
-
-		F_shader_blob_desc blob_desc;
-		TG_vector<eastl::pair<G_string, G_string>> defines;
-
-	};
+	using F_shader_kernel_desc = F_shader_blob_desc;
 
 	struct F_shader_class_desc {
 
