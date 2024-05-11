@@ -75,6 +75,8 @@ namespace nrhi {
 			b8 is_in_comment_2 = false; // for multiple line comment
 			b8 is_in_comment = false;
 
+			char char8 = ' ';
+
 		public:
 			void update(const F_search_state& prev_state, char new_character);
 

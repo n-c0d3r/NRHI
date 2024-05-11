@@ -32,6 +32,8 @@ namespace nrhi {
 			|| (new_character == '\t')
 		);
 
+		char8 = new_character;
+
 		// update is in str
 		if(!is_in_comment)
 		{
@@ -108,142 +110,42 @@ namespace nrhi {
 		G_string parsed_src_content;
 		parsed_src_content.reserve(src_length);
 
-		// essential variables to detect str, comments, and kernel name,...
-		b8 is_prev_variable_name_character = false;
-		b8 is_prev_close_parentheses = false;
-
-		b8 is_prev_star = false;
-		b8 is_prev_forwardslash = false;
-
-		b8 is_curr_variable_name_character = false;
-
-		b8 is_curr_star = false;
-		b8 is_curr_forwardslash = false;
-
-		b8 is_in_str_1 = false; // for ' string
-		b8 is_in_str_2 = false; // for " string
-		b8 is_in_str = false;
-		b8 is_in_comment_1 = false; // for single line comment
-		b8 is_in_comment_2 = false; // for multiple line comment
-		b8 is_in_comment = false;
+		// search states
+		F_search_state curr_state;
+		F_search_state prev_state;
 
 		// find kernel location
 		for(sz i = 0; i < src_length;) {
 
-			char current_char = src_content[i];
-
-			is_curr_variable_name_character = (
-				(
-					(current_char >= '0')
-					&& (current_char <= '9')
-				)
-				|| (
-					(current_char >= 'a')
-					&& (current_char <= 'z')
-				)
-				|| (
-					(current_char >= 'A')
-					&& (current_char <= 'Z')
-				)
-				|| (current_char == '_')
+			curr_state.update(
+				prev_state,
+				src_content[i]
 			);
-
-			is_curr_star = (current_char == '*');
-			is_curr_forwardslash = (current_char == '/');
-
-			// update is in str
-			if(!is_in_comment)
-			{
-				if(
-					!is_in_str
-					&& (current_char == '\'')
-				)
-					is_in_str_1 = true;
-				else if (
-					is_in_str_1
-					&& (current_char == '\'')
-				)
-					is_in_str_1 = false;
-
-				if(
-					!is_in_str
-					&& (current_char == '"')
-				)
-					is_in_str_2 = true;
-				else if (
-					is_in_str_2
-					&& (current_char == '"')
-				)
-					is_in_str_2 = false;
-
-				is_in_str = (is_in_str_1 || is_in_str_2);
-			}
-
-			// update is in comment
-			if(!is_in_str)
-			{
-				if(
-					!is_in_comment
-						&& is_prev_forwardslash
-						&& is_curr_forwardslash
-					)
-					is_in_str_1 = true;
-				else if (
-					is_in_str_1
-						&& (current_char == '\n')
-					)
-					is_in_str_1 = false;
-
-				if(
-					!is_in_comment
-						&& is_prev_forwardslash
-						&& is_curr_star
-					)
-					is_in_str_2 = true;
-				else if (
-					is_in_str_2
-						&& is_prev_star
-						&& is_curr_forwardslash
-					)
-					is_in_str_2 = false;
-
-				is_in_comment = (is_in_comment_1 || is_in_comment_2);
-			}
 
 			// check substring
 			if(
-				(!is_in_str)
-				&& (!is_in_comment)
-				&& (!is_prev_variable_name_character)
-				&& is_curr_variable_name_character
+				!(curr_state.is_in_str)
+				&& !(curr_state.is_in_comment)
+				&& !(prev_state.is_variable_name_character)
+				&& curr_state.is_variable_name_character
 			)
 			{
 				if ((i + macro_name_length + 1) <= src_length)
 				{
+					// temp search states
+					F_search_state temp_curr_state = curr_state;
+					F_search_state temp_prev_state = prev_state;
+
 					b8 is_found = true;
 					sz j = i;
 					sz j_end = i + macro_name_length;
 					for (; j < j_end; ++j)
 					{
-						is_prev_variable_name_character = (
-							(
-								(src_content[j] >= '0')
-								&& (src_content[j] <= '9')
-							)
-							|| (
-								(src_content[j] >= 'a')
-								&& (src_content[j] <= 'z')
-							)
-							|| (
-								(src_content[j] >= 'A')
-								&& (src_content[j] <= 'Z')
-							)
-							|| (src_content[j] == '_')
+						temp_curr_state.update(
+							temp_prev_state,
+							src_content[j]
 						);
-						is_prev_star = (src_content[j] == '*');
-
-						is_prev_forwardslash = (src_content[j] == '/');
-						is_prev_close_parentheses = (src_content[j] == ')');
+						temp_prev_state = temp_curr_state;
 
 						if (src_content[j] != macro_name[j - i])
 						{
@@ -253,60 +155,44 @@ namespace nrhi {
 						}
 					}
 
+					temp_curr_state.update(
+						temp_prev_state,
+						src_content[j]
+					);
+
 					if (
 						is_found
-						&& !(
-							(
-								(src_content[j] >= '0')
-								&& (src_content[j] <= '9')
-							)
-							|| (
-								(src_content[j] >= 'a')
-								&& (src_content[j] <= 'z')
-							)
-							|| (
-								(src_content[j] >= 'A')
-								&& (src_content[j] <= 'Z')
-							)
-							|| (src_content[j] == '_')
-						)
+						&& !(temp_curr_state.is_variable_name_character)
 					)
 					{
+						curr_state = temp_prev_state;
+						prev_state = temp_prev_state;
 						parsed_src_content += macro_result;
+						i = j;
 					}
 					else
 					{
-						parsed_src_content += src_content.substr(i, j - i);
+						parsed_src_content.push_back(curr_state.char8);
+						++i;
+						prev_state = curr_state;
 					}
-
-					i = j;
 				}
 				else if ((i + macro_name_length) == src_length)
 				{
+					// temp search states
+					F_search_state temp_curr_state = curr_state;
+					F_search_state temp_prev_state = prev_state;
+
 					b8 is_found = true;
 					sz j = i;
 					sz j_end = i + macro_name_length;
 					for (; j < j_end; ++j)
 					{
-						is_prev_variable_name_character = (
-							(
-								(src_content[j] >= '0')
-								&& (src_content[j] <= '9')
-							)
-							|| (
-								(src_content[j] >= 'a')
-								&& (src_content[j] <= 'z')
-							)
-							|| (
-								(src_content[j] >= 'A')
-								&& (src_content[j] <= 'Z')
-							)
-							|| (src_content[j] == '_')
+						temp_curr_state.update(
+							temp_prev_state,
+							src_content[j]
 						);
-						is_prev_star = (src_content[j] == '*');
-
-						is_prev_forwardslash = (src_content[j] == '/');
-						is_prev_close_parentheses = (src_content[j] == ')');
+						temp_prev_state = temp_curr_state;
 
 						if (src_content[j] != macro_name[j - i])
 						{
@@ -318,66 +204,33 @@ namespace nrhi {
 
 					if (is_found)
 					{
+						curr_state = temp_prev_state;
+						prev_state = temp_prev_state;
 						parsed_src_content += macro_result;
+						i = j;
 					}
 					else
 					{
-						parsed_src_content += src_content.substr(i, j - i);
+						parsed_src_content.push_back(curr_state.char8);
+						++i;
+						prev_state = curr_state;
 					}
-
-					i = j;
 				}
 				else
 				{
-					parsed_src_content.push_back(current_char);
+					parsed_src_content.push_back(curr_state.char8);
 					++i;
-
-					is_prev_variable_name_character = (
-						(
-							(current_char >= '0')
-							&& (current_char <= '9')
-						)
-						|| (
-							(current_char >= 'a')
-							&& (current_char <= 'z')
-						)
-						|| (
-							(current_char >= 'A')
-							&& (current_char <= 'Z')
-						)
-						|| (current_char == '_')
-					);
-					is_prev_star = (current_char == '*');
-
-					is_prev_forwardslash = (current_char == '/');
-					is_prev_close_parentheses = (current_char == ')');
+					prev_state = curr_state;
 				}
 			}
 			else
 			{
-				parsed_src_content.push_back(current_char);
+				parsed_src_content.push_back(curr_state.char8);
 				++i;
-
-				is_prev_variable_name_character = (
-					(
-						(current_char >= '0')
-						&& (current_char <= '9')
-					)
-					|| (
-						(current_char >= 'a')
-						&& (current_char <= 'z')
-					)
-					|| (
-						(current_char >= 'A')
-						&& (current_char <= 'Z')
-					)
-					|| (current_char == '_')
-				);
-				is_prev_star = (current_char == '*');
-
-				is_prev_forwardslash = (current_char == '/');
-				is_prev_close_parentheses = (current_char == ')');
+				prev_state = curr_state;
 			}
+
+			prev_state = curr_state;
 		}
 
 		return parsed_src_content;
