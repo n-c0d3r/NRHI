@@ -53,6 +53,53 @@ namespace nrhi {
 
 
 
+	class NRHI_API H_nsl_utilities {
+
+	public:
+		struct NRHI_API F_search_state {
+
+			b8 is_variable_name_character = false;
+
+			b8 is_open_parentheses = false;
+			b8 is_close_parentheses = false;
+
+			b8 is_star = false;
+			b8 is_forwardslash = false;
+
+			b8 is_space = false;
+
+			b8 is_in_str_1 = false; // for ' string
+			b8 is_in_str_2 = false; // for " string
+			b8 is_in_str = false;
+			b8 is_in_comment_1 = false; // for single line comment
+			b8 is_in_comment_2 = false; // for multiple line comment
+			b8 is_in_comment = false;
+
+		public:
+			void update(const F_search_state& prev_state, char new_character);
+
+		};
+
+
+
+	public:
+		static G_string apply_variable_like_macro(
+			const G_string& src_content,
+			const G_string& macro_name,
+			const G_string& macro_result
+		);
+
+	public:
+		static G_string apply_function_like_macro(
+			const G_string& src_content,
+			const G_string& macro_name,
+			const eastl::function<G_string(const G_string&)>& macro_result_functor
+		);
+
+	};
+
+
+
 	class NRHI_API F_nsl_shader_compiler {
 
 	public:
@@ -63,8 +110,12 @@ namespace nrhi {
 		NCPP_DISABLE_COPY(F_nsl_shader_compiler);
 
 	protected:
-		virtual F_nsl_include_blob load_include_blob(const G_string& abs_path);
-		virtual eastl::optional<G_string> process_source(
+		virtual eastl::optional<F_nsl_include_blob> load_include_blob(
+			const G_string& path,
+			const TG_span<F_shader_kernel_desc>& kernel_descs,
+			u32 kernel_index
+		);
+		virtual G_string process_source(
 			const G_string& src_content,
 			const G_string& abs_path,
 			const TG_span<F_shader_kernel_desc>& kernel_descs,
