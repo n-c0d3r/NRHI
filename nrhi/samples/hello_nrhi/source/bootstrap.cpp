@@ -257,10 +257,10 @@ int main() {
 	);
 
 	auto ssc = H_nsl_utilities::remove_comments(
-		"abc gsdgsd //abc\n"
-		"abc"
+		"abfvdf abc (dg) abc gsdgsd //abc\n"
+		"abc   (agfakga \"as(gfadsg\" asfa ())"
 	);
-	H_nsl_utilities::find_macro_uses(
+	auto ssc2 = H_nsl_utilities::find_function_macro_uses(
 		ssc,
 		"abc"
 	);

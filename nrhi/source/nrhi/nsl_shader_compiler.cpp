@@ -4,22 +4,264 @@
 
 namespace nrhi {
 
-	TG_vector<sz> H_nsl_utilities::find_macro_uses(
+	void H_nsl_utilities::F_str_state::begin_check(char c) {
+
+		if(!value) {
+			if(c == '\'')
+			{
+				value_1 = true;
+			}
+			if(c == '"')
+			{
+				value_2 = true;
+			}
+		}
+		else {
+			if(c == '\'')
+			{
+				value_1 = false;
+			}
+			if(c == '"')
+			{
+				value_2 = false;
+			}
+		}
+
+		value = (value_1 || value_2);
+	}
+	void H_nsl_utilities::F_str_state::end_check() {
+
+		prev_value = value;
+		prev_value_1 = value_1;
+		prev_value_2 = value_2;
+	}
+
+
+
+	b8 H_nsl_utilities::is_variable_name_character(char c) {
+
+		return (
+			(c == '_')
+			|| (
+				(c >= '0')
+				&& (c <= '9')
+			)
+			|| (
+				(c >= 'a')
+				&& (c <= 'z')
+			)
+			|| (
+				(c >= 'A')
+				&& (c <= 'Z')
+			)
+		);
+	}
+
+	TG_vector<H_nsl_utilities::F_function_macro_use> H_nsl_utilities::find_function_macro_uses(
 		const G_string& src_content,
 		const G_string& macro_name
 	) {
+		TG_vector<F_function_macro_use> result;
 
-		TG_vector<sz> result;
+		sz src_length = src_content.length();
 
-		// find all potential locations
-		size_t pos = src_content.find(macro_name, 0);
-		while(pos != eastl::string::npos)
-		{
-			result.push_back(pos);
-			pos = src_content.find(macro_name, pos + 1);
+		if(src_length < macro_name.length())
+			return {};
+
+		sz end_check = src_length - macro_name.length() + 1;
+
+		F_str_state str_state;
+		for(sz i = 0; i < end_check;) {
+
+			str_state.begin_check(src_content[i]);
+
+			{
+				b8 is_march = true;
+				sz j = i;
+				sz j_end = i + macro_name.length();
+				for(; j < j_end; ++j)
+				{
+					if(src_content[j] != macro_name[j - i]) {
+
+						is_march = false;
+						break;
+					}
+				}
+
+				if(is_march) {
+
+					b8 is_left_correct = true;
+					b8 is_right_correct = true;
+
+					if(i > 0) {
+						is_left_correct = !is_variable_name_character(src_content[i - 1]);
+					}
+					if(j_end < src_length) {
+						is_right_correct = !is_variable_name_character(src_content[j_end]);
+					}
+
+					if(is_left_correct && is_right_correct) {
+
+						sz t = j_end;
+						for(; t < src_length; ++t)
+						{
+							if(
+								!(
+									(src_content[t] == ' ')
+									|| (src_content[t] == '\t')
+									|| (src_content[t] == '\n')
+									|| (src_content[t] == '\r')
+								)
+							) {
+								break;
+							}
+						}
+
+						if(t < src_length) {
+
+							if(src_content[t] == '(') {
+
+								i32 level = 1;
+
+								sz begin_arg_location = t;
+								sz end_arg_location = begin_arg_location;
+
+								F_str_state arg_str_state;
+
+								sz k = begin_arg_location + 1;
+								for(; k < src_length; ++k) {
+
+									arg_str_state.begin_check(src_content[k]);
+
+									if(
+										!(arg_str_state.value)
+										&& (src_content[k] == '(')
+									)
+										++level;
+
+									if(
+										!(arg_str_state.value)
+										&& (src_content[k] == ')')
+									)
+										--level;
+
+									if(level == 0) {
+
+										end_arg_location = k + 1;
+
+										result.push_back({
+											.begin_location = i,
+											.end_location = end_arg_location,
+											.arg = src_content.substr(begin_arg_location + 1, end_arg_location - begin_arg_location - 2)
+										});
+
+										i = end_arg_location;
+
+										goto NRHI_NEXT_CHARACTER_CHECK;
+									}
+
+									arg_str_state.end_check();
+								}
+							}
+						}
+					}
+				}
+			}
+
+			str_state.end_check();
+			++i;
+			continue;
+
+			NRHI_NEXT_CHARACTER_CHECK:
+			str_state.end_check();
 		}
 
 		return result;
+	}
+
+	TG_vector<sz> H_nsl_utilities::find_variable_macro_uses(
+		const G_string& src_content,
+		const G_string& macro_name
+	) {
+		TG_vector<sz> result;
+
+		sz src_length = src_content.length();
+
+		if(src_length < macro_name.length())
+			return {};
+
+		sz end_check = src_length - macro_name.length() + 1;
+
+		F_str_state str_state;
+		for(sz i = 0; i < end_check;) {
+
+			str_state.begin_check(src_content[i]);
+
+			{
+				b8 is_march = true;
+				sz j = i;
+				sz j_end = i + macro_name.length();
+				for(; j < j_end; ++j)
+				{
+					if(src_content[j] != macro_name[j - i]) {
+
+						is_march = false;
+						break;
+					}
+				}
+
+				if(is_march) {
+
+					b8 is_left_correct = true;
+					b8 is_right_correct = true;
+
+					if(i > 0) {
+						is_left_correct = !is_variable_name_character(src_content[i - 1]);
+					}
+					if(j_end < src_length) {
+						is_right_correct = !is_variable_name_character(src_content[j_end]);
+					}
+
+					if(is_left_correct && is_right_correct) {
+
+						result.push_back(i);
+
+						i = j_end;
+						continue;
+					}
+				}
+			}
+
+			str_state.end_check();
+			++i;
+		}
+
+		return result;
+	}
+	G_string H_nsl_utilities::apply_variable_macro_uses(
+		const G_string& src_content,
+		const G_string& macro_name,
+		const G_string& macro_result,
+		const TG_vector<sz>& indices
+	) {
+		G_string result;
+		result.reserve(src_content.length());
+
+		sz src_length = src_content.length();
+		sz macro_name_length = macro_name.length();
+
+		sz begin_location = 0;
+		for(sz index : indices) {
+
+			result += src_content.substr(begin_location, index - begin_location);
+			result += macro_result;
+
+			begin_location = index + macro_name_length;
+		}
+
+		result += src_content.substr(begin_location, src_length - begin_location);
+
+		return std::move(result);
 	}
 
 	G_string H_nsl_utilities::clear_space_head_tail(const G_string& src_content) {

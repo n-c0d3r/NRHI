@@ -56,6 +56,22 @@ namespace nrhi {
 	class NRHI_API H_nsl_utilities {
 
 	public:
+		struct NRHI_API F_str_state {
+
+			b8 value = false;
+			b8 value_1 = false; // for '
+			b8 value_2 = false; // for "
+
+			b8 prev_value = false;
+			b8 prev_value_1 = false; // for '
+			b8 prev_value_2 = false; // for "
+
+		public:
+			void begin_check(char c);
+			void end_check();
+
+		};
+
 		struct NRHI_API F_space_segment {
 
 		};
@@ -82,9 +98,30 @@ namespace nrhi {
 
 
 	public:
-		static TG_vector<sz> find_macro_uses(
+		static b8 is_variable_name_character(char c);
+
+	public:
+		struct F_function_macro_use {
+			sz begin_location = 0;
+			sz end_location = 0;
+			G_string arg;
+		};
+		static TG_vector<F_function_macro_use> find_function_macro_uses(
 			const G_string& src_content,
 			const G_string& macro_name
+		);
+
+	public:
+		using F_variable_macro_use = sz;
+		static TG_vector<sz> find_variable_macro_uses(
+			const G_string& src_content,
+			const G_string& macro_name
+		);
+		static G_string apply_variable_macro_uses(
+			const G_string& src_content,
+			const G_string& macro_name,
+			const G_string& macro_result,
+			const TG_vector<sz>& indices
 		);
 
 	public:
