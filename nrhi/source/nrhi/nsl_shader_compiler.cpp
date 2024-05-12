@@ -76,18 +76,16 @@ namespace nrhi {
 		sz i = 0;
 		while(i < src_length) {
 
-			char curr_char = src_content[i];
-
 			// space, tab, new line
 			while(
 				(i < src_length)
 			) {
 				if(
 					!(
-						(curr_char == ' ')
-						|| (curr_char == '\t')
-						|| (curr_char == '\n')
-						|| (curr_char == '\r')
+						(src_content[i] == ' ')
+						|| (src_content[i] == '\t')
+						|| (src_content[i] == '\n')
+						|| (src_content[i] == '\r')
 					)
 				) {
 					break;
@@ -95,7 +93,144 @@ namespace nrhi {
 				++i;
 			}
 
-//			if(is_variable_name_character(src_co))
+			sz begin_name_location = i;
+			sz end_name_location = i;
+
+			// name
+			while(
+				(i < src_length)
+			) {
+				if(
+					!is_variable_name_character(src_content[i])
+				) {
+					break;
+				}
+				++i;
+			}
+			b8 is_name_found = (i != begin_name_location);
+
+			b8 is_name_as_str = false;
+			F_str_state str_state;
+
+			if(is_name_found) {
+				end_name_location = i;
+			}
+			else {
+				// name as str
+				while(
+					(i < src_length)
+				) {
+					str_state.begin_check(src_content[i]);
+					if(
+						!(str_state.value)
+					) {
+						str_state.end_check();
+						break;
+					}
+					is_name_as_str = true;
+					str_state.end_check();
+					++i;
+				}
+				end_name_location = i;
+			}
+
+			// if name is found
+			if(
+				(begin_name_location != end_name_location)
+				&& !(str_state.value)
+			) {
+
+				// get name
+				G_string name;
+				if(is_name_as_str)
+					name = src_content.substr(begin_name_location + 1, end_name_location - begin_name_location - 2);
+				else
+					name = src_content.substr(begin_name_location, end_name_location - begin_name_location);
+
+				// parse childs
+				TG_vector<F_info_tree> childs;
+
+				// skip spaces, tabs, and new lines
+				sz t = i;
+				for(; t < src_length; ++t)
+				{
+					if(
+						!(
+							(src_content[t] == ' ')
+							|| (src_content[t] == '\t')
+							|| (src_content[t] == '\n')
+							|| (src_content[t] == '\r')
+						)
+					) {
+						break;
+					}
+				}
+
+				// if not end of src content, continue childs parsing
+				if(t < src_length) {
+
+					// if beginning of childs
+					if(src_content[t] == '{') {
+
+						i32 level = 0;
+
+						sz begin_arg_location = t;
+						sz end_arg_location = begin_arg_location;
+
+						F_str_state arg_str_state;
+
+						sz k = begin_arg_location;
+						for(; k < src_length; ++k) {
+
+							arg_str_state.begin_check(src_content[k]);
+
+							if(
+								!(arg_str_state.value)
+								&& (src_content[k] == '{')
+							)
+								++level;
+
+							if(
+								!(arg_str_state.value)
+								&& (src_content[k] == '}')
+							)
+								--level;
+
+							if(level == 0) {
+
+								end_arg_location = k + 1;
+
+								G_string childs_src = src_content.substr(begin_arg_location + 1, end_arg_location - begin_arg_location - 2);
+
+								auto childs_opt = build_info_trees(childs_src);
+								if(!childs_opt)
+									return eastl::nullopt;
+
+								childs = childs_opt.value();
+
+								i = end_arg_location;
+								break;
+							}
+
+							arg_str_state.end_check();
+						}
+					}
+				}
+
+				// push back current tree
+				trees.push_back({
+					.name = name,
+					.childs = childs
+				});
+			}
+			else {
+				// invalid src content
+				if(
+					(end_name_location != src_length)
+					|| str_state.value
+				)
+					return eastl::nullopt;
+			}
 		}
 
 		return std::move(trees);
@@ -165,14 +300,14 @@ namespace nrhi {
 
 							if(src_content[t] == '(') {
 
-								i32 level = 1;
+								i32 level = 0;
 
 								sz begin_arg_location = t;
 								sz end_arg_location = begin_arg_location;
 
 								F_str_state arg_str_state;
 
-								sz k = begin_arg_location + 1;
+								sz k = begin_arg_location;
 								for(; k < src_length; ++k) {
 
 									arg_str_state.begin_check(src_content[k]);

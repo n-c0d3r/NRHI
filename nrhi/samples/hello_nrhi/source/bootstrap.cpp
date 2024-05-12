@@ -256,11 +256,6 @@ int main() {
 		)
 	);
 
-	auto s1 = " abc {} gasdgsd dsfaqw \"asdgsd\" { asgsdg } asfa ";
-	auto s2 = H_nsl_utilities::build_info_trees(
-		s1
-	);
-
 	// create vertex shader from vertex shader blob
 	auto vshader_p = H_vertex_shader::create(
 		NCPP_FOREF_VALID(device_p),
