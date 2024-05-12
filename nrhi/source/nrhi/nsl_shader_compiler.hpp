@@ -169,7 +169,7 @@ namespace nrhi {
 
 	};
 
-#define NSL_PUSH_ERROR(src_content, ...) if(errors_p) errors_p->push_back({src_content, __VA_ARGS__})
+#define NSL_PUSH_ERROR_INTERNAL(src_content, ...) if(errors_p) errors_p->push_back({src_content, __VA_ARGS__})
 
 
 

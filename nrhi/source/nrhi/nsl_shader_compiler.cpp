@@ -208,7 +208,7 @@ namespace nrhi {
 								auto childs_opt = build_info_trees(childs_src, errors_p);
 								if(!childs_opt)
 								{
-									NSL_PUSH_ERROR(src_content, "can't build childs: { " + childs_src + " }");
+									NSL_PUSH_ERROR_INTERNAL(src_content, "can't build childs: { " + childs_src + " }");
 									return eastl::nullopt;
 								}
 
@@ -237,10 +237,10 @@ namespace nrhi {
 				)
 				{
 					if(str_state.value) {
-						NSL_PUSH_ERROR(src_content, "string is not closed: " + src_content.substr(begin_name_location, src_length - begin_name_location));
+						NSL_PUSH_ERROR_INTERNAL(src_content, "string is not closed: " + src_content.substr(begin_name_location, src_length - begin_name_location));
 					}
 					else {
-						NSL_PUSH_ERROR(src_content, G_string("invalid character in variable name: '") + src_content[begin_name_location] + "'");
+						NSL_PUSH_ERROR_INTERNAL(src_content, G_string("invalid character in variable name: '") + src_content[begin_name_location] + "'");
 					}
 					return eastl::nullopt;
 				}
@@ -626,7 +626,7 @@ namespace nrhi {
 					const auto& trees = trees_opt.value();
 
 					if(trees.size() == 0) {
-						NSL_PUSH_ERROR(src.content, "vertex shader name is required");
+						NSL_PUSH_ERROR_INTERNAL(src.content, "vertex shader name is required");
 						return eastl::nullopt;
 					}
 
@@ -646,7 +646,7 @@ namespace nrhi {
 					});
 				}
 				else {
-					NSL_PUSH_ERROR(src.content, "can't process vertex shader definition args: NSL_VERTEX_SHADER(" + use.arg + ")");
+					NSL_PUSH_ERROR_INTERNAL(src.content, "can't process vertex shader definition args: NSL_VERTEX_SHADER(" + use.arg + ")");
 					return eastl::nullopt;
 				}
 			}
@@ -670,7 +670,7 @@ namespace nrhi {
 					const auto& trees = trees_opt.value();
 
 					if(trees.size() == 0) {
-						NSL_PUSH_ERROR(src.content, "pixel shader name is required");
+						NSL_PUSH_ERROR_INTERNAL(src.content, "pixel shader name is required");
 						return eastl::nullopt;
 					}
 
@@ -690,7 +690,7 @@ namespace nrhi {
 					});
 				}
 				else {
-					NSL_PUSH_ERROR(src.content, "can't process pixel shader definition args: NSL_PIXEL_SHADER(" + use.arg + ")");
+					NSL_PUSH_ERROR_INTERNAL(src.content, "can't process pixel shader definition args: NSL_PIXEL_SHADER(" + use.arg + ")");
 					return eastl::nullopt;
 				}
 			}
@@ -714,7 +714,7 @@ namespace nrhi {
 					const auto& trees = trees_opt.value();
 
 					if(trees.size() == 0) {
-						NSL_PUSH_ERROR(src.content, "compute shader name is required");
+						NSL_PUSH_ERROR_INTERNAL(src.content, "compute shader name is required");
 						return eastl::nullopt;
 					}
 
@@ -734,7 +734,7 @@ namespace nrhi {
 					});
 				}
 				else {
-					NSL_PUSH_ERROR(src.content, "can't process compute shader definition args: NSL_COMPUTE_SHADER(" + use.arg + ")");
+					NSL_PUSH_ERROR_INTERNAL(src.content, "can't process compute shader definition args: NSL_COMPUTE_SHADER(" + use.arg + ")");
 					return eastl::nullopt;
 				}
 			}
