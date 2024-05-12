@@ -256,18 +256,9 @@ int main() {
 		)
 	);
 
-	auto s1 = "2423fg abc (123)asgag";
-	auto s2 = H_nsl_utilities::apply_function_macro_uses(
-		s1,
-		"abc",
-		[](const G_string& arg) -> G_string {
-
-			return "<" + arg + ">";
-		},
-		H_nsl_utilities::find_function_macro_uses(
-			s1,
-			"abc"
-		)
+	auto s1 = " abc {} gasdgsd dsfaqw \"asdgsd\" { asgsdg } asfa ";
+	auto s2 = H_nsl_utilities::build_info_trees(
+		s1
 	);
 
 	// create vertex shader from vertex shader blob

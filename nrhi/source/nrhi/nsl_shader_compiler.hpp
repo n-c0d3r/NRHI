@@ -62,6 +62,10 @@ namespace nrhi {
 			b8 value_1 = false; // for '
 			b8 value_2 = false; // for "
 
+			b8 next_value = false;
+			b8 next_value_1 = false; // for '
+			b8 next_value_2 = false; // for "
+
 			b8 prev_value = false;
 			b8 prev_value_1 = false; // for '
 			b8 prev_value_2 = false; // for "
@@ -72,26 +76,10 @@ namespace nrhi {
 
 		};
 
-		struct NRHI_API F_space_segment {
-
-		};
-		struct NRHI_API F_variable_name_segment {
-
-		};
-		struct NRHI_API F_str_scope_segment {
-
-		};
-		struct NRHI_API F_brace_scope_segment {
-
-		};
-		struct NRHI_API F_parentheses_scope_segment {
-
-		};
-		struct NRHI_API F_segment_stream {
-
-		};
-
 		struct NRHI_API F_info_tree {
+
+			G_string name;
+			TG_vector<F_info_tree> childs;
 
 		};
 
@@ -99,6 +87,9 @@ namespace nrhi {
 
 	public:
 		static b8 is_variable_name_character(char c);
+
+	public:
+		static eastl::optional<TG_vector<F_info_tree>> build_info_trees(const G_string& src_content);
 
 	public:
 		struct F_function_macro_use {

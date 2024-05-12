@@ -10,26 +10,36 @@ namespace nrhi {
 			if(c == '\'')
 			{
 				value_1 = true;
+				next_value_1 = true;
+				value = true;
+				next_value = true;
 			}
 			if(c == '"')
 			{
 				value_2 = true;
+				next_value_2 = true;
+				value = true;
+				next_value = true;
 			}
 		}
 		else {
 			if(c == '\'')
 			{
-				value_1 = false;
+				next_value_1 = false;
+				next_value = false;
 			}
 			if(c == '"')
 			{
-				value_2 = false;
+				next_value_2 = false;
+				next_value = false;
 			}
 		}
-
-		value = (value_1 || value_2);
 	}
 	void H_nsl_utilities::F_str_state::end_check() {
+
+		value = next_value;
+		value_1 = next_value_1;
+		value_2 = next_value_2;
 
 		prev_value = value;
 		prev_value_1 = value_1;
@@ -55,6 +65,40 @@ namespace nrhi {
 				&& (c <= 'Z')
 			)
 		);
+	}
+
+	eastl::optional<TG_vector<H_nsl_utilities::F_info_tree>> H_nsl_utilities::build_info_trees(const G_string& src_content) {
+
+		TG_vector<F_info_tree> trees;
+
+		sz src_length = src_content.length();
+
+		sz i = 0;
+		while(i < src_length) {
+
+			char curr_char = src_content[i];
+
+			// space, tab, new line
+			while(
+				(i < src_length)
+			) {
+				if(
+					!(
+						(curr_char == ' ')
+						|| (curr_char == '\t')
+						|| (curr_char == '\n')
+						|| (curr_char == '\r')
+					)
+				) {
+					break;
+				}
+				++i;
+			}
+
+//			if(is_variable_name_character(src_co))
+		}
+
+		return std::move(trees);
 	}
 
 	TG_vector<H_nsl_utilities::F_function_macro_use> H_nsl_utilities::find_function_macro_uses(
