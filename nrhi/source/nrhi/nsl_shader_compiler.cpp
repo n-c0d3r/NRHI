@@ -373,7 +373,7 @@ namespace nrhi {
 		for(const auto& use : uses) {
 
 			result += src_content.substr(begin_location, use.begin_location - begin_location);
-			result += macro_result_functor(use.arg);
+			result += macro_result_functor(use);
 
 			begin_location = use.end_location;
 		}
@@ -582,15 +582,157 @@ namespace nrhi {
 
 
 
-	eastl::optional<TG_vector<F_shader_kernel_desc>> H_nsl_tools::search_kernel_descs(
-		const G_string& src_content
+	H_nsl_tools::F_preprocessed_src H_nsl_tools::preprocess_src(const G_string& src_content) {
+
+		return {
+			.content = H_nsl_utilities::remove_comments(src_content)
+		};
+	}
+	eastl::optional<TG_vector<H_nsl_tools::F_kernel_definition>> H_nsl_tools::find_kernel_definitions(
+		const H_nsl_tools::F_preprocessed_src& src,
+		G_string* error_p
 	) {
+		TG_vector<F_kernel_definition> kernel_definitions;
 
-		TG_vector<F_shader_kernel_desc> kernel_descs;
+		// vertex shader
+		{
+			auto nsl_vs_uses = H_nsl_utilities::find_function_macro_uses(
+				src.content,
+				"NSL_VERTEX_SHADER"
+			);
+			sz vs_kernel_count = nsl_vs_uses.size();
 
+			for(sz i = 0; i < vs_kernel_count; ++i) {
 
+				const auto& use = nsl_vs_uses[i];
 
-		return std::move(kernel_descs);
+				auto trees_opt = H_nsl_utilities::build_info_trees(use.arg);
+
+				if(trees_opt) {
+					const auto& trees = trees_opt.value();
+
+					if(trees.size() == 0) {
+						if(error_p)
+							*error_p = "vertex shader name is required";
+						return eastl::nullopt;
+					}
+
+					// get info tree and macro definition trees
+					H_nsl_utilities::F_info_tree info_tree = trees[0];
+					TG_vector<H_nsl_utilities::F_info_tree> macro_definition_trees(
+						trees.begin() + 1,
+						trees.end()
+					);
+
+					// push back to result list
+					kernel_definitions.push_back({
+						.use = use,
+						.info_tree = info_tree,
+						.macro_definition_trees = macro_definition_trees,
+						.shader_type = E_shader_type::VERTEX
+					});
+				}
+				else {
+					if(error_p)
+						*error_p = "can't process vertex shader definition args: NSL_VERTEX_SHADER(" + use.arg + ")";
+					return eastl::nullopt;
+				}
+			}
+		}
+
+		// pixel shader
+		{
+			auto nsl_vs_uses = H_nsl_utilities::find_function_macro_uses(
+				src.content,
+				"NSL_PIXEL_SHADER"
+			);
+			sz vs_kernel_count = nsl_vs_uses.size();
+
+			for(sz i = 0; i < vs_kernel_count; ++i) {
+
+				const auto& use = nsl_vs_uses[i];
+
+				auto trees_opt = H_nsl_utilities::build_info_trees(use.arg);
+
+				if(trees_opt) {
+					const auto& trees = trees_opt.value();
+
+					if(trees.size() == 0) {
+						if(error_p)
+							*error_p = "pixel shader name is required";
+						return eastl::nullopt;
+					}
+
+					// get info tree and macro definition trees
+					H_nsl_utilities::F_info_tree info_tree = trees[0];
+					TG_vector<H_nsl_utilities::F_info_tree> macro_definition_trees(
+						trees.begin() + 1,
+						trees.end()
+					);
+
+					// push back to result list
+					kernel_definitions.push_back({
+						.use = use,
+						.info_tree = info_tree,
+						.macro_definition_trees = macro_definition_trees,
+						.shader_type = E_shader_type::PIXEL
+					});
+				}
+				else {
+					if(error_p)
+						*error_p = "can't process pixel shader definition args: NSL_PIXEL_SHADER(" + use.arg + ")";
+					return eastl::nullopt;
+				}
+			}
+		}
+
+		// compute shader
+		{
+			auto nsl_vs_uses = H_nsl_utilities::find_function_macro_uses(
+				src.content,
+				"NSL_COMPUTE_SHADER"
+			);
+			sz vs_kernel_count = nsl_vs_uses.size();
+
+			for(sz i = 0; i < vs_kernel_count; ++i) {
+
+				const auto& use = nsl_vs_uses[i];
+
+				auto trees_opt = H_nsl_utilities::build_info_trees(use.arg);
+
+				if(trees_opt) {
+					const auto& trees = trees_opt.value();
+
+					if(trees.size() == 0) {
+						if(error_p)
+							*error_p = "compute shader name is required";
+						return eastl::nullopt;
+					}
+
+					// get info tree and macro definition trees
+					H_nsl_utilities::F_info_tree info_tree = trees[0];
+					TG_vector<H_nsl_utilities::F_info_tree> macro_definition_trees(
+						trees.begin() + 1,
+						trees.end()
+					);
+
+					// push back to result list
+					kernel_definitions.push_back({
+						.use = use,
+						.info_tree = info_tree,
+						.macro_definition_trees = macro_definition_trees,
+						.shader_type = E_shader_type::COMPUTE
+					});
+				}
+				else {
+					if(error_p)
+						*error_p = "can't process compute shader definition args: NSL_COMPUTE_SHADER(" + use.arg + ")";
+					return eastl::nullopt;
+				}
+			}
+		}
+
+		return std::move(kernel_definitions);
 	}
 
 

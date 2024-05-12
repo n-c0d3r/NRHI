@@ -98,7 +98,7 @@ namespace nrhi {
 			G_string arg;
 		};
 		using F_function_macro_result_functor = eastl::function<
-			G_string(const G_string& arg)
+			G_string(const F_function_macro_use& use)
 		>;
 		static TG_vector<F_function_macro_use> find_function_macro_uses(
 			const G_string& src_content,
@@ -139,8 +139,23 @@ namespace nrhi {
 	class NRHI_API H_nsl_tools {
 
 	public:
-		static eastl::optional<TG_vector<F_shader_kernel_desc>> search_kernel_descs(
-			const G_string& src_content
+		struct F_preprocessed_src {
+
+			G_string content;
+
+		};
+		static F_preprocessed_src preprocess_src(const G_string& src_content);
+		struct F_kernel_definition {
+
+			H_nsl_utilities::F_function_macro_use use;
+			H_nsl_utilities::F_info_tree info_tree;
+			TG_vector<H_nsl_utilities::F_info_tree> macro_definition_trees;
+			E_shader_type shader_type = E_shader_type::NONE;
+
+		};
+		static eastl::optional<TG_vector<F_kernel_definition>> find_kernel_definitions(
+			const F_preprocessed_src& src,
+			G_string* error_p = 0
 		);
 
 	};
