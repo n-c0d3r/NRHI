@@ -152,6 +152,7 @@ namespace nrhi {
 		struct F_preprocessed_src {
 
 			G_string content;
+			G_string abs_path;
 
 		};
 		struct F_kernel_definition {
@@ -177,10 +178,35 @@ namespace nrhi {
 
 
 
+	class NRHI_API F_nsl_shader_header_loader {
+
+	public:
+		F_nsl_shader_header_loader();
+		~F_nsl_shader_header_loader();
+
+	public:
+		NCPP_DISABLE_COPY(F_nsl_shader_header_loader);
+
+	public:
+		virtual eastl::optional<G_string> load(const G_string& path);
+
+	};
+
+
+
 	class NRHI_API F_nsl_shader_compiler {
+
+	private:
+		TU<F_nsl_shader_header_loader> header_loader_p_;
+
+	public:
+		NCPP_FORCE_INLINE TK_valid<F_nsl_shader_header_loader> header_loader_p() const noexcept { return NCPP_FOH_VALID(header_loader_p_); }
+
+
 
 	public:
 		F_nsl_shader_compiler();
+		F_nsl_shader_compiler(TU<F_nsl_shader_header_loader>&& header_loader_p);
 		~F_nsl_shader_compiler();
 
 	public:
@@ -194,11 +220,13 @@ namespace nrhi {
 		);
 
 	public:
-		virtual eastl::optional<H_nsl_tools::F_preprocessed_src> include_src(
-			const G_string& from_abs_path,
-			const G_string& to_abs_path,
+		eastl::optional<H_nsl_tools::F_preprocessed_src> include_src(
+			const H_nsl_tools::F_preprocessed_src& current_src,
+			const G_string& path,
 			H_nsl_utilities::F_errors* errors_p = 0
 		);
+
+	public:
 		virtual eastl::optional<H_nsl_tools::F_preprocessed_src> preprocess_src(
 			const G_string& src_content,
 			const G_string& abs_path,

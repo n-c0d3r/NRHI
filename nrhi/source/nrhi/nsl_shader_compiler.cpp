@@ -742,7 +742,25 @@ namespace nrhi {
 
 
 
-	F_nsl_shader_compiler::F_nsl_shader_compiler() {
+	F_nsl_shader_header_loader::F_nsl_shader_header_loader() {
+	}
+	F_nsl_shader_header_loader::~F_nsl_shader_header_loader() {
+	}
+
+	eastl::optional<G_string> F_nsl_shader_header_loader::load(const G_string& path)
+	{
+		return eastl::nullopt;
+	}
+
+
+
+	F_nsl_shader_compiler::F_nsl_shader_compiler() :
+		header_loader_p_(TU<F_nsl_shader_header_loader>()())
+	{
+	}
+	F_nsl_shader_compiler::F_nsl_shader_compiler(TU<F_nsl_shader_header_loader>&& header_loader_p) :
+		header_loader_p_(std::move(header_loader_p))
+	{
 	}
 	F_nsl_shader_compiler::~F_nsl_shader_compiler() {
 	}
@@ -808,8 +826,8 @@ namespace nrhi {
 	}
 
 	eastl::optional<H_nsl_tools::F_preprocessed_src> F_nsl_shader_compiler::include_src(
-		const G_string& from_abs_path,
-		const G_string& to_abs_path,
+		const H_nsl_tools::F_preprocessed_src& current_src,
+		const G_string& path,
 		H_nsl_utilities::F_errors* errors_p
 	) {
 		return eastl::nullopt;
@@ -821,7 +839,10 @@ namespace nrhi {
 	) {
 		G_string comment_removed_src_content = H_nsl_utilities::remove_comments(src_content);
 
-		return H_nsl_tools::F_preprocessed_src { comment_removed_src_content };
+		return H_nsl_tools::F_preprocessed_src {
+			.content = comment_removed_src_content,
+			.abs_path = abs_path
+		};
 	}
 
 }
