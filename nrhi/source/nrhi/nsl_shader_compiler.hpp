@@ -62,6 +62,7 @@ namespace nrhi {
 
 			b8 is_open_parentheses = false;
 			b8 is_close_parentheses = false;
+			i32 parentheses_level = 0;
 
 			b8 is_star = false;
 			b8 is_forwardslash = false;
@@ -97,6 +98,11 @@ namespace nrhi {
 			const G_string& macro_name,
 			const eastl::function<G_string(const G_string&)>& macro_result_functor
 		);
+
+	public:
+		static G_string clear_space_head_tail(const G_string& src_content);
+		static G_string clear_space_head(const G_string& src_content);
+		static G_string clear_space_tail(const G_string& src_content);
 
 	};
 
