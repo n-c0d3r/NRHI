@@ -86,6 +86,7 @@ namespace nrhi {
 
 			G_string name;
 			TG_vector<F_info_tree> childs;
+			G_string child_src_content;
 
 		};
 
@@ -171,6 +172,10 @@ namespace nrhi {
 
 #define NSL_PUSH_ERROR_INTERNAL(src_content, ...) if(errors_p) errors_p->push_back({src_content, __VA_ARGS__})
 
+#define NSL_VERTEX_SHADER_DEFINITION_MACRO_NAME "NSL_VERTEX_SHADER"
+#define NSL_PIXEL_SHADER_DEFINITION_MACRO_NAME "NSL_PIXEL_SHADER"
+#define NSL_COMPUTE_SHADER_DEFINITION_MACRO_NAME "NSL_COMPUTE_SHADER"
+
 
 
 	class NRHI_API F_nsl_shader_compiler {
@@ -182,37 +187,11 @@ namespace nrhi {
 	public:
 		NCPP_DISABLE_COPY(F_nsl_shader_compiler);
 
-	protected:
-		virtual eastl::optional<F_nsl_include_blob> load_include_blob(
-			const G_string& path,
-			const TG_span<F_shader_kernel_desc>& kernel_descs,
-			u32 kernel_index
-		);
-		virtual G_string process_source(
-			const G_string& src_content,
-			const G_string& abs_path,
-			const TG_span<F_shader_kernel_desc>& kernel_descs,
-			u32 kernel_index
-		);
-
-	private:
-		TU<A_shader_blob> compile_processed_source(
-			const G_string& processed_src_content,
-			const G_string& abs_path,
-			const TG_span<F_shader_kernel_desc>& kernel_descs,
-			u32 kernel_index
-		);
-		TU<A_shader_blob> compile_source(
-			const G_string& src_content,
-			const G_string& abs_path,
-			const TG_span<F_shader_kernel_desc>& kernel_descs,
-			u32 kernel_index
-		);
-
 	public:
-		TU<A_shader_class> compile(
-			const G_string& src_content,
-			const G_string& abs_path
+		virtual eastl::optional<G_string> apply_kernel_definition(
+			const H_nsl_tools::F_preprocessed_src& src,
+			const H_nsl_tools::F_kernel_definition& kernel_definition,
+			H_nsl_utilities::F_errors* errors_p = 0
 		);
 
 	};

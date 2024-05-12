@@ -152,6 +152,7 @@ namespace nrhi {
 
 				// parse childs
 				TG_vector<F_info_tree> childs;
+				G_string child_src_content;
 
 				// skip spaces, tabs, and new lines
 				sz t = i;
@@ -213,6 +214,7 @@ namespace nrhi {
 								}
 
 								childs = childs_opt.value();
+								child_src_content = std::move(childs_src);
 
 								i = end_arg_location;
 								break;
@@ -226,7 +228,8 @@ namespace nrhi {
 				// push back current tree
 				trees.push_back({
 					.name = name,
-					.childs = childs
+					.childs = childs,
+					.child_src_content = child_src_content
 				});
 			}
 			else {
@@ -612,7 +615,7 @@ namespace nrhi {
 		{
 			auto nsl_vs_uses = H_nsl_utilities::find_function_macro_uses(
 				src.content,
-				"NSL_VERTEX_SHADER"
+				NSL_VERTEX_SHADER_DEFINITION_MACRO_NAME
 			);
 			sz vs_kernel_count = nsl_vs_uses.size();
 
@@ -656,7 +659,7 @@ namespace nrhi {
 		{
 			auto nsl_vs_uses = H_nsl_utilities::find_function_macro_uses(
 				src.content,
-				"NSL_PIXEL_SHADER"
+				NSL_PIXEL_SHADER_DEFINITION_MACRO_NAME
 			);
 			sz vs_kernel_count = nsl_vs_uses.size();
 
@@ -700,7 +703,7 @@ namespace nrhi {
 		{
 			auto nsl_vs_uses = H_nsl_utilities::find_function_macro_uses(
 				src.content,
-				"NSL_COMPUTE_SHADER"
+				NSL_COMPUTE_SHADER_DEFINITION_MACRO_NAME
 			);
 			sz vs_kernel_count = nsl_vs_uses.size();
 
@@ -750,64 +753,64 @@ namespace nrhi {
 	F_nsl_shader_compiler::~F_nsl_shader_compiler() {
 	}
 
-	eastl::optional<F_nsl_include_blob> F_nsl_shader_compiler::load_include_blob(
-		const G_string& path,
-		const TG_span<F_shader_kernel_desc>& kernel_descs,
-		u32 kernel_index
+	eastl::optional<G_string> F_nsl_shader_compiler::apply_kernel_definition(
+		const H_nsl_tools::F_preprocessed_src& src,
+		const H_nsl_tools::F_kernel_definition& kernel_definition,
+		H_nsl_utilities::F_errors* errors_p
 	) {
+		NCPP_ASSERT(kernel_definition.shader_type != E_shader_type::NONE) << "invalid kernel definition shader type";
 
-		if(path == "nsl")
-			return F_nsl_include_blob();
+		G_string result;
+		G_string macro_definitions;
 
-		return eastl::nullopt;
-	}
-	G_string F_nsl_shader_compiler::process_source(
-		const G_string& src_content,
-		const G_string& abs_path,
-		const TG_span<F_shader_kernel_desc>& kernel_descs,
-		u32 kernel_index
-	) {
-//		return H_nsl_utilities::apply_variable_like_macro(
-//			src_content,
-//			kernel_descs[kernel_index].name,
-//			"main"
-//		);
-		return "";
-	}
+		G_string macro_name;
+		switch (kernel_definition.shader_type)
+		{
+		case E_shader_type::VERTEX:
+			macro_name = NSL_VERTEX_SHADER_DEFINITION_MACRO_NAME;
+			break;
+		case E_shader_type::PIXEL:
+			macro_name = NSL_PIXEL_SHADER_DEFINITION_MACRO_NAME;
+			break;
+		case E_shader_type::COMPUTE:
+			macro_name = NSL_COMPUTE_SHADER_DEFINITION_MACRO_NAME;
+			break;
+		}
 
-	TU<A_shader_blob> F_nsl_shader_compiler::compile_processed_source(
-		const G_string& processed_src_content,
-		const G_string& abs_path,
-		const TG_span<F_shader_kernel_desc>& kernel_descs,
-		u32 kernel_index
-	) {
-		return null;
-	}
-	TU<A_shader_blob> F_nsl_shader_compiler::compile_source(
-		const G_string& src_content,
-		const G_string& abs_path,
-		const TG_span<F_shader_kernel_desc>& kernel_descs,
-		u32 kernel_index
-	) {
-		return compile_processed_source(
-			process_source(
-				src_content,
-				abs_path,
-				kernel_descs,
-				kernel_index
-			),
-			abs_path,
-			kernel_descs,
-			kernel_index
+		b8 is_success = true;
+
+		result = H_nsl_utilities::apply_function_macro_uses(
+			src.content,
+			macro_name,
+			[&result, &kernel_definition, &macro_definitions](const H_nsl_utilities::F_function_macro_use& use) -> G_string {
+
+				for(const auto& macro_definition_tree : kernel_definition.macro_definition_trees) {
+
+					G_string macro_value;
+					macro_value.reserve(macro_definition_tree.child_src_content.length());
+					for(auto c : macro_definition_tree.child_src_content) {
+						if(c == '\n') {
+							macro_value.push_back('\\');
+							macro_value.push_back('\n');
+						}
+						else
+							macro_value.push_back(c);
+					}
+					macro_definitions += "#define " + macro_definition_tree.name + " " + macro_value + "\n";
+				}
+
+				return "void main";
+			},
+			{ kernel_definition.use }
 		);
-	}
 
-	TU<A_shader_class> F_nsl_shader_compiler::compile(
-		const G_string& src_content,
-		const G_string& abs_path
-	) {
+		if(!is_success) {
+			return eastl::nullopt;
+		}
 
-		return null;
+		result = macro_definitions + result;
+
+		return std::move(result);
 	}
 
 }
