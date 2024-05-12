@@ -178,8 +178,33 @@ namespace nrhi {
 
 		return result;
 	}
+	G_string H_nsl_utilities::apply_function_macro_uses(
+		const G_string& src_content,
+		const G_string& macro_name,
+		const F_function_macro_result_functor& macro_result_functor,
+		const TG_vector<F_function_macro_use>& uses
+	) {
+		G_string result;
+		result.reserve(src_content.length());
 
-	TG_vector<sz> H_nsl_utilities::find_variable_macro_uses(
+		sz src_length = src_content.length();
+		sz macro_name_length = macro_name.length();
+
+		sz begin_location = 0;
+		for(const auto& use : uses) {
+
+			result += src_content.substr(begin_location, use.begin_location - begin_location);
+			result += macro_result_functor(use.arg);
+
+			begin_location = use.end_location;
+		}
+
+		result += src_content.substr(begin_location, src_length - begin_location);
+
+		return std::move(result);
+	}
+
+	TG_vector<H_nsl_utilities::F_variable_macro_use> H_nsl_utilities::find_variable_macro_uses(
 		const G_string& src_content,
 		const G_string& macro_name
 	) {
@@ -242,7 +267,7 @@ namespace nrhi {
 		const G_string& src_content,
 		const G_string& macro_name,
 		const G_string& macro_result,
-		const TG_vector<sz>& indices
+		const TG_vector<H_nsl_utilities::F_variable_macro_use>& uses
 	) {
 		G_string result;
 		result.reserve(src_content.length());
@@ -251,7 +276,7 @@ namespace nrhi {
 		sz macro_name_length = macro_name.length();
 
 		sz begin_location = 0;
-		for(sz index : indices) {
+		for(sz index : uses) {
 
 			result += src_content.substr(begin_location, index - begin_location);
 			result += macro_result;
@@ -392,10 +417,8 @@ namespace nrhi {
 
 
 	F_nsl_shader_compiler::F_nsl_shader_compiler() {
-
 	}
 	F_nsl_shader_compiler::~F_nsl_shader_compiler() {
-
 	}
 
 	eastl::optional<F_nsl_include_blob> F_nsl_shader_compiler::load_include_blob(

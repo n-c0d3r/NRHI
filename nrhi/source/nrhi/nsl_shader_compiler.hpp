@@ -106,14 +106,23 @@ namespace nrhi {
 			sz end_location = 0;
 			G_string arg;
 		};
+		using F_function_macro_result_functor = eastl::function<
+			G_string(const G_string& arg)
+		>;
 		static TG_vector<F_function_macro_use> find_function_macro_uses(
 			const G_string& src_content,
 			const G_string& macro_name
 		);
+		static G_string apply_function_macro_uses(
+			const G_string& src_content,
+			const G_string& macro_name,
+			const F_function_macro_result_functor& macro_result_functor,
+			const TG_vector<F_function_macro_use>& uses
+		);
 
 	public:
 		using F_variable_macro_use = sz;
-		static TG_vector<sz> find_variable_macro_uses(
+		static TG_vector<F_variable_macro_use> find_variable_macro_uses(
 			const G_string& src_content,
 			const G_string& macro_name
 		);
@@ -121,7 +130,7 @@ namespace nrhi {
 			const G_string& src_content,
 			const G_string& macro_name,
 			const G_string& macro_result,
-			const TG_vector<sz>& indices
+			const TG_vector<F_variable_macro_use>& uses
 		);
 
 	public:
