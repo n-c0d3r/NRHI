@@ -154,7 +154,6 @@ namespace nrhi {
 			G_string content;
 
 		};
-		static F_preprocessed_src preprocess_src(const G_string& src_content);
 		struct F_kernel_definition {
 
 			H_nsl_utilities::F_function_macro_use use;
@@ -191,6 +190,18 @@ namespace nrhi {
 		virtual eastl::optional<G_string> apply_kernel_definition(
 			const H_nsl_tools::F_preprocessed_src& src,
 			const H_nsl_tools::F_kernel_definition& kernel_definition,
+			H_nsl_utilities::F_errors* errors_p = 0
+		);
+
+	public:
+		virtual eastl::optional<H_nsl_tools::F_preprocessed_src> include_src(
+			const G_string& from_abs_path,
+			const G_string& to_abs_path,
+			H_nsl_utilities::F_errors* errors_p = 0
+		);
+		virtual eastl::optional<H_nsl_tools::F_preprocessed_src> preprocess_src(
+			const G_string& src_content,
+			const G_string& abs_path,
 			H_nsl_utilities::F_errors* errors_p = 0
 		);
 

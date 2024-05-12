@@ -599,12 +599,6 @@ namespace nrhi {
 
 
 
-	H_nsl_tools::F_preprocessed_src H_nsl_tools::preprocess_src(const G_string& src_content) {
-
-		return {
-			.content = H_nsl_utilities::remove_comments(src_content)
-		};
-	}
 	eastl::optional<TG_vector<H_nsl_tools::F_kernel_definition>> H_nsl_tools::find_kernel_definitions(
 		const H_nsl_tools::F_preprocessed_src& src,
 		H_nsl_utilities::F_errors* errors_p
@@ -811,6 +805,23 @@ namespace nrhi {
 		result = macro_definitions + result;
 
 		return std::move(result);
+	}
+
+	eastl::optional<H_nsl_tools::F_preprocessed_src> F_nsl_shader_compiler::include_src(
+		const G_string& from_abs_path,
+		const G_string& to_abs_path,
+		H_nsl_utilities::F_errors* errors_p
+	) {
+		return eastl::nullopt;
+	}
+	eastl::optional<H_nsl_tools::F_preprocessed_src> F_nsl_shader_compiler::preprocess_src(
+		const G_string& src_content,
+		const G_string& abs_path,
+		H_nsl_utilities::F_errors* errors_p
+	) {
+		G_string comment_removed_src_content = H_nsl_utilities::remove_comments(src_content);
+
+		return H_nsl_tools::F_preprocessed_src { comment_removed_src_content };
 	}
 
 }
