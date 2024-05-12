@@ -56,53 +56,55 @@ namespace nrhi {
 	class NRHI_API H_nsl_utilities {
 
 	public:
-		struct NRHI_API F_search_state {
+		struct NRHI_API F_space_segment {
 
-			b8 is_variable_name_character = false;
+		};
+		struct NRHI_API F_variable_name_segment {
 
-			b8 is_open_parentheses = false;
-			b8 is_close_parentheses = false;
-			i32 parentheses_level = 0;
+		};
+		struct NRHI_API F_str_scope_segment {
 
-			b8 is_star = false;
-			b8 is_forwardslash = false;
+		};
+		struct NRHI_API F_brace_scope_segment {
 
-			b8 is_space = false;
+		};
+		struct NRHI_API F_parentheses_scope_segment {
 
-			b8 is_in_str_1 = false; // for ' string
-			b8 is_in_str_2 = false; // for " string
-			b8 is_in_str = false;
-			b8 is_in_comment_1 = false; // for single line comment
-			b8 is_in_comment_2 = false; // for multiple line comment
-			b8 is_in_comment = false;
+		};
+		struct NRHI_API F_segment_stream {
 
-			char char8 = ' ';
+		};
 
-		public:
-			void update(const F_search_state& prev_state, char new_character);
+		struct NRHI_API F_info_tree {
 
 		};
 
 
 
 	public:
-		static G_string apply_variable_like_macro(
+		static TG_vector<sz> find_macro_uses(
 			const G_string& src_content,
-			const G_string& macro_name,
-			const G_string& macro_result
-		);
-
-	public:
-		static G_string apply_function_like_macro(
-			const G_string& src_content,
-			const G_string& macro_name,
-			const eastl::function<G_string(const G_string&)>& macro_result_functor
+			const G_string& macro_name
 		);
 
 	public:
 		static G_string clear_space_head_tail(const G_string& src_content);
 		static G_string clear_space_head(const G_string& src_content);
 		static G_string clear_space_tail(const G_string& src_content);
+
+	public:
+		static G_string remove_comments(const G_string& src_content);
+
+	};
+
+
+
+	class NRHI_API H_nsl_tools {
+
+	public:
+		static eastl::optional<TG_vector<F_shader_kernel_desc>> search_kernel_descs(
+			const G_string& src_content
+		);
 
 	};
 
@@ -147,8 +149,7 @@ namespace nrhi {
 	public:
 		TU<A_shader_class> compile(
 			const G_string& src_content,
-			const G_string& abs_path,
-			const TG_span<F_shader_kernel_desc>& kernel_descs
+			const G_string& abs_path
 		);
 
 	};

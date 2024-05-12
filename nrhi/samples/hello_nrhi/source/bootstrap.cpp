@@ -256,6 +256,15 @@ int main() {
 		)
 	);
 
+	auto ssc = H_nsl_utilities::remove_comments(
+		"abc gsdgsd //abc\n"
+		"abc"
+	);
+	H_nsl_utilities::find_macro_uses(
+		ssc,
+		"abc"
+	);
+
 	// create vertex shader from vertex shader blob
 	auto vshader_p = H_vertex_shader::create(
 		NCPP_FOREF_VALID(device_p),

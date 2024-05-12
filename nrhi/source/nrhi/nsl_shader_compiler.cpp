@@ -4,417 +4,24 @@
 
 namespace nrhi {
 
-	void H_nsl_utilities::F_search_state::update(const F_search_state& prev_state, char new_character) {
-
-		is_variable_name_character = (
-			(
-				(new_character >= '0')
-				&& (new_character <= '9')
-			)
-			|| (
-				(new_character >= 'a')
-				&& (new_character <= 'z')
-			)
-			|| (
-				(new_character >= 'A')
-				&& (new_character <= 'Z')
-			)
-			|| (new_character == '_')
-		);
-		is_open_parentheses = (new_character == '(');
-		is_close_parentheses = (new_character == ')');
-
-		is_star = (new_character == '*');
-		is_forwardslash = (new_character == '/');
-
-		is_space = (
-			(new_character == ' ')
-			|| (new_character == '\t')
-		);
-
-		char8 = new_character;
-
-		// update is in str
-		if(!is_in_comment)
-		{
-			if(
-				!is_in_str
-				&& (new_character == '\'')
-			)
-				is_in_str_1 = true;
-			else if (
-				is_in_str_1
-				&& (new_character == '\'')
-			)
-				is_in_str_1 = false;
-
-			if(
-				!is_in_str
-				&& (new_character == '"')
-			)
-				is_in_str_2 = true;
-			else if (
-				is_in_str_2
-				&& (new_character == '"')
-			)
-				is_in_str_2 = false;
-
-			is_in_str = (is_in_str_1 || is_in_str_2);
-		}
-
-		// update is in comment
-		if(!is_in_str)
-		{
-			if(
-				!is_in_comment
-				&& prev_state.is_forwardslash
-				&& is_forwardslash
-			)
-				is_in_str_1 = true;
-			else if (
-				is_in_str_1
-				&& (new_character == '\n')
-			)
-				is_in_str_1 = false;
-
-			if(
-				!is_in_comment
-				&& prev_state.is_forwardslash
-				&& new_character
-			)
-				is_in_str_2 = true;
-			else if (
-				is_in_str_2
-				&& prev_state.is_star
-				&& is_forwardslash
-			)
-				is_in_str_2 = false;
-
-			is_in_comment = (is_in_comment_1 || is_in_comment_2);
-		}
-
-		if(
-			!is_in_str
-			&& !is_in_comment
-		) {
-			if(is_open_parentheses)
-				parentheses_level = (prev_state.parentheses_level + 1);
-			if(is_close_parentheses)
-				parentheses_level = (prev_state.parentheses_level - 1);
-		}
-	}
-
-	G_string H_nsl_utilities::apply_variable_like_macro(
+	TG_vector<sz> H_nsl_utilities::find_macro_uses(
 		const G_string& src_content,
-		const G_string& macro_name,
-		const G_string& macro_result
+		const G_string& macro_name
 	) {
-		sz macro_name_length = macro_name.length();
 
-		NCPP_ASSERT(macro_name_length) << "kernel name can't be empty";
+		TG_vector<sz> result;
 
-		sz src_length = src_content.length();
-
-		// parsed_src_content's variables
-		sz parsed_src_length = 0;
-		G_string parsed_src_content;
-		parsed_src_content.reserve(src_length);
-
-		// search states
-		F_search_state curr_state;
-		F_search_state prev_state;
-
-		// find kernel location
-		for(sz i = 0; i < src_length;) {
-
-			curr_state.update(
-				prev_state,
-				src_content[i]
-			);
-
-			// check substring
-			if(
-				!(curr_state.is_in_str)
-				&& !(curr_state.is_in_comment)
-				&& !(prev_state.is_variable_name_character)
-				&& curr_state.is_variable_name_character
-			)
-			{
-				if ((i + macro_name_length + 1) <= src_length)
-				{
-					// temp search states
-					F_search_state temp_curr_state = curr_state;
-					F_search_state temp_prev_state = prev_state;
-
-					b8 is_found = true;
-					sz j = i;
-					sz j_end = i + macro_name_length;
-					for (; j < j_end; ++j)
-					{
-						temp_curr_state.update(
-							temp_prev_state,
-							src_content[j]
-						);
-						temp_prev_state = temp_curr_state;
-
-						if (src_content[j] != macro_name[j - i])
-						{
-							++j;
-							is_found = false;
-							break;
-						}
-					}
-					temp_curr_state.update(
-						temp_prev_state,
-						src_content[j]
-					);
-
-					if (
-						is_found
-						&& !(temp_curr_state.is_variable_name_character)
-					)
-					{
-						curr_state = temp_prev_state;
-						prev_state = temp_prev_state;
-						parsed_src_content += macro_result;
-						i = j;
-					}
-					else
-					{
-						parsed_src_content.push_back(curr_state.char8);
-						++i;
-						prev_state = curr_state;
-					}
-				}
-				else if ((i + macro_name_length) == src_length)
-				{
-					// temp search states
-					F_search_state temp_curr_state = curr_state;
-					F_search_state temp_prev_state = prev_state;
-
-					b8 is_found = true;
-					sz j = i;
-					sz j_end = i + macro_name_length;
-					for (; j < j_end; ++j)
-					{
-						temp_curr_state.update(
-							temp_prev_state,
-							src_content[j]
-						);
-						temp_prev_state = temp_curr_state;
-
-						if (src_content[j] != macro_name[j - i])
-						{
-							++j;
-							is_found = false;
-							break;
-						}
-					}
-
-					if (is_found)
-					{
-						curr_state = temp_prev_state;
-						prev_state = temp_prev_state;
-						parsed_src_content += macro_result;
-						i = j;
-					}
-					else
-					{
-						parsed_src_content.push_back(curr_state.char8);
-						++i;
-						prev_state = curr_state;
-					}
-				}
-				else
-				{
-					parsed_src_content.push_back(curr_state.char8);
-					++i;
-					prev_state = curr_state;
-				}
-			}
-			else
-			{
-				parsed_src_content.push_back(curr_state.char8);
-				++i;
-				prev_state = curr_state;
-			}
-
-			prev_state = curr_state;
+		// find all potential locations
+		size_t pos = src_content.find(macro_name, 0);
+		while(pos != eastl::string::npos)
+		{
+			result.push_back(pos);
+			pos = src_content.find(macro_name, pos + 1);
 		}
 
-		return parsed_src_content;
+		return result;
 	}
 
-	G_string H_nsl_utilities::apply_function_like_macro(
-		const G_string& src_content,
-		const G_string& macro_name,
-		const eastl::function<G_string(const G_string&)>& macro_result_functor
-	) {
-		sz macro_name_length = macro_name.length();
-
-		NCPP_ASSERT(macro_name_length) << "kernel name can't be empty";
-
-		sz src_length = src_content.length();
-
-		// parsed_src_content's variables
-		sz parsed_src_length = 0;
-		G_string parsed_src_content;
-		parsed_src_content.reserve(src_length);
-
-		// search states
-		F_search_state curr_state;
-		F_search_state prev_state;
-
-		// find kernel location
-		for(sz i = 0; i < src_length;) {
-
-			curr_state.update(
-				prev_state,
-				src_content[i]
-			);
-
-			// check substring
-			if(
-				!(curr_state.is_in_str)
-				&& !(curr_state.is_in_comment)
-				&& !(prev_state.is_variable_name_character)
-				&& curr_state.is_variable_name_character
-			)
-			{
-				if ((i + macro_name_length + 2) <= src_length)
-				{
-					// temp search states
-					F_search_state temp_curr_state = curr_state;
-					F_search_state temp_prev_state = prev_state;
-
-					b8 is_macro_name_found = true;
-					sz j = i;
-					sz j_end = i + macro_name_length;
-					for (; j < j_end; ++j)
-					{
-						temp_curr_state.update(
-							temp_prev_state,
-							src_content[j]
-						);
-						temp_prev_state = temp_curr_state;
-
-						if (src_content[j] != macro_name[j - i])
-						{
-							++j;
-							is_macro_name_found = false;
-							break;
-						}
-					}
-
-					i32 start_parentheses_level = temp_curr_state.parentheses_level;
-
-					temp_curr_state.update(
-						temp_prev_state,
-						src_content[j]
-					);
-
-					if (
-						is_macro_name_found
-						&& !(temp_curr_state.is_variable_name_character)
-					)
-					{
-						b8 is_open_parentheses_found = false;
-						sz begin_arg_location = 0;
-						for(;j < src_length; ++j) {
-
-							temp_curr_state.update(
-								temp_prev_state,
-								src_content[j]
-							);
-							temp_prev_state = temp_curr_state;
-
-							if(temp_curr_state.is_open_parentheses) {
-								++j;
-								begin_arg_location = j;
-								is_open_parentheses_found = true;
-								break;
-							}
-							else if(
-								!(temp_curr_state.is_space)
-							) {
-								break;
-							}
-						}
-
-						if(is_open_parentheses_found) {
-
-							b8 is_close_parentheses_found = false;
-							sz end_arg_location = 0;
-							for(;j < src_length; ++j) {
-
-								temp_curr_state.update(
-									temp_prev_state,
-									src_content[j]
-								);
-								temp_prev_state = temp_curr_state;
-
-								if(temp_curr_state.parentheses_level == start_parentheses_level) {
-									end_arg_location = j;
-									++j;
-									is_close_parentheses_found = true;
-									break;
-								}
-							}
-
-							if(is_close_parentheses_found) {
-
-								curr_state = temp_prev_state;
-								prev_state = temp_prev_state;
-
-								parsed_src_content += macro_result_functor(
-									src_content.substr(
-										begin_arg_location,
-										end_arg_location - begin_arg_location
-									)
-								);
-
-								i = j;
-							}
-							else
-							{
-								parsed_src_content.push_back(curr_state.char8);
-								++i;
-								prev_state = curr_state;
-							}
-						}
-						else
-						{
-							parsed_src_content.push_back(curr_state.char8);
-							++i;
-							prev_state = curr_state;
-						}
-					}
-					else
-					{
-						parsed_src_content.push_back(curr_state.char8);
-						++i;
-						prev_state = curr_state;
-					}
-				}
-				else
-				{
-					parsed_src_content.push_back(curr_state.char8);
-					++i;
-					prev_state = curr_state;
-				}
-			}
-			else
-			{
-				parsed_src_content.push_back(curr_state.char8);
-				++i;
-				prev_state = curr_state;
-			}
-
-			prev_state = curr_state;
-		}
-
-		return parsed_src_content;
-	}
 	G_string H_nsl_utilities::clear_space_head_tail(const G_string& src_content) {
 
 		return clear_space_head(
@@ -432,6 +39,8 @@ namespace nrhi {
 			if(
 				(new_char != ' ')
 				&& (new_char != '\t')
+				&& (new_char != '\n')
+				&& (new_char != '\r')
 			)
 				break;
 		}
@@ -454,6 +63,8 @@ namespace nrhi {
 			if(
 				(new_char != ' ')
 				&& (new_char != '\t')
+				&& (new_char != '\n')
+				&& (new_char != '\r')
 			)
 				break;
 		}
@@ -462,6 +73,78 @@ namespace nrhi {
 			0,
 			i + 1
 		);
+	}
+
+	G_string H_nsl_utilities::remove_comments(const G_string& src_content) {
+
+		sz src_length = src_content.length();
+
+		G_string result;
+		result.reserve(src_length);
+
+		b8 is_in_comment_1 = false;
+		b8 is_in_comment_2 = false;
+		b8 is_in_comment = false;
+		for(ptrdiff_t i = 0; i < src_length; ++i) {
+
+			if(!is_in_comment) {
+
+				if(i + 1 < src_length) {
+
+					if(
+						(src_content[i] == '/')
+						&& (src_content[i + 1] == '/')
+					)
+						is_in_comment_1 = true;
+				}
+
+				if(i + 1 < src_length) {
+
+					if(
+						(src_content[i] == '/')
+						&& (src_content[i + 1] == '*')
+					)
+						is_in_comment_2 = true;
+				}
+			}
+			is_in_comment = (is_in_comment_1 || is_in_comment_2);
+
+			if(!is_in_comment)
+				result.push_back(src_content[i]);
+
+			if(is_in_comment_1) {
+
+				if(src_content[i] == '\n')
+				{
+					result.push_back('\n');
+					is_in_comment_1 = false;
+				}
+			}
+
+			if(is_in_comment_2) {
+
+				if(
+					(src_content[i - 1] == '*')
+					&& (src_content[i] == '/')
+				)
+					is_in_comment_2 = false;
+			}
+		}
+
+		return std::move(result);
+	}
+
+
+
+	eastl::optional<TG_vector<F_shader_kernel_desc>> H_nsl_tools::search_kernel_descs(
+		const G_string& src_content
+	) {
+
+		TG_vector<F_shader_kernel_desc> kernel_descs;
+
+
+
+		return std::move(kernel_descs);
 	}
 
 
@@ -490,11 +173,12 @@ namespace nrhi {
 		const TG_span<F_shader_kernel_desc>& kernel_descs,
 		u32 kernel_index
 	) {
-		return H_nsl_utilities::apply_variable_like_macro(
-			src_content,
-			kernel_descs[kernel_index].name,
-			"main"
-		);
+//		return H_nsl_utilities::apply_variable_like_macro(
+//			src_content,
+//			kernel_descs[kernel_index].name,
+//			"main"
+//		);
+		return "";
 	}
 
 	TU<A_shader_blob> F_nsl_shader_compiler::compile_processed_source(
@@ -526,8 +210,7 @@ namespace nrhi {
 
 	TU<A_shader_class> F_nsl_shader_compiler::compile(
 		const G_string& src_content,
-		const G_string& abs_path,
-		const TG_span<F_shader_kernel_desc>& kernel_descs
+		const G_string& abs_path
 	) {
 
 		return null;

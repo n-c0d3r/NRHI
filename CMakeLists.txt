@@ -5,7 +5,11 @@ cmake_minimum_required(VERSION 3.12)
 #####################################################################################
 #   Project NRHI
 #####################################################################################
-project(nrhi LANGUAGES C CXX OBJC OBJCXX)
+if(APPLE)
+    project(nrhi LANGUAGES C CXX OBJC OBJCXX)
+else()
+    project(nrhi LANGUAGES C CXX)
+endif()
 
 
 
