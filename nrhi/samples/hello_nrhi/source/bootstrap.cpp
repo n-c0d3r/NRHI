@@ -256,33 +256,6 @@ int main() {
 		)
 	);
 
-	G_string s1 = (
-"\n"
-"NSL_VERTEX_SHADER(\n"
-"	VSMain\n"
-"	UseVSMain\n"
-")\n"
-"\n"
-"\n"
-"NSL_PIXEL_SHADER(\n"
-"	PSMain\n"
-"	UsePSMain\n"
-")\n"
-"\n"
-	);
-	G_string s2 = (
-"\n"
-"NSL_VERTEX_SHADER(\n"
-")\n"
-"\n"
-	);
-	H_nsl_tools::F_preprocessed_src preprocessed_src = H_nsl_tools::preprocess_src(s1);
-	auto str_opt = H_nsl_tools::find_kernel_definitions(preprocessed_src);
-	if(str_opt) {
-		auto str = str_opt.value();
-		str = str;
-	}
-
 	// create vertex shader from vertex shader blob
 	auto vshader_p = H_vertex_shader::create(
 		NCPP_FOREF_VALID(device_p),

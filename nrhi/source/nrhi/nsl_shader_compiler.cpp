@@ -67,7 +67,10 @@ namespace nrhi {
 		);
 	}
 
-	eastl::optional<TG_vector<H_nsl_utilities::F_info_tree>> H_nsl_utilities::build_info_trees(const G_string& src_content) {
+	eastl::optional<TG_vector<H_nsl_utilities::F_info_tree>> H_nsl_utilities::build_info_trees(
+		const G_string& src_content,
+		H_nsl_utilities::F_errors* errors_p
+	) {
 
 		TG_vector<F_info_tree> trees;
 
@@ -202,9 +205,12 @@ namespace nrhi {
 
 								G_string childs_src = src_content.substr(begin_arg_location + 1, end_arg_location - begin_arg_location - 2);
 
-								auto childs_opt = build_info_trees(childs_src);
+								auto childs_opt = build_info_trees(childs_src, errors_p);
 								if(!childs_opt)
+								{
+									NSL_PUSH_ERROR(src_content, "can't build childs: { " + childs_src + " }");
 									return eastl::nullopt;
+								}
 
 								childs = childs_opt.value();
 
@@ -229,7 +235,15 @@ namespace nrhi {
 					(end_name_location != src_length)
 					|| str_state.value
 				)
+				{
+					if(str_state.value) {
+						NSL_PUSH_ERROR(src_content, "string is not closed: " + src_content.substr(begin_name_location, src_length - begin_name_location));
+					}
+					else {
+						NSL_PUSH_ERROR(src_content, G_string("invalid character in variable name: '") + src_content[begin_name_location] + "'");
+					}
 					return eastl::nullopt;
+				}
 			}
 		}
 
@@ -590,7 +604,7 @@ namespace nrhi {
 	}
 	eastl::optional<TG_vector<H_nsl_tools::F_kernel_definition>> H_nsl_tools::find_kernel_definitions(
 		const H_nsl_tools::F_preprocessed_src& src,
-		G_string* error_p
+		H_nsl_utilities::F_errors* errors_p
 	) {
 		TG_vector<F_kernel_definition> kernel_definitions;
 
@@ -606,14 +620,13 @@ namespace nrhi {
 
 				const auto& use = nsl_vs_uses[i];
 
-				auto trees_opt = H_nsl_utilities::build_info_trees(use.arg);
+				auto trees_opt = H_nsl_utilities::build_info_trees(use.arg, errors_p);
 
 				if(trees_opt) {
 					const auto& trees = trees_opt.value();
 
 					if(trees.size() == 0) {
-						if(error_p)
-							*error_p = "vertex shader name is required";
+						NSL_PUSH_ERROR(src.content, "vertex shader name is required");
 						return eastl::nullopt;
 					}
 
@@ -633,8 +646,7 @@ namespace nrhi {
 					});
 				}
 				else {
-					if(error_p)
-						*error_p = "can't process vertex shader definition args: NSL_VERTEX_SHADER(" + use.arg + ")";
+					NSL_PUSH_ERROR(src.content, "can't process vertex shader definition args: NSL_VERTEX_SHADER(" + use.arg + ")");
 					return eastl::nullopt;
 				}
 			}
@@ -652,14 +664,13 @@ namespace nrhi {
 
 				const auto& use = nsl_vs_uses[i];
 
-				auto trees_opt = H_nsl_utilities::build_info_trees(use.arg);
+				auto trees_opt = H_nsl_utilities::build_info_trees(use.arg, errors_p);
 
 				if(trees_opt) {
 					const auto& trees = trees_opt.value();
 
 					if(trees.size() == 0) {
-						if(error_p)
-							*error_p = "pixel shader name is required";
+						NSL_PUSH_ERROR(src.content, "pixel shader name is required");
 						return eastl::nullopt;
 					}
 
@@ -679,8 +690,7 @@ namespace nrhi {
 					});
 				}
 				else {
-					if(error_p)
-						*error_p = "can't process pixel shader definition args: NSL_PIXEL_SHADER(" + use.arg + ")";
+					NSL_PUSH_ERROR(src.content, "can't process pixel shader definition args: NSL_PIXEL_SHADER(" + use.arg + ")");
 					return eastl::nullopt;
 				}
 			}
@@ -698,14 +708,13 @@ namespace nrhi {
 
 				const auto& use = nsl_vs_uses[i];
 
-				auto trees_opt = H_nsl_utilities::build_info_trees(use.arg);
+				auto trees_opt = H_nsl_utilities::build_info_trees(use.arg, errors_p);
 
 				if(trees_opt) {
 					const auto& trees = trees_opt.value();
 
 					if(trees.size() == 0) {
-						if(error_p)
-							*error_p = "compute shader name is required";
+						NSL_PUSH_ERROR(src.content, "compute shader name is required");
 						return eastl::nullopt;
 					}
 
@@ -725,8 +734,7 @@ namespace nrhi {
 					});
 				}
 				else {
-					if(error_p)
-						*error_p = "can't process compute shader definition args: NSL_COMPUTE_SHADER(" + use.arg + ")";
+					NSL_PUSH_ERROR(src.content, "can't process compute shader definition args: NSL_COMPUTE_SHADER(" + use.arg + ")");
 					return eastl::nullopt;
 				}
 			}

@@ -56,6 +56,12 @@ namespace nrhi {
 	class NRHI_API H_nsl_utilities {
 
 	public:
+		struct F_error {
+			G_string src_content;
+			G_string description;
+		};
+		using F_errors = TG_vector<F_error>;
+
 		struct NRHI_API F_str_state {
 
 			b8 value = false;
@@ -89,7 +95,10 @@ namespace nrhi {
 		static b8 is_variable_name_character(char c);
 
 	public:
-		static eastl::optional<TG_vector<F_info_tree>> build_info_trees(const G_string& src_content);
+		static eastl::optional<TG_vector<F_info_tree>> build_info_trees(
+			const G_string& src_content,
+			F_errors* errors_p = 0
+		);
 
 	public:
 		struct F_function_macro_use {
@@ -155,10 +164,12 @@ namespace nrhi {
 		};
 		static eastl::optional<TG_vector<F_kernel_definition>> find_kernel_definitions(
 			const F_preprocessed_src& src,
-			G_string* error_p = 0
+			H_nsl_utilities::F_errors* errors_p = 0
 		);
 
 	};
+
+#define NSL_PUSH_ERROR(src_content, ...) if(errors_p) errors_p->push_back({src_content, __VA_ARGS__})
 
 
 
