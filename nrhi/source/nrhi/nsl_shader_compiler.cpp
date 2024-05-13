@@ -69,7 +69,8 @@ namespace nrhi {
 
 	eastl::optional<TG_vector<H_nsl_utilities::F_info_tree>> H_nsl_utilities::build_info_trees(
 		const G_string& src_content,
-		H_nsl_utilities::F_errors* errors_p
+		sz location_offset_to_save,
+		H_nsl_utilities::F_error_stack* error_stack_p
 	) {
 
 		TG_vector<F_info_tree> trees;
@@ -98,13 +99,35 @@ namespace nrhi {
 
 			sz begin_name_location = i;
 			sz end_name_location = i;
+			sz begin_arg_location = i;
+			sz end_arg_location = i;
 
 			// name
 			while(
 				(i < src_length)
 			) {
 				if(
-					!is_variable_name_character(src_content[i])
+					!(
+						is_variable_name_character(src_content[i])
+						|| (src_content[i] == '.')
+						|| (src_content[i] == ':')
+						|| (src_content[i] == '>')
+						|| (src_content[i] == '<')
+						|| (src_content[i] == '+')
+						|| (src_content[i] == '-')
+						|| (src_content[i] == '*')
+						|| (src_content[i] == '/')
+						|| (src_content[i] == '\\')
+						|| (src_content[i] == '|')
+						|| (src_content[i] == '@')
+						|| (src_content[i] == '!')
+						|| (src_content[i] == '#')
+						|| (src_content[i] == '$')
+						|| (src_content[i] == '^')
+						|| (src_content[i] == '&')
+						|| (src_content[i] == ';')
+						|| (src_content[i] == '~')
+					)
 				) {
 					break;
 				}
@@ -176,10 +199,10 @@ namespace nrhi {
 					// if beginning of childs
 					if(src_content[t] == '{') {
 
-						i32 level = 0;
+						i32 level = 1;
 
-						sz begin_arg_location = t;
-						sz end_arg_location = begin_arg_location;
+						begin_arg_location = t + 1;
+						end_arg_location = begin_arg_location;
 
 						F_str_state arg_str_state;
 
@@ -202,21 +225,24 @@ namespace nrhi {
 
 							if(level == 0) {
 
-								end_arg_location = k + 1;
+								end_arg_location = k;
 
-								G_string childs_src = src_content.substr(begin_arg_location + 1, end_arg_location - begin_arg_location - 2);
+								G_string childs_src = src_content.substr(begin_arg_location, end_arg_location - begin_arg_location);
 
-								auto childs_opt = build_info_trees(childs_src, errors_p);
+								auto childs_opt = build_info_trees(childs_src, location_offset_to_save + begin_arg_location, error_stack_p);
 								if(!childs_opt)
 								{
-									NSL_PUSH_ERROR_INTERNAL(src_content, "can't build childs: { " + childs_src + " }");
+									NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+										error_stack_p,
+										location_offset_to_save + begin_arg_location, "can't build childs"
+									);
 									return eastl::nullopt;
 								}
 
 								childs = childs_opt.value();
 								child_src_content = std::move(childs_src);
 
-								i = end_arg_location;
+								i = end_arg_location + 1;
 								break;
 							}
 
@@ -229,7 +255,14 @@ namespace nrhi {
 				trees.push_back({
 					.name = name,
 					.childs = childs,
-					.child_src_content = child_src_content
+					.child_src_content = child_src_content,
+
+					.begin_location = location_offset_to_save + begin_name_location,
+					.end_location = location_offset_to_save + end_arg_location,
+					.begin_name_location = location_offset_to_save + begin_name_location,
+					.end_name_location = location_offset_to_save + end_name_location,
+					.begin_childs_location = location_offset_to_save + begin_arg_location,
+					.end_childs_location = location_offset_to_save + end_arg_location
 				});
 			}
 			else {
@@ -240,10 +273,18 @@ namespace nrhi {
 				)
 				{
 					if(str_state.value) {
-						NSL_PUSH_ERROR_INTERNAL(src_content, "string is not closed: " + src_content.substr(begin_name_location, src_length - begin_name_location));
+						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+							error_stack_p,
+							location_offset_to_save + begin_name_location,
+							"string is not closed: " + src_content.substr(begin_name_location, src_length - begin_name_location)
+						);
 					}
 					else {
-						NSL_PUSH_ERROR_INTERNAL(src_content, G_string("invalid character in variable name: '") + src_content[begin_name_location] + "'");
+						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+							error_stack_p,
+							location_offset_to_save + begin_name_location,
+							G_string("invalid character in variable name: '") + src_content[begin_name_location] + "'")
+						;
 					}
 					return eastl::nullopt;
 				}
@@ -317,9 +358,9 @@ namespace nrhi {
 
 							if(src_content[t] == '(') {
 
-								i32 level = 0;
+								i32 level = 1;
 
-								sz begin_arg_location = t;
+								sz begin_arg_location = t + 1;
 								sz end_arg_location = begin_arg_location;
 
 								F_str_state arg_str_state;
@@ -343,15 +384,19 @@ namespace nrhi {
 
 									if(level == 0) {
 
-										end_arg_location = k + 1;
+										end_arg_location = k;
 
 										result.push_back({
+											.name = macro_name,
+											.arg = src_content.substr(begin_arg_location, end_arg_location - begin_arg_location),
+
 											.begin_location = i,
 											.end_location = end_arg_location,
-											.arg = src_content.substr(begin_arg_location + 1, end_arg_location - begin_arg_location - 2)
+											.begin_arg_location = begin_arg_location,
+											.end_arg_location = end_arg_location
 										});
 
-										i = end_arg_location;
+										i = end_arg_location + 1;
 
 										goto NRHI_NEXT_CHARACTER_CHECK;
 									}
@@ -376,15 +421,13 @@ namespace nrhi {
 	}
 	G_string H_nsl_utilities::apply_function_macro_uses(
 		const G_string& src_content,
-		const G_string& macro_name,
-		const F_function_macro_result_functor& macro_result_functor,
-		const TG_vector<F_function_macro_use>& uses
+		const TG_vector<F_function_macro_use>& uses,
+		const F_function_macro_result_functor& macro_result_functor
 	) {
 		G_string result;
 		result.reserve(src_content.length());
 
 		sz src_length = src_content.length();
-		sz macro_name_length = macro_name.length();
 
 		sz begin_location = 0;
 		for(const auto& use : uses) {
@@ -404,7 +447,7 @@ namespace nrhi {
 		const G_string& src_content,
 		const G_string& macro_name
 	) {
-		TG_vector<sz> result;
+		TG_vector<F_variable_macro_use> result;
 
 		sz src_length = src_content.length();
 
@@ -445,7 +488,11 @@ namespace nrhi {
 
 					if(is_left_correct && is_right_correct) {
 
-						result.push_back(i);
+						result.push_back({
+							.name = macro_name,
+							.begin_location = i,
+							.end_location = i + macro_name.length()
+						});
 
 						i = j_end;
 						continue;
@@ -461,23 +508,21 @@ namespace nrhi {
 	}
 	G_string H_nsl_utilities::apply_variable_macro_uses(
 		const G_string& src_content,
-		const G_string& macro_name,
-		const G_string& macro_result,
-		const TG_vector<H_nsl_utilities::F_variable_macro_use>& uses
+		const TG_vector<F_variable_macro_use>& uses,
+		const F_variable_macro_result_functor& macro_result_functor
 	) {
 		G_string result;
 		result.reserve(src_content.length());
 
 		sz src_length = src_content.length();
-		sz macro_name_length = macro_name.length();
 
 		sz begin_location = 0;
-		for(sz index : uses) {
+		for(const auto& use : uses) {
 
-			result += src_content.substr(begin_location, index - begin_location);
-			result += macro_result;
+			result += src_content.substr(begin_location, use.begin_location - begin_location);
+			result += macro_result_functor(use);
 
-			begin_location = index + macro_name_length;
+			begin_location = use.end_location;
 		}
 
 		result += src_content.substr(begin_location, src_length - begin_location);
@@ -538,12 +583,18 @@ namespace nrhi {
 		);
 	}
 
-	G_string H_nsl_utilities::remove_comments(const G_string& src_content) {
+	eastl::optional<TG_pack<G_string, TG_vector<sz>>> H_nsl_utilities::remove_comments(
+		const G_string& src_content,
+		F_error_stack* error_stack_p
+	)
+	{
 
 		sz src_length = src_content.length();
 
 		G_string result;
 		result.reserve(src_length);
+		TG_vector<sz> locations;
+		locations.reserve(src_length);
 
 		b8 is_in_comment_1 = false;
 		b8 is_in_comment_2 = false;
@@ -573,13 +624,17 @@ namespace nrhi {
 			is_in_comment = (is_in_comment_1 || is_in_comment_2);
 
 			if(!is_in_comment)
+			{
 				result.push_back(src_content[i]);
+				locations.push_back(i);
+			}
 
 			if(is_in_comment_1) {
 
 				if(src_content[i] == '\n')
 				{
 					result.push_back('\n');
+					locations.push_back(i);
 					is_in_comment_1 = false;
 				}
 			}
@@ -594,14 +649,83 @@ namespace nrhi {
 			}
 		}
 
-		return std::move(result);
+		if(is_in_comment_2) {
+
+			if(error_stack_p)
+				error_stack_p->push({
+					"multi-line comment is not closed"
+					-1,
+					src_length,
+				});
+
+			return eastl::nullopt;
+		}
+
+		return TG_pack<G_string, TG_vector<sz>> {
+			std::move(result),
+			std::move(locations)
+		};
 	}
 
 
 
+	b8 H_nsl_tools::check_kernel_definition(
+		const F_preprocessed_src& src,
+		const H_nsl_tools::F_kernel_definition& kernel_definition
+	) {
+		const auto& use = kernel_definition.use;
+		const auto& info_tree = kernel_definition.info_tree;
+
+		switch (kernel_definition.shader_type)
+		{
+			case E_shader_type::VERTEX:
+			{
+				if(info_tree.childs.size()) {
+
+					NSL_PUSH_ERROR_TO_SRC_INTERNAL(
+						src,
+						info_tree.begin_childs_location,
+						"vertex shader does not allow any additional info"
+					);
+
+					return false;
+				}
+				break;
+			}
+			case E_shader_type::PIXEL:
+			{
+				if(info_tree.childs.size()) {
+
+					NSL_PUSH_ERROR_TO_SRC_INTERNAL(
+						src,
+						info_tree.begin_childs_location,
+						"pixel shader does not allow any additional info"
+					);
+
+					return false;
+				}
+				break;
+			}
+			case E_shader_type::COMPUTE:
+			{
+				if(info_tree.childs.size()) {
+
+					NSL_PUSH_ERROR_TO_SRC_INTERNAL(
+						src,
+						info_tree.begin_childs_location,
+						"compute shader does not allow any additional info"
+					);
+
+					return false;
+				}
+				break;
+			}
+		}
+
+		return true;
+	}
 	eastl::optional<TG_vector<H_nsl_tools::F_kernel_definition>> H_nsl_tools::find_kernel_definitions(
-		const H_nsl_tools::F_preprocessed_src& src,
-		H_nsl_utilities::F_errors* errors_p
+		const H_nsl_tools::F_preprocessed_src& src
 	) {
 		TG_vector<F_kernel_definition> kernel_definitions;
 
@@ -617,13 +741,17 @@ namespace nrhi {
 
 				const auto& use = nsl_vs_uses[i];
 
-				auto trees_opt = H_nsl_utilities::build_info_trees(use.arg, errors_p);
+				auto trees_opt = H_nsl_utilities::build_info_trees(use.arg, use.begin_arg_location, &(src.error_stack));
 
 				if(trees_opt) {
 					const auto& trees = trees_opt.value();
 
 					if(trees.size() == 0) {
-						NSL_PUSH_ERROR_INTERNAL(src.content, "vertex shader name is required");
+						NSL_PUSH_ERROR_TO_SRC_INTERNAL(
+							src,
+							use.begin_location,
+							"vertex shader name is required"
+						);
 						return eastl::nullopt;
 					}
 
@@ -643,7 +771,11 @@ namespace nrhi {
 					});
 				}
 				else {
-					NSL_PUSH_ERROR_INTERNAL(src.content, "can't process vertex shader definition args: NSL_VERTEX_SHADER(" + use.arg + ")");
+					NSL_PUSH_ERROR_TO_SRC_INTERNAL(
+						src,
+						use.begin_location,
+						"can't process vertex shader definition args"
+					);
 					return eastl::nullopt;
 				}
 			}
@@ -661,13 +793,17 @@ namespace nrhi {
 
 				const auto& use = nsl_vs_uses[i];
 
-				auto trees_opt = H_nsl_utilities::build_info_trees(use.arg, errors_p);
+				auto trees_opt = H_nsl_utilities::build_info_trees(use.arg, use.begin_arg_location, &(src.error_stack));
 
 				if(trees_opt) {
 					const auto& trees = trees_opt.value();
 
 					if(trees.size() == 0) {
-						NSL_PUSH_ERROR_INTERNAL(src.content, "pixel shader name is required");
+						NSL_PUSH_ERROR_TO_SRC_INTERNAL(
+							src,
+							use.begin_location,
+							"pixel shader name is required"
+						);
 						return eastl::nullopt;
 					}
 
@@ -687,7 +823,11 @@ namespace nrhi {
 					});
 				}
 				else {
-					NSL_PUSH_ERROR_INTERNAL(src.content, "can't process pixel shader definition args: NSL_PIXEL_SHADER(" + use.arg + ")");
+					NSL_PUSH_ERROR_TO_SRC_INTERNAL(
+						src,
+						use.begin_location,
+						"can't process pixel shader definition args"
+					);
 					return eastl::nullopt;
 				}
 			}
@@ -705,13 +845,17 @@ namespace nrhi {
 
 				const auto& use = nsl_vs_uses[i];
 
-				auto trees_opt = H_nsl_utilities::build_info_trees(use.arg, errors_p);
+				auto trees_opt = H_nsl_utilities::build_info_trees(use.arg, use.begin_arg_location, &(src.error_stack));
 
 				if(trees_opt) {
 					const auto& trees = trees_opt.value();
 
 					if(trees.size() == 0) {
-						NSL_PUSH_ERROR_INTERNAL(src.content, "compute shader name is required");
+						NSL_PUSH_ERROR_TO_SRC_INTERNAL(
+							src,
+							use.begin_location,
+							"compute shader name is required"
+						);
 						return eastl::nullopt;
 					}
 
@@ -731,9 +875,28 @@ namespace nrhi {
 					});
 				}
 				else {
-					NSL_PUSH_ERROR_INTERNAL(src.content, "can't process compute shader definition args: NSL_COMPUTE_SHADER(" + use.arg + ")");
+					NSL_PUSH_ERROR_TO_SRC_INTERNAL(
+						src,
+						use.begin_location,
+						"can't process compute shader definition args"
+					);
 					return eastl::nullopt;
 				}
+			}
+		}
+
+		// check kernel definitions
+		for(const auto& kernel_definition : kernel_definitions) {
+
+			if(!check_kernel_definition(src, kernel_definition)) {
+
+				NSL_PUSH_ERROR_TO_SRC_INTERNAL(
+					src,
+					kernel_definition.use.begin_location,
+					"invalid kernel definition"
+				);
+
+				return eastl::nullopt;
 			}
 		}
 
@@ -767,8 +930,7 @@ namespace nrhi {
 
 	eastl::optional<G_string> F_nsl_shader_compiler::apply_kernel_definition(
 		const H_nsl_tools::F_preprocessed_src& src,
-		const H_nsl_tools::F_kernel_definition& kernel_definition,
-		H_nsl_utilities::F_errors* errors_p
+		const H_nsl_tools::F_kernel_definition& kernel_definition
 	) {
 		NCPP_ASSERT(kernel_definition.shader_type != E_shader_type::NONE) << "invalid kernel definition shader type";
 
@@ -793,7 +955,7 @@ namespace nrhi {
 
 		result = H_nsl_utilities::apply_function_macro_uses(
 			src.content,
-			macro_name,
+			{ kernel_definition.use },
 			[&result, &kernel_definition, &macro_definitions](const H_nsl_utilities::F_function_macro_use& use) -> G_string {
 
 				for(const auto& macro_definition_tree : kernel_definition.macro_definition_trees) {
@@ -812,8 +974,7 @@ namespace nrhi {
 				}
 
 				return "void main";
-			},
-			{ kernel_definition.use }
+			}
 		);
 
 		if(!is_success) {
@@ -827,22 +988,38 @@ namespace nrhi {
 
 	eastl::optional<H_nsl_tools::F_preprocessed_src> F_nsl_shader_compiler::include_src(
 		const H_nsl_tools::F_preprocessed_src& current_src,
-		const G_string& path,
-		H_nsl_utilities::F_errors* errors_p
+		const G_string& path
 	) {
 		return eastl::nullopt;
 	}
 	eastl::optional<H_nsl_tools::F_preprocessed_src> F_nsl_shader_compiler::preprocess_src(
 		const G_string& src_content,
 		const G_string& abs_path,
-		H_nsl_utilities::F_errors* errors_p
+		H_nsl_utilities::F_error_stack* error_stack_p
 	) {
-		G_string comment_removed_src_content = H_nsl_utilities::remove_comments(src_content);
+		auto comment_removed_src_opt = H_nsl_utilities::remove_comments(src_content, error_stack_p);
 
-		return H_nsl_tools::F_preprocessed_src {
-			.content = comment_removed_src_content,
-			.abs_path = abs_path
-		};
+		if(comment_removed_src_opt) {
+
+			auto comment_removed_src = comment_removed_src_opt.value();
+
+			return H_nsl_tools::F_preprocessed_src {
+				.content = comment_removed_src.first(),
+				.locations = comment_removed_src.second(),
+				.abs_path = abs_path
+			};
+		}
+		else {
+
+			if(error_stack_p)
+				error_stack_p->push({
+					"can't remove comments"
+					-1,
+					0
+				});
+
+			return eastl::nullopt;
+		}
 	}
 
 }
