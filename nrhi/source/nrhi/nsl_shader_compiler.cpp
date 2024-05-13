@@ -548,13 +548,12 @@ namespace nrhi {
 		F_nsl_error_stack* error_stack_p
 	)
 	{
-
 		sz src_length = src_content.length();
 
 		G_string result;
 		result.reserve(src_length);
-		TG_vector<sz> locations;
-		locations.reserve(src_length);
+		TG_vector<sz> raw_locations;
+		raw_locations.reserve(src_length);
 
 		b8 is_in_comment_1 = false;
 		b8 is_in_comment_2 = false;
@@ -586,7 +585,7 @@ namespace nrhi {
 			if(!is_in_comment)
 			{
 				result.push_back(src_content[i]);
-				locations.push_back(i);
+				raw_locations.push_back(i);
 			}
 
 			if(is_in_comment_1) {
@@ -594,7 +593,7 @@ namespace nrhi {
 				if(src_content[i] == '\n')
 				{
 					result.push_back('\n');
-					locations.push_back(i);
+					raw_locations.push_back(i);
 					is_in_comment_1 = false;
 				}
 			}
@@ -623,70 +622,156 @@ namespace nrhi {
 
 		return TG_pack<G_string, TG_vector<sz>> {
 			std::move(result),
-			std::move(locations)
+			std::move(raw_locations)
 		};
 	}
 
 
 
-	F_nsl_shader_header_loader::F_nsl_shader_header_loader() {
+	F_nsl_shader_module_loader::F_nsl_shader_module_loader(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
+		shader_compiler_p_(shader_compiler_p)
+	{
 	}
-	F_nsl_shader_header_loader::~F_nsl_shader_header_loader() {
+	F_nsl_shader_module_loader::~F_nsl_shader_module_loader() {
 	}
 
-	eastl::optional<G_string> F_nsl_shader_header_loader::load(const G_string& path)
+	eastl::optional<G_string> F_nsl_shader_module_loader::load_src_content(
+		TKPA_valid<F_nsl_translation_unit> from_unit_p,
+		const G_string& path
+	)
 	{
 		return eastl::nullopt;
+	}
+	TU<F_nsl_translation_unit> F_nsl_shader_module_loader::load(
+		TKPA_valid<F_nsl_translation_unit> from_unit_p,
+		const G_string& path
+	)
+	{
+		return null;
+	}
+
+
+
+	F_nsl_translation_unit::F_nsl_translation_unit(
+		TKPA_valid <nrhi::F_nsl_shader_compiler> shader_compiler_p,
+		const ncpp::containers::G_string& raw_src_content,
+		const ncpp::containers::G_string& abs_path,
+		const F_nsl_preprocessed_src& preprocessed_src
+	) :
+		shader_compiler_p_(shader_compiler_p),
+		raw_src_content_(raw_src_content),
+		abs_path_(abs_path),
+		preprocessed_src_(preprocessed_src)
+	{
+	}
+	F_nsl_translation_unit::~F_nsl_translation_unit() {
+	}
+
+
+
+	F_nsl_translation_unit_manager::F_nsl_translation_unit_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
+		shader_compiler_p_(shader_compiler_p)
+	{
+	}
+	F_nsl_translation_unit_manager::~F_nsl_translation_unit_manager() {
+	}
+
+	TU<F_nsl_translation_unit> F_nsl_translation_unit_manager::create_unit_instance(
+		const G_string& raw_src_content,
+		const G_string& abs_path,
+		const F_nsl_preprocessed_src& preprocessed_src
+	) {
+		return TU<F_nsl_translation_unit>()(
+			shader_compiler_p(),
+			raw_src_content,
+			abs_path,
+			preprocessed_src
+		);
+	}
+
+	TU<F_nsl_translation_unit> F_nsl_translation_unit_manager::create_unit(
+		const G_string& raw_src_content,
+		const G_string& abs_path,
+		F_nsl_error_stack* error_stack_p
+	) {
+		auto comment_removed_src_content_opt = H_nsl_utilities::remove_comments(raw_src_content, error_stack_p);
+
+		if(comment_removed_src_content_opt) {
+			const auto& comment_removed_src_content = comment_removed_src_content_opt.value();
+
+			F_nsl_preprocessed_src preprocessed_src = {
+				.content = comment_removed_src_content.first(),
+				.raw_locations = comment_removed_src_content.second(),
+				.abs_path = abs_path
+			};
+
+			return create_unit_instance(
+				raw_src_content,
+				abs_path,
+				preprocessed_src
+			);
+		}
+		else {
+			if(error_stack_p)
+				error_stack_p->push({
+					"can't preprocess source"
+					-1,
+					raw_src_content.length()
+				});
+			return null;
+		}
 	}
 
 
 
 	F_nsl_shader_compiler::F_nsl_shader_compiler() :
-		header_loader_p_(TU<F_nsl_shader_header_loader>()())
+		module_loader_p_(
+			TU<F_nsl_shader_module_loader>()(NCPP_KTHIS())
+		),
+		translation_unit_manager_p_(
+			TU<F_nsl_translation_unit_manager>()(NCPP_KTHIS())
+		)
 	{
 	}
-	F_nsl_shader_compiler::F_nsl_shader_compiler(TU<F_nsl_shader_header_loader>&& header_loader_p) :
-		header_loader_p_(std::move(header_loader_p))
+	F_nsl_shader_compiler::F_nsl_shader_compiler(
+		TU<F_nsl_shader_module_loader>&& module_loader_p,
+		TU<F_nsl_translation_unit_manager>&& translation_unit_manager_p
+	) :
+		module_loader_p_(std::move(module_loader_p)),
+		translation_unit_manager_p_(std::move(translation_unit_manager_p))
 	{
 	}
 	F_nsl_shader_compiler::~F_nsl_shader_compiler() {
 	}
 
-	eastl::optional<F_nsl_preprocessed_src> F_nsl_shader_compiler::include_src(
-		const F_nsl_preprocessed_src& current_src,
-		const G_string& path,
-		F_nsl_error_stack* error_stack_p
-	) {
-		return eastl::nullopt;
-	}
-	eastl::optional<F_nsl_preprocessed_src> F_nsl_shader_compiler::preprocess_src(
-		const G_string& src_content,
-		const G_string& abs_path,
-		F_nsl_error_stack* error_stack_p
-	) {
-		auto comment_removed_src_opt = H_nsl_utilities::remove_comments(src_content, error_stack_p);
-
-		if(comment_removed_src_opt) {
-
-			auto comment_removed_src = comment_removed_src_opt.value();
-
-			return F_nsl_preprocessed_src {
-				.content = comment_removed_src.first(),
-				.locations = comment_removed_src.second(),
-				.abs_path = abs_path
-			};
-		}
-		else {
-
-			if(error_stack_p)
-				error_stack_p->push({
-					"can't remove comments"
-					-1,
-					0
-				});
-
-			return eastl::nullopt;
-		}
-	}
+//	eastl::optional<F_nsl_preprocessed_src> F_nsl_shader_compiler::preprocess_src(
+//		const G_string& src_content,
+//		const G_string& abs_path,
+//		F_nsl_error_stack* error_stack_p
+//	) {
+//		auto comment_removed_src_opt = H_nsl_utilities::remove_comments(src_content, error_stack_p);
+//
+//		if(comment_removed_src_opt) {
+//
+//			auto comment_removed_src = comment_removed_src_opt.value();
+//
+//			return F_nsl_preprocessed_src {
+//				.content = comment_removed_src.first(),
+//				.raw_locations = comment_removed_src.second(),
+//				.abs_path = abs_path
+//			};
+//		}
+//		else {
+//
+//			if(error_stack_p)
+//				error_stack_p->push({
+//					"can't remove comments"
+//					-1,
+//					0
+//				});
+//
+//			return eastl::nullopt;
+//		}
+//	}
 
 }

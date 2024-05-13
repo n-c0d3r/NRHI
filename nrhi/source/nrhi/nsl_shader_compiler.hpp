@@ -45,6 +45,11 @@ namespace nrhi {
 	class A_shader;
 	class A_shader_class;
 
+	class F_nsl_shader_compiler;
+	class F_nsl_shader_module_loader;
+	class F_nsl_translation_unit;
+	class F_nsl_translation_unit_manager;
+
 
 
 	struct F_nsl_error {
@@ -150,7 +155,7 @@ namespace nrhi {
 	struct F_nsl_preprocessed_src {
 
 		G_string content;
-		TG_vector<sz> locations;
+		TG_vector<sz> raw_locations;
 		G_string abs_path;
 		mutable F_nsl_error_stack error_stack;
 
@@ -165,17 +170,106 @@ namespace nrhi {
 
 
 
-	class NRHI_API F_nsl_shader_header_loader {
+	class NRHI_API F_nsl_shader_module_loader {
+
+	private:
+		TK_valid<F_nsl_shader_compiler> shader_compiler_p_;
 
 	public:
-		F_nsl_shader_header_loader();
-		~F_nsl_shader_header_loader();
+		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
+
+
 
 	public:
-		NCPP_DISABLE_COPY(F_nsl_shader_header_loader);
+		F_nsl_shader_module_loader(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p);
+		~F_nsl_shader_module_loader();
 
 	public:
-		virtual eastl::optional<G_string> load(const G_string& path);
+		NCPP_DISABLE_COPY(F_nsl_shader_module_loader);
+
+	public:
+		virtual eastl::optional<G_string> load_src_content(
+			TKPA_valid<F_nsl_translation_unit> from_unit_p,
+			const G_string& path
+		);
+		virtual TU<F_nsl_translation_unit> load(
+			TKPA_valid<F_nsl_translation_unit> from_unit_p,
+			const G_string& path
+		);
+
+	};
+
+
+
+	class NRHI_API F_nsl_translation_unit {
+
+	private:
+		TK_valid<F_nsl_shader_compiler> shader_compiler_p_;
+
+		G_string raw_src_content_;
+		G_string abs_path_;
+		F_nsl_preprocessed_src preprocessed_src_;
+
+	public:
+		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
+
+		NCPP_FORCE_INLINE const G_string& raw_src_content() const noexcept { return raw_src_content_; }
+		NCPP_FORCE_INLINE const G_string& abs_path() const noexcept { return abs_path_; }
+		NCPP_FORCE_INLINE const F_nsl_preprocessed_src& preprocessed_src() const noexcept { return preprocessed_src_; }
+
+
+
+	public:
+		F_nsl_translation_unit(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			const G_string& raw_src_content,
+			const G_string& abs_path,
+			const F_nsl_preprocessed_src& preprocessed_src
+		);
+		~F_nsl_translation_unit();
+
+	public:
+		NCPP_DISABLE_COPY(F_nsl_translation_unit);
+
+	};
+
+
+
+	class NRHI_API F_nsl_translation_unit_manager {
+
+	public:
+		using F_unit_p_map = TG_unordered_map<G_string, TU<F_nsl_translation_unit>>;
+
+
+
+	private:
+		TK_valid<F_nsl_shader_compiler> shader_compiler_p_;
+
+	public:
+		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
+
+
+
+	public:
+		F_nsl_translation_unit_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p);
+		~F_nsl_translation_unit_manager();
+
+	public:
+		NCPP_DISABLE_COPY(F_nsl_translation_unit_manager);
+
+	protected:
+		virtual TU<F_nsl_translation_unit> create_unit_instance(
+			const G_string& raw_src_content,
+			const G_string& abs_path,
+			const F_nsl_preprocessed_src& preprocessed_src
+		);
+
+	public:
+		virtual TU<F_nsl_translation_unit> create_unit(
+			const G_string& raw_src_content,
+			const G_string& abs_path,
+			F_nsl_error_stack* error_stack_p = 0
+		);
 
 	};
 
@@ -184,34 +278,25 @@ namespace nrhi {
 	class NRHI_API F_nsl_shader_compiler {
 
 	private:
-		TU<F_nsl_shader_header_loader> header_loader_p_;
+		TU<F_nsl_shader_module_loader> module_loader_p_;
+		TU<F_nsl_translation_unit_manager> translation_unit_manager_p_;
 
 	public:
-		NCPP_FORCE_INLINE TK_valid<F_nsl_shader_header_loader> header_loader_p() const noexcept { return NCPP_FOH_VALID(header_loader_p_); }
+		NCPP_FORCE_INLINE TK_valid<F_nsl_shader_module_loader> module_loader_p() const noexcept { return NCPP_FOH_VALID(module_loader_p_); }
+		NCPP_FORCE_INLINE TK_valid<F_nsl_translation_unit_manager> translation_unit_manager_p() const noexcept { return NCPP_FOH_VALID(translation_unit_manager_p_); }
 
 
 
 	public:
 		F_nsl_shader_compiler();
-		F_nsl_shader_compiler(TU<F_nsl_shader_header_loader>&& header_loader_p);
+		F_nsl_shader_compiler(
+			TU<F_nsl_shader_module_loader>&& module_loader_p,
+			TU<F_nsl_translation_unit_manager>&& translation_unit_manager_p
+		);
 		~F_nsl_shader_compiler();
 
 	public:
 		NCPP_DISABLE_COPY(F_nsl_shader_compiler);
-
-	public:
-		eastl::optional<F_nsl_preprocessed_src> include_src(
-			const F_nsl_preprocessed_src& current_src,
-			const G_string& path,
-			F_nsl_error_stack* error_stack_p
-		);
-
-	public:
-		virtual eastl::optional<F_nsl_preprocessed_src> preprocess_src(
-			const G_string& src_content,
-			const G_string& abs_path,
-			F_nsl_error_stack* error_stack_p = 0
-		);
 
 	};
 

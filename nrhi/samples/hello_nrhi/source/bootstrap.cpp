@@ -264,13 +264,15 @@ int main() {
 	);
 
 	auto compiler_p = TU<F_nsl_shader_compiler>()();
-	auto src = compiler_p->preprocess_src(
+	auto translation_unit_manager_p = compiler_p->translation_unit_manager_p();
+	auto translation_unit_p = translation_unit_manager_p->create(
 		str,
 		""
 	);
 
 	auto uses_opt = H_nsl_utilities::find_uses(
-		src->content
+		translation_unit_p->preprocessed_src().content,
+		&(translation_unit_p->preprocessed_src().error_stack)
 	);
 
 	if(uses_opt) {
