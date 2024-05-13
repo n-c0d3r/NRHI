@@ -4,7 +4,7 @@
 
 namespace nrhi {
 
-	void H_nsl_utilities::F_str_state::begin_check(char c) {
+	void F_nsl_str_state::begin_check(char c) {
 
 		if(!value) {
 			if(c == '\'')
@@ -35,7 +35,7 @@ namespace nrhi {
 			}
 		}
 	}
-	void H_nsl_utilities::F_str_state::end_check() {
+	void F_nsl_str_state::end_check() {
 
 		value = next_value;
 		value_1 = next_value_1;
@@ -136,7 +136,7 @@ namespace nrhi {
 			b8 is_name_found = (i != begin_name_location);
 
 			b8 is_name_as_str = false;
-			F_str_state str_state;
+			F_nsl_str_state str_state;
 
 			if(is_name_found) {
 				end_name_location = i;
@@ -204,7 +204,7 @@ namespace nrhi {
 						begin_arg_location = t + 1;
 						end_arg_location = begin_arg_location;
 
-						F_str_state arg_str_state;
+						F_nsl_str_state arg_str_state;
 
 						sz k = begin_arg_location;
 						for(; k < src_length; ++k) {
@@ -306,7 +306,7 @@ namespace nrhi {
 		if(src_length < 2)
 			return {};
 
-		F_str_state str_state;
+		F_nsl_str_state str_state;
 		for(sz i = 0; i < src_length;) {
 
 			str_state.begin_check(src_content[i]);
@@ -376,7 +376,7 @@ namespace nrhi {
 								sz begin_arg_location = t + 1;
 								sz end_arg_location = begin_arg_location;
 
-								F_str_state arg_str_state;
+								F_nsl_str_state arg_str_state;
 
 								// check for function-like use
 								sz k = begin_arg_location;

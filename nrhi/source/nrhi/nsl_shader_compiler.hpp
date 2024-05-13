@@ -86,33 +86,29 @@ namespace nrhi {
 
 	};
 
+	struct NRHI_API F_nsl_str_state {
+
+		b8 value = false;
+		b8 value_1 = false; // for '
+		b8 value_2 = false; // for "
+
+		b8 next_value = false;
+		b8 next_value_1 = false; // for '
+		b8 next_value_2 = false; // for "
+
+		b8 prev_value = false;
+		b8 prev_value_1 = false; // for '
+		b8 prev_value_2 = false; // for "
+
+	public:
+		void begin_check(char c);
+		void end_check();
+
+	};
+
 
 
 	class NRHI_API H_nsl_utilities {
-
-	public:
-
-		struct NRHI_API F_str_state {
-
-			b8 value = false;
-			b8 value_1 = false; // for '
-			b8 value_2 = false; // for "
-
-			b8 next_value = false;
-			b8 next_value_1 = false; // for '
-			b8 next_value_2 = false; // for "
-
-			b8 prev_value = false;
-			b8 prev_value_1 = false; // for '
-			b8 prev_value_2 = false; // for "
-
-		public:
-			void begin_check(char c);
-			void end_check();
-
-		};
-
-
 
 	public:
 		static b8 is_variable_name_character(char c);
