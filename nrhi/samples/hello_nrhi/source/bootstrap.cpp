@@ -256,28 +256,6 @@ int main() {
 		)
 	);
 
-	auto compiler_p = TU<F_nsl_shader_compiler>()();
-
-	G_string str(
-"\n"
-"NSL_VERTEX_SHADER(VSMain #123)\n"
-"\n"
-	);
-	auto src = compiler_p->preprocess_src(
-		str,
-		""
-	).value();
-
-	auto kernel_definitions_opt = H_nsl_tools::find_kernel_definitions(src);
-
-	if(kernel_definitions_opt) {
-		auto kernel_definitions = kernel_definitions_opt.value();
-		int a = 5;
-	}
-	else {
-		int a = 5;
-	}
-
 	// create vertex shader from vertex shader blob
 	auto vshader_p = H_vertex_shader::create(
 		NCPP_FOREF_VALID(device_p),

@@ -258,7 +258,7 @@ namespace nrhi {
 					.child_src_content = child_src_content,
 
 					.begin_location = location_offset_to_save + begin_name_location,
-					.end_location = location_offset_to_save + end_arg_location,
+					.end_location = location_offset_to_save + end_arg_location + 1,
 					.begin_name_location = location_offset_to_save + begin_name_location,
 					.end_name_location = location_offset_to_save + end_name_location,
 					.begin_childs_location = location_offset_to_save + begin_arg_location,
@@ -391,7 +391,7 @@ namespace nrhi {
 											.arg = src_content.substr(begin_arg_location, end_arg_location - begin_arg_location),
 
 											.begin_location = i,
-											.end_location = end_arg_location,
+											.end_location = end_arg_location + 1,
 											.begin_arg_location = begin_arg_location,
 											.end_arg_location = end_arg_location
 										});
@@ -430,12 +430,14 @@ namespace nrhi {
 		sz src_length = src_content.length();
 
 		sz begin_location = 0;
+		sz index = 0;
 		for(const auto& use : uses) {
 
 			result += src_content.substr(begin_location, use.begin_location - begin_location);
-			result += macro_result_functor(use);
+			result += macro_result_functor(use, index);
 
 			begin_location = use.end_location;
+			++index;
 		}
 
 		result += src_content.substr(begin_location, src_length - begin_location);
@@ -517,12 +519,14 @@ namespace nrhi {
 		sz src_length = src_content.length();
 
 		sz begin_location = 0;
+		sz index = 0;
 		for(const auto& use : uses) {
 
 			result += src_content.substr(begin_location, use.begin_location - begin_location);
-			result += macro_result_functor(use);
+			result += macro_result_functor(use, index);
 
 			begin_location = use.end_location;
+			++index;
 		}
 
 		result += src_content.substr(begin_location, src_length - begin_location);
@@ -675,7 +679,9 @@ namespace nrhi {
 	) {
 		const auto& use = kernel_definition.use;
 		const auto& info_tree = kernel_definition.info_tree;
+		const auto& macro_definition_trees = kernel_definition.macro_definition_trees;
 
+		// check info tree
 		switch (kernel_definition.shader_type)
 		{
 			case E_shader_type::VERTEX:
@@ -719,6 +725,27 @@ namespace nrhi {
 					return false;
 				}
 				break;
+			}
+		}
+
+		// check macro_definition_trees
+		for(const auto& macro_definition_tree : macro_definition_trees) {
+
+			sz i = 0;
+			for(auto c : macro_definition_tree.name) {
+
+				if(
+					!(H_nsl_utilities::is_variable_name_character(c))
+				) {
+					NSL_PUSH_ERROR_TO_SRC_INTERNAL(
+						src,
+						macro_definition_tree.begin_name_location,
+						G_string("invalid name character '") + src.content[macro_definition_tree.begin_name_location + i] + "'"
+					);
+					return false;
+				}
+
+				++i;
 			}
 		}
 
@@ -928,35 +955,27 @@ namespace nrhi {
 	F_nsl_shader_compiler::~F_nsl_shader_compiler() {
 	}
 
-	eastl::optional<G_string> F_nsl_shader_compiler::apply_kernel_definition(
+	eastl::optional<G_string> F_nsl_shader_compiler::apply_kernel_definitions(
 		const H_nsl_tools::F_preprocessed_src& src,
-		const H_nsl_tools::F_kernel_definition& kernel_definition
+		const TG_vector<H_nsl_tools::F_kernel_definition>& kernel_definitions
 	) {
-		NCPP_ASSERT(kernel_definition.shader_type != E_shader_type::NONE) << "invalid kernel definition shader type";
-
 		G_string result;
 		G_string macro_definitions;
 
-		G_string macro_name;
-		switch (kernel_definition.shader_type)
-		{
-		case E_shader_type::VERTEX:
-			macro_name = NSL_VERTEX_SHADER_DEFINITION_MACRO_NAME;
-			break;
-		case E_shader_type::PIXEL:
-			macro_name = NSL_PIXEL_SHADER_DEFINITION_MACRO_NAME;
-			break;
-		case E_shader_type::COMPUTE:
-			macro_name = NSL_COMPUTE_SHADER_DEFINITION_MACRO_NAME;
-			break;
-		}
-
 		b8 is_success = true;
+
+		TG_vector<H_nsl_utilities::F_function_macro_use> uses;
+		for(const auto& kernel_definition : kernel_definitions) {
+
+			uses.push_back(kernel_definition.use);
+		}
 
 		result = H_nsl_utilities::apply_function_macro_uses(
 			src.content,
-			{ kernel_definition.use },
-			[&result, &kernel_definition, &macro_definitions](const H_nsl_utilities::F_function_macro_use& use) -> G_string {
+			uses,
+			[&](const H_nsl_utilities::F_function_macro_use& use, sz index) -> G_string {
+
+				const auto& kernel_definition = kernel_definitions[index];
 
 				for(const auto& macro_definition_tree : kernel_definition.macro_definition_trees) {
 

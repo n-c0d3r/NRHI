@@ -123,7 +123,7 @@ namespace nrhi {
 
 		};
 		using F_function_macro_result_functor = eastl::function<
-			G_string(const F_function_macro_use& use)
+			G_string(const F_function_macro_use& use, sz index)
 		>;
 		static TG_vector<F_function_macro_use> find_function_macro_uses(
 			const G_string& src_content,
@@ -145,7 +145,7 @@ namespace nrhi {
 
 		};
 		using F_variable_macro_result_functor = eastl::function<
-			G_string(const F_variable_macro_use& use)
+			G_string(const F_variable_macro_use& use, sz index)
 		>;
 		static TG_vector<F_variable_macro_use> find_variable_macro_uses(
 			const G_string& src_content,
@@ -245,9 +245,9 @@ namespace nrhi {
 		NCPP_DISABLE_COPY(F_nsl_shader_compiler);
 
 	public:
-		virtual eastl::optional<G_string> apply_kernel_definition(
+		virtual eastl::optional<G_string> apply_kernel_definitions(
 			const H_nsl_tools::F_preprocessed_src& src,
-			const H_nsl_tools::F_kernel_definition& kernel_definition
+			const TG_vector<H_nsl_tools::F_kernel_definition>& kernel_definitions
 		);
 
 	public:
