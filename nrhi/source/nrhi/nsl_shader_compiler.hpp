@@ -47,7 +47,42 @@ namespace nrhi {
 
 
 
-	struct F_nsl_include_blob {
+	struct F_nsl_error {
+		G_string description;
+		sz location = 0;
+		sz raw_location = 0xFFFFFFFFFFFFFFFF;
+	};
+	using F_nsl_error_stack = TG_stack<F_nsl_error>;
+
+	struct F_nsl_use {
+
+		G_string name;
+		G_string arg;
+
+		sz begin_location = 0;
+		sz end_location = 0;
+		sz begin_name_location = 0;
+		sz end_name_location = 0;
+		sz begin_arg_location = 0;
+		sz end_arg_location = 0;
+
+	};
+	using F_nsl_use_result_functor = eastl::function<
+		G_string(const F_nsl_use& use, sz index)
+	>;
+
+	struct NRHI_API F_nsl_info_tree {
+
+		G_string name;
+		TG_vector<F_nsl_info_tree> childs;
+		G_string child_src_content;
+
+		sz begin_location = 0;
+		sz end_location = 0;
+		sz begin_name_location = 0;
+		sz end_name_location = 0;
+		sz begin_childs_location = 0;
+		sz end_childs_location = 0;
 
 	};
 
@@ -56,12 +91,6 @@ namespace nrhi {
 	class NRHI_API H_nsl_utilities {
 
 	public:
-		struct F_error {
-			G_string description;
-			sz location = 0;
-			sz raw_location = 0xFFFFFFFFFFFFFFFF;
-		};
-		using F_error_stack = TG_stack<F_error>;
 
 		struct NRHI_API F_str_state {
 
@@ -83,78 +112,28 @@ namespace nrhi {
 
 		};
 
-		struct NRHI_API F_info_tree {
-
-			G_string name;
-			TG_vector<F_info_tree> childs;
-			G_string child_src_content;
-
-			sz begin_location = 0;
-			sz end_location = 0;
-			sz begin_name_location = 0;
-			sz end_name_location = 0;
-			sz begin_childs_location = 0;
-			sz end_childs_location = 0;
-
-		};
-
 
 
 	public:
 		static b8 is_variable_name_character(char c);
 
 	public:
-		static eastl::optional<TG_vector<F_info_tree>> build_info_trees(
+		static eastl::optional<TG_vector<F_nsl_info_tree>> build_info_trees(
 			const G_string& src_content,
 			sz location_offset_to_save = 0,
-			F_error_stack* error_stack_p = 0
+			F_nsl_error_stack* error_stack_p = 0
 		);
 
 	public:
-		struct F_function_macro_use {
-
-			G_string name;
-			G_string arg;
-
-			sz begin_location = 0;
-			sz end_location = 0;
-			sz begin_arg_location = 0;
-			sz end_arg_location = 0;
-
-		};
-		using F_function_macro_result_functor = eastl::function<
-			G_string(const F_function_macro_use& use, sz index)
-		>;
-		static TG_vector<F_function_macro_use> find_function_macro_uses(
+		static eastl::optional<TG_vector<F_nsl_use>> find_uses(
 			const G_string& src_content,
-			const G_string& macro_name
+			F_nsl_error_stack* error_stack_p = 0
 		);
-		static G_string apply_function_macro_uses(
+		static eastl::optional<G_string> apply_uses(
 			const G_string& src_content,
-			const TG_vector<F_function_macro_use>& uses,
-			const F_function_macro_result_functor& macro_result_functor
-		);
-
-	public:
-		struct F_variable_macro_use {
-
-			G_string name;
-
-			sz begin_location = 0;
-			sz end_location = 0;
-
-		};
-		using F_variable_macro_result_functor = eastl::function<
-			G_string(const F_variable_macro_use& use, sz index)
-		>;
-		static TG_vector<F_variable_macro_use> find_variable_macro_uses(
-			const G_string& src_content,
-			const G_string& macro_name
-		);
-		static G_string apply_variable_macro_uses(
-			const G_string& src_content,
-			const TG_vector<F_variable_macro_use>& uses,
-			const F_variable_macro_result_functor& macro_result_functor
+			const TG_vector<F_nsl_use>& uses,
+			const F_nsl_use_result_functor& result_functor,
+			F_nsl_error_stack* error_stack_p = 0
 		);
 
 	public:
@@ -165,39 +144,19 @@ namespace nrhi {
 	public:
 		static eastl::optional<TG_pack<G_string, TG_vector<sz>>> remove_comments(
 			const G_string& src_content,
-			F_error_stack* error_stack_p = 0
+			F_nsl_error_stack* error_stack_p = 0
 		);
 
 	};
 
 
 
-	class NRHI_API H_nsl_tools {
+	struct F_nsl_preprocessed_src {
 
-	public:
-		struct F_preprocessed_src {
-
-			G_string content;
-			TG_vector<sz> locations;
-			G_string abs_path;
-			mutable H_nsl_utilities::F_error_stack error_stack;
-
-		};
-		struct F_kernel_definition {
-
-			H_nsl_utilities::F_function_macro_use use;
-			H_nsl_utilities::F_info_tree info_tree;
-			TG_vector<H_nsl_utilities::F_info_tree> macro_definition_trees;
-			E_shader_type shader_type = E_shader_type::NONE;
-
-		};
-		static b8 check_kernel_definition(
-			const F_preprocessed_src& src,
-			const F_kernel_definition& kernel_definition
-		);
-		static eastl::optional<TG_vector<F_kernel_definition>> find_kernel_definitions(
-			const F_preprocessed_src& src
-		);
+		G_string content;
+		TG_vector<sz> locations;
+		G_string abs_path;
+		mutable F_nsl_error_stack error_stack;
 
 	};
 
@@ -245,22 +204,17 @@ namespace nrhi {
 		NCPP_DISABLE_COPY(F_nsl_shader_compiler);
 
 	public:
-		virtual eastl::optional<G_string> apply_kernel_definitions(
-			const H_nsl_tools::F_preprocessed_src& src,
-			const TG_vector<H_nsl_tools::F_kernel_definition>& kernel_definitions
+		eastl::optional<F_nsl_preprocessed_src> include_src(
+			const F_nsl_preprocessed_src& current_src,
+			const G_string& path,
+			F_nsl_error_stack* error_stack_p
 		);
 
 	public:
-		eastl::optional<H_nsl_tools::F_preprocessed_src> include_src(
-			const H_nsl_tools::F_preprocessed_src& current_src,
-			const G_string& path
-		);
-
-	public:
-		virtual eastl::optional<H_nsl_tools::F_preprocessed_src> preprocess_src(
+		virtual eastl::optional<F_nsl_preprocessed_src> preprocess_src(
 			const G_string& src_content,
 			const G_string& abs_path,
-			H_nsl_utilities::F_error_stack* error_stack_p = 0
+			F_nsl_error_stack* error_stack_p = 0
 		);
 
 	};

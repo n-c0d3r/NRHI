@@ -256,6 +256,31 @@ int main() {
 		)
 	);
 
+	G_string str = (
+"\n"
+"@vertex_shader(VSMain)\n"
+"@vertex_shader\n"
+"\n"
+	);
+
+	auto compiler_p = TU<F_nsl_shader_compiler>()();
+	auto src = compiler_p->preprocess_src(
+		str,
+		""
+	);
+
+	auto uses_opt = H_nsl_utilities::find_uses(
+		src->content
+	);
+
+	if(uses_opt) {
+		auto uses = uses_opt.value();
+		int a = 5;
+	}
+	else {
+		int a = 5;
+	}
+
 	// create vertex shader from vertex shader blob
 	auto vshader_p = H_vertex_shader::create(
 		NCPP_FOREF_VALID(device_p),
