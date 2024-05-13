@@ -157,7 +157,6 @@ namespace nrhi {
 		G_string content;
 		TG_vector<sz> raw_locations;
 		G_string abs_path;
-		mutable F_nsl_error_stack error_stack;
 
 	};
 
@@ -201,6 +200,67 @@ namespace nrhi {
 
 
 
+	class NRHI_API F_nsl_error_group {
+
+	private:
+		TK_valid<F_nsl_shader_compiler> shader_compiler_p_;
+
+		G_string abs_path_;
+
+		F_nsl_error_stack stack_;
+
+	public:
+		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
+
+		NCPP_FORCE_INLINE const G_string& abs_path() const noexcept { return abs_path_; }
+
+		NCPP_FORCE_INLINE F_nsl_error_stack& stack() noexcept { return stack_; }
+		NCPP_FORCE_INLINE const F_nsl_error_stack& stack() const noexcept { return stack_; }
+
+
+
+	public:
+		F_nsl_error_group(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			const G_string& abs_path
+		);
+		~F_nsl_error_group();
+
+	public:
+		NCPP_DISABLE_COPY(F_nsl_error_group);
+
+	};
+
+
+
+	class NRHI_API F_nsl_error_storage {
+
+	private:
+		TK_valid<F_nsl_shader_compiler> shader_compiler_p_;
+
+		TG_stack<TU<F_nsl_error_group>> group_p_stack_;
+
+	public:
+		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
+
+		NCPP_FORCE_INLINE const TG_stack<TU<F_nsl_error_group>>& group_p_stack() const noexcept { return group_p_stack_; }
+
+
+
+	public:
+		F_nsl_error_storage(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p);
+		~F_nsl_error_storage();
+
+	public:
+		NCPP_DISABLE_COPY(F_nsl_error_storage);
+
+	public:
+		TK_valid<F_nsl_error_group> optain_group(const G_string& abs_path);
+
+	};
+
+
+
 	class NRHI_API F_nsl_translation_unit {
 
 	private:
@@ -210,12 +270,16 @@ namespace nrhi {
 		G_string abs_path_;
 		F_nsl_preprocessed_src preprocessed_src_;
 
+		TK_valid<F_nsl_error_group> error_group_p_;
+
 	public:
 		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
 
 		NCPP_FORCE_INLINE const G_string& raw_src_content() const noexcept { return raw_src_content_; }
 		NCPP_FORCE_INLINE const G_string& abs_path() const noexcept { return abs_path_; }
 		NCPP_FORCE_INLINE const F_nsl_preprocessed_src& preprocessed_src() const noexcept { return preprocessed_src_; }
+
+		NCPP_FORCE_INLINE TKPA_valid<F_nsl_error_group> error_group_p() const noexcept { return error_group_p_; }
 
 
 
@@ -224,7 +288,8 @@ namespace nrhi {
 			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 			const G_string& raw_src_content,
 			const G_string& abs_path,
-			const F_nsl_preprocessed_src& preprocessed_src
+			const F_nsl_preprocessed_src& preprocessed_src,
+			TKPA_valid<F_nsl_error_group> error_group_p
 		);
 		~F_nsl_translation_unit();
 
@@ -261,14 +326,14 @@ namespace nrhi {
 		virtual TU<F_nsl_translation_unit> create_unit_instance(
 			const G_string& raw_src_content,
 			const G_string& abs_path,
-			const F_nsl_preprocessed_src& preprocessed_src
+			const F_nsl_preprocessed_src& preprocessed_src,
+			TKPA_valid<F_nsl_error_group> error_group_p
 		);
 
 	public:
 		virtual TU<F_nsl_translation_unit> create_unit(
 			const G_string& raw_src_content,
-			const G_string& abs_path,
-			F_nsl_error_stack* error_stack_p = 0
+			const G_string& abs_path
 		);
 
 	};
@@ -280,10 +345,12 @@ namespace nrhi {
 	private:
 		TU<F_nsl_shader_module_loader> module_loader_p_;
 		TU<F_nsl_translation_unit_manager> translation_unit_manager_p_;
+		TU<F_nsl_error_storage> error_storage_p_;
 
 	public:
 		NCPP_FORCE_INLINE TK_valid<F_nsl_shader_module_loader> module_loader_p() const noexcept { return NCPP_FOH_VALID(module_loader_p_); }
 		NCPP_FORCE_INLINE TK_valid<F_nsl_translation_unit_manager> translation_unit_manager_p() const noexcept { return NCPP_FOH_VALID(translation_unit_manager_p_); }
+		NCPP_FORCE_INLINE TK_valid<F_nsl_error_storage> error_storage_p() const noexcept { return NCPP_FOH_VALID(error_storage_p_); }
 
 
 
@@ -291,7 +358,8 @@ namespace nrhi {
 		F_nsl_shader_compiler();
 		F_nsl_shader_compiler(
 			TU<F_nsl_shader_module_loader>&& module_loader_p,
-			TU<F_nsl_translation_unit_manager>&& translation_unit_manager_p
+			TU<F_nsl_translation_unit_manager>&& translation_unit_manager_p,
+			TU<F_nsl_error_storage>&& error_storage_p
 		);
 		~F_nsl_shader_compiler();
 

@@ -420,6 +420,13 @@ namespace nrhi {
 
 									arg_str_state.end_check();
 								}
+
+								NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+									error_stack_p,
+									begin_arg_location,
+									"function-like use scope is not ended"
+								);
+								return eastl::nullopt;
 							}
 						}
 
@@ -652,16 +659,55 @@ namespace nrhi {
 
 
 
+	F_nsl_error_group::F_nsl_error_group(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		const G_string& abs_path
+	) :
+		shader_compiler_p_(shader_compiler_p),
+		abs_path_(abs_path)
+	{
+	}
+	F_nsl_error_group::~F_nsl_error_group()
+	{
+	}
+
+
+
+	F_nsl_error_storage::F_nsl_error_storage(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
+		shader_compiler_p_(shader_compiler_p)
+	{
+	}
+	F_nsl_error_storage::~F_nsl_error_storage() {
+	}
+
+	TK_valid<F_nsl_error_group> F_nsl_error_storage::optain_group(const G_string& abs_path) {
+
+		auto group_p = TU<F_nsl_error_group>()(
+			shader_compiler_p(),
+			abs_path
+		);
+
+		auto keyed_group_p = NCPP_FOH_VALID(group_p);
+
+		group_p_stack_.push(std::move(group_p));
+
+		return keyed_group_p;
+	}
+
+
+
 	F_nsl_translation_unit::F_nsl_translation_unit(
 		TKPA_valid <nrhi::F_nsl_shader_compiler> shader_compiler_p,
 		const ncpp::containers::G_string& raw_src_content,
 		const ncpp::containers::G_string& abs_path,
-		const F_nsl_preprocessed_src& preprocessed_src
+		const F_nsl_preprocessed_src& preprocessed_src,
+		TKPA_valid<F_nsl_error_group> error_group_p
 	) :
 		shader_compiler_p_(shader_compiler_p),
 		raw_src_content_(raw_src_content),
 		abs_path_(abs_path),
-		preprocessed_src_(preprocessed_src)
+		preprocessed_src_(preprocessed_src),
+		error_group_p_(error_group_p)
 	{
 	}
 	F_nsl_translation_unit::~F_nsl_translation_unit() {
@@ -679,22 +725,25 @@ namespace nrhi {
 	TU<F_nsl_translation_unit> F_nsl_translation_unit_manager::create_unit_instance(
 		const G_string& raw_src_content,
 		const G_string& abs_path,
-		const F_nsl_preprocessed_src& preprocessed_src
+		const F_nsl_preprocessed_src& preprocessed_src,
+		TKPA_valid<F_nsl_error_group> error_group_p
 	) {
 		return TU<F_nsl_translation_unit>()(
 			shader_compiler_p(),
 			raw_src_content,
 			abs_path,
-			preprocessed_src
+			preprocessed_src,
+			error_group_p
 		);
 	}
 
 	TU<F_nsl_translation_unit> F_nsl_translation_unit_manager::create_unit(
 		const G_string& raw_src_content,
-		const G_string& abs_path,
-		F_nsl_error_stack* error_stack_p
+		const G_string& abs_path
 	) {
-		auto comment_removed_src_content_opt = H_nsl_utilities::remove_comments(raw_src_content, error_stack_p);
+		auto error_group_p = shader_compiler_p_->error_storage_p()->optain_group(abs_path);
+
+		auto comment_removed_src_content_opt = H_nsl_utilities::remove_comments(raw_src_content, &(error_group_p->stack()));
 
 		if(comment_removed_src_content_opt) {
 			const auto& comment_removed_src_content = comment_removed_src_content_opt.value();
@@ -708,16 +757,16 @@ namespace nrhi {
 			return create_unit_instance(
 				raw_src_content,
 				abs_path,
-				preprocessed_src
+				preprocessed_src,
+				error_group_p
 			);
 		}
 		else {
-			if(error_stack_p)
-				error_stack_p->push({
-					"can't preprocess source"
-					-1,
-					raw_src_content.length()
-				});
+			error_group_p->stack().push({
+				"can't preprocess source"
+				-1,
+				raw_src_content.length()
+			});
 			return null;
 		}
 	}
@@ -730,15 +779,20 @@ namespace nrhi {
 		),
 		translation_unit_manager_p_(
 			TU<F_nsl_translation_unit_manager>()(NCPP_KTHIS())
+		),
+		error_storage_p_(
+			TU<F_nsl_error_storage>()(NCPP_KTHIS())
 		)
 	{
 	}
 	F_nsl_shader_compiler::F_nsl_shader_compiler(
 		TU<F_nsl_shader_module_loader>&& module_loader_p,
-		TU<F_nsl_translation_unit_manager>&& translation_unit_manager_p
+		TU<F_nsl_translation_unit_manager>&& translation_unit_manager_p,
+		TU<F_nsl_error_storage>&& error_storage_p
 	) :
 		module_loader_p_(std::move(module_loader_p)),
-		translation_unit_manager_p_(std::move(translation_unit_manager_p))
+		translation_unit_manager_p_(std::move(translation_unit_manager_p)),
+		error_storage_p_(std::move(error_storage_p))
 	{
 	}
 	F_nsl_shader_compiler::~F_nsl_shader_compiler() {

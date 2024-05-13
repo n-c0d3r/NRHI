@@ -265,14 +265,14 @@ int main() {
 
 	auto compiler_p = TU<F_nsl_shader_compiler>()();
 	auto translation_unit_manager_p = compiler_p->translation_unit_manager_p();
-	auto translation_unit_p = translation_unit_manager_p->create(
+	auto translation_unit_p = translation_unit_manager_p->create_unit(
 		str,
 		""
 	);
 
 	auto uses_opt = H_nsl_utilities::find_uses(
 		translation_unit_p->preprocessed_src().content,
-		&(translation_unit_p->preprocessed_src().error_stack)
+		&(translation_unit_p->error_group_p()->stack())
 	);
 
 	if(uses_opt) {
