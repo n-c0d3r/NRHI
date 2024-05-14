@@ -59,6 +59,13 @@ namespace nrhi {
 	};
 	using F_nsl_error_stack = TG_stack<F_nsl_error>;
 
+	struct F_nsl_plain_text {
+
+		G_string content;
+		sz begin_location = 0;
+		sz end_location = 0;
+
+	};
 	struct F_nsl_use {
 
 		G_string name;
@@ -111,6 +118,58 @@ namespace nrhi {
 
 	};
 
+	enum class E_nsl_ast_tree_type {
+
+		PLAIN_TEXT = 0x1,
+		USE = 0x2,
+		INFO = 0x3
+
+	};
+	struct F_nsl_ast_tree {
+
+		E_nsl_ast_tree_type type = E_nsl_ast_tree_type::PLAIN_TEXT;
+		F_nsl_use use;
+		F_nsl_plain_text plain_text;
+		F_nsl_info_tree info_tree;
+
+		sz begin_location = 0;
+		sz end_location = 0;
+
+		TG_vector<F_nsl_ast_tree> childs;
+
+	};
+	using F_nsl_ast_tree_recursive_build_functor = eastl::function<
+		TG_vector<F_nsl_ast_tree>(const G_string& src_content, const F_nsl_ast_tree& tree, sz index)
+	>;
+	using F_nsl_ast_tree_result_functor = eastl::function<
+		G_string(const G_string& src_content, const F_nsl_ast_tree& tree, sz index)
+	>;
+	struct F_nsl_ast_tree_try_build_input {
+
+		const G_string& src_content;
+		F_nsl_error_stack* error_stack_p;
+
+		const F_nsl_str_state& str_state;
+
+		sz current_location = 0;
+
+		sz begin_location = 0;
+		sz end_location = 0;
+
+	};
+	struct F_nsl_ast_tree_try_build_result {
+
+		sz begin_location = 0;
+		sz end_location = 0;
+		TG_vector<F_nsl_ast_tree> trees;
+
+	};
+	using F_nsl_ast_tree_try_build_functor = eastl::function<
+		eastl::optional<F_nsl_ast_tree_try_build_result>(
+			const F_nsl_ast_tree_try_build_input& input
+		)
+	>;
+
 
 
 	class NRHI_API H_nsl_utilities {
@@ -126,14 +185,24 @@ namespace nrhi {
 		);
 
 	public:
-		static eastl::optional<TG_vector<F_nsl_use>> find_uses(
+		static eastl::optional<F_nsl_ast_tree_try_build_result> try_build_use(
+			const F_nsl_ast_tree_try_build_input& input
+		);
+		static eastl::optional<TG_vector<F_nsl_ast_tree>> build_ast_trees(
 			const G_string& src_content,
+			const TG_vector<F_nsl_ast_tree_try_build_functor>& try_build_functors,
+			const F_nsl_ast_tree_recursive_build_functor& resursive_build_functor,
 			F_nsl_error_stack* error_stack_p = 0
 		);
-		static eastl::optional<G_string> apply_uses(
+		static eastl::optional<TG_vector<F_nsl_ast_tree>> build_ast_trees(
 			const G_string& src_content,
-			const TG_vector<F_nsl_use>& uses,
-			const F_nsl_use_result_functor& result_functor,
+			const F_nsl_ast_tree_recursive_build_functor& resursive_build_functor,
+			F_nsl_error_stack* error_stack_p = 0
+		);
+		static eastl::optional<G_string> apply_ast_trees(
+			const G_string& src_content,
+			const TG_vector<F_nsl_ast_tree>& uses,
+			const F_nsl_ast_tree_result_functor& result_functor,
 			F_nsl_error_stack* error_stack_p = 0
 		);
 

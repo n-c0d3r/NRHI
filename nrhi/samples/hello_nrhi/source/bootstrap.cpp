@@ -258,7 +258,7 @@ int main() {
 
 	G_string str = (
 "\n"
-"@vertex_shader(VSMain)\n"
+"@vertex_shader(VSMain\")\n"
 "@vertex_shader\n"
 "\n"
 	);
@@ -270,8 +270,12 @@ int main() {
 		""
 	);
 
-	auto uses_opt = H_nsl_utilities::find_uses(
+	auto uses_opt = H_nsl_utilities::build_ast_trees(
 		translation_unit_p->preprocessed_src().content,
+		[](const G_string& src_content, const F_nsl_ast_tree& tree, sz index) -> TG_vector<F_nsl_ast_tree>
+		{
+			return {};
+		},
 		&(translation_unit_p->error_group_p()->stack())
 	);
 
