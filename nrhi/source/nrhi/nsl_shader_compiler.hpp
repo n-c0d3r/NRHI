@@ -66,6 +66,7 @@ namespace nrhi {
 		sz end_location = 0;
 
 	};
+
 	struct F_nsl_use {
 
 		G_string name;
@@ -79,9 +80,6 @@ namespace nrhi {
 		sz end_arg_location = 0;
 
 	};
-	using F_nsl_use_result_functor = eastl::function<
-		G_string(const F_nsl_use& use, sz index)
-	>;
 
 	struct NRHI_API F_nsl_info_tree {
 
@@ -95,6 +93,23 @@ namespace nrhi {
 		sz end_name_location = 0;
 		sz begin_childs_location = 0;
 		sz end_childs_location = 0;
+
+	};
+
+	struct F_nsl_object_implementation {
+
+		G_string keyword;
+		G_string name;
+		G_string body;
+
+		sz begin_location = 0;
+		sz end_location = 0;
+		sz begin_keyword_location = 0;
+		sz end_keyword_location = 0;
+		sz begin_name_location = 0;
+		sz end_name_location = 0;
+		sz begin_body_location = 0;
+		sz end_body_location = 0;
 
 	};
 
@@ -122,7 +137,8 @@ namespace nrhi {
 
 		PLAIN_TEXT = 0x1,
 		USE = 0x2,
-		INFO = 0x3
+		INFO_TREE = 0x3,
+		OBJECT_IMPLEMENTATION = 0x4
 
 	};
 	struct F_nsl_ast_tree {
@@ -131,6 +147,7 @@ namespace nrhi {
 		F_nsl_use use;
 		F_nsl_plain_text plain_text;
 		F_nsl_info_tree info_tree;
+		F_nsl_object_implementation object_implementation;
 
 		sz begin_location = 0;
 		sz end_location = 0;
@@ -189,6 +206,17 @@ namespace nrhi {
 	public:
 		static eastl::optional<F_nsl_ast_tree_try_build_result> try_build_use(
 			const F_nsl_ast_tree_try_build_input& input
+		);
+		static eastl::optional<F_nsl_ast_tree_try_build_result> try_build_object_implementation(
+			const G_string& keyword,
+			b8 is_object_name_required,
+			b8 is_object_body_required,
+			const F_nsl_ast_tree_try_build_input& input
+		);
+		static F_nsl_ast_tree_try_build_functor make_try_build_object_implementation_functor(
+			const G_string& keyword,
+			b8 is_object_name_required = true,
+			b8 is_object_body_required = false
 		);
 		static eastl::optional<TG_vector<F_nsl_ast_tree>> build_ast_trees(
 			const G_string& src_content,

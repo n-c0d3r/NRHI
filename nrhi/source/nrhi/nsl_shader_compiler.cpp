@@ -306,6 +306,7 @@ namespace nrhi {
 		const auto& str_state = input.str_state;
 
 		auto current_location = input.current_location;
+		auto location_offset_to_save = input.location_offset_to_save;
 
 
 
@@ -452,7 +453,7 @@ namespace nrhi {
 
 								NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 									error_stack_p,
-									begin_str_location,
+									location_offset_to_save + begin_str_location,
 									"string is not ended"
 								);
 								return eastl::nullopt;
@@ -460,7 +461,7 @@ namespace nrhi {
 
 							NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 								error_stack_p,
-								begin_arg_location,
+								location_offset_to_save + begin_arg_location,
 								"function-like use scope is not ended"
 							);
 							return eastl::nullopt;
@@ -539,7 +540,7 @@ namespace nrhi {
 
 								NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 									error_stack_p,
-									begin_str_location,
+									location_offset_to_save + begin_str_location,
 									"string is not ended"
 								);
 								return eastl::nullopt;
@@ -547,7 +548,7 @@ namespace nrhi {
 
 							NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 								error_stack_p,
-								begin_arg_location,
+								location_offset_to_save + begin_arg_location,
 								"function-like use scope is not ended"
 							);
 							return eastl::nullopt;
@@ -586,7 +587,7 @@ namespace nrhi {
 			else {
 				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 					error_stack_p,
-					begin_location,
+					location_offset_to_save + begin_location,
 					"use name is required"
 				);
 				return eastl::nullopt;
@@ -595,6 +596,376 @@ namespace nrhi {
 
 		NRHI_END_TRY_BUILD_AST_TREE:
 		return std::move(result);
+	}
+	eastl::optional<F_nsl_ast_tree_try_build_result> H_nsl_utilities::try_build_object_implementation(
+		const G_string& keyword,
+		b8 is_object_name_required,
+		b8 is_object_body_required,
+		const F_nsl_ast_tree_try_build_input& input
+	) {
+
+		const auto& src_content = input.src_content;
+		auto src_length = src_content.length();
+
+		auto error_stack_p = input.error_stack_p;
+
+		const auto& str_state = input.str_state;
+
+		auto current_location = input.current_location;
+		auto location_offset_to_save = input.location_offset_to_save;
+
+
+
+		F_nsl_ast_tree_try_build_result result;
+
+		auto& trees = result.trees;
+
+		auto& begin_location = result.begin_location;
+		begin_location = input.begin_location;
+
+		auto& end_location = result.end_location;
+		end_location = input.end_location;
+
+
+
+		if(
+			!(str_state.value)
+			&& (current_location + keyword.length() <= src_length)
+		) {
+			sz temp_begin_location = current_location;
+			sz temp_end_location = temp_begin_location;
+			sz begin_keyword_location = current_location;
+			sz end_keyword_location = begin_keyword_location;
+
+			sz j = begin_keyword_location;
+			for(; j < src_length; ++j)
+			{
+				if(
+					!(src_content[j] == keyword[j - begin_keyword_location])
+				)
+				{
+					break;
+				}
+			}
+			end_keyword_location = j;
+
+			if(
+				(end_keyword_location - begin_keyword_location) == keyword.length()
+			) {
+
+				b8 is_left_correct = true;
+				b8 is_right_correct = true;
+
+				if(current_location > 0) {
+					is_left_correct = !is_variable_name_character(src_content[current_location - 1]);
+				}
+				if(end_keyword_location < src_length) {
+					is_right_correct = !is_variable_name_character(src_content[end_keyword_location]);
+				}
+
+				if(is_left_correct && is_right_correct) {
+
+					sz j2 = end_keyword_location;
+					for(; j2 < src_length; ++j2)
+					{
+						if(
+							!(
+								(src_content[j2] == ' ')
+								|| (src_content[j2] == '\t')
+								|| (src_content[j2] == '\n')
+								|| (src_content[j2] == '\r')
+							)
+						)
+						{
+							break;
+						}
+					}
+
+					sz begin_name_location = j2;
+
+					sz j3 = begin_name_location;
+					for(; j3 < src_length; ++j3)
+					{
+						if(
+							!(
+								is_variable_name_character(src_content[j3])
+								|| (src_content[j3] == '.')
+							)
+						)
+						{
+							break;
+						}
+					}
+					sz end_name_location = j3;
+
+					if(is_object_name_required && (begin_name_location == end_name_location)) {
+
+						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+							error_stack_p,
+							location_offset_to_save + begin_name_location,
+							"object name is required"
+						);
+
+						return eastl::nullopt;
+					}
+
+					G_string name = src_content.substr(begin_name_location, end_name_location - begin_name_location);
+
+					sz t = end_name_location;
+					for(; t < src_length; ++t)
+					{
+						if(
+							!(
+								(src_content[t] == ' ')
+								|| (src_content[t] == '\t')
+								|| (src_content[t] == '\n')
+								|| (src_content[t] == '\r')
+							)
+						) {
+							break;
+						}
+					}
+
+					if(t < src_length) {
+
+						if(src_content[t] == '(') {
+
+							i32 level = 1;
+
+							sz begin_body_location = t + 1;
+							sz end_body_location = begin_body_location;
+
+							F_nsl_str_state body_str_state;
+
+							sz begin_str_location = 0;
+
+							// check for function-like use
+							sz k = begin_body_location;
+							for(; k < src_length; ++k) {
+
+								body_str_state.begin_check(src_content[k]);
+
+								if(
+									body_str_state.value
+										&& !body_str_state.prev_value
+									)
+									begin_str_location = k;
+
+								if(
+									!(body_str_state.value)
+										&& (src_content[k] == '(')
+									)
+									++level;
+
+								if(
+									!(body_str_state.value)
+										&& (src_content[k] == ')')
+									)
+									--level;
+
+								if(level == 0) {
+
+									end_body_location = k;
+									temp_end_location = k + 1;
+
+									begin_location = temp_begin_location;
+									end_location = temp_end_location;
+
+									F_nsl_object_implementation object_implementation = {
+										.keyword = keyword,
+										.name = name,
+										.body = src_content.substr(begin_body_location, end_body_location - begin_body_location),
+
+										.begin_location = begin_location,
+										.end_location = end_location,
+										.begin_keyword_location = begin_keyword_location,
+										.end_keyword_location = end_keyword_location,
+										.begin_name_location = begin_name_location,
+										.end_name_location = end_name_location,
+										.begin_body_location = begin_body_location,
+										.end_body_location = end_body_location
+									};
+
+									F_nsl_ast_tree tree = {
+										.type = E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION,
+										.object_implementation = object_implementation,
+										.begin_location = begin_location,
+										.end_location = end_location,
+									};
+									trees.push_back(tree);
+
+									goto NRHI_END_TRY_BUILD_AST_TREE;
+								}
+
+								body_str_state.end_check();
+							}
+
+							if(body_str_state.value) {
+
+								NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+									error_stack_p,
+									location_offset_to_save + begin_str_location,
+									"string is not ended"
+								);
+								return eastl::nullopt;
+							}
+
+							NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+								error_stack_p,
+								location_offset_to_save + begin_body_location,
+								"function-like use scope is not ended"
+							);
+							return eastl::nullopt;
+						}
+						// for function-like use with {}
+						else if(src_content[t] == '{') {
+
+							i32 level = 1;
+
+							sz begin_body_location = t + 1;
+							sz end_body_location = begin_body_location;
+
+							F_nsl_str_state body_str_state;
+
+							sz begin_str_location = 0;
+
+							// check for function-like use
+							sz k = begin_body_location;
+							for(; k < src_length; ++k) {
+
+								body_str_state.begin_check(src_content[k]);
+
+								if(
+									body_str_state.value
+									&& !body_str_state.prev_value
+								)
+									begin_str_location = k;
+
+								if(
+									!(body_str_state.value)
+									&& (src_content[k] == '{')
+								)
+									++level;
+
+								if(
+									!(body_str_state.value)
+									&& (src_content[k] == '}')
+								)
+									--level;
+
+								if(level == 0) {
+
+									end_body_location = k;
+									temp_end_location = k + 1;
+
+									begin_location = temp_begin_location;
+									end_location = temp_end_location;
+
+									F_nsl_object_implementation object_implementation = {
+										.keyword = keyword,
+										.name = name,
+										.body = src_content.substr(begin_body_location, end_body_location - begin_body_location),
+
+										.begin_location = begin_location,
+										.end_location = end_location,
+										.begin_keyword_location = begin_keyword_location,
+										.end_keyword_location = end_keyword_location,
+										.begin_name_location = begin_name_location,
+										.end_name_location = end_name_location,
+										.begin_body_location = begin_body_location,
+										.end_body_location = end_body_location
+									};
+
+									F_nsl_ast_tree tree = {
+										.type = E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION,
+										.object_implementation = object_implementation,
+										.begin_location = begin_location,
+										.end_location = end_location,
+									};
+									trees.push_back(tree);
+
+									goto NRHI_END_TRY_BUILD_AST_TREE;
+								}
+
+								body_str_state.end_check();
+							}
+
+							if(body_str_state.value) {
+
+								NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+									error_stack_p,
+									location_offset_to_save + begin_str_location,
+									"string is not ended"
+								);
+								return eastl::nullopt;
+							}
+
+							NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+								error_stack_p,
+								location_offset_to_save + begin_body_location,
+								"function-like use scope is not ended"
+							);
+							return eastl::nullopt;
+						}
+					}
+
+					// this is variable-like use
+					if(is_object_body_required) {
+
+						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+							error_stack_p,
+							location_offset_to_save + begin_name_location,
+							"object body is required"
+						);
+
+						return eastl::nullopt;
+					}
+
+					temp_end_location = end_name_location;
+
+					begin_location = temp_begin_location;
+					end_location = temp_end_location;
+
+					F_nsl_object_implementation object_implementation = {
+						.keyword = keyword,
+						.name = name,
+						.body = "",
+
+						.begin_location = begin_location,
+						.end_location = end_location,
+						.begin_keyword_location = begin_keyword_location,
+						.end_keyword_location = end_keyword_location,
+						.begin_name_location = begin_name_location,
+						.end_name_location = end_name_location,
+						.begin_body_location = end_name_location,
+						.end_body_location = end_name_location
+					};
+
+					F_nsl_ast_tree tree = {
+						.type = E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION,
+						.object_implementation = object_implementation,
+						.begin_location = begin_location,
+						.end_location = end_location,
+					};
+					trees.push_back(tree);
+
+					goto NRHI_END_TRY_BUILD_AST_TREE;
+				}
+			}
+		}
+
+		NRHI_END_TRY_BUILD_AST_TREE:
+		return std::move(result);
+	}
+	F_nsl_ast_tree_try_build_functor H_nsl_utilities::make_try_build_object_implementation_functor(
+		const G_string& keyword,
+		b8 is_object_name_required,
+		b8 is_object_body_required
+	) {
+		NCPP_ASSERT(keyword.length() > 0) << "invalid object type name";
+		return [keyword, is_object_name_required, is_object_body_required](const F_nsl_ast_tree_try_build_input& input) -> eastl::optional<F_nsl_ast_tree_try_build_result> {
+			return H_nsl_utilities::try_build_object_implementation(keyword, is_object_name_required, is_object_body_required, input);
+		};
 	}
 	eastl::optional<TG_vector<F_nsl_ast_tree>> H_nsl_utilities::build_ast_trees(
 		const G_string& src_content,
