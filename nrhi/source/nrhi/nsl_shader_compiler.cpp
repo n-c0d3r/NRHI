@@ -23,15 +23,27 @@ namespace nrhi {
 			}
 		}
 		else {
-			if(c == '\'')
-			{
-				next_value_1 = false;
-				next_value = false;
+
+			if(!is_special_character) {
+				if(c == '\\')
+				{
+					is_special_character = true;
+				}
+				else {
+					if(c == '\'')
+					{
+						next_value_1 = false;
+						next_value = false;
+					}
+					if(c == '"')
+					{
+						next_value_2 = false;
+						next_value = false;
+					}
+				}
 			}
-			if(c == '"')
-			{
-				next_value_2 = false;
-				next_value = false;
+			else {
+				is_special_character = false;
 			}
 		}
 	}
@@ -600,7 +612,8 @@ namespace nrhi {
 	eastl::optional<F_nsl_ast_tree_try_build_result> H_nsl_utilities::try_build_object_implementation(
 		const G_string& keyword,
 		b8 is_object_name_required,
-		b8 is_object_body_required,
+		sz min_object_body_count,
+		sz max_object_body_count,
 		const F_nsl_ast_tree_try_build_input& input
 	) {
 
@@ -709,219 +722,138 @@ namespace nrhi {
 						return eastl::nullopt;
 					}
 
+					temp_end_location = end_name_location;
+
 					G_string name = src_content.substr(begin_name_location, end_name_location - begin_name_location);
 
-					sz t = end_name_location;
-					for(; t < src_length; ++t)
+					sz begin_body_location = end_name_location;
+					sz end_body_location = begin_body_location;
+
+					TG_vector<F_nsl_object_implementation_body> bodies;
+
+					sz detected_object_body_count = 0;
+					for(sz object_body_index = 0; object_body_index < max_object_body_count; ++object_body_index)
 					{
-						if(
-							!(
-								(src_content[t] == ' ')
-								|| (src_content[t] == '\t')
-								|| (src_content[t] == '\n')
-								|| (src_content[t] == '\r')
+						sz t = temp_end_location;
+						for (; t < src_length; ++t)
+						{
+							if (
+								!(
+									(src_content[t] == ' ')
+									|| (src_content[t] == '\t')
+									|| (src_content[t] == '\n')
+									|| (src_content[t] == '\r')
+								)
 							)
-						) {
-							break;
+							{
+								break;
+							}
 						}
-					}
 
-					if(t < src_length) {
+						if (t < src_length)
+						{
+							char open_body_character = '(';
+							char close_body_character = ')';
 
-						if(src_content[t] == '(') {
+							if (src_content[t] == '{') {
 
-							i32 level = 1;
+								open_body_character = '{';
+								close_body_character = '}';
+							}
 
-							sz begin_body_location = t + 1;
-							sz end_body_location = begin_body_location;
+							if (src_content[t] == open_body_character)
+							{
+								i32 level = 1;
 
-							F_nsl_str_state body_str_state;
+								begin_body_location = t + 1;
+								end_body_location = begin_body_location;
 
-							sz begin_str_location = 0;
+								F_nsl_str_state body_str_state;
 
-							// check for function-like use
-							sz k = begin_body_location;
-							for(; k < src_length; ++k) {
+								sz begin_str_location = 0;
 
-								body_str_state.begin_check(src_content[k]);
+								b8 is_body_ended = false;
 
-								if(
-									body_str_state.value
+								// check for function-like use
+								sz k = begin_body_location;
+								for (; k < src_length; ++k)
+								{
+									body_str_state.begin_check(src_content[k]);
+
+									if (
+										body_str_state.value
 										&& !body_str_state.prev_value
 									)
-									begin_str_location = k;
+										begin_str_location = k;
 
-								if(
-									!(body_str_state.value)
-										&& (src_content[k] == '(')
+									if (
+										!(body_str_state.value)
+										&& (src_content[k] == open_body_character)
 									)
-									++level;
+										++level;
 
-								if(
-									!(body_str_state.value)
-										&& (src_content[k] == ')')
+									if (
+										!(body_str_state.value)
+										&& (src_content[k] == close_body_character)
 									)
-									--level;
+										--level;
 
-								if(level == 0) {
+									if (level == 0)
+									{
+										end_body_location = k;
+										temp_end_location = k + 1;
 
-									end_body_location = k;
-									temp_end_location = k + 1;
+										bodies.push_back({
+											.content = src_content.substr(
+												begin_body_location,
+												end_body_location - begin_body_location
+											),
+											.begin_location = begin_body_location,
+											.end_location = end_body_location
+										});
+										is_body_ended = true;
 
-									begin_location = temp_begin_location;
-									end_location = temp_end_location;
+										break;
+									}
 
-									F_nsl_object_implementation object_implementation = {
-										.keyword = keyword,
-										.name = name,
-										.body = src_content.substr(begin_body_location, end_body_location - begin_body_location),
-
-										.begin_location = begin_location,
-										.end_location = end_location,
-										.begin_keyword_location = begin_keyword_location,
-										.end_keyword_location = end_keyword_location,
-										.begin_name_location = begin_name_location,
-										.end_name_location = end_name_location,
-										.begin_body_location = begin_body_location,
-										.end_body_location = end_body_location
-									};
-
-									F_nsl_ast_tree tree = {
-										.type = E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION,
-										.object_implementation = object_implementation,
-										.begin_location = begin_location,
-										.end_location = end_location,
-									};
-									trees.push_back(tree);
-
-									goto NRHI_END_TRY_BUILD_AST_TREE;
+									body_str_state.end_check();
 								}
 
-								body_str_state.end_check();
-							}
+								if(!is_body_ended)
+								{
+									if (body_str_state.value)
+									{
+										NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+											error_stack_p,
+											location_offset_to_save + begin_str_location,
+											"string is not ended"
+										);
+										return eastl::nullopt;
+									}
 
-							if(body_str_state.value) {
+									NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+										error_stack_p,
+										location_offset_to_save + begin_body_location,
+										"function-like use scope is not ended"
+									);
 
-								NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-									error_stack_p,
-									location_offset_to_save + begin_str_location,
-									"string is not ended"
-								);
-								return eastl::nullopt;
-							}
-
-							NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-								error_stack_p,
-								location_offset_to_save + begin_body_location,
-								"function-like use scope is not ended"
-							);
-							return eastl::nullopt;
-						}
-						// for function-like use with {}
-						else if(src_content[t] == '{') {
-
-							i32 level = 1;
-
-							sz begin_body_location = t + 1;
-							sz end_body_location = begin_body_location;
-
-							F_nsl_str_state body_str_state;
-
-							sz begin_str_location = 0;
-
-							// check for function-like use
-							sz k = begin_body_location;
-							for(; k < src_length; ++k) {
-
-								body_str_state.begin_check(src_content[k]);
-
-								if(
-									body_str_state.value
-									&& !body_str_state.prev_value
-								)
-									begin_str_location = k;
-
-								if(
-									!(body_str_state.value)
-									&& (src_content[k] == '{')
-								)
-									++level;
-
-								if(
-									!(body_str_state.value)
-									&& (src_content[k] == '}')
-								)
-									--level;
-
-								if(level == 0) {
-
-									end_body_location = k;
-									temp_end_location = k + 1;
-
-									begin_location = temp_begin_location;
-									end_location = temp_end_location;
-
-									F_nsl_object_implementation object_implementation = {
-										.keyword = keyword,
-										.name = name,
-										.body = src_content.substr(begin_body_location, end_body_location - begin_body_location),
-
-										.begin_location = begin_location,
-										.end_location = end_location,
-										.begin_keyword_location = begin_keyword_location,
-										.end_keyword_location = end_keyword_location,
-										.begin_name_location = begin_name_location,
-										.end_name_location = end_name_location,
-										.begin_body_location = begin_body_location,
-										.end_body_location = end_body_location
-									};
-
-									F_nsl_ast_tree tree = {
-										.type = E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION,
-										.object_implementation = object_implementation,
-										.begin_location = begin_location,
-										.end_location = end_location,
-									};
-									trees.push_back(tree);
-
-									goto NRHI_END_TRY_BUILD_AST_TREE;
+									return eastl::nullopt;
 								}
-
-								body_str_state.end_check();
 							}
-
-							if(body_str_state.value) {
-
-								NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-									error_stack_p,
-									location_offset_to_save + begin_str_location,
-									"string is not ended"
-								);
-								return eastl::nullopt;
-							}
-
-							NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-								error_stack_p,
-								location_offset_to_save + begin_body_location,
-								"function-like use scope is not ended"
-							);
-							return eastl::nullopt;
+							else break;
 						}
 					}
 
-					// this is variable-like use
-					if(is_object_body_required) {
+					if(bodies.size() < min_object_body_count) {
 
 						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 							error_stack_p,
 							location_offset_to_save + begin_name_location,
-							"object body is required"
+							"object body is required to be >= " + G_to_string(min_object_body_count)
 						);
 
 						return eastl::nullopt;
 					}
-
-					temp_end_location = end_name_location;
 
 					begin_location = temp_begin_location;
 					end_location = temp_end_location;
@@ -929,7 +861,6 @@ namespace nrhi {
 					F_nsl_object_implementation object_implementation = {
 						.keyword = keyword,
 						.name = name,
-						.body = "",
 
 						.begin_location = begin_location,
 						.end_location = end_location,
@@ -937,8 +868,8 @@ namespace nrhi {
 						.end_keyword_location = end_keyword_location,
 						.begin_name_location = begin_name_location,
 						.end_name_location = end_name_location,
-						.begin_body_location = end_name_location,
-						.end_body_location = end_name_location
+
+						.bodies = bodies
 					};
 
 					F_nsl_ast_tree tree = {
@@ -960,11 +891,23 @@ namespace nrhi {
 	F_nsl_ast_tree_try_build_functor H_nsl_utilities::make_try_build_object_implementation_functor(
 		const G_string& keyword,
 		b8 is_object_name_required,
-		b8 is_object_body_required
+		sz min_object_body_count,
+		sz max_object_body_count
 	) {
 		NCPP_ASSERT(keyword.length() > 0) << "invalid object type name";
-		return [keyword, is_object_name_required, is_object_body_required](const F_nsl_ast_tree_try_build_input& input) -> eastl::optional<F_nsl_ast_tree_try_build_result> {
-			return H_nsl_utilities::try_build_object_implementation(keyword, is_object_name_required, is_object_body_required, input);
+		return [
+			keyword,
+			is_object_name_required,
+			min_object_body_count,
+			max_object_body_count
+		](const F_nsl_ast_tree_try_build_input& input) -> eastl::optional<F_nsl_ast_tree_try_build_result> {
+			return H_nsl_utilities::try_build_object_implementation(
+				keyword,
+				is_object_name_required,
+				min_object_body_count,
+				max_object_body_count,
+				input
+			);
 		};
 	}
 	eastl::optional<TG_vector<F_nsl_ast_tree>> H_nsl_utilities::build_ast_trees(
@@ -1026,18 +969,30 @@ namespace nrhi {
 								.end_location = end_location,
 							};
 
-							F_nsl_ast_tree tree = {
+							F_nsl_ast_tree plain_text_tree = {
 								.type = E_nsl_ast_tree_type::PLAIN_TEXT,
 								.plain_text = plain_text,
 								.begin_location = location_offset_to_save + begin_location,
-								.end_location = location_offset_to_save + end_location,
-								.childs = resursive_build_functor(
-									src_content.substr(begin_location, end_location - begin_location),
-									location_offset_to_save + begin_location,
-									tree,
-									tree_index
-								)
+								.end_location = location_offset_to_save + end_location
 							};
+
+							auto childs_opt = resursive_build_functor(
+								src_content.substr(begin_location, end_location - begin_location),
+								location_offset_to_save + begin_location,
+								plain_text_tree,
+								tree_index,
+								error_stack_p
+							);
+							if(!childs_opt) {
+								NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+									error_stack_p,
+									location_offset_to_save + begin_location,
+									"can't build child ast trees"
+								);
+							}
+
+							plain_text_tree.childs = childs_opt.value();
+
 							result.push_back(tree);
 							++tree_index;
 						}
@@ -1045,12 +1000,23 @@ namespace nrhi {
 						begin_location = tree.begin_location;
 						end_location = tree.end_location;
 
-						tree.childs = resursive_build_functor(
+						auto childs_opt = resursive_build_functor(
 							src_content.substr(begin_location, end_location - begin_location),
 							location_offset_to_save + begin_location,
 							tree,
-							tree_index
+							tree_index,
+							error_stack_p
 						);
+						if(!childs_opt) {
+							NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+								error_stack_p,
+								location_offset_to_save + begin_location,
+								"can't build child ast trees"
+							);
+						}
+
+						tree.childs = childs_opt.value();
+
 						result.push_back(tree);
 						++tree_index;
 					}
@@ -1086,14 +1052,26 @@ namespace nrhi {
 				.type = E_nsl_ast_tree_type::PLAIN_TEXT,
 				.plain_text = plain_text,
 				.begin_location = location_offset_to_save + begin_location,
-				.end_location = location_offset_to_save + end_location,
-				.childs = resursive_build_functor(
-					src_content.substr(begin_location, end_location - begin_location),
-					location_offset_to_save + begin_location,
-					tree,
-					tree_index
-				)
+				.end_location = location_offset_to_save + end_location
 			};
+
+			auto childs_opt = resursive_build_functor(
+				src_content.substr(begin_location, end_location - begin_location),
+				location_offset_to_save + begin_location,
+				tree,
+				tree_index,
+				error_stack_p
+			);
+			if(!childs_opt) {
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p,
+					location_offset_to_save + begin_location,
+					"can't build child ast trees"
+				);
+			}
+
+			tree.childs = childs_opt.value();
+
 			result.push_back(tree);
 			++tree_index;
 		}
@@ -1304,6 +1282,51 @@ namespace nrhi {
 
 
 
+	F_nsl_object::F_nsl_object(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		const G_string& name
+	) :
+		shader_compiler_p_(shader_compiler_p),
+		name_(name)
+	{
+	}
+	F_nsl_object::~F_nsl_object() {
+	}
+
+
+
+	F_nsl_object_type::F_nsl_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		const G_string& name
+	) :
+		shader_compiler_p_(shader_compiler_p),
+		name_(name)
+	{
+	}
+	F_nsl_object_type::~F_nsl_object_type() {
+	}
+
+	TU<F_nsl_object> F_nsl_object_type::create_object(const G_string& object_name) {
+
+		return TU<F_nsl_object>()(shader_compiler_p_, object_name);
+	}
+
+
+
+	F_nsl_object_manager::F_nsl_object_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
+		shader_compiler_p_(shader_compiler_p)
+	{
+	}
+	F_nsl_object_manager::~F_nsl_object_manager() {
+	}
+
+	TK_valid<F_nsl_object_type> F_nsl_object_manager::obtain_type(const G_string& type) {
+
+		return null;
+	}
+
+
+
 	F_nsl_error_group::F_nsl_error_group(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 		const G_string& abs_path
@@ -1427,50 +1450,25 @@ namespace nrhi {
 		),
 		error_storage_p_(
 			TU<F_nsl_error_storage>()(NCPP_KTHIS())
+		),
+		object_manager_p_(
+			TU<F_nsl_object_manager>()(NCPP_KTHIS())
 		)
 	{
 	}
 	F_nsl_shader_compiler::F_nsl_shader_compiler(
 		TU<F_nsl_shader_module_loader>&& module_loader_p,
 		TU<F_nsl_translation_unit_manager>&& translation_unit_manager_p,
-		TU<F_nsl_error_storage>&& error_storage_p
+		TU<F_nsl_error_storage>&& error_storage_p,
+		TU<F_nsl_object_manager>&& object_manager_p
 	) :
 		module_loader_p_(std::move(module_loader_p)),
 		translation_unit_manager_p_(std::move(translation_unit_manager_p)),
-		error_storage_p_(std::move(error_storage_p))
+		error_storage_p_(std::move(error_storage_p)),
+		object_manager_p_(std::move(object_manager_p))
 	{
 	}
 	F_nsl_shader_compiler::~F_nsl_shader_compiler() {
 	}
-
-//	eastl::optional<F_nsl_preprocessed_src> F_nsl_shader_compiler::preprocess_src(
-//		const G_string& src_content,
-//		const G_string& abs_path,
-//		F_nsl_error_stack* error_stack_p
-//	) {
-//		auto comment_removed_src_opt = H_nsl_utilities::remove_comments(src_content, error_stack_p);
-//
-//		if(comment_removed_src_opt) {
-//
-//			auto comment_removed_src = comment_removed_src_opt.value();
-//
-//			return F_nsl_preprocessed_src {
-//				.content = comment_removed_src.first(),
-//				.raw_locations = comment_removed_src.second(),
-//				.abs_path = abs_path
-//			};
-//		}
-//		else {
-//
-//			if(error_stack_p)
-//				error_stack_p->push({
-//					"can't remove comments"
-//					-1,
-//					0
-//				});
-//
-//			return eastl::nullopt;
-//		}
-//	}
 
 }
