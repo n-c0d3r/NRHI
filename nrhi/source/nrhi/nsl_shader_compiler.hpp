@@ -216,6 +216,11 @@ namespace nrhi {
 
 	};
 
+	struct F_nsl_macro_definitions_section {};
+	struct F_nsl_uniform_buffers_section {};
+	struct F_nsl_resources_section {};
+	struct F_nsl_shader_entry_points_section {};
+
 
 
 	class NRHI_API H_nsl_utilities {
