@@ -1282,33 +1282,192 @@ namespace nrhi {
 
 
 
-	F_nsl_object::F_nsl_object(
+	A_nsl_object::A_nsl_object(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		TKPA_valid<A_nsl_object_type> type_p,
 		const G_string& name
 	) :
 		shader_compiler_p_(shader_compiler_p),
+		type_p_(type_p),
 		name_(name)
 	{
 	}
-	F_nsl_object::~F_nsl_object() {
+	A_nsl_object::~A_nsl_object() {
 	}
 
 
 
-	F_nsl_object_type::F_nsl_object_type(
+	A_nsl_object_type::A_nsl_object_type(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
-		const G_string& name
+		const G_string& name,
+		b8 is_object_name_required,
+		sz min_object_body_count,
+		sz max_object_body_count
 	) :
 		shader_compiler_p_(shader_compiler_p),
-		name_(name)
+		name_(name),
+		is_object_name_required_(is_object_name_required),
+		min_object_body_count_(min_object_body_count),
+		max_object_body_count_(max_object_body_count)
 	{
 	}
-	F_nsl_object_type::~F_nsl_object_type() {
+	A_nsl_object_type::~A_nsl_object_type() {
 	}
 
-	TU<F_nsl_object> F_nsl_object_type::create_object(const G_string& object_name) {
 
-		return TU<F_nsl_object>()(shader_compiler_p_, object_name);
+
+	F_nsl_namespace_object::F_nsl_namespace_object(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		TKPA_valid<A_nsl_object_type> type_p,
+		const G_string& name
+	) :
+		A_nsl_object(
+			shader_compiler_p,
+			type_p,
+			name
+		)
+	{
+	}
+	F_nsl_namespace_object::~F_nsl_namespace_object() {
+	}
+
+
+
+	F_nsl_namespace_object_type::F_nsl_namespace_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"namespace",
+			true,
+			1,
+			1
+		)
+	{
+	}
+	F_nsl_namespace_object_type::~F_nsl_namespace_object_type() {
+	}
+
+	TU<A_nsl_object> F_nsl_namespace_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		const F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	) {
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = TU<F_nsl_namespace_object>()(
+			shader_compiler_p(),
+			NCPP_KTHIS(),
+			tree.object_implementation.name
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return std::move(object_p);
+	}
+
+
+
+	F_nsl_import_object::F_nsl_import_object(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		TKPA_valid<A_nsl_object_type> type_p,
+		const G_string& name
+	) :
+		A_nsl_object(
+			shader_compiler_p,
+			type_p,
+			name
+		)
+	{
+	}
+	F_nsl_import_object::~F_nsl_import_object() {
+	}
+
+
+
+	F_nsl_import_object_type::F_nsl_import_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"import",
+			true,
+			1,
+			1
+		)
+	{
+	}
+	F_nsl_import_object_type::~F_nsl_import_object_type() {
+	}
+
+	TU<A_nsl_object> F_nsl_import_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		const F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	) {
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = TU<F_nsl_import_object>()(
+			shader_compiler_p(),
+			NCPP_KTHIS(),
+			tree.object_implementation.name
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return std::move(object_p);
+	}
+
+
+
+	F_nsl_alias_object::F_nsl_alias_object(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		TKPA_valid<A_nsl_object_type> type_p,
+		const G_string& name
+	) :
+		A_nsl_object(
+			shader_compiler_p,
+			type_p,
+			name
+		)
+	{
+	}
+	F_nsl_alias_object::~F_nsl_alias_object() {
+	}
+
+
+
+	F_nsl_alias_object_type::F_nsl_alias_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"alias",
+			true,
+			1,
+			1
+		)
+	{
+	}
+	F_nsl_alias_object_type::~F_nsl_alias_object_type() {
+	}
+
+	TU<A_nsl_object> F_nsl_alias_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		const F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	) {
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = TU<F_nsl_alias_object>()(
+			shader_compiler_p(),
+			NCPP_KTHIS(),
+			tree.object_implementation.name
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return std::move(object_p);
 	}
 
 
@@ -1316,17 +1475,47 @@ namespace nrhi {
 	F_nsl_object_manager::F_nsl_object_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
 		shader_compiler_p_(shader_compiler_p)
 	{
+		register_type(
+			TU<F_nsl_namespace_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_import_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_alias_object_type>()(shader_compiler_p_)
+		);
 	}
 	F_nsl_object_manager::~F_nsl_object_manager() {
 	}
 
-	TK_valid<F_nsl_object_type> F_nsl_object_manager::register_type(TU<F_nsl_object_type>&& object_type_p) {
+	TK_valid<A_nsl_object_type> F_nsl_object_manager::register_type(TU<A_nsl_object_type>&& object_type_p) {
 
 		auto keyed_object_type_p = NCPP_FOH_VALID(object_type_p);
 
 		type_p_map_[keyed_object_type_p->name()] = std::move(object_type_p);
 
 		return keyed_object_type_p;
+	}
+
+	TG_vector<F_nsl_ast_tree_try_build_functor> F_nsl_object_manager::ast_tree_try_build_functors() {
+
+		TG_vector<F_nsl_ast_tree_try_build_functor> result;
+		result.reserve(type_p_map_.size());
+
+		for(const auto& it : type_p_map_) {
+
+			auto object_type_p = NCPP_FOH_VALID(it.second);
+			result.push_back(
+				H_nsl_utilities::make_try_build_object_implementation_functor(
+					object_type_p->name(),
+					object_type_p->is_object_name_required(),
+					object_type_p->min_object_body_count(),
+					object_type_p->max_object_body_count()
+				)
+			);
+		}
+
+		return std::move(result);
 	}
 
 
