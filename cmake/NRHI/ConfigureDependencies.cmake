@@ -32,7 +32,7 @@ endif()
 #   Add SPIRV-Cross subdirectory
 #####################################################################################
 if(NOT TARGET spirv-cross)
-    add_subdirectory("${NRHI_SUBMODULES_DIR}/SPIRV-Cross" "${NRHI_BINARY_DIR}/submodules/SPIRV-Cross")
+    add_subdirectory("${NRHI_DEPENDENCIES_DIR}/SPIRV-Cross" "${NRHI_DEPENDENCIES_DIR}/SPIRV-Cross/build")
 endif()
 
 
