@@ -139,7 +139,7 @@ namespace nrhi {
 
 	};
 	using F_nsl_ast_tree_recursive_build_functor = eastl::function<
-		TG_vector<F_nsl_ast_tree>(const G_string& src_content, const F_nsl_ast_tree& tree, sz index)
+		TG_vector<F_nsl_ast_tree>(const G_string& src_content, sz location_offset_to_save, const F_nsl_ast_tree& tree, sz index)
 	>;
 	using F_nsl_ast_tree_result_functor = eastl::function<
 		G_string(const G_string& src_content, const F_nsl_ast_tree& tree, sz index)
@@ -155,6 +155,8 @@ namespace nrhi {
 
 		sz begin_location = 0;
 		sz end_location = 0;
+
+		sz location_offset_to_save = 0;
 
 	};
 	struct F_nsl_ast_tree_try_build_result {
@@ -192,11 +194,13 @@ namespace nrhi {
 			const G_string& src_content,
 			const TG_vector<F_nsl_ast_tree_try_build_functor>& try_build_functors,
 			const F_nsl_ast_tree_recursive_build_functor& resursive_build_functor,
+			sz location_offset_to_save = 0,
 			F_nsl_error_stack* error_stack_p = 0
 		);
 		static eastl::optional<TG_vector<F_nsl_ast_tree>> build_ast_trees(
 			const G_string& src_content,
 			const F_nsl_ast_tree_recursive_build_functor& resursive_build_functor,
+			sz location_offset_to_save = 0,
 			F_nsl_error_stack* error_stack_p = 0
 		);
 		static eastl::optional<G_string> apply_ast_trees(

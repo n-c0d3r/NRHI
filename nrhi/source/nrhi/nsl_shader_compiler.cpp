@@ -404,14 +404,101 @@ namespace nrhi {
 
 								if(
 									!(arg_str_state.value)
-										&& (src_content[k] == '(')
-									)
+									&& (src_content[k] == '(')
+								)
 									++level;
 
 								if(
 									!(arg_str_state.value)
-										&& (src_content[k] == ')')
+									&& (src_content[k] == ')')
+								)
+									--level;
+
+								if(level == 0) {
+
+									end_arg_location = k;
+									temp_end_location = k + 1;
+
+									begin_location = temp_begin_location;
+									end_location = temp_end_location;
+
+									F_nsl_use use = {
+										.name = name,
+										.arg = src_content.substr(begin_arg_location, end_arg_location - begin_arg_location),
+
+										.begin_location = begin_location,
+										.end_location = end_location,
+										.begin_name_location = begin_name_location,
+										.end_name_location = end_name_location,
+										.begin_arg_location = begin_arg_location,
+										.end_arg_location = end_arg_location
+									};
+
+									F_nsl_ast_tree tree = {
+										.type = E_nsl_ast_tree_type::USE,
+										.use = use,
+										.begin_location = begin_location,
+										.end_location = end_location,
+									};
+									trees.push_back(tree);
+
+									goto NRHI_END_TRY_BUILD_AST_TREE;
+								}
+
+								arg_str_state.end_check();
+							}
+
+							if(arg_str_state.value) {
+
+								NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+									error_stack_p,
+									begin_str_location,
+									"string is not ended"
+								);
+								return eastl::nullopt;
+							}
+
+							NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+								error_stack_p,
+								begin_arg_location,
+								"function-like use scope is not ended"
+							);
+							return eastl::nullopt;
+						}
+						// for function-like use with {}
+						else if(src_content[t] == '{') {
+
+							i32 level = 1;
+
+							sz begin_arg_location = t + 1;
+							sz end_arg_location = begin_arg_location;
+
+							F_nsl_str_state arg_str_state;
+
+							sz begin_str_location = 0;
+
+							// check for function-like use
+							sz k = begin_arg_location;
+							for(; k < src_length; ++k) {
+
+								arg_str_state.begin_check(src_content[k]);
+
+								if(
+									arg_str_state.value
+									&& !arg_str_state.prev_value
 									)
+									begin_str_location = k;
+
+								if(
+									!(arg_str_state.value)
+									&& (src_content[k] == '{')
+								)
+									++level;
+
+								if(
+									!(arg_str_state.value)
+									&& (src_content[k] == '}')
+								)
 									--level;
 
 								if(level == 0) {
@@ -513,6 +600,7 @@ namespace nrhi {
 		const G_string& src_content,
 		const TG_vector<F_nsl_ast_tree_try_build_functor>& try_build_functors,
 		const F_nsl_ast_tree_recursive_build_functor& resursive_build_functor,
+		sz location_offset_to_save,
 		F_nsl_error_stack* error_stack_p
 	) {
 		TG_vector<F_nsl_ast_tree> result;
@@ -540,7 +628,9 @@ namespace nrhi {
 					.current_location = i,
 
 					.begin_location = begin_location,
-					.end_location = end_location
+					.end_location = end_location,
+
+					.location_offset_to_save = location_offset_to_save
 				};
 
 				auto result_opt = try_build_functor(input);
@@ -568,9 +658,14 @@ namespace nrhi {
 							F_nsl_ast_tree tree = {
 								.type = E_nsl_ast_tree_type::PLAIN_TEXT,
 								.plain_text = plain_text,
-								.begin_location = begin_location,
-								.end_location = end_location,
-								.childs = resursive_build_functor(src_content, tree, tree_index)
+								.begin_location = location_offset_to_save + begin_location,
+								.end_location = location_offset_to_save + end_location,
+								.childs = resursive_build_functor(
+									src_content.substr(begin_location, end_location - begin_location),
+									location_offset_to_save + begin_location,
+									tree,
+									tree_index
+								)
 							};
 							result.push_back(tree);
 							++tree_index;
@@ -579,7 +674,12 @@ namespace nrhi {
 						begin_location = tree.begin_location;
 						end_location = tree.end_location;
 
-						tree.childs = resursive_build_functor(src_content, tree, tree_index);
+						tree.childs = resursive_build_functor(
+							src_content.substr(begin_location, end_location - begin_location),
+							location_offset_to_save + begin_location,
+							tree,
+							tree_index
+						);
 						result.push_back(tree);
 						++tree_index;
 					}
@@ -614,9 +714,14 @@ namespace nrhi {
 			F_nsl_ast_tree tree = {
 				.type = E_nsl_ast_tree_type::PLAIN_TEXT,
 				.plain_text = plain_text,
-				.begin_location = begin_location,
-				.end_location = end_location,
-				.childs = resursive_build_functor(src_content, tree, tree_index)
+				.begin_location = location_offset_to_save + begin_location,
+				.end_location = location_offset_to_save + end_location,
+				.childs = resursive_build_functor(
+					src_content.substr(begin_location, end_location - begin_location),
+					location_offset_to_save + begin_location,
+					tree,
+					tree_index
+				)
 			};
 			result.push_back(tree);
 			++tree_index;
@@ -627,6 +732,7 @@ namespace nrhi {
 	eastl::optional<TG_vector<F_nsl_ast_tree>> H_nsl_utilities::build_ast_trees(
 		const ncpp::containers::G_string& src_content,
 		const F_nsl_ast_tree_recursive_build_functor& resursive_build_functor,
+		sz location_offset_to_save,
 		F_nsl_error_stack* error_stack_p
 	)
 	{
@@ -639,6 +745,7 @@ namespace nrhi {
 				&H_nsl_utilities::try_build_use
 			},
 			resursive_build_functor,
+			location_offset_to_save,
 			error_stack_p
 		);
 	}
