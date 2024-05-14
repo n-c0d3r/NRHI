@@ -56,7 +56,7 @@ namespace nrhi {
         virtual ~A_device();
 
 	public:
-		NCPP_DISABLE_COPY(A_device);
+		NCPP_OBJECT(A_device);
 
     };
 

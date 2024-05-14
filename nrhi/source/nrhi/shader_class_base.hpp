@@ -92,7 +92,7 @@ namespace nrhi {
 		virtual ~A_shader_class();
 
 	public:
-		NCPP_DISABLE_COPY(A_shader_class);
+		NCPP_OBJECT(A_shader_class);
 
 	};
 

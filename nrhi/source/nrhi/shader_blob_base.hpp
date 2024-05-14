@@ -66,7 +66,7 @@ namespace nrhi {
 		virtual ~A_shader_blob();
 
 	public:
-		NCPP_DISABLE_COPY(A_shader_blob);
+		NCPP_OBJECT(A_shader_blob);
 
 	};
 

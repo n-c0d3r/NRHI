@@ -103,7 +103,7 @@ namespace nrhi {
 		virtual ~A_frame_buffer();
 
 	public:
-		NCPP_DISABLE_COPY(A_frame_buffer);
+		NCPP_OBJECT(A_frame_buffer);
 
 	public:
 		void update_viewport();

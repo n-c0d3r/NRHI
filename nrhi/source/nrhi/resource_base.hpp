@@ -87,7 +87,7 @@ namespace nrhi {
         virtual ~A_resource();
 
 	public:
-		NCPP_DISABLE_COPY(A_resource);
+		NCPP_OBJECT(A_resource);
 
 	public:
 		virtual void rebuild(

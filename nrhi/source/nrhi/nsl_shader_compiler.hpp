@@ -306,7 +306,7 @@ namespace nrhi {
 		virtual ~F_nsl_shader_module_loader();
 
 	public:
-		NCPP_DISABLE_COPY(F_nsl_shader_module_loader);
+		NCPP_OBJECT(F_nsl_shader_module_loader);
 
 	public:
 		virtual eastl::optional<G_string> load_src_content(
@@ -342,7 +342,7 @@ namespace nrhi {
 		virtual ~F_nsl_object();
 
 	public:
-		NCPP_DISABLE_COPY(F_nsl_object);
+		NCPP_OBJECT(F_nsl_object);
 
 	};
 
@@ -391,7 +391,7 @@ namespace nrhi {
 		virtual ~F_nsl_object_manager();
 
 	public:
-		NCPP_DISABLE_COPY(F_nsl_object_manager);
+		NCPP_OBJECT(F_nsl_object_manager);
 
 	public:
 		TK_valid<F_nsl_object_type> obtain_type(const G_string& type);
@@ -427,7 +427,7 @@ namespace nrhi {
 		virtual ~F_nsl_error_group();
 
 	public:
-		NCPP_DISABLE_COPY(F_nsl_error_group);
+		NCPP_OBJECT(F_nsl_error_group);
 
 	};
 
@@ -452,7 +452,7 @@ namespace nrhi {
 		virtual ~F_nsl_error_storage();
 
 	public:
-		NCPP_DISABLE_COPY(F_nsl_error_storage);
+		NCPP_OBJECT(F_nsl_error_storage);
 
 	public:
 		TK_valid<F_nsl_error_group> optain_group(const G_string& abs_path);
@@ -494,7 +494,7 @@ namespace nrhi {
 		virtual ~F_nsl_translation_unit();
 
 	public:
-		NCPP_DISABLE_COPY(F_nsl_translation_unit);
+		NCPP_OBJECT(F_nsl_translation_unit);
 
 	};
 
@@ -520,7 +520,7 @@ namespace nrhi {
 		virtual ~F_nsl_translation_unit_manager();
 
 	public:
-		NCPP_DISABLE_COPY(F_nsl_translation_unit_manager);
+		NCPP_OBJECT(F_nsl_translation_unit_manager);
 
 	protected:
 		virtual TU<F_nsl_translation_unit> create_unit_instance(
@@ -567,7 +567,7 @@ namespace nrhi {
 		virtual ~F_nsl_shader_compiler();
 
 	public:
-		NCPP_DISABLE_COPY(F_nsl_shader_compiler);
+		NCPP_OBJECT(F_nsl_shader_compiler);
 
 	};
 

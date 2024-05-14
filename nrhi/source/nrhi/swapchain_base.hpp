@@ -88,7 +88,7 @@ namespace nrhi {
         virtual ~A_swapchain();
 
 	public:
-		NCPP_DISABLE_COPY(A_swapchain);
+		NCPP_OBJECT(A_swapchain);
 
 
 

@@ -52,7 +52,7 @@ namespace nrhi {
         virtual ~A_adapter();
 
 	public:
-		NCPP_DISABLE_COPY(A_adapter);
+		NCPP_OBJECT(A_adapter);
 
     };
 

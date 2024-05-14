@@ -76,7 +76,7 @@ namespace nrhi {
 		virtual ~A_pipeline_state();
 
 	public:
-		NCPP_DISABLE_COPY(A_pipeline_state);
+		NCPP_OBJECT(A_pipeline_state);
 
 	};
 
