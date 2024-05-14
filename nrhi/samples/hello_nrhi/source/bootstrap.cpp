@@ -256,37 +256,6 @@ int main() {
 		)
 	);
 
-	G_string str = (
-"\n"
-"@vertex_shader(VSMain\")\n"
-"@vertex_shader\n"
-"\n"
-	);
-
-	auto compiler_p = TU<F_nsl_shader_compiler>()();
-	auto translation_unit_manager_p = compiler_p->translation_unit_manager_p();
-	auto translation_unit_p = translation_unit_manager_p->create_unit(
-		str,
-		""
-	);
-
-	auto uses_opt = H_nsl_utilities::build_ast_trees(
-		translation_unit_p->preprocessed_src().content,
-		[](const G_string& src_content, const F_nsl_ast_tree& tree, sz index) -> TG_vector<F_nsl_ast_tree>
-		{
-			return {};
-		},
-		&(translation_unit_p->error_group_p()->stack())
-	);
-
-	if(uses_opt) {
-		auto uses = uses_opt.value();
-		int a = 5;
-	}
-	else {
-		int a = 5;
-	}
-
 	// create vertex shader from vertex shader blob
 	auto vshader_p = H_vertex_shader::create(
 		NCPP_FOREF_VALID(device_p),

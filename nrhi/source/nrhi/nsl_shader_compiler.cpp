@@ -633,6 +633,9 @@ namespace nrhi {
 		return build_ast_trees(
 			src_content,
 			{
+				// for syntax:
+				// + function-like use: @keyword()
+				// + variable-like use: @keyword
 				&H_nsl_utilities::try_build_use
 			},
 			resursive_build_functor,
