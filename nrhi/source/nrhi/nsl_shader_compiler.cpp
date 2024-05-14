@@ -1316,12 +1316,73 @@ namespace nrhi {
 
 
 
-	F_nsl_namespace_object::F_nsl_namespace_object(
+	A_nsl_item_object::A_nsl_item_object(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 		TKPA_valid<A_nsl_object_type> type_p,
 		const G_string& name
 	) :
 		A_nsl_object(
+			shader_compiler_p,
+			type_p,
+			name
+		)
+	{
+	}
+	A_nsl_item_object::~A_nsl_item_object() {
+
+		set_parent_p(null);
+	}
+
+	void A_nsl_item_object::set_parent_p(F_null)
+	{
+		if(parent_p_)
+		{
+			parent_p_->remove_child_internal(NCPP_KTHIS());
+		}
+		parent_p_ = null;
+	}
+	void A_nsl_item_object::set_parent_p(TKPA<A_nsl_item_object> parent_p)
+	{
+		if(parent_p_)
+		{
+			parent_p_->remove_child_internal(NCPP_KTHIS());
+		}
+
+		if(parent_p)
+			parent_p->add_child_internal(NCPP_KTHIS());
+
+		parent_p_ = parent_p;
+	}
+	void A_nsl_item_object::set_parent_p(TKPA_valid<A_nsl_item_object> parent_p)
+	{
+		if(parent_p_)
+		{
+			parent_p_->remove_child_internal(NCPP_KTHIS());
+		}
+
+		parent_p->add_child_internal(NCPP_KTHIS());
+
+		parent_p_ = parent_p.no_requirements();
+	}
+
+	void A_nsl_item_object::add_child_internal(TKPA_valid<A_nsl_item_object> child_p)
+	{
+		child_p_list_.push_back(child_p);
+		child_p->handle_ = --(child_p_list_.end());
+	}
+	void A_nsl_item_object::remove_child_internal(TKPA_valid<A_nsl_item_object> child_p)
+	{
+		child_p_list_.erase(child_p->handle_);
+	}
+
+
+
+	F_nsl_namespace_object::F_nsl_namespace_object(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		TKPA_valid<A_nsl_object_type> type_p,
+		const G_string& name
+	) :
+		A_nsl_item_object(
 			shader_compiler_p,
 			type_p,
 			name
@@ -1416,6 +1477,23 @@ namespace nrhi {
 		tree.object_implementation.attached_object_p = object_p;
 
 		return std::move(object_p);
+	}
+
+
+
+	F_nsl_type_object::F_nsl_type_object(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		TKPA_valid<A_nsl_object_type> type_p,
+		const G_string& name
+	) :
+		A_nsl_item_object(
+			shader_compiler_p,
+			type_p,
+			name
+		)
+	{
+	}
+	F_nsl_type_object::~F_nsl_type_object() {
 	}
 
 

@@ -410,7 +410,46 @@ namespace nrhi {
 
 
 
-	class NRHI_API F_nsl_namespace_object : public A_nsl_object {
+	class NRHI_API A_nsl_item_object : public A_nsl_object {
+
+	private:
+		TG_list<TK_valid<A_nsl_item_object>> child_p_list_;
+		typename TG_list<TK_valid<A_nsl_item_object>>::iterator handle_;
+		TK<A_nsl_item_object> parent_p_;
+
+	public:
+		NCPP_FORCE_INLINE const TG_list<TK_valid<A_nsl_item_object>>& child_p_list() const noexcept { return child_p_list_; }
+		NCPP_FORCE_INLINE TKPA<A_nsl_item_object> parent_p() const noexcept { return parent_p_; }
+
+
+
+	protected:
+		A_nsl_item_object(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			TKPA_valid<A_nsl_object_type> type_p,
+			const G_string& name = ""
+		);
+
+	public:
+		virtual ~A_nsl_item_object();
+
+	public:
+		NCPP_OBJECT(A_nsl_item_object);
+
+	public:
+		void set_parent_p(F_null);
+		void set_parent_p(TKPA<A_nsl_item_object> parent_p);
+		void set_parent_p(TKPA_valid<A_nsl_item_object> parent_p);
+
+	private:
+		void add_child_internal(TKPA_valid<A_nsl_item_object> child_p);
+		void remove_child_internal(TKPA_valid<A_nsl_item_object> child_p);
+
+	};
+
+
+
+	class NRHI_API F_nsl_namespace_object : public A_nsl_item_object {
 
 	public:
 		F_nsl_namespace_object(
@@ -427,7 +466,7 @@ namespace nrhi {
 
 
 
-	class NRHI_API F_nsl_namespace_object_type : public A_nsl_object_type {
+	class NRHI_API F_nsl_namespace_object_type final : public A_nsl_object_type {
 
 	public:
 		F_nsl_namespace_object_type(
@@ -449,7 +488,7 @@ namespace nrhi {
 
 
 
-	class NRHI_API F_nsl_import_object : public A_nsl_object {
+	class NRHI_API F_nsl_import_object final : public A_nsl_object {
 
 	public:
 		F_nsl_import_object(
@@ -466,7 +505,7 @@ namespace nrhi {
 
 
 
-	class NRHI_API F_nsl_import_object_type : public A_nsl_object_type {
+	class NRHI_API F_nsl_import_object_type final : public A_nsl_object_type {
 
 	public:
 		F_nsl_import_object_type(
@@ -488,7 +527,29 @@ namespace nrhi {
 
 
 
-	class NRHI_API F_nsl_alias_object : public A_nsl_object {
+	class NRHI_API F_nsl_type_object : public A_nsl_item_object {
+
+	public:
+		F_nsl_type_object(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			TKPA_valid<A_nsl_object_type> type_p,
+			const G_string& name = ""
+		);
+		virtual ~F_nsl_type_object();
+
+	public:
+		NCPP_OBJECT(F_nsl_type_object);
+
+	};
+
+
+
+	class NRHI_API F_nsl_alias_object final : public A_nsl_object {
+
+	public:
+		TK<A_nsl_item_object> item_p;
+
+
 
 	public:
 		F_nsl_alias_object(
@@ -505,7 +566,7 @@ namespace nrhi {
 
 
 
-	class NRHI_API F_nsl_alias_object_type : public A_nsl_object_type {
+	class NRHI_API F_nsl_alias_object_type final : public A_nsl_object_type {
 
 	public:
 		F_nsl_alias_object_type(
