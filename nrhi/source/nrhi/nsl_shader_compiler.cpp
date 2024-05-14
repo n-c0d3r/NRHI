@@ -1320,9 +1320,13 @@ namespace nrhi {
 	F_nsl_object_manager::~F_nsl_object_manager() {
 	}
 
-	TK_valid<F_nsl_object_type> F_nsl_object_manager::obtain_type(const G_string& type) {
+	TK_valid<F_nsl_object_type> F_nsl_object_manager::register_type(TU<F_nsl_object_type>&& object_type_p) {
 
-		return null;
+		auto keyed_object_type_p = NCPP_FOH_VALID(object_type_p);
+
+		type_p_map_[keyed_object_type_p->name()] = std::move(object_type_p);
+
+		return keyed_object_type_p;
 	}
 
 

@@ -394,7 +394,7 @@ namespace nrhi {
 		NCPP_OBJECT(F_nsl_object_manager);
 
 	public:
-		TK_valid<F_nsl_object_type> obtain_type(const G_string& type);
+		TK_valid<F_nsl_object_type> register_type(TU<F_nsl_object_type>&& object_type_p);
 
 	};
 
