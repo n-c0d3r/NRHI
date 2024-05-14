@@ -644,7 +644,7 @@ namespace nrhi {
 	}
 	eastl::optional<G_string> H_nsl_utilities::apply_ast_trees(
 		const ncpp::containers::G_string& src_content,
-		const TG_vector<F_nsl_ast_tree>& uses,
+		const TG_vector<F_nsl_ast_tree>& trees,
 		const nrhi::F_nsl_ast_tree_result_functor& result_functor,
 		F_nsl_error_stack* error_stack_p
 	)
@@ -654,18 +654,12 @@ namespace nrhi {
 
 		sz src_length = src_content.length();
 
-		sz begin_location = 0;
 		sz index = 0;
-		for(const auto& use : uses) {
+		for(const auto& tree : trees) {
 
-			result += src_content.substr(begin_location, use.begin_location - begin_location);
-			result += result_functor(src_content, use, index);
-
-			begin_location = use.end_location;
+			result += result_functor(src_content, tree, index);
 			++index;
 		}
-
-		result += src_content.substr(begin_location, src_length - begin_location);
 
 		return std::move(result);
 	}

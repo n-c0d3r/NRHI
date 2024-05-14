@@ -201,7 +201,7 @@ namespace nrhi {
 		);
 		static eastl::optional<G_string> apply_ast_trees(
 			const G_string& src_content,
-			const TG_vector<F_nsl_ast_tree>& uses,
+			const TG_vector<F_nsl_ast_tree>& trees,
 			const F_nsl_ast_tree_result_functor& result_functor,
 			F_nsl_error_stack* error_stack_p = 0
 		);
