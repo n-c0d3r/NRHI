@@ -55,6 +55,12 @@ namespace nrhi {
 
 
 
+	enum class E_nsl_output_language {
+
+		HLSL = 0x1
+
+	};
+
 	struct F_nsl_error {
 		G_string description;
 		sz location = 0;
@@ -174,7 +180,7 @@ namespace nrhi {
 		eastl::optional<TG_vector<F_nsl_ast_tree>>(
 			const G_string& src_content,
 			sz location_offset_to_save,
-			const F_nsl_ast_tree& tree,
+			F_nsl_ast_tree& tree,
 			sz index,
 			F_nsl_error_stack* error_stack_p
 		)
@@ -283,6 +289,9 @@ namespace nrhi {
 			F_nsl_error_stack* error_stack_p = 0
 		);
 
+	public:
+		static b8 is_plain_text_blank(const F_nsl_plain_text& plain_text);
+
 	};
 
 
@@ -349,11 +358,16 @@ namespace nrhi {
 	private:
 		TK_valid<F_nsl_shader_compiler> shader_compiler_p_;
 		TK_valid<A_nsl_object_type> type_p_;
+		TK_valid<F_nsl_translation_unit> translation_unit_p_;
 		G_string name_;
+
+	public:
+		sz tree_index = 0xFFFFFFFFFFFFFFFF;
 
 	public:
 		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
 		NCPP_FORCE_INLINE TKPA_valid<A_nsl_object_type> type_p() const noexcept { return type_p_; }
+		NCPP_FORCE_INLINE TKPA_valid<F_nsl_translation_unit> translation_unit_p() const noexcept { return translation_unit_p_; }
 		NCPP_FORCE_INLINE const G_string& name() const noexcept { return name_; }
 
 
@@ -362,6 +376,7 @@ namespace nrhi {
 		A_nsl_object(
 			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 			TKPA_valid<A_nsl_object_type> type_p,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 			const G_string& name = ""
 		);
 
@@ -384,12 +399,16 @@ namespace nrhi {
 		sz min_object_body_count_ = 0;
 		sz max_object_body_count_ = 2;
 
+		TG_vector<TU<A_nsl_object>> object_p_vector_;
+
 	public:
 		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
 		NCPP_FORCE_INLINE const G_string& name() const noexcept { return name_; }
 		NCPP_FORCE_INLINE b8 is_object_name_required() const noexcept { return is_object_name_required_; }
 		NCPP_FORCE_INLINE sz min_object_body_count() const noexcept { return min_object_body_count_; }
 		NCPP_FORCE_INLINE sz max_object_body_count() const noexcept { return max_object_body_count_; }
+
+		NCPP_FORCE_INLINE const TG_vector<TU<A_nsl_object>>& object_p_vector() const noexcept { return object_p_vector_; }
 
 
 
@@ -406,92 +425,17 @@ namespace nrhi {
 		virtual ~A_nsl_object_type();
 
 	public:
-		virtual TU<A_nsl_object> create_object(
+		NCPP_OBJECT(A_nsl_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
 			F_nsl_ast_tree& tree,
 			F_nsl_context& context,
 			TKPA_valid<F_nsl_translation_unit> translation_unit_p
 		) = 0;
 
-	public:
-		NCPP_OBJECT(A_nsl_object_type);
-
-	};
-
-
-
-	class NRHI_API A_nsl_item_object : public A_nsl_object {
-
-	private:
-		TG_list<TK_valid<A_nsl_item_object>> child_p_list_;
-		typename TG_list<TK_valid<A_nsl_item_object>>::iterator handle_;
-		TK<A_nsl_item_object> parent_p_;
-
-	public:
-		NCPP_FORCE_INLINE const TG_list<TK_valid<A_nsl_item_object>>& child_p_list() const noexcept { return child_p_list_; }
-		NCPP_FORCE_INLINE TKPA<A_nsl_item_object> parent_p() const noexcept { return parent_p_; }
-
-
-
 	protected:
-		A_nsl_item_object(
-			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
-			TKPA_valid<A_nsl_object_type> type_p,
-			const G_string& name = ""
-		);
-
-	public:
-		virtual ~A_nsl_item_object();
-
-	public:
-		NCPP_OBJECT(A_nsl_item_object);
-
-	public:
-		void set_parent_p(F_null);
-		void set_parent_p(TKPA<A_nsl_item_object> parent_p);
-		void set_parent_p(TKPA_valid<A_nsl_item_object> parent_p);
-
-	private:
-		void add_child_internal(TKPA_valid<A_nsl_item_object> child_p);
-		void remove_child_internal(TKPA_valid<A_nsl_item_object> child_p);
-
-	};
-
-
-
-	class NRHI_API F_nsl_namespace_object : public A_nsl_item_object {
-
-	public:
-		F_nsl_namespace_object(
-			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
-			TKPA_valid<A_nsl_object_type> type_p,
-			const G_string& name = ""
-		);
-		virtual ~F_nsl_namespace_object();
-
-	public:
-		NCPP_OBJECT(F_nsl_namespace_object);
-
-	};
-
-
-
-	class NRHI_API F_nsl_namespace_object_type final : public A_nsl_object_type {
-
-	public:
-		F_nsl_namespace_object_type(
-			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
-		);
-		virtual ~F_nsl_namespace_object_type();
-
-	public:
-		virtual TU<A_nsl_object> create_object(
-			F_nsl_ast_tree& tree,
-			F_nsl_context& context,
-			TKPA_valid<F_nsl_translation_unit> translation_unit_p
-		) override;
-
-	public:
-		NCPP_OBJECT(F_nsl_namespace_object_type);
+		TK<A_nsl_object> register_object(TU<A_nsl_object>&& object_p);
 
 	};
 
@@ -503,6 +447,7 @@ namespace nrhi {
 		F_nsl_import_object(
 			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 			TKPA_valid<A_nsl_object_type> type_p,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 			const G_string& name = ""
 		);
 		virtual ~F_nsl_import_object();
@@ -523,7 +468,7 @@ namespace nrhi {
 		virtual ~F_nsl_import_object_type();
 
 	public:
-		virtual TU<A_nsl_object> create_object(
+		virtual TK<A_nsl_object> create_object(
 			F_nsl_ast_tree& tree,
 			F_nsl_context& context,
 			TKPA_valid<F_nsl_translation_unit> translation_unit_p
@@ -536,27 +481,10 @@ namespace nrhi {
 
 
 
-	class NRHI_API F_nsl_type_object : public A_nsl_item_object {
-
-	public:
-		F_nsl_type_object(
-			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
-			TKPA_valid<A_nsl_object_type> type_p,
-			const G_string& name = ""
-		);
-		virtual ~F_nsl_type_object();
-
-	public:
-		NCPP_OBJECT(F_nsl_type_object);
-
-	};
-
-
-
 	class NRHI_API F_nsl_alias_object final : public A_nsl_object {
 
 	public:
-		TK<A_nsl_item_object> item_p;
+		G_string target;
 
 
 
@@ -564,6 +492,7 @@ namespace nrhi {
 		F_nsl_alias_object(
 			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 			TKPA_valid<A_nsl_object_type> type_p,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 			const G_string& name = ""
 		);
 		virtual ~F_nsl_alias_object();
@@ -584,7 +513,7 @@ namespace nrhi {
 		virtual ~F_nsl_alias_object_type();
 
 	public:
-		virtual TU<A_nsl_object> create_object(
+		virtual TK<A_nsl_object> create_object(
 			F_nsl_ast_tree& tree,
 			F_nsl_context& context,
 			TKPA_valid<F_nsl_translation_unit> translation_unit_p
@@ -798,8 +727,18 @@ namespace nrhi {
 	private:
 		TK_valid<F_nsl_shader_compiler> shader_compiler_p_;
 
+		TG_vector<F_nsl_ast_tree> ast_trees_;
+
+	protected:
+		TK<F_nsl_translation_unit> main_unit_p_;
+
 	public:
 		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
+
+		NCPP_FORCE_INLINE TG_vector<F_nsl_ast_tree>& ast_trees() noexcept { return ast_trees_; }
+		NCPP_FORCE_INLINE const TG_vector<F_nsl_ast_tree>& ast_trees() const noexcept { return ast_trees_; }
+
+		NCPP_FORCE_INLINE TKPA<F_nsl_translation_unit> main_unit_p() const noexcept { return main_unit_p_; }
 
 
 
@@ -811,23 +750,26 @@ namespace nrhi {
 		NCPP_OBJECT(F_nsl_translation_unit_compiler);
 
 	private:
-		void sort_internal();
-		void read_internal();
-		void apply_internal();
-		void apply_macro_definitions_internal();
-		void apply_types_internal();
-		void apply_resources_internal();
-		void apply_shader_entry_points_internal();
+		b8 sort_internal();
+		b8 read_internal();
+		b8 apply_internal();
+		b8 apply_macro_definitions_internal();
+		b8 apply_types_internal();
+		b8 apply_resources_internal();
+		b8 apply_shader_entry_points_internal();
 
 	protected:
-		void compile_minimal();
+		b8 compile_minimal();
+
+	protected:
+		b8 prepare_unit(TK_valid<F_nsl_translation_unit> unit_p);
 
 	public:
-		void prepare_units(
+		b8 prepare_units(
 			const G_string& raw_src_content,
 			const G_string& abs_path
 		);
-		G_string compile();
+		eastl::optional<G_string> compile();
 
 	};
 
@@ -970,9 +912,10 @@ namespace nrhi {
 		NCPP_OBJECT(F_nsl_shader_compiler);
 
 	public:
-		G_string compile_hlsl(
+		eastl::optional<G_string> compile(
 			const G_string& raw_src_content,
-			const G_string& abs_path
+			E_nsl_output_language output_language,
+			const G_string& abs_path = ""
 		);
 
 	};

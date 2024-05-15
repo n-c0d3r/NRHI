@@ -256,6 +256,14 @@ int main() {
 		)
 	);
 
+	auto compiler_p = TU<F_nsl_shader_compiler>()();
+	compiler_p->compile(
+"\n"
+"alias test { 123 }\n"
+"\n",
+		E_nsl_output_language::HLSL
+	);
+
 	// create vertex shader from vertex shader blob
 	auto vshader_p = H_vertex_shader::create(
 		NCPP_FOREF_VALID(device_p),
