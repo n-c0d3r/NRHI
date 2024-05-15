@@ -163,8 +163,6 @@ namespace nrhi {
 	};
 	using F_nsl_ast_tree_recursive_build_functor = eastl::function<
 		eastl::optional<TG_vector<F_nsl_ast_tree>>(
-			const G_string& src_content,
-			sz location_offset_to_save,
 			TG_vector<F_nsl_ast_tree>& trees,
 			sz index,
 			F_nsl_error_stack* error_stack_p
@@ -253,7 +251,7 @@ namespace nrhi {
 		static eastl::optional<TG_vector<F_nsl_ast_tree>> build_ast_trees(
 			const G_string& src_content,
 			const TG_vector<F_nsl_ast_tree_try_build_functor>& try_build_functors,
-			const F_nsl_ast_tree_recursive_build_functor& resursive_build_functor,
+			const F_nsl_ast_tree_recursive_build_functor& recursive_build_functor,
 			sz location_offset_to_save = 0,
 			F_nsl_error_stack* error_stack_p = 0
 		);
@@ -375,8 +373,6 @@ namespace nrhi {
 		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
 			F_nsl_context& context,
 			TK_valid<F_nsl_translation_unit> unit_p,
-			const G_string& src_content,
-			sz location_offset_to_save,
 			TG_vector<F_nsl_ast_tree>& trees,
 			sz index,
 			F_nsl_error_stack* error_stack_p
@@ -455,8 +451,6 @@ namespace nrhi {
 		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
 			F_nsl_context& context,
 			TK_valid<F_nsl_translation_unit> unit_p,
-			const G_string& src_content,
-			sz location_offset_to_save,
 			TG_vector<F_nsl_ast_tree>& trees,
 			sz index,
 			F_nsl_error_stack* error_stack_p
@@ -511,8 +505,6 @@ namespace nrhi {
 		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
 			F_nsl_context& context,
 			TK_valid<F_nsl_translation_unit> unit_p,
-			const G_string& src_content,
-			sz location_offset_to_save,
 			TG_vector<F_nsl_ast_tree>& trees,
 			sz index,
 			F_nsl_error_stack* error_stack_p
@@ -567,8 +559,6 @@ namespace nrhi {
 		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
 			F_nsl_context& context,
 			TK_valid<F_nsl_translation_unit> unit_p,
-			const G_string& src_content,
-			sz location_offset_to_save,
 			TG_vector<F_nsl_ast_tree>& trees,
 			sz index,
 			F_nsl_error_stack* error_stack_p
@@ -623,8 +613,6 @@ namespace nrhi {
 		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
 			F_nsl_context& context,
 			TK_valid<F_nsl_translation_unit> unit_p,
-			const G_string& src_content,
-			sz location_offset_to_save,
 			TG_vector<F_nsl_ast_tree>& trees,
 			sz index,
 			F_nsl_error_stack* error_stack_p
@@ -679,8 +667,6 @@ namespace nrhi {
 		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
 			F_nsl_context& context,
 			TK_valid<F_nsl_translation_unit> unit_p,
-			const G_string& src_content,
-			sz location_offset_to_save,
 			TG_vector<F_nsl_ast_tree>& trees,
 			sz index,
 			F_nsl_error_stack* error_stack_p
@@ -735,8 +721,6 @@ namespace nrhi {
 		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
 			F_nsl_context& context,
 			TK_valid<F_nsl_translation_unit> unit_p,
-			const G_string& src_content,
-			sz location_offset_to_save,
 			TG_vector<F_nsl_ast_tree>& trees,
 			sz index,
 			F_nsl_error_stack* error_stack_p
@@ -1034,8 +1018,6 @@ namespace nrhi {
 		eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
 			F_nsl_context& context,
 			TK_valid<F_nsl_translation_unit> unit_p,
-			const G_string& src_content,
-			sz location_offset_to_save,
 			TG_vector<F_nsl_ast_tree>& trees,
 			sz index,
 			F_nsl_error_stack* error_stack_p
@@ -1173,6 +1155,12 @@ namespace nrhi {
 		NCPP_OBJECT(F_nsl_name_manager);
 
 	public:
+		NCPP_FORCE_INLINE b8 is_name_registered(const G_string& name) const {
+
+			auto it = name_to_target_map_.find(name);
+
+			return (it != name_to_target_map_.end());
+		}
 		NCPP_FORCE_INLINE b8 is_name_has_target(const G_string& name) const {
 
 			auto it = name_to_target_map_.find(name);
@@ -1224,6 +1212,13 @@ namespace nrhi {
 			NCPP_ASSERT(name_to_name_type_map_.find(name) == name_to_name_type_map_.end()) << T_cout_value(name) << " already exists";
 
 			name_to_name_type_map_[name] = name_type;
+			name_to_target_map_[name] = name;
+		}
+		NCPP_FORCE_INLINE void register_name(const G_string& name) {
+
+			NCPP_ASSERT(name_to_name_type_map_.find(name) == name_to_name_type_map_.end()) << T_cout_value(name) << " already exists";
+
+			name_to_name_type_map_[name] = 0;
 			name_to_target_map_[name] = name;
 		}
 		template<typename F__>

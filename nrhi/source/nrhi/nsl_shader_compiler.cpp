@@ -92,11 +92,11 @@ namespace nrhi {
 
 		return (
 			is_variable_name_character(c)
-			|| (c >= '@')
-			|| (c >= '#')
-			|| (c >= '&')
-			|| (c >= '$')
-			|| (c >= '!')
+			|| (c == '@')
+			|| (c == '#')
+			|| (c == '&')
+			|| (c == '$')
+			|| (c == '!')
 		);
 	}
 	b8 H_nsl_utilities::is_object_name(const G_string& str) {
@@ -540,8 +540,8 @@ namespace nrhi {
 												begin_body_location,
 												end_body_location - begin_body_location
 											),
-											.begin_location = begin_body_location,
-											.end_location = end_body_location
+											.begin_location = location_offset_to_save + begin_body_location,
+											.end_location = location_offset_to_save + end_body_location
 										});
 										is_body_ended = true;
 
@@ -581,7 +581,7 @@ namespace nrhi {
 						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 							error_stack_p,
 							location_offset_to_save + begin_name_location,
-							"object body is required to be >= " + G_to_string(min_object_body_count)
+							"object body count is required to be >= " + G_to_string(min_object_body_count)
 						);
 
 						return eastl::nullopt;
@@ -594,12 +594,12 @@ namespace nrhi {
 						.keyword = keyword,
 						.name = name,
 
-						.begin_location = begin_location,
-						.end_location = end_location,
-						.begin_keyword_location = begin_keyword_location,
-						.end_keyword_location = end_keyword_location,
-						.begin_name_location = begin_name_location,
-						.end_name_location = end_name_location,
+						.begin_location = location_offset_to_save + begin_location,
+						.end_location = location_offset_to_save + end_location,
+						.begin_keyword_location = location_offset_to_save + begin_keyword_location,
+						.end_keyword_location = location_offset_to_save + end_keyword_location,
+						.begin_name_location = location_offset_to_save + begin_name_location,
+						.end_name_location = location_offset_to_save + end_name_location,
 
 						.bodies = bodies
 					};
@@ -607,8 +607,8 @@ namespace nrhi {
 					F_nsl_ast_tree tree = {
 						.type = E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION,
 						.object_implementation = object_implementation,
-						.begin_location = begin_location,
-						.end_location = end_location,
+						.begin_location = location_offset_to_save + begin_location,
+						.end_location = location_offset_to_save + end_location,
 					};
 					trees.push_back(tree);
 
@@ -645,7 +645,7 @@ namespace nrhi {
 	eastl::optional<TG_vector<F_nsl_ast_tree>> H_nsl_utilities::build_ast_trees(
 		const G_string& src_content,
 		const TG_vector<F_nsl_ast_tree_try_build_functor>& try_build_functors,
-		const F_nsl_ast_tree_recursive_build_functor& resursive_build_functor,
+		const F_nsl_ast_tree_recursive_build_functor& recursive_build_functor,
 		sz location_offset_to_save,
 		F_nsl_error_stack* error_stack_p
 	) {
@@ -690,15 +690,15 @@ namespace nrhi {
 
 					for(auto& tree : try_build_result.trees) {
 
-						if(tree.begin_location != end_location) {
+						if(tree.begin_location != (location_offset_to_save + end_location)) {
 
 							begin_location = end_location;
-							end_location = tree.begin_location;
+							end_location = tree.begin_location - location_offset_to_save;
 
 							F_nsl_plain_text plain_text = {
 								.content = src_content.substr(begin_location, end_location - begin_location),
-								.begin_location = begin_location,
-								.end_location = end_location,
+								.begin_location = location_offset_to_save + begin_location,
+								.end_location = location_offset_to_save + end_location,
 							};
 
 							F_nsl_ast_tree plain_text_tree = {
@@ -711,8 +711,8 @@ namespace nrhi {
 							result.push_back(plain_text_tree);
 						}
 
-						begin_location = tree.begin_location;
-						end_location = tree.end_location;
+						begin_location = tree.begin_location - location_offset_to_save;
+						end_location = tree.end_location - location_offset_to_save;
 
 						result.push_back(tree);
 					}
@@ -740,8 +740,8 @@ namespace nrhi {
 
 			F_nsl_plain_text plain_text = {
 				.content = src_content.substr(begin_location, end_location - begin_location),
-				.begin_location = begin_location,
-				.end_location = end_location,
+				.begin_location = location_offset_to_save + begin_location,
+				.end_location = location_offset_to_save + end_location,
 			};
 
 			F_nsl_ast_tree tree = {
@@ -759,9 +759,7 @@ namespace nrhi {
 		// recursively build childs
 		for(auto& tree : result) {
 
-			auto childs_opt = resursive_build_functor(
-				src_content.substr(tree.begin_location, tree.end_location - tree.begin_location),
-				location_offset_to_save + tree.begin_location,
+			auto childs_opt = recursive_build_functor(
 				result,
 				tree_index,
 				error_stack_p
@@ -769,7 +767,7 @@ namespace nrhi {
 			if(!childs_opt) {
 				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 					error_stack_p,
-					location_offset_to_save + tree.begin_location,
+					tree.begin_location,
 					"can't build child ast trees"
 				);
 				return eastl::nullopt;
@@ -1032,8 +1030,6 @@ namespace nrhi {
 	eastl::optional<TG_vector<F_nsl_ast_tree>> A_nsl_object::recursive_build_ast_tree(
 		F_nsl_context& context,
 		TK_valid<F_nsl_translation_unit> unit_p,
-		const G_string& src_content,
-		sz location_offset_to_save,
 		TG_vector<F_nsl_ast_tree>& trees,
 		sz index,
 		F_nsl_error_stack* error_stack_p
@@ -1091,8 +1087,6 @@ namespace nrhi {
 	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_import_object::recursive_build_ast_tree(
 		F_nsl_context& context,
 		TK_valid<F_nsl_translation_unit> unit_p,
-		const G_string& src_content,
-		sz location_offset_to_save,
 		TG_vector<F_nsl_ast_tree>& trees,
 		sz index,
 		F_nsl_error_stack* error_stack_p
@@ -1160,12 +1154,61 @@ namespace nrhi {
 	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_if_object::recursive_build_ast_tree(
 		F_nsl_context& context,
 		TK_valid<F_nsl_translation_unit> unit_p,
-		const G_string& src_content,
-		sz location_offset_to_save,
 		TG_vector<F_nsl_ast_tree>& trees,
 		sz index,
 		F_nsl_error_stack* error_stack_p
 	) {
+		const auto& tree = trees[index];
+
+		auto& target_content_body = tree.object_implementation.bodies[0];
+		auto& body_content_body = tree.object_implementation.bodies[1];
+
+		G_string new_target = H_nsl_utilities::clear_space_head_tail(
+			target_content_body.content
+		);
+
+		if(!H_nsl_utilities::is_variable_name(new_target)) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				&(unit_p->error_group_p()->stack()),
+				target_content_body.begin_location,
+				"invalid name: " + new_target
+			);
+
+			return eastl::nullopt;
+		}
+
+		target = new_target;
+
+		if(shader_compiler_p()->name_manager_p()->is_name_registered(target)) {
+
+			context.parent_object_p = NCPP_KTHIS().no_requirements();
+
+			auto translation_unit_compiler_p = shader_compiler_p()->translation_unit_compiler_p();
+			auto childs_opt = translation_unit_compiler_p->parse(
+				unit_p,
+				body_content_body.content,
+				context,
+				body_content_body.begin_location
+			);
+
+			if(!childs_opt) {
+
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					&(unit_p->error_group_p()->stack()),
+					body_content_body.begin_location,
+					"can't not parse !if body"
+				);
+				return eastl::nullopt;
+			}
+
+			const G_string& src_content = unit_p->preprocessed_src().content;
+
+			auto childs = std::move(childs_opt.value());
+
+			return std::move(childs);
+		}
+
 		return TG_vector<F_nsl_ast_tree>();
 	}
 
@@ -1178,8 +1221,8 @@ namespace nrhi {
 			shader_compiler_p,
 			"!if",
 			false,
-			0,
-			1
+			2,
+			2
 		)
 	{
 	}
@@ -1229,12 +1272,33 @@ namespace nrhi {
 	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_define_object::recursive_build_ast_tree(
 		F_nsl_context& context,
 		TK_valid<F_nsl_translation_unit> unit_p,
-		const G_string& src_content,
-		sz location_offset_to_save,
 		TG_vector<F_nsl_ast_tree>& trees,
 		sz index,
 		F_nsl_error_stack* error_stack_p
 	) {
+		const auto& tree = trees[index];
+
+		auto& target_content_body = tree.object_implementation.bodies[0];
+
+		G_string new_target = H_nsl_utilities::clear_space_head_tail(
+			target_content_body.content
+		);
+
+		if(!H_nsl_utilities::is_variable_name(new_target)) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				&(unit_p->error_group_p()->stack()),
+				target_content_body.begin_location,
+				"invalid name: " + new_target
+			);
+
+			return eastl::nullopt;
+		}
+
+		target = new_target;
+
+		shader_compiler_p()->name_manager_p()->register_name(target);
+
 		return TG_vector<F_nsl_ast_tree>();
 	}
 
@@ -1247,7 +1311,7 @@ namespace nrhi {
 			shader_compiler_p,
 			"!define",
 			false,
-			0,
+			1,
 			1
 		)
 	{
@@ -1298,8 +1362,6 @@ namespace nrhi {
 	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_elif_object::recursive_build_ast_tree(
 		F_nsl_context& context,
 		TK_valid<F_nsl_translation_unit> unit_p,
-		const G_string& src_content,
-		sz location_offset_to_save,
 		TG_vector<F_nsl_ast_tree>& trees,
 		sz index,
 		F_nsl_error_stack* error_stack_p
@@ -1367,8 +1429,6 @@ namespace nrhi {
 	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_else_object::recursive_build_ast_tree(
 		F_nsl_context& context,
 		TK_valid<F_nsl_translation_unit> unit_p,
-		const G_string& src_content,
-		sz location_offset_to_save,
 		TG_vector<F_nsl_ast_tree>& trees,
 		sz index,
 		F_nsl_error_stack* error_stack_p
@@ -1436,8 +1496,6 @@ namespace nrhi {
 	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_alias_object::recursive_build_ast_tree(
 		F_nsl_context& context,
 		TK_valid<F_nsl_translation_unit> unit_p,
-		const G_string& src_content,
-		sz location_offset_to_save,
 		TG_vector<F_nsl_ast_tree>& trees,
 		sz index,
 		F_nsl_error_stack* error_stack_p
@@ -1786,8 +1844,6 @@ namespace nrhi {
 			src_content,
 			try_build_functors,
 			[this, &context, &unit_p](
-				const G_string& src_content,
-				sz location_offset_to_save,
 				TG_vector<F_nsl_ast_tree>& trees,
 				sz index,
 				F_nsl_error_stack* error_stack_p
@@ -1796,8 +1852,6 @@ namespace nrhi {
 			  	return recursive_build_ast_tree(
 					context,
 					unit_p,
-					src_content,
-					location_offset_to_save,
 					trees,
 					index,
 					error_stack_p
@@ -1817,8 +1871,6 @@ namespace nrhi {
 	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_translation_unit_compiler::recursive_build_ast_tree(
 		F_nsl_context& context,
 		TK_valid<F_nsl_translation_unit> unit_p,
-		const G_string& src_content,
-		sz location_offset_to_save,
 		TG_vector<F_nsl_ast_tree>& trees,
 		sz index,
 		F_nsl_error_stack* error_stack_p
@@ -1845,8 +1897,6 @@ namespace nrhi {
 			result = object_p->recursive_build_ast_tree(
 				context,
 				unit_p,
-				src_content,
-				location_offset_to_save,
 				trees,
 				index,
 				error_stack_p
@@ -1854,7 +1904,7 @@ namespace nrhi {
 			if(!result) {
 				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 					error_stack_p,
-					location_offset_to_save + tree.begin_location,
+					tree.begin_location,
 					"can't build object ast"
 				);
 				return eastl::nullopt;
