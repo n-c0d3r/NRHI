@@ -46,7 +46,7 @@ namespace nrhi {
 	class A_shader_class;
 
 	class F_nsl_shader_compiler;
-	class F_nsl_shader_module_loader;
+	class F_nsl_shader_module_manager;
 	class F_nsl_translation_unit;
 	class F_nsl_translation_unit_manager;
 	class A_nsl_object;
@@ -217,7 +217,7 @@ namespace nrhi {
 	};
 
 	struct F_nsl_macro_definitions_section {};
-	struct F_nsl_uniform_buffers_section {};
+	struct F_nsl_types_section {};
 	struct F_nsl_resources_section {};
 	struct F_nsl_shader_entry_points_section {};
 
@@ -304,10 +304,13 @@ namespace nrhi {
 
 
 
-	class NRHI_API F_nsl_shader_module_loader {
+	class NRHI_API F_nsl_shader_module_manager {
 
 	private:
 		TK_valid<F_nsl_shader_compiler> shader_compiler_p_;
+
+	protected:
+		TG_unordered_map<G_string, TK<F_nsl_translation_unit>> abs_path_to_translation_unit_p_;
 
 	public:
 		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
@@ -315,20 +318,26 @@ namespace nrhi {
 
 
 	public:
-		F_nsl_shader_module_loader(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p);
-		virtual ~F_nsl_shader_module_loader();
+		F_nsl_shader_module_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p);
+		virtual ~F_nsl_shader_module_manager();
 
 	public:
-		NCPP_OBJECT(F_nsl_shader_module_loader);
+		NCPP_OBJECT(F_nsl_shader_module_manager);
 
 	public:
-		virtual eastl::optional<G_string> load_src_content(
+		struct F_load_src_content_result {
+			G_string abs_path;
+		};
+		virtual eastl::optional<F_load_src_content_result> load_src_content(
 			TKPA_valid<F_nsl_translation_unit> from_unit_p,
-			const G_string& path
+			const G_string& path,
+			const F_nsl_ast_tree& tree,
+			G_string& out_src_content
 		);
-		virtual TU<F_nsl_translation_unit> load(
+		virtual TK<F_nsl_translation_unit> load(
 			TKPA_valid<F_nsl_translation_unit> from_unit_p,
-			const G_string& path
+			const G_string& path,
+			const F_nsl_ast_tree& tree
 		);
 
 	};
@@ -399,7 +408,7 @@ namespace nrhi {
 	public:
 		virtual TU<A_nsl_object> create_object(
 			F_nsl_ast_tree& tree,
-			const F_nsl_context& context,
+			F_nsl_context& context,
 			TKPA_valid<F_nsl_translation_unit> translation_unit_p
 		) = 0;
 
@@ -477,7 +486,7 @@ namespace nrhi {
 	public:
 		virtual TU<A_nsl_object> create_object(
 			F_nsl_ast_tree& tree,
-			const F_nsl_context& context,
+			F_nsl_context& context,
 			TKPA_valid<F_nsl_translation_unit> translation_unit_p
 		) override;
 
@@ -516,7 +525,7 @@ namespace nrhi {
 	public:
 		virtual TU<A_nsl_object> create_object(
 			F_nsl_ast_tree& tree,
-			const F_nsl_context& context,
+			F_nsl_context& context,
 			TKPA_valid<F_nsl_translation_unit> translation_unit_p
 		) override;
 
@@ -577,7 +586,7 @@ namespace nrhi {
 	public:
 		virtual TU<A_nsl_object> create_object(
 			F_nsl_ast_tree& tree,
-			const F_nsl_context& context,
+			F_nsl_context& context,
 			TKPA_valid<F_nsl_translation_unit> translation_unit_p
 		) override;
 
@@ -598,6 +607,8 @@ namespace nrhi {
 	public:
 		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
 
+		NCPP_FORCE_INLINE const TG_unordered_map<G_string, TU<A_nsl_object_type>>& type_p_map() const noexcept { return type_p_map_; }
+
 
 
 	public:
@@ -609,6 +620,21 @@ namespace nrhi {
 
 	public:
 		TK_valid<A_nsl_object_type> register_type(TU<A_nsl_object_type>&& object_type_p);
+
+		NCPP_FORCE_INLINE b8 is_has_type_p(const G_string& name) const noexcept {
+
+			auto it = type_p_map_.find(name);
+
+			return (it != type_p_map_.end());
+		}
+		NCPP_FORCE_INLINE TK_valid<A_nsl_object_type> type_p(const G_string& name) const noexcept {
+
+			auto it = type_p_map_.find(name);
+
+			NCPP_ASSERT(it != type_p_map_.end()) << "type " << T_cout_value(name) << " not found";
+
+			return NCPP_FOH_VALID(it->second);
+		}
 
 		TG_vector<F_nsl_ast_tree_try_build_functor> ast_tree_try_build_functors();
 
@@ -688,6 +714,8 @@ namespace nrhi {
 
 		TK_valid<F_nsl_error_group> error_group_p_;
 
+		TG_vector<TK_valid<F_nsl_translation_unit>> dependency_p_vector_;
+
 	public:
 		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
 
@@ -696,6 +724,8 @@ namespace nrhi {
 		NCPP_FORCE_INLINE const F_nsl_preprocessed_src& preprocessed_src() const noexcept { return preprocessed_src_; }
 
 		NCPP_FORCE_INLINE TKPA_valid<F_nsl_error_group> error_group_p() const noexcept { return error_group_p_; }
+
+		NCPP_FORCE_INLINE const TG_vector<TK_valid<F_nsl_translation_unit>>& dependency_p_vector() const noexcept { return dependency_p_vector_; }
 
 
 
@@ -712,6 +742,9 @@ namespace nrhi {
 	public:
 		NCPP_OBJECT(F_nsl_translation_unit);
 
+	public:
+		void add_dependency(TK_valid<F_nsl_translation_unit> dependency_p);
+
 	};
 
 
@@ -726,8 +759,12 @@ namespace nrhi {
 	private:
 		TK_valid<F_nsl_shader_compiler> shader_compiler_p_;
 
+		TG_vector<TU<F_nsl_translation_unit>> translation_unit_p_vector_;
+
 	public:
 		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
+
+		NCPP_FORCE_INLINE const TG_vector<TU<F_nsl_translation_unit>>& translation_unit_p_vector() const noexcept { return translation_unit_p_vector_; }
 
 
 
@@ -747,7 +784,7 @@ namespace nrhi {
 		);
 
 	public:
-		virtual TU<F_nsl_translation_unit> create_unit(
+		virtual TK<F_nsl_translation_unit> create_unit(
 			const G_string& raw_src_content,
 			const G_string& abs_path
 		);
@@ -756,34 +793,187 @@ namespace nrhi {
 
 
 
+	class NRHI_API F_nsl_translation_unit_compiler {
+
+	private:
+		TK_valid<F_nsl_shader_compiler> shader_compiler_p_;
+
+	public:
+		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
+
+
+
+	public:
+		F_nsl_translation_unit_compiler(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p);
+		virtual ~F_nsl_translation_unit_compiler();
+
+	public:
+		NCPP_OBJECT(F_nsl_translation_unit_compiler);
+
+	private:
+		void sort_internal();
+		void read_internal();
+		void apply_internal();
+		void apply_macro_definitions_internal();
+		void apply_types_internal();
+		void apply_resources_internal();
+		void apply_shader_entry_points_internal();
+
+	protected:
+		void compile_minimal();
+
+	public:
+		void prepare_units(
+			const G_string& raw_src_content,
+			const G_string& abs_path
+		);
+		G_string compile();
+
+	};
+
+
+
+	class NRHI_API A_nsl_section_storage {
+
+	private:
+		TK_valid<F_nsl_shader_compiler> shader_compiler_p_;
+
+	protected:
+		TG_unordered_map<u64, G_string> section_map_;
+		TG_vector<u64> section_ids_;
+
+	public:
+		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
+
+		NCPP_FORCE_INLINE const TG_unordered_map<u64, G_string>& section_map() const noexcept { return section_map_; }
+
+
+
+	public:
+		A_nsl_section_storage(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p);
+		virtual ~A_nsl_section_storage();
+
+	public:
+		NCPP_OBJECT(A_nsl_section_storage);
+
+	public:
+		NCPP_FORCE_INLINE b8 is_has_section(u64 id) const {
+
+			return (section_map_.find(id) != section_map_.end());
+		}
+		NCPP_FORCE_INLINE G_string& section(u64 id) {
+
+			auto it = section_map_.find(id);
+
+			NCPP_ASSERT(it != section_map_.end()) << "section with id " << T_cout_value(id) << " not found";
+
+			return it->second;
+		}
+		NCPP_FORCE_INLINE const G_string& section(u64 id) const {
+
+			auto it = section_map_.find(id);
+
+			NCPP_ASSERT(it != section_map_.end()) << "section with id " << T_cout_value(id) << " not found";
+
+			return it->second;
+		}
+
+	public:
+		template<typename F_section__>
+		NCPP_FORCE_INLINE b8 T_is_has_section(u64 id) const {
+
+			return is_has_section(T_type_hash_code<F_section__>);
+		}
+		template<typename F_section__>
+		NCPP_FORCE_INLINE G_string& T_section(u64 id) {
+
+			return section(T_type_hash_code<F_section__>);
+		}
+		template<typename F_section__>
+		NCPP_FORCE_INLINE const G_string& T_section(u64 id) const {
+
+			return section(T_type_hash_code<F_section__>);
+		}
+
+	public:
+		G_string combine();
+
+	};
+
+
+
+	template<typename... F_sections__>
+	class NRHI_API TF_nsl_section_storage : public A_nsl_section_storage {
+
+	public:
+		TF_nsl_section_storage(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
+			A_nsl_section_storage(shader_compiler_p)
+		{
+			section_map_ = {
+				{
+					T_type_hash_code<F_sections__>,
+					G_string("")
+				}...
+			};
+			section_ids_ = TG_vector<u64>({ T_type_hash_code<F_sections__>... });
+		}
+		virtual ~TF_nsl_section_storage() {
+		}
+
+	public:
+		NCPP_OBJECT(TF_nsl_section_storage);
+
+	};
+
+	using F_nsl_section_storage = TF_nsl_section_storage<
+		F_nsl_macro_definitions_section,
+		F_nsl_types_section,
+		F_nsl_resources_section,
+		F_nsl_shader_entry_points_section
+	>;
+
+
+
 	class NRHI_API F_nsl_shader_compiler {
 
 	private:
-		TU<F_nsl_shader_module_loader> module_loader_p_;
+		TU<F_nsl_shader_module_manager> module_manager_p_;
 		TU<F_nsl_translation_unit_manager> translation_unit_manager_p_;
+		TU<F_nsl_translation_unit_compiler> translation_unit_compiler_p_;
 		TU<F_nsl_error_storage> error_storage_p_;
 		TU<F_nsl_object_manager> object_manager_p_;
+		TU<A_nsl_section_storage> section_storage_p_;
 
 	public:
-		NCPP_FORCE_INLINE TK_valid<F_nsl_shader_module_loader> module_loader_p() const noexcept { return NCPP_FOH_VALID(module_loader_p_); }
+		NCPP_FORCE_INLINE TK_valid<F_nsl_shader_module_manager> module_manager_p() const noexcept { return NCPP_FOH_VALID(module_manager_p_); }
 		NCPP_FORCE_INLINE TK_valid<F_nsl_translation_unit_manager> translation_unit_manager_p() const noexcept { return NCPP_FOH_VALID(translation_unit_manager_p_); }
+		NCPP_FORCE_INLINE TK_valid<F_nsl_translation_unit_compiler> translation_unit_compiler_p() const noexcept { return NCPP_FOH_VALID(translation_unit_compiler_p_); }
 		NCPP_FORCE_INLINE TK_valid<F_nsl_error_storage> error_storage_p() const noexcept { return NCPP_FOH_VALID(error_storage_p_); }
 		NCPP_FORCE_INLINE TK_valid<F_nsl_object_manager> object_manager_p() const noexcept { return NCPP_FOH_VALID(object_manager_p_); }
+		NCPP_FORCE_INLINE TK_valid<A_nsl_section_storage> section_storage_p() const noexcept { return NCPP_FOH_VALID(section_storage_p_); }
 
 
 
 	public:
 		F_nsl_shader_compiler();
 		F_nsl_shader_compiler(
-			TU<F_nsl_shader_module_loader>&& module_loader_p,
+			TU<F_nsl_shader_module_manager>&& module_manager_p,
 			TU<F_nsl_translation_unit_manager>&& translation_unit_manager_p,
+			TU<F_nsl_translation_unit_compiler>&& translation_unit_compiler_p,
 			TU<F_nsl_error_storage>&& error_storage_p,
-			TU<F_nsl_object_manager>&& object_manager_p
+			TU<F_nsl_object_manager>&& object_manager_p,
+			TU<A_nsl_section_storage>&& section_storage_p
 		);
 		virtual ~F_nsl_shader_compiler();
 
 	public:
 		NCPP_OBJECT(F_nsl_shader_compiler);
+
+	public:
+		G_string compile_hlsl(
+			const G_string& raw_src_content,
+			const G_string& abs_path
+		);
 
 	};
 
