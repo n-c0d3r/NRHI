@@ -776,6 +776,7 @@ namespace nrhi {
 			}
 
 			tree.childs = childs_opt.value();
+			++tree_index;
 		}
 
 		return result;
@@ -1087,6 +1088,18 @@ namespace nrhi {
 	F_nsl_import_object::~F_nsl_import_object() {
 	}
 
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_import_object::recursive_build_ast_tree(
+		F_nsl_context& context,
+		TK_valid<F_nsl_translation_unit> unit_p,
+		const G_string& src_content,
+		sz location_offset_to_save,
+		TG_vector<F_nsl_ast_tree>& trees,
+		sz index,
+		F_nsl_error_stack* error_stack_p
+	) {
+		return TG_vector<F_nsl_ast_tree>();
+	}
+
 
 
 	F_nsl_import_object_type::F_nsl_import_object_type(
@@ -1142,6 +1155,18 @@ namespace nrhi {
 	{
 	}
 	F_nsl_if_object::~F_nsl_if_object() {
+	}
+
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_if_object::recursive_build_ast_tree(
+		F_nsl_context& context,
+		TK_valid<F_nsl_translation_unit> unit_p,
+		const G_string& src_content,
+		sz location_offset_to_save,
+		TG_vector<F_nsl_ast_tree>& trees,
+		sz index,
+		F_nsl_error_stack* error_stack_p
+	) {
+		return TG_vector<F_nsl_ast_tree>();
 	}
 
 
@@ -1201,6 +1226,18 @@ namespace nrhi {
 	F_nsl_define_object::~F_nsl_define_object() {
 	}
 
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_define_object::recursive_build_ast_tree(
+		F_nsl_context& context,
+		TK_valid<F_nsl_translation_unit> unit_p,
+		const G_string& src_content,
+		sz location_offset_to_save,
+		TG_vector<F_nsl_ast_tree>& trees,
+		sz index,
+		F_nsl_error_stack* error_stack_p
+	) {
+		return TG_vector<F_nsl_ast_tree>();
+	}
+
 
 
 	F_nsl_define_object_type::F_nsl_define_object_type(
@@ -1256,6 +1293,18 @@ namespace nrhi {
 	{
 	}
 	F_nsl_elif_object::~F_nsl_elif_object() {
+	}
+
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_elif_object::recursive_build_ast_tree(
+		F_nsl_context& context,
+		TK_valid<F_nsl_translation_unit> unit_p,
+		const G_string& src_content,
+		sz location_offset_to_save,
+		TG_vector<F_nsl_ast_tree>& trees,
+		sz index,
+		F_nsl_error_stack* error_stack_p
+	) {
+		return TG_vector<F_nsl_ast_tree>();
 	}
 
 
@@ -1315,6 +1364,18 @@ namespace nrhi {
 	F_nsl_else_object::~F_nsl_else_object() {
 	}
 
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_else_object::recursive_build_ast_tree(
+		F_nsl_context& context,
+		TK_valid<F_nsl_translation_unit> unit_p,
+		const G_string& src_content,
+		sz location_offset_to_save,
+		TG_vector<F_nsl_ast_tree>& trees,
+		sz index,
+		F_nsl_error_stack* error_stack_p
+	) {
+		return TG_vector<F_nsl_ast_tree>();
+	}
+
 
 
 	F_nsl_else_object_type::F_nsl_else_object_type(
@@ -1370,6 +1431,18 @@ namespace nrhi {
 	{
 	}
 	F_nsl_alias_object::~F_nsl_alias_object() {
+	}
+
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_alias_object::recursive_build_ast_tree(
+		F_nsl_context& context,
+		TK_valid<F_nsl_translation_unit> unit_p,
+		const G_string& src_content,
+		sz location_offset_to_save,
+		TG_vector<F_nsl_ast_tree>& trees,
+		sz index,
+		F_nsl_error_stack* error_stack_p
+	) {
+		return TG_vector<F_nsl_ast_tree>();
 	}
 
 
@@ -1768,6 +1841,7 @@ namespace nrhi {
 			);
 			if(!object_p)
 				return eastl::nullopt;
+			NCPP_INFO() << "OK";
 			result = object_p->recursive_build_ast_tree(
 				context,
 				unit_p,

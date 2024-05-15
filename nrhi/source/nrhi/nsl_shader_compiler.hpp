@@ -451,6 +451,17 @@ namespace nrhi {
 	public:
 		NCPP_OBJECT(F_nsl_import_object);
 
+	public:
+		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
+			F_nsl_context& context,
+			TK_valid<F_nsl_translation_unit> unit_p,
+			const G_string& src_content,
+			sz location_offset_to_save,
+			TG_vector<F_nsl_ast_tree>& trees,
+			sz index,
+			F_nsl_error_stack* error_stack_p
+		) override;
+
 	};
 
 
@@ -496,6 +507,17 @@ namespace nrhi {
 	public:
 		NCPP_OBJECT(F_nsl_define_object);
 
+	public:
+		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
+			F_nsl_context& context,
+			TK_valid<F_nsl_translation_unit> unit_p,
+			const G_string& src_content,
+			sz location_offset_to_save,
+			TG_vector<F_nsl_ast_tree>& trees,
+			sz index,
+			F_nsl_error_stack* error_stack_p
+		) override;
+
 	};
 
 
@@ -509,14 +531,14 @@ namespace nrhi {
 		virtual ~F_nsl_define_object_type();
 
 	public:
+		NCPP_OBJECT(F_nsl_define_object_type);
+
+	public:
 		virtual TK<A_nsl_object> create_object(
 			F_nsl_ast_tree& tree,
 			F_nsl_context& context,
 			TKPA_valid<F_nsl_translation_unit> translation_unit_p
 		) override;
-
-	public:
-		NCPP_OBJECT(F_nsl_define_object_type);
 
 	};
 
@@ -540,6 +562,17 @@ namespace nrhi {
 
 	public:
 		NCPP_OBJECT(F_nsl_if_object);
+
+	public:
+		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
+			F_nsl_context& context,
+			TK_valid<F_nsl_translation_unit> unit_p,
+			const G_string& src_content,
+			sz location_offset_to_save,
+			TG_vector<F_nsl_ast_tree>& trees,
+			sz index,
+			F_nsl_error_stack* error_stack_p
+		) override;
 
 	};
 
@@ -586,6 +619,17 @@ namespace nrhi {
 	public:
 		NCPP_OBJECT(F_nsl_elif_object);
 
+	public:
+		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
+			F_nsl_context& context,
+			TK_valid<F_nsl_translation_unit> unit_p,
+			const G_string& src_content,
+			sz location_offset_to_save,
+			TG_vector<F_nsl_ast_tree>& trees,
+			sz index,
+			F_nsl_error_stack* error_stack_p
+		) override;
+
 	};
 
 
@@ -631,6 +675,17 @@ namespace nrhi {
 	public:
 		NCPP_OBJECT(F_nsl_else_object);
 
+	public:
+		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
+			F_nsl_context& context,
+			TK_valid<F_nsl_translation_unit> unit_p,
+			const G_string& src_content,
+			sz location_offset_to_save,
+			TG_vector<F_nsl_ast_tree>& trees,
+			sz index,
+			F_nsl_error_stack* error_stack_p
+		) override;
+
 	};
 
 
@@ -675,6 +730,17 @@ namespace nrhi {
 
 	public:
 		NCPP_OBJECT(F_nsl_alias_object);
+
+	public:
+		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
+			F_nsl_context& context,
+			TK_valid<F_nsl_translation_unit> unit_p,
+			const G_string& src_content,
+			sz location_offset_to_save,
+			TG_vector<F_nsl_ast_tree>& trees,
+			sz index,
+			F_nsl_error_stack* error_stack_p
+		) override;
 
 	};
 
