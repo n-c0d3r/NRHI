@@ -396,6 +396,17 @@ namespace nrhi {
 	public:
 		NCPP_OBJECT(A_nsl_object);
 
+	public:
+		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
+			F_nsl_context& context,
+			TK_valid<F_nsl_translation_unit> unit_p,
+			const G_string& src_content,
+			sz location_offset_to_save,
+			TG_vector<F_nsl_ast_tree>& trees,
+			sz index,
+			F_nsl_error_stack* error_stack_p
+		);
+
 	};
 
 
@@ -796,7 +807,8 @@ namespace nrhi {
 		eastl::optional<TG_vector<F_nsl_ast_tree>> parse(
 			TK_valid<F_nsl_translation_unit> unit_p,
 			const G_string& src_content,
-			F_nsl_context& context
+			F_nsl_context& context,
+			sz location_offset_to_safe = 0
 		);
 		eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
 			F_nsl_context& context,

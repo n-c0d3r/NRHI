@@ -1357,6 +1357,18 @@ namespace nrhi {
 	A_nsl_object::~A_nsl_object() {
 	}
 
+	eastl::optional<TG_vector<F_nsl_ast_tree>> A_nsl_object::recursive_build_ast_tree(
+		F_nsl_context& context,
+		TK_valid<F_nsl_translation_unit> unit_p,
+		const G_string& src_content,
+		sz location_offset_to_save,
+		TG_vector<F_nsl_ast_tree>& trees,
+		sz index,
+		F_nsl_error_stack* error_stack_p
+	) {
+		return TG_vector<F_nsl_ast_tree>();
+	}
+
 
 
 	A_nsl_object_type::A_nsl_object_type(
@@ -1780,7 +1792,8 @@ namespace nrhi {
 	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_translation_unit_compiler::parse(
 		TK_valid<F_nsl_translation_unit> unit_p,
 		const G_string& src_content,
-		F_nsl_context& context
+		F_nsl_context& context,
+		sz location_offset_to_safe
 	) {
 
 		auto try_build_functors = shader_compiler_p_->object_manager_p()->ast_tree_try_build_functors();
@@ -1806,7 +1819,7 @@ namespace nrhi {
 					error_stack_p
 			  	);
 			},
-			0,
+			location_offset_to_safe,
 			&(unit_p->error_group_p()->stack())
 		);
 
@@ -1831,6 +1844,8 @@ namespace nrhi {
 		TK<A_nsl_object> object_p;
 		TK<A_nsl_object_type> object_type_p;
 
+		eastl::optional<TG_vector<F_nsl_ast_tree>> result = TG_vector<F_nsl_ast_tree>();
+
 		switch (tree.type)
 		{
 		case E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION:
@@ -1842,13 +1857,30 @@ namespace nrhi {
 			);
 			if(!object_p)
 				return eastl::nullopt;
+			result = object_p->recursive_build_ast_tree(
+				context,
+				unit_p,
+				src_content,
+				location_offset_to_save,
+				trees,
+				index,
+				error_stack_p
+			);
+			if(!result) {
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p,
+					location_offset_to_save + tree.begin_location,
+					"can't build object ast"
+				);
+				return eastl::nullopt;
+			}
 			context.parent_object_p = object_p;
 			break;
 		case E_nsl_ast_tree_type::PLAIN_TEXT:
 			break;
 		}
 
-		return TG_vector<F_nsl_ast_tree>();
+		return std::move(result);
 	}
 
 
