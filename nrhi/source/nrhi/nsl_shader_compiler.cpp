@@ -78,6 +78,33 @@ namespace nrhi {
 			)
 		);
 	}
+	b8 H_nsl_utilities::is_variable_name(const G_string& str) {
+
+		for(auto c : str) {
+
+			if(!is_variable_name_character(c))
+				return false;
+		}
+
+		return true;
+	}
+	b8 H_nsl_utilities::is_object_name_character(char c) {
+
+		return (
+			is_variable_name_character(c)
+			|| (c >= '@')
+		);
+	}
+	b8 H_nsl_utilities::is_object_name(const G_string& str) {
+
+		for(auto c : str) {
+
+			if(!is_object_name_character(c))
+				return false;
+		}
+
+		return true;
+	}
 
 	eastl::optional<TG_vector<F_nsl_info_tree>> H_nsl_utilities::build_info_trees(
 		const G_string& src_content,
@@ -123,8 +150,6 @@ namespace nrhi {
 						is_variable_name_character(src_content[i])
 						|| (src_content[i] == '.')
 						|| (src_content[i] == ':')
-						|| (src_content[i] == '>')
-						|| (src_content[i] == '<')
 						|| (src_content[i] == '+')
 						|| (src_content[i] == '-')
 						|| (src_content[i] == '*')
@@ -208,8 +233,22 @@ namespace nrhi {
 				// if not end of src content, continue childs parsing
 				if(t < src_length) {
 
+					char open_body_character = '(';
+					char close_body_character = ')';
+
+					if (src_content[t] == '{') {
+
+						open_body_character = '{';
+						close_body_character = '}';
+					}
+					else if (src_content[t] == '<') {
+
+						open_body_character = '<';
+						close_body_character = '>';
+					}
+
 					// if beginning of childs
-					if(src_content[t] == '{') {
+					if(src_content[t] == open_body_character) {
 
 						i32 level = 1;
 
@@ -225,13 +264,13 @@ namespace nrhi {
 
 							if(
 								!(arg_str_state.value)
-								&& (src_content[k] == '{')
+								&& (src_content[k] == open_body_character)
 							)
 								++level;
 
 							if(
 								!(arg_str_state.value)
-								&& (src_content[k] == '}')
+								&& (src_content[k] == close_body_character)
 							)
 								--level;
 
@@ -350,9 +389,9 @@ namespace nrhi {
 				if(
 					!(
 						is_variable_name_character(src_content[j])
-							|| src_content[j] == '.'
+						|| src_content[j] == '.'
 					)
-					)
+				)
 				{
 					break;
 				}
@@ -670,10 +709,10 @@ namespace nrhi {
 				b8 is_right_correct = true;
 
 				if(current_location > 0) {
-					is_left_correct = !is_variable_name_character(src_content[current_location - 1]);
+					is_left_correct = !is_object_name_character(src_content[current_location - 1]);
 				}
 				if(end_keyword_location < src_length) {
-					is_right_correct = !is_variable_name_character(src_content[end_keyword_location]);
+					is_right_correct = !is_object_name_character(src_content[end_keyword_location]);
 				}
 
 				if(is_left_correct && is_right_correct) {
@@ -700,10 +739,7 @@ namespace nrhi {
 					for(; j3 < src_length; ++j3)
 					{
 						if(
-							!(
-								is_variable_name_character(src_content[j3])
-								|| (src_content[j3] == '.')
-							)
+							!is_object_name_character(src_content[j3])
 						)
 						{
 							break;
@@ -759,6 +795,11 @@ namespace nrhi {
 
 								open_body_character = '{';
 								close_body_character = '}';
+							}
+							else if (src_content[t] == '<') {
+
+								open_body_character = '<';
+								close_body_character = '>';
 							}
 
 							if (src_content[t] == open_body_character)
@@ -976,51 +1017,13 @@ namespace nrhi {
 								.end_location = location_offset_to_save + end_location
 							};
 
-							auto childs_opt = resursive_build_functor(
-								src_content.substr(begin_location, end_location - begin_location),
-								location_offset_to_save + begin_location,
-								plain_text_tree,
-								tree_index,
-								error_stack_p
-							);
-							if(!childs_opt) {
-								NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-									error_stack_p,
-									location_offset_to_save + begin_location,
-									"can't build child ast trees"
-								);
-								return eastl::nullopt;
-							}
-
-							plain_text_tree.childs = childs_opt.value();
-
 							result.push_back(plain_text_tree);
-							++tree_index;
 						}
 
 						begin_location = tree.begin_location;
 						end_location = tree.end_location;
 
-						auto childs_opt = resursive_build_functor(
-							src_content.substr(begin_location, end_location - begin_location),
-							location_offset_to_save + begin_location,
-							tree,
-							tree_index,
-							error_stack_p
-						);
-						if(!childs_opt) {
-							NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-								error_stack_p,
-								location_offset_to_save + begin_location,
-								"can't build child ast trees"
-							);
-							return eastl::nullopt;
-						}
-
-						tree.childs = childs_opt.value();
-
 						result.push_back(tree);
-						++tree_index;
 					}
 
 					i = end_location;
@@ -1057,26 +1060,31 @@ namespace nrhi {
 				.end_location = location_offset_to_save + end_location
 			};
 
+			result.push_back(tree);
+		}
+
+
+
+		// recursively build childs
+		for(auto& tree : result) {
+
 			auto childs_opt = resursive_build_functor(
-				src_content.substr(begin_location, end_location - begin_location),
-				location_offset_to_save + begin_location,
-				tree,
+				src_content.substr(tree.begin_location, tree.end_location - tree.begin_location),
+				location_offset_to_save + tree.begin_location,
+				result,
 				tree_index,
 				error_stack_p
 			);
 			if(!childs_opt) {
 				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 					error_stack_p,
-					location_offset_to_save + begin_location,
+					location_offset_to_save + tree.begin_location,
 					"can't build child ast trees"
 				);
 				return eastl::nullopt;
 			}
 
 			tree.childs = childs_opt.value();
-
-			result.push_back(tree);
-			++tree_index;
 		}
 
 		return result;
@@ -1597,6 +1605,11 @@ namespace nrhi {
 		dependency_p_vector_.push_back(dependency_p);
 	}
 
+	TU<A_nsl_section_storage>F_nsl_translation_unit::create_section_storage()
+	{
+		return TU<F_nsl_section_storage>()(NCPP_KTHIS());
+	}
+
 
 
 	F_nsl_translation_unit_manager::F_nsl_translation_unit_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
@@ -1721,52 +1734,17 @@ namespace nrhi {
 
 	b8 F_nsl_translation_unit_compiler::prepare_unit(TK_valid<F_nsl_translation_unit> unit_p) {
 
-		auto try_build_functors = shader_compiler_p_->object_manager_p()->ast_tree_try_build_functors();
-
 		F_nsl_context context;
 
-		auto ast_trees_opt = H_nsl_utilities::build_ast_trees(
+		auto ast_trees_opt = parse(
+			unit_p,
 			unit_p->preprocessed_src().content,
-			try_build_functors,
-			[this, &context, &unit_p](
-				const G_string& src_content,
-				sz location_offset_to_save,
-				F_nsl_ast_tree& tree,
-				sz index,
-				F_nsl_error_stack* error_stack_p
-			) -> eastl::optional<TG_vector<F_nsl_ast_tree>> {
-
-				TK<A_nsl_object> object_p;
-				TK<A_nsl_object_type> object_type_p;
-
-			  	switch (tree.type)
-			  	{
-				case E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION:
-					object_type_p = shader_compiler_p_->object_manager_p()->type_p(tree.object_implementation.keyword).no_requirements();
-					object_p = object_type_p->create_object(
-						tree,
-						context,
-						unit_p
-					);
-					if(!object_p)
-						return eastl::nullopt;
-					context.parent_object_p = object_p;
-					break;
-			  	case E_nsl_ast_tree_type::PLAIN_TEXT:
-				  	if(!H_nsl_utilities::is_plain_text_blank(tree.plain_text))
-					  	return eastl::nullopt;
-				  	break;
-			  	}
-
-				return TG_vector<F_nsl_ast_tree>();
-			},
-			0,
-			&(unit_p->error_group_p()->stack())
+			context
 		);
 
 		if(ast_trees_opt) {
 
-			ast_trees_ = ast_trees_opt.value();
+			unit_p->ast_trees() = ast_trees_opt.value();
 
 			return true;
 		}
@@ -1796,13 +1774,87 @@ namespace nrhi {
 		if(!compile_minimal())
 			return eastl::nullopt;
 
-		return shader_compiler_p_->section_storage_p()->combine();
+		return G_string();
+	}
+
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_translation_unit_compiler::parse(
+		TK_valid<F_nsl_translation_unit> unit_p,
+		const G_string& src_content,
+		F_nsl_context& context
+	) {
+
+		auto try_build_functors = shader_compiler_p_->object_manager_p()->ast_tree_try_build_functors();
+
+		auto ast_trees_opt = H_nsl_utilities::build_ast_trees(
+			src_content,
+			try_build_functors,
+			[this, &context, &unit_p](
+				const G_string& src_content,
+				sz location_offset_to_save,
+				TG_vector<F_nsl_ast_tree>& trees,
+				sz index,
+				F_nsl_error_stack* error_stack_p
+			) -> eastl::optional<TG_vector<F_nsl_ast_tree>> {
+
+			  	return recursive_build_ast_tree(
+					context,
+					unit_p,
+					src_content,
+					location_offset_to_save,
+					trees,
+					index,
+					error_stack_p
+			  	);
+			},
+			0,
+			&(unit_p->error_group_p()->stack())
+		);
+
+		if(ast_trees_opt) {
+
+			return ast_trees_opt.value();
+		}
+
+		return eastl::nullopt;
+	}
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_translation_unit_compiler::recursive_build_ast_tree(
+		F_nsl_context& context,
+		TK_valid<F_nsl_translation_unit> unit_p,
+		const G_string& src_content,
+		sz location_offset_to_save,
+		TG_vector<F_nsl_ast_tree>& trees,
+		sz index,
+		F_nsl_error_stack* error_stack_p
+	) {
+		auto& tree = trees[index];
+
+		TK<A_nsl_object> object_p;
+		TK<A_nsl_object_type> object_type_p;
+
+		switch (tree.type)
+		{
+		case E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION:
+			object_type_p = shader_compiler_p_->object_manager_p()->type_p(tree.object_implementation.keyword).no_requirements();
+			object_p = object_type_p->create_object(
+				tree,
+				context,
+				unit_p
+			);
+			if(!object_p)
+				return eastl::nullopt;
+			context.parent_object_p = object_p;
+			break;
+		case E_nsl_ast_tree_type::PLAIN_TEXT:
+			break;
+		}
+
+		return TG_vector<F_nsl_ast_tree>();
 	}
 
 
 
-	A_nsl_section_storage::A_nsl_section_storage(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
-		shader_compiler_p_(shader_compiler_p)
+	A_nsl_section_storage::A_nsl_section_storage(TKPA_valid<F_nsl_translation_unit> translation_unit_p) :
+		translation_unit_p_(translation_unit_p)
 	{
 	}
 	A_nsl_section_storage::~A_nsl_section_storage() {
@@ -1818,6 +1870,15 @@ namespace nrhi {
 		}
 
 		return std::move(result);
+	}
+
+
+
+	F_nsl_name_manager::F_nsl_name_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
+		shader_compiler_p_(shader_compiler_p)
+	{
+	}
+	F_nsl_name_manager::~F_nsl_name_manager() {
 	}
 
 
@@ -1856,14 +1917,15 @@ namespace nrhi {
 
 	void F_nsl_output_hlsl::register_data_types_internal() {
 
+		auto name_manager_p = shader_compiler_p()->name_manager_p();
 		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
 
-		data_type_manager_p->register_target("b8", "bool");
-		data_type_manager_p->register_target("i32", "int");
-		data_type_manager_p->register_target("u32", "uint");
-		data_type_manager_p->register_target("f16", "half");
-		data_type_manager_p->register_target("f32", "float");
-		data_type_manager_p->register_target("f64", "double");
+		name_manager_p->register_name("b8", "bool", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("i32", "int", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("u32", "uint", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("f16", "half", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("f32", "float", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("f64", "double", E_name_type::DATA_TYPE);
 
 		data_type_manager_p->register_size("b8", 1);
 		data_type_manager_p->register_size("i32", 4);
@@ -1872,12 +1934,12 @@ namespace nrhi {
 		data_type_manager_p->register_size("f32", 4);
 		data_type_manager_p->register_size("f64", 8);
 
-		data_type_manager_p->register_target("F_vector2_b8", "bool2");
-		data_type_manager_p->register_target("F_vector2_i32", "int2");
-		data_type_manager_p->register_target("F_vector2_u32", "uint2");
-		data_type_manager_p->register_target("F_vector2_f16", "half2");
-		data_type_manager_p->register_target("F_vector2_f32", "float2");
-		data_type_manager_p->register_target("F_vector2_f64", "double2");
+		name_manager_p->register_name("F_vector2_b8", "bool2", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_vector2_i32", "int2", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_vector2_u32", "uint2", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_vector2_f16", "half2", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_vector2_f32", "float2", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_vector2_f64", "double2", E_name_type::DATA_TYPE);
 
 		data_type_manager_p->register_size("F_vector2_b8", 1 * 2);
 		data_type_manager_p->register_size("F_vector2_i32", 4 * 2);
@@ -1886,12 +1948,12 @@ namespace nrhi {
 		data_type_manager_p->register_size("F_vector2_f32", 4 * 2);
 		data_type_manager_p->register_size("F_vector2_f64", 8 * 2);
 
-		data_type_manager_p->register_target("F_vector3_b8", "bool3");
-		data_type_manager_p->register_target("F_vector3_i32", "int3");
-		data_type_manager_p->register_target("F_vector3_u32", "uint3");
-		data_type_manager_p->register_target("F_vector3_f16", "half3");
-		data_type_manager_p->register_target("F_vector3_f32", "float3");
-		data_type_manager_p->register_target("F_vector3_f64", "double3");
+		name_manager_p->register_name("F_vector3_b8", "bool3", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_vector3_i32", "int3", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_vector3_u32", "uint3", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_vector3_f16", "half3", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_vector3_f32", "float3", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_vector3_f64", "double3", E_name_type::DATA_TYPE);
 
 		data_type_manager_p->register_size("F_vector3_b8", 1 * 3);
 		data_type_manager_p->register_size("F_vector3_i32", 4 * 3);
@@ -1900,12 +1962,12 @@ namespace nrhi {
 		data_type_manager_p->register_size("F_vector3_f32", 4 * 3);
 		data_type_manager_p->register_size("F_vector3_f64", 8 * 3);
 
-		data_type_manager_p->register_target("F_vector4_b8", "bool4");
-		data_type_manager_p->register_target("F_vector4_i32", "int4");
-		data_type_manager_p->register_target("F_vector4_u32", "uint4");
-		data_type_manager_p->register_target("F_vector4_f16", "half4");
-		data_type_manager_p->register_target("F_vector4_f32", "float4");
-		data_type_manager_p->register_target("F_vector4_f64", "double4");
+		name_manager_p->register_name("F_vector4_b8", "bool4", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_vector4_i32", "int4", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_vector4_u32", "uint4", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_vector4_f16", "half4", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_vector4_f32", "float4", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_vector4_f64", "double4", E_name_type::DATA_TYPE);
 
 		data_type_manager_p->register_size("F_vector4_b8", 1 * 4);
 		data_type_manager_p->register_size("F_vector4_i32", 4 * 4);
@@ -1914,12 +1976,12 @@ namespace nrhi {
 		data_type_manager_p->register_size("F_vector4_f32", 4 * 4);
 		data_type_manager_p->register_size("F_vector4_f64", 8 * 4);
 
-		data_type_manager_p->register_target("F_matrix2x2_b8", "bool2x2");
-		data_type_manager_p->register_target("F_matrix2x2_i32", "int2x2");
-		data_type_manager_p->register_target("F_matrix2x2_u32", "uint2x2");
-		data_type_manager_p->register_target("F_matrix2x2_f16", "half2x2");
-		data_type_manager_p->register_target("F_matrix2x2_f32", "float2x2");
-		data_type_manager_p->register_target("F_matrix2x2_f64", "double2x2");
+		name_manager_p->register_name("F_matrix2x2_b8", "bool2x2", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_matrix2x2_i32", "int2x2", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_matrix2x2_u32", "uint2x2", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_matrix2x2_f16", "half2x2", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_matrix2x2_f32", "float2x2", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_matrix2x2_f64", "double2x2", E_name_type::DATA_TYPE);
 
 		data_type_manager_p->register_size("F_matrix2x2_b8", 1 * 2 * 2);
 		data_type_manager_p->register_size("F_matrix2x2_i32", 4 * 2 * 2);
@@ -1928,12 +1990,12 @@ namespace nrhi {
 		data_type_manager_p->register_size("F_matrix2x2_f32", 4 * 2 * 2);
 		data_type_manager_p->register_size("F_matrix2x2_f64", 8 * 2 * 2);
 
-		data_type_manager_p->register_target("F_matrix3x3_b8", "bool3x3");
-		data_type_manager_p->register_target("F_matrix3x3_i32", "int3x3");
-		data_type_manager_p->register_target("F_matrix3x3_u32", "uint3x3");
-		data_type_manager_p->register_target("F_matrix3x3_f16", "half3x3");
-		data_type_manager_p->register_target("F_matrix3x3_f32", "float3x3");
-		data_type_manager_p->register_target("F_matrix3x3_f64", "double3x3");
+		name_manager_p->register_name("F_matrix3x3_b8", "bool3x3", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_matrix3x3_i32", "int3x3", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_matrix3x3_u32", "uint3x3", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_matrix3x3_f16", "half3x3", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_matrix3x3_f32", "float3x3", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_matrix3x3_f64", "double3x3", E_name_type::DATA_TYPE);
 
 		data_type_manager_p->register_size("F_matrix3x3_b8", 1 * 3 * 3);
 		data_type_manager_p->register_size("F_matrix3x3_i32", 4 * 3 * 3);
@@ -1942,12 +2004,12 @@ namespace nrhi {
 		data_type_manager_p->register_size("F_matrix3x3_f32", 4 * 3 * 3);
 		data_type_manager_p->register_size("F_matrix3x3_f64", 8 * 3 * 3);
 
-		data_type_manager_p->register_target("F_matrix4x4_b8", "bool4x4");
-		data_type_manager_p->register_target("F_matrix4x4_i32", "int4x4");
-		data_type_manager_p->register_target("F_matrix4x4_u32", "uint4x4");
-		data_type_manager_p->register_target("F_matrix4x4_f16", "half4x4");
-		data_type_manager_p->register_target("F_matrix4x4_f32", "float4x4");
-		data_type_manager_p->register_target("F_matrix4x4_f64", "double4x4");
+		name_manager_p->register_name("F_matrix4x4_b8", "bool4x4", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_matrix4x4_i32", "int4x4", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_matrix4x4_u32", "uint4x4", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_matrix4x4_f16", "half4x4", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_matrix4x4_f32", "float4x4", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_matrix4x4_f64", "double4x4", E_name_type::DATA_TYPE);
 
 		data_type_manager_p->register_size("F_matrix4x4_b8", 1 * 4 * 4);
 		data_type_manager_p->register_size("F_matrix4x4_i32", 4 * 4 * 4);
@@ -1955,6 +2017,22 @@ namespace nrhi {
 		data_type_manager_p->register_size("F_matrix4x4_f16", 2 * 4 * 4);
 		data_type_manager_p->register_size("F_matrix4x4_f32", 4 * 4 * 4);
 		data_type_manager_p->register_size("F_matrix4x4_f64", 8 * 4 * 4);
+
+		name_manager_p->register_name("F_vector2", "F_vector2_f32", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_vector3", "F_vector3_f32", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_vector4", "F_vector4_f32", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_matrix2x2", "F_matrix2x2_f32", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_matrix3x3", "F_matrix3x3_f32", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_matrix4x4", "F_matrix4x4_f32", E_name_type::DATA_TYPE);
+	}
+
+
+
+	F_nsl_resource_manager::F_nsl_resource_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
+		shader_compiler_p_(shader_compiler_p)
+	{
+	}
+	F_nsl_resource_manager::~F_nsl_resource_manager() {
 	}
 
 
@@ -1975,11 +2053,14 @@ namespace nrhi {
 		object_manager_p_(
 			TU<F_nsl_object_manager>()(NCPP_KTHIS())
 		),
-		section_storage_p_(
-			TU<F_nsl_section_storage>()(NCPP_KTHIS())
+		name_manager_p_(
+			TU<F_nsl_name_manager>()(NCPP_KTHIS())
 		),
 		data_type_manager_p_(
 			TU<F_nsl_data_type_manager>()(NCPP_KTHIS())
+		),
+		resource_manager_p_(
+			TU<F_nsl_resource_manager>()(NCPP_KTHIS())
 		)
 	{
 	}
@@ -1989,16 +2070,18 @@ namespace nrhi {
 		TU<F_nsl_translation_unit_compiler>&& translation_unit_compiler_p,
 		TU<F_nsl_error_storage>&& error_storage_p,
 		TU<F_nsl_object_manager>&& object_manager_p,
-		TU<A_nsl_section_storage>&& section_storage_p,
-		TU<F_nsl_data_type_manager>&& data_type_manager_p
+		TU<F_nsl_name_manager>&& name_manager_p,
+		TU<F_nsl_data_type_manager>&& data_type_manager_p,
+		TU<F_nsl_resource_manager>&& resource_manager_p
 	) :
 		module_manager_p_(std::move(module_manager_p)),
 		translation_unit_manager_p_(std::move(translation_unit_manager_p)),
 		translation_unit_compiler_p_(std::move(translation_unit_compiler_p)),
 		error_storage_p_(std::move(error_storage_p)),
 		object_manager_p_(std::move(object_manager_p)),
-		section_storage_p_(std::move(section_storage_p)),
-		data_type_manager_p_(std::move(data_type_manager_p))
+		name_manager_p_(std::move(name_manager_p)),
+		data_type_manager_p_(std::move(data_type_manager_p)),
+		resource_manager_p_(std::move(resource_manager_p))
 	{
 	}
 	F_nsl_shader_compiler::~F_nsl_shader_compiler() {

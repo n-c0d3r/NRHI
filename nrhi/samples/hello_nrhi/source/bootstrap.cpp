@@ -259,7 +259,7 @@ int main() {
 	auto compiler_p = TU<F_nsl_shader_compiler>()();
 	compiler_p->compile(
 "\n"
-"alias test { 123 }\n"
+"alias F_texture2d { Texture2D }\n"
 "\n",
 		E_nsl_output_language::HLSL
 	);
