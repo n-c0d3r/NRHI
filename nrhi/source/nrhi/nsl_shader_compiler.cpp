@@ -93,6 +93,10 @@ namespace nrhi {
 		return (
 			is_variable_name_character(c)
 			|| (c >= '@')
+			|| (c >= '#')
+			|| (c >= '&')
+			|| (c >= '$')
+			|| (c >= '!')
 		);
 	}
 	b8 H_nsl_utilities::is_object_name(const G_string& str) {
@@ -241,11 +245,6 @@ namespace nrhi {
 						open_body_character = '{';
 						close_body_character = '}';
 					}
-					else if (src_content[t] == '<') {
-
-						open_body_character = '<';
-						close_body_character = '>';
-					}
 
 					// if beginning of childs
 					if(src_content[t] == open_body_character) {
@@ -345,309 +344,6 @@ namespace nrhi {
 		return std::move(trees);
 	}
 
-	eastl::optional<F_nsl_ast_tree_try_build_result> H_nsl_utilities::try_build_use(
-		const F_nsl_ast_tree_try_build_input& input
-	) {
-
-		const auto& src_content = input.src_content;
-		auto src_length = src_content.length();
-
-		auto error_stack_p = input.error_stack_p;
-
-		const auto& str_state = input.str_state;
-
-		auto current_location = input.current_location;
-		auto location_offset_to_save = input.location_offset_to_save;
-
-
-
-		F_nsl_ast_tree_try_build_result result;
-
-		auto& trees = result.trees;
-
-		auto& begin_location = result.begin_location;
-		begin_location = input.begin_location;
-
-		auto& end_location = result.end_location;
-		end_location = input.end_location;
-
-
-
-		if(
-			!(str_state.value)
-			&& (src_content[current_location] == '@')
-		)
-		{
-			sz temp_begin_location = current_location;
-			sz temp_end_location = current_location;
-			sz begin_name_location = current_location + 1;
-			sz end_name_location = begin_name_location;
-
-			sz j = begin_name_location;
-			for(; j < src_length; ++j)
-			{
-				if(
-					!(
-						is_variable_name_character(src_content[j])
-						|| src_content[j] == '.'
-					)
-				)
-				{
-					break;
-				}
-			}
-			end_name_location = j;
-
-			if(begin_name_location != end_name_location) {
-
-				b8 is_left_correct = true;
-				b8 is_right_correct = true;
-
-				if(current_location > 0) {
-					is_left_correct = !is_variable_name_character(src_content[current_location - 1]);
-				}
-				if(end_name_location < src_length) {
-					is_right_correct = !is_variable_name_character(src_content[end_name_location]);
-				}
-
-				if(is_left_correct && is_right_correct) {
-
-					G_string name = src_content.substr(begin_name_location, end_name_location - begin_name_location);
-
-					sz t = end_name_location;
-					for(; t < src_length; ++t)
-					{
-						if(
-							!(
-								(src_content[t] == ' ')
-									|| (src_content[t] == '\t')
-									|| (src_content[t] == '\n')
-									|| (src_content[t] == '\r')
-							)
-							) {
-							break;
-						}
-					}
-
-					if(t < src_length) {
-
-						if(src_content[t] == '(') {
-
-							i32 level = 1;
-
-							sz begin_arg_location = t + 1;
-							sz end_arg_location = begin_arg_location;
-
-							F_nsl_str_state arg_str_state;
-
-							sz begin_str_location = 0;
-
-							// check for function-like use
-							sz k = begin_arg_location;
-							for(; k < src_length; ++k) {
-
-								arg_str_state.begin_check(src_content[k]);
-
-								if(
-									arg_str_state.value
-									&& !arg_str_state.prev_value
-								)
-									begin_str_location = k;
-
-								if(
-									!(arg_str_state.value)
-									&& (src_content[k] == '(')
-								)
-									++level;
-
-								if(
-									!(arg_str_state.value)
-									&& (src_content[k] == ')')
-								)
-									--level;
-
-								if(level == 0) {
-
-									end_arg_location = k;
-									temp_end_location = k + 1;
-
-									begin_location = temp_begin_location;
-									end_location = temp_end_location;
-
-									F_nsl_use use = {
-										.name = name,
-										.arg = src_content.substr(begin_arg_location, end_arg_location - begin_arg_location),
-
-										.begin_location = begin_location,
-										.end_location = end_location,
-										.begin_name_location = begin_name_location,
-										.end_name_location = end_name_location,
-										.begin_arg_location = begin_arg_location,
-										.end_arg_location = end_arg_location
-									};
-
-									F_nsl_ast_tree tree = {
-										.type = E_nsl_ast_tree_type::USE,
-										.use = use,
-										.begin_location = begin_location,
-										.end_location = end_location,
-									};
-									trees.push_back(tree);
-
-									goto NRHI_END_TRY_BUILD_AST_TREE;
-								}
-
-								arg_str_state.end_check();
-							}
-
-							if(arg_str_state.value) {
-
-								NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-									error_stack_p,
-									location_offset_to_save + begin_str_location,
-									"string is not ended"
-								);
-								return eastl::nullopt;
-							}
-
-							NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-								error_stack_p,
-								location_offset_to_save + begin_arg_location,
-								"function-like use scope is not ended"
-							);
-							return eastl::nullopt;
-						}
-						// for function-like use with {}
-						else if(src_content[t] == '{') {
-
-							i32 level = 1;
-
-							sz begin_arg_location = t + 1;
-							sz end_arg_location = begin_arg_location;
-
-							F_nsl_str_state arg_str_state;
-
-							sz begin_str_location = 0;
-
-							// check for function-like use
-							sz k = begin_arg_location;
-							for(; k < src_length; ++k) {
-
-								arg_str_state.begin_check(src_content[k]);
-
-								if(
-									arg_str_state.value
-									&& !arg_str_state.prev_value
-									)
-									begin_str_location = k;
-
-								if(
-									!(arg_str_state.value)
-									&& (src_content[k] == '{')
-								)
-									++level;
-
-								if(
-									!(arg_str_state.value)
-									&& (src_content[k] == '}')
-								)
-									--level;
-
-								if(level == 0) {
-
-									end_arg_location = k;
-									temp_end_location = k + 1;
-
-									begin_location = temp_begin_location;
-									end_location = temp_end_location;
-
-									F_nsl_use use = {
-										.name = name,
-										.arg = src_content.substr(begin_arg_location, end_arg_location - begin_arg_location),
-
-										.begin_location = begin_location,
-										.end_location = end_location,
-										.begin_name_location = begin_name_location,
-										.end_name_location = end_name_location,
-										.begin_arg_location = begin_arg_location,
-										.end_arg_location = end_arg_location
-									};
-
-									F_nsl_ast_tree tree = {
-										.type = E_nsl_ast_tree_type::USE,
-										.use = use,
-										.begin_location = begin_location,
-										.end_location = end_location,
-									};
-									trees.push_back(tree);
-
-									goto NRHI_END_TRY_BUILD_AST_TREE;
-								}
-
-								arg_str_state.end_check();
-							}
-
-							if(arg_str_state.value) {
-
-								NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-									error_stack_p,
-									location_offset_to_save + begin_str_location,
-									"string is not ended"
-								);
-								return eastl::nullopt;
-							}
-
-							NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-								error_stack_p,
-								location_offset_to_save + begin_arg_location,
-								"function-like use scope is not ended"
-							);
-							return eastl::nullopt;
-						}
-					}
-
-					// this is variable-like use
-					temp_end_location = end_name_location;
-
-					begin_location = temp_begin_location;
-					end_location = temp_end_location;
-
-					F_nsl_use use = {
-						.name = name,
-						.arg = "",
-
-						.begin_location = begin_location,
-						.end_location = end_location,
-						.begin_name_location = begin_name_location,
-						.end_name_location = end_name_location,
-						.begin_arg_location = end_name_location,
-						.end_arg_location = end_name_location
-					};
-
-					F_nsl_ast_tree tree = {
-						.type = E_nsl_ast_tree_type::USE,
-						.use = use,
-						.begin_location = begin_location,
-						.end_location = end_location,
-					};
-					trees.push_back(tree);
-
-					goto NRHI_END_TRY_BUILD_AST_TREE;
-				}
-			}
-			else {
-				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-					error_stack_p,
-					location_offset_to_save + begin_location,
-					"use name is required"
-				);
-				return eastl::nullopt;
-			}
-		}
-
-		NRHI_END_TRY_BUILD_AST_TREE:
-		return std::move(result);
-	}
 	eastl::optional<F_nsl_ast_tree_try_build_result> H_nsl_utilities::try_build_object_implementation(
 		const G_string& keyword,
 		b8 is_object_name_required,
@@ -796,11 +492,6 @@ namespace nrhi {
 								open_body_character = '{';
 								close_body_character = '}';
 							}
-							else if (src_content[t] == '<') {
-
-								open_body_character = '<';
-								close_body_character = '>';
-							}
 
 							if (src_content[t] == open_body_character)
 							{
@@ -815,7 +506,7 @@ namespace nrhi {
 
 								b8 is_body_ended = false;
 
-								// check for function-like use
+								// check for function-like
 								sz k = begin_body_location;
 								for (; k < src_length; ++k)
 								{
@@ -875,7 +566,7 @@ namespace nrhi {
 									NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 										error_stack_p,
 										location_offset_to_save + begin_body_location,
-										"function-like use scope is not ended"
+										"function-like scope is not ended"
 									);
 
 									return eastl::nullopt;
@@ -1088,26 +779,6 @@ namespace nrhi {
 		}
 
 		return result;
-	}
-	eastl::optional<TG_vector<F_nsl_ast_tree>> H_nsl_utilities::build_ast_trees(
-		const ncpp::containers::G_string& src_content,
-		const F_nsl_ast_tree_recursive_build_functor& resursive_build_functor,
-		sz location_offset_to_save,
-		F_nsl_error_stack* error_stack_p
-	)
-	{
-		return build_ast_trees(
-			src_content,
-			{
-				// for syntax:
-				// + function-like use: @keyword()
-				// + variable-like use: @keyword
-				&H_nsl_utilities::try_build_use
-			},
-			resursive_build_functor,
-			location_offset_to_save,
-			error_stack_p
-		);
 	}
 	eastl::optional<G_string> H_nsl_utilities::apply_ast_trees(
 		const ncpp::containers::G_string& src_content,
@@ -1423,7 +1094,7 @@ namespace nrhi {
 	) :
 		A_nsl_object_type(
 			shader_compiler_p,
-			"import",
+			"!import",
 			true,
 			1,
 			1
@@ -1442,6 +1113,234 @@ namespace nrhi {
 
 		auto object_p = register_object(
 			TU<F_nsl_import_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_if_object::F_nsl_if_object(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		TKPA_valid<A_nsl_object_type> type_p,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const G_string& name
+	) :
+		A_nsl_object(
+			shader_compiler_p,
+			type_p,
+			translation_unit_p,
+			name
+		)
+	{
+	}
+	F_nsl_if_object::~F_nsl_if_object() {
+	}
+
+
+
+	F_nsl_if_object_type::F_nsl_if_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"!if",
+			false,
+			0,
+			1
+		)
+	{
+	}
+	F_nsl_if_object_type::~F_nsl_if_object_type() {
+	}
+
+	TK<A_nsl_object> F_nsl_if_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	) {
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_if_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_define_object::F_nsl_define_object(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		TKPA_valid<A_nsl_object_type> type_p,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const G_string& name
+	) :
+		A_nsl_object(
+			shader_compiler_p,
+			type_p,
+			translation_unit_p,
+			name
+		)
+	{
+	}
+	F_nsl_define_object::~F_nsl_define_object() {
+	}
+
+
+
+	F_nsl_define_object_type::F_nsl_define_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"!define",
+			false,
+			0,
+			1
+		)
+	{
+	}
+	F_nsl_define_object_type::~F_nsl_define_object_type() {
+	}
+
+	TK<A_nsl_object> F_nsl_define_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	) {
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_define_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_elif_object::F_nsl_elif_object(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		TKPA_valid<A_nsl_object_type> type_p,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const G_string& name
+	) :
+		A_nsl_object(
+			shader_compiler_p,
+			type_p,
+			translation_unit_p,
+			name
+		)
+	{
+	}
+	F_nsl_elif_object::~F_nsl_elif_object() {
+	}
+
+
+
+	F_nsl_elif_object_type::F_nsl_elif_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"!elif",
+			true,
+			1,
+			1
+		)
+	{
+	}
+	F_nsl_elif_object_type::~F_nsl_elif_object_type() {
+	}
+
+	TK<A_nsl_object> F_nsl_elif_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	) {
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_elif_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_else_object::F_nsl_else_object(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		TKPA_valid<A_nsl_object_type> type_p,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const G_string& name
+	) :
+		A_nsl_object(
+			shader_compiler_p,
+			type_p,
+			translation_unit_p,
+			name
+		)
+	{
+	}
+	F_nsl_else_object::~F_nsl_else_object() {
+	}
+
+
+
+	F_nsl_else_object_type::F_nsl_else_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"!else",
+			true,
+			1,
+			1
+		)
+	{
+	}
+	F_nsl_else_object_type::~F_nsl_else_object_type() {
+	}
+
+	TK<A_nsl_object> F_nsl_else_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	) {
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_else_object>()(
 				shader_compiler_p(),
 				NCPP_KTHIS(),
 				translation_unit_p,
@@ -1518,6 +1417,18 @@ namespace nrhi {
 	{
 		register_type(
 			TU<F_nsl_import_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_if_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_define_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_elif_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_else_object_type>()(shader_compiler_p_)
 		);
 		register_type(
 			TU<F_nsl_alias_object_type>()(shader_compiler_p_)
