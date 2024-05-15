@@ -1937,110 +1937,159 @@ namespace nrhi {
 		auto name_manager_p = shader_compiler_p()->name_manager_p();
 		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
 
-		name_manager_p->register_name("b8", "bool", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("i32", "int", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("u32", "uint", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("f16", "half", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("f32", "float", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("f64", "double", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("bool", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("int", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("uint", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("half", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("float", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("double", E_nsl_name_type::DATA_TYPE);
 
-		data_type_manager_p->register_size("b8", 1);
-		data_type_manager_p->register_size("i32", 4);
-		data_type_manager_p->register_size("u32", 4);
-		data_type_manager_p->register_size("f16", 2);
-		data_type_manager_p->register_size("f32", 4);
-		data_type_manager_p->register_size("f64", 8);
+		name_manager_p->register_name("b8", "bool");
+		name_manager_p->register_name("i32", "int");
+		name_manager_p->register_name("u32", "uint");
+		name_manager_p->register_name("f16", "half");
+		name_manager_p->register_name("f32", "float");
+		name_manager_p->register_name("f64", "double");
 
-		name_manager_p->register_name("F_vector2_b8", "bool2", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_vector2_i32", "int2", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_vector2_u32", "uint2", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_vector2_f16", "half2", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_vector2_f32", "float2", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_vector2_f64", "double2", E_name_type::DATA_TYPE);
+		data_type_manager_p->register_size("bool", 1);
+		data_type_manager_p->register_size("int", 4);
+		data_type_manager_p->register_size("uint", 4);
+		data_type_manager_p->register_size("half", 2);
+		data_type_manager_p->register_size("float", 4);
+		data_type_manager_p->register_size("double", 8);
 
-		data_type_manager_p->register_size("F_vector2_b8", 1 * 2);
-		data_type_manager_p->register_size("F_vector2_i32", 4 * 2);
-		data_type_manager_p->register_size("F_vector2_u32", 4 * 2);
-		data_type_manager_p->register_size("F_vector2_f16", 2 * 2);
-		data_type_manager_p->register_size("F_vector2_f32", 4 * 2);
-		data_type_manager_p->register_size("F_vector2_f64", 8 * 2);
+		name_manager_p->register_name("bool2", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("int2", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("uint2", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("half2", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("float2", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("double2", E_nsl_name_type::DATA_TYPE);
 
-		name_manager_p->register_name("F_vector3_b8", "bool3", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_vector3_i32", "int3", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_vector3_u32", "uint3", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_vector3_f16", "half3", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_vector3_f32", "float3", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_vector3_f64", "double3", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_vector2_b8", "bool2");
+		name_manager_p->register_name("F_vector2_i32", "int2");
+		name_manager_p->register_name("F_vector2_u32", "uint2");
+		name_manager_p->register_name("F_vector2_f16", "half2");
+		name_manager_p->register_name("F_vector2_f32", "float2");
+		name_manager_p->register_name("F_vector2_f64", "double2");
 
-		data_type_manager_p->register_size("F_vector3_b8", 1 * 3);
-		data_type_manager_p->register_size("F_vector3_i32", 4 * 3);
-		data_type_manager_p->register_size("F_vector3_u32", 4 * 3);
-		data_type_manager_p->register_size("F_vector3_f16", 2 * 3);
-		data_type_manager_p->register_size("F_vector3_f32", 4 * 3);
-		data_type_manager_p->register_size("F_vector3_f64", 8 * 3);
+		data_type_manager_p->register_size("bool2", 1 * 2);
+		data_type_manager_p->register_size("int2", 4 * 2);
+		data_type_manager_p->register_size("uint2", 4 * 2);
+		data_type_manager_p->register_size("half2", 2 * 2);
+		data_type_manager_p->register_size("float2", 4 * 2);
+		data_type_manager_p->register_size("double2", 8 * 2);
 
-		name_manager_p->register_name("F_vector4_b8", "bool4", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_vector4_i32", "int4", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_vector4_u32", "uint4", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_vector4_f16", "half4", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_vector4_f32", "float4", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_vector4_f64", "double4", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("bool3", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("int3", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("uint3", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("half3", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("float3", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("double3", E_nsl_name_type::DATA_TYPE);
 
-		data_type_manager_p->register_size("F_vector4_b8", 1 * 4);
-		data_type_manager_p->register_size("F_vector4_i32", 4 * 4);
-		data_type_manager_p->register_size("F_vector4_u32", 4 * 4);
-		data_type_manager_p->register_size("F_vector4_f16", 2 * 4);
-		data_type_manager_p->register_size("F_vector4_f32", 4 * 4);
-		data_type_manager_p->register_size("F_vector4_f64", 8 * 4);
+		name_manager_p->register_name("F_vector3_b8", "bool3");
+		name_manager_p->register_name("F_vector3_i32", "int3");
+		name_manager_p->register_name("F_vector3_u32", "uint3");
+		name_manager_p->register_name("F_vector3_f16", "half3");
+		name_manager_p->register_name("F_vector3_f32", "float3");
+		name_manager_p->register_name("F_vector3_f64", "double3");
 
-		name_manager_p->register_name("F_matrix2x2_b8", "bool2x2", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_matrix2x2_i32", "int2x2", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_matrix2x2_u32", "uint2x2", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_matrix2x2_f16", "half2x2", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_matrix2x2_f32", "float2x2", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_matrix2x2_f64", "double2x2", E_name_type::DATA_TYPE);
+		data_type_manager_p->register_size("bool3", 1 * 3);
+		data_type_manager_p->register_size("int3", 4 * 3);
+		data_type_manager_p->register_size("uint3", 4 * 3);
+		data_type_manager_p->register_size("half3", 2 * 3);
+		data_type_manager_p->register_size("float3", 4 * 3);
+		data_type_manager_p->register_size("double3", 8 * 3);
 
-		data_type_manager_p->register_size("F_matrix2x2_b8", 1 * 2 * 2);
-		data_type_manager_p->register_size("F_matrix2x2_i32", 4 * 2 * 2);
-		data_type_manager_p->register_size("F_matrix2x2_u32", 4 * 2 * 2);
-		data_type_manager_p->register_size("F_matrix2x2_f16", 2 * 2 * 2);
-		data_type_manager_p->register_size("F_matrix2x2_f32", 4 * 2 * 2);
-		data_type_manager_p->register_size("F_matrix2x2_f64", 8 * 2 * 2);
+		name_manager_p->register_name("bool4", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("int4", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("uint4", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("half4", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("float4", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("double4", E_nsl_name_type::DATA_TYPE);
 
-		name_manager_p->register_name("F_matrix3x3_b8", "bool3x3", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_matrix3x3_i32", "int3x3", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_matrix3x3_u32", "uint3x3", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_matrix3x3_f16", "half3x3", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_matrix3x3_f32", "float3x3", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_matrix3x3_f64", "double3x3", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("F_vector4_b8", "bool4");
+		name_manager_p->register_name("F_vector4_i32", "int4");
+		name_manager_p->register_name("F_vector4_u32", "uint4");
+		name_manager_p->register_name("F_vector4_f16", "half4");
+		name_manager_p->register_name("F_vector4_f32", "float4");
+		name_manager_p->register_name("F_vector4_f64", "double4");
 
-		data_type_manager_p->register_size("F_matrix3x3_b8", 1 * 3 * 3);
-		data_type_manager_p->register_size("F_matrix3x3_i32", 4 * 3 * 3);
-		data_type_manager_p->register_size("F_matrix3x3_u32", 4 * 3 * 3);
-		data_type_manager_p->register_size("F_matrix3x3_f16", 2 * 3 * 3);
-		data_type_manager_p->register_size("F_matrix3x3_f32", 4 * 3 * 3);
-		data_type_manager_p->register_size("F_matrix3x3_f64", 8 * 3 * 3);
+		data_type_manager_p->register_size("bool4", 1 * 4);
+		data_type_manager_p->register_size("int4", 4 * 4);
+		data_type_manager_p->register_size("uint4", 4 * 4);
+		data_type_manager_p->register_size("half4", 2 * 4);
+		data_type_manager_p->register_size("float4", 4 * 4);
+		data_type_manager_p->register_size("double4", 8 * 4);
 
-		name_manager_p->register_name("F_matrix4x4_b8", "bool4x4", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_matrix4x4_i32", "int4x4", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_matrix4x4_u32", "uint4x4", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_matrix4x4_f16", "half4x4", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_matrix4x4_f32", "float4x4", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_matrix4x4_f64", "double4x4", E_name_type::DATA_TYPE);
+		name_manager_p->register_name("bool2x2", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("int2x2", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("uint2x2", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("half2x2", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("float2x2", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("double2x2", E_nsl_name_type::DATA_TYPE);
 
-		data_type_manager_p->register_size("F_matrix4x4_b8", 1 * 4 * 4);
-		data_type_manager_p->register_size("F_matrix4x4_i32", 4 * 4 * 4);
-		data_type_manager_p->register_size("F_matrix4x4_u32", 4 * 4 * 4);
-		data_type_manager_p->register_size("F_matrix4x4_f16", 2 * 4 * 4);
-		data_type_manager_p->register_size("F_matrix4x4_f32", 4 * 4 * 4);
-		data_type_manager_p->register_size("F_matrix4x4_f64", 8 * 4 * 4);
+		name_manager_p->register_name("F_matrix2x2_b8", "bool2x2");
+		name_manager_p->register_name("F_matrix2x2_i32", "int2x2");
+		name_manager_p->register_name("F_matrix2x2_u32", "uint2x2");
+		name_manager_p->register_name("F_matrix2x2_f16", "half2x2");
+		name_manager_p->register_name("F_matrix2x2_f32", "float2x2");
+		name_manager_p->register_name("F_matrix2x2_f64", "double2x2");
 
-		name_manager_p->register_name("F_vector2", "F_vector2_f32", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_vector3", "F_vector3_f32", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_vector4", "F_vector4_f32", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_matrix2x2", "F_matrix2x2_f32", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_matrix3x3", "F_matrix3x3_f32", E_name_type::DATA_TYPE);
-		name_manager_p->register_name("F_matrix4x4", "F_matrix4x4_f32", E_name_type::DATA_TYPE);
+		data_type_manager_p->register_size("bool2x2", 1 * 2 * 2);
+		data_type_manager_p->register_size("int2x2", 4 * 2 * 2);
+		data_type_manager_p->register_size("uint2x2", 4 * 2 * 2);
+		data_type_manager_p->register_size("half2x2", 2 * 2 * 2);
+		data_type_manager_p->register_size("float2x2", 4 * 2 * 2);
+		data_type_manager_p->register_size("double2x2", 8 * 2 * 2);
+
+		name_manager_p->register_name("bool3x3", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("int3x3", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("uint3x3", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("half3x3", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("float3x3", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("double3x3", E_nsl_name_type::DATA_TYPE);
+
+		name_manager_p->register_name("F_matrix3x3_b8", "bool3x3");
+		name_manager_p->register_name("F_matrix3x3_i32", "int3x3");
+		name_manager_p->register_name("F_matrix3x3_u32", "uint3x3");
+		name_manager_p->register_name("F_matrix3x3_f16", "half3x3");
+		name_manager_p->register_name("F_matrix3x3_f32", "float3x3");
+		name_manager_p->register_name("F_matrix3x3_f64", "double3x3");
+
+		data_type_manager_p->register_size("bool3x3", 1 * 3 * 3);
+		data_type_manager_p->register_size("int3x3", 4 * 3 * 3);
+		data_type_manager_p->register_size("uint3x3", 4 * 3 * 3);
+		data_type_manager_p->register_size("half3x3", 2 * 3 * 3);
+		data_type_manager_p->register_size("float3x3", 4 * 3 * 3);
+		data_type_manager_p->register_size("double3x3", 8 * 3 * 3);
+
+		name_manager_p->register_name("bool4x4", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("int4x4", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("uint4x4", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("half4x4", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("float4x4", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->register_name("double4x4", E_nsl_name_type::DATA_TYPE);
+
+		name_manager_p->register_name("F_matrix4x4_b8", "bool4x4");
+		name_manager_p->register_name("F_matrix4x4_i32", "int4x4");
+		name_manager_p->register_name("F_matrix4x4_u32", "uint4x4");
+		name_manager_p->register_name("F_matrix4x4_f16", "half4x4");
+		name_manager_p->register_name("F_matrix4x4_f32", "float4x4");
+		name_manager_p->register_name("F_matrix4x4_f64", "double4x4");
+
+		data_type_manager_p->register_size("bool4x4", 1 * 4 * 4);
+		data_type_manager_p->register_size("int4x4", 4 * 4 * 4);
+		data_type_manager_p->register_size("uint4x4", 4 * 4 * 4);
+		data_type_manager_p->register_size("half4x4", 2 * 4 * 4);
+		data_type_manager_p->register_size("float4x4", 4 * 4 * 4);
+		data_type_manager_p->register_size("double4x4", 8 * 4 * 4);
+
+		name_manager_p->register_name("F_vector2", "F_vector2_f32");
+		name_manager_p->register_name("F_vector3", "F_vector3_f32");
+		name_manager_p->register_name("F_vector4", "F_vector4_f32");
+		name_manager_p->register_name("F_matrix2x2", "F_matrix2x2_f32");
+		name_manager_p->register_name("F_matrix3x3", "F_matrix3x3_f32");
+		name_manager_p->register_name("F_matrix4x4", "F_matrix4x4_f32");
 	}
 
 

@@ -201,7 +201,7 @@ namespace nrhi {
 		)
 	>;
 
-	enum class E_name_type {
+	enum class E_nsl_name_type {
 
 		DATA_TYPE,
 		RESOURCE
@@ -1152,14 +1152,16 @@ namespace nrhi {
 		TK_valid<F_nsl_shader_compiler> shader_compiler_p_;
 
 	protected:
+		TG_set<G_string> name_set_;
 		TG_unordered_map<G_string, G_string> name_to_target_map_;
-		TG_unordered_map<G_string, E_name_type> name_to_name_type_map_;
+		TG_unordered_map<G_string, E_nsl_name_type> name_to_name_type_map_;
 
 	public:
 		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
 
+		NCPP_FORCE_INLINE const TG_set<G_string>& name_set() const noexcept { return name_set_; }
 		NCPP_FORCE_INLINE const TG_unordered_map<G_string, G_string>& name_to_target_map() const noexcept { return name_to_target_map_; }
-		NCPP_FORCE_INLINE const TG_unordered_map<G_string, E_name_type>& name_to_name_type_map() const noexcept { return name_to_name_type_map_; }
+		NCPP_FORCE_INLINE const TG_unordered_map<G_string, E_nsl_name_type>& name_to_name_type_map() const noexcept { return name_to_name_type_map_; }
 
 
 
@@ -1171,34 +1173,58 @@ namespace nrhi {
 		NCPP_OBJECT(F_nsl_name_manager);
 
 	public:
-		NCPP_FORCE_INLINE b8 is_has_name(const G_string& name) const {
+		NCPP_FORCE_INLINE b8 is_name_has_target(const G_string& name) const {
 
 			auto it = name_to_target_map_.find(name);
 
 			return (it != name_to_target_map_.end());
 		}
+		NCPP_FORCE_INLINE b8 is_name_has_type(const G_string& name) const {
+
+			auto it = name_to_name_type_map_.find(
+				target(name)
+			);
+
+			return (it != name_to_name_type_map_.end());
+		}
 		NCPP_FORCE_INLINE G_string target(const G_string& name) const {
 
+			G_string result = "";
 			auto it = name_to_target_map_.find(name);
 
-			NCPP_ASSERT(it != name_to_target_map_.end()) << "can't find " << T_cout_value(name);
+			NCPP_ASSERT(it != name_to_target_map_.end()) << T_cout_value(name) << " is not registered";
 
-			return it->second;
+			while(it != name_to_target_map_.end()) {
+
+				result = it->second;
+				it = name_to_target_map_.find(result);
+			}
+
+			return result;
 		}
-		NCPP_FORCE_INLINE E_name_type name_type(const G_string& name) const {
+		NCPP_FORCE_INLINE E_nsl_name_type name_type(const G_string& name) const {
 
-			auto it = name_to_name_type_map_.find(name);
+			auto it = name_to_name_type_map_.find(
+				target(name)
+			);
 
 			NCPP_ASSERT(it != name_to_name_type_map_.end()) << "can't find " << T_cout_value(name);
 
 			return it->second;
 		}
-		NCPP_FORCE_INLINE void register_name(const G_string& name, const G_string& target, E_name_type name_type) {
+		NCPP_FORCE_INLINE void register_name(const G_string& name, const G_string& target) {
 
 			NCPP_ASSERT(name_to_target_map_.find(name) == name_to_target_map_.end()) << T_cout_value(name) << " already exists";
+			NCPP_ASSERT(is_name_has_target(target)) << T_cout_value(target) << " is not registered";
 
 			name_to_target_map_[name] = target;
+		}
+		NCPP_FORCE_INLINE void register_name(const G_string& name, E_nsl_name_type name_type) {
+
+			NCPP_ASSERT(name_to_name_type_map_.find(name) == name_to_name_type_map_.end()) << T_cout_value(name) << " already exists";
+
 			name_to_name_type_map_[name] = name_type;
+			name_to_target_map_[name] = name;
 		}
 
 	};
