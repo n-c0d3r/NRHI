@@ -201,10 +201,10 @@ namespace nrhi {
 		)
 	>;
 
-	enum class E_nsl_name_type {
+	struct FE_nsl_name_types {
 
-		DATA_TYPE,
-		RESOURCE
+		struct DATA_TYPE {};
+		struct RESOURCE {};
 
 	};
 
@@ -1154,14 +1154,14 @@ namespace nrhi {
 	protected:
 		TG_set<G_string> name_set_;
 		TG_unordered_map<G_string, G_string> name_to_target_map_;
-		TG_unordered_map<G_string, E_nsl_name_type> name_to_name_type_map_;
+		TG_unordered_map<G_string, u64> name_to_name_type_map_;
 
 	public:
 		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
 
 		NCPP_FORCE_INLINE const TG_set<G_string>& name_set() const noexcept { return name_set_; }
 		NCPP_FORCE_INLINE const TG_unordered_map<G_string, G_string>& name_to_target_map() const noexcept { return name_to_target_map_; }
-		NCPP_FORCE_INLINE const TG_unordered_map<G_string, E_nsl_name_type>& name_to_name_type_map() const noexcept { return name_to_name_type_map_; }
+		NCPP_FORCE_INLINE const TG_unordered_map<G_string, u64>& name_to_name_type_map() const noexcept { return name_to_name_type_map_; }
 
 
 
@@ -1202,7 +1202,7 @@ namespace nrhi {
 
 			return result;
 		}
-		NCPP_FORCE_INLINE E_nsl_name_type name_type(const G_string& name) const {
+		NCPP_FORCE_INLINE u64 name_type(const G_string& name) const {
 
 			auto it = name_to_name_type_map_.find(
 				target(name)
@@ -1219,11 +1219,19 @@ namespace nrhi {
 
 			name_to_target_map_[name] = target;
 		}
-		NCPP_FORCE_INLINE void register_name(const G_string& name, E_nsl_name_type name_type) {
+		NCPP_FORCE_INLINE void register_name(const G_string& name, u64 name_type) {
 
 			NCPP_ASSERT(name_to_name_type_map_.find(name) == name_to_name_type_map_.end()) << T_cout_value(name) << " already exists";
 
 			name_to_name_type_map_[name] = name_type;
+			name_to_target_map_[name] = name;
+		}
+		template<typename F__>
+		NCPP_FORCE_INLINE void T_register_name(const G_string& name) {
+
+			NCPP_ASSERT(name_to_name_type_map_.find(name) == name_to_name_type_map_.end()) << T_cout_value(name) << " already exists";
+
+			name_to_name_type_map_[name] = T_type_hash_code<F__>;
 			name_to_target_map_[name] = name;
 		}
 

@@ -1937,12 +1937,12 @@ namespace nrhi {
 		auto name_manager_p = shader_compiler_p()->name_manager_p();
 		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
 
-		name_manager_p->register_name("bool", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("int", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("uint", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("half", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("float", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("double", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->template T_register_name<FE_nsl_name_types>("bool");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("int");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("uint");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("half");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("float");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("double");
 
 		name_manager_p->register_name("b8", "bool");
 		name_manager_p->register_name("i32", "int");
@@ -1958,12 +1958,12 @@ namespace nrhi {
 		data_type_manager_p->register_size("float", 4);
 		data_type_manager_p->register_size("double", 8);
 
-		name_manager_p->register_name("bool2", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("int2", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("uint2", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("half2", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("float2", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("double2", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->template T_register_name<FE_nsl_name_types>("bool2");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("int2");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("uint2");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("half2");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("float2");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("double2");
 
 		name_manager_p->register_name("F_vector2_b8", "bool2");
 		name_manager_p->register_name("F_vector2_i32", "int2");
@@ -1979,12 +1979,12 @@ namespace nrhi {
 		data_type_manager_p->register_size("float2", 4 * 2);
 		data_type_manager_p->register_size("double2", 8 * 2);
 
-		name_manager_p->register_name("bool3", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("int3", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("uint3", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("half3", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("float3", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("double3", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->template T_register_name<FE_nsl_name_types>("bool3");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("int3");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("uint3");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("half3");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("float3");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("double3");
 
 		name_manager_p->register_name("F_vector3_b8", "bool3");
 		name_manager_p->register_name("F_vector3_i32", "int3");
@@ -2000,12 +2000,12 @@ namespace nrhi {
 		data_type_manager_p->register_size("float3", 4 * 3);
 		data_type_manager_p->register_size("double3", 8 * 3);
 
-		name_manager_p->register_name("bool4", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("int4", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("uint4", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("half4", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("float4", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("double4", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->template T_register_name<FE_nsl_name_types>("bool4");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("int4");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("uint4");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("half4");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("float4");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("double4");
 
 		name_manager_p->register_name("F_vector4_b8", "bool4");
 		name_manager_p->register_name("F_vector4_i32", "int4");
@@ -2021,12 +2021,12 @@ namespace nrhi {
 		data_type_manager_p->register_size("float4", 4 * 4);
 		data_type_manager_p->register_size("double4", 8 * 4);
 
-		name_manager_p->register_name("bool2x2", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("int2x2", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("uint2x2", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("half2x2", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("float2x2", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("double2x2", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->template T_register_name<FE_nsl_name_types>("bool2x2");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("int2x2");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("uint2x2");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("half2x2");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("float2x2");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("double2x2");
 
 		name_manager_p->register_name("F_matrix2x2_b8", "bool2x2");
 		name_manager_p->register_name("F_matrix2x2_i32", "int2x2");
@@ -2042,12 +2042,12 @@ namespace nrhi {
 		data_type_manager_p->register_size("float2x2", 4 * 2 * 2);
 		data_type_manager_p->register_size("double2x2", 8 * 2 * 2);
 
-		name_manager_p->register_name("bool3x3", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("int3x3", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("uint3x3", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("half3x3", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("float3x3", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("double3x3", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->template T_register_name<FE_nsl_name_types>("bool3x3");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("int3x3");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("uint3x3");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("half3x3");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("float3x3");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("double3x3");
 
 		name_manager_p->register_name("F_matrix3x3_b8", "bool3x3");
 		name_manager_p->register_name("F_matrix3x3_i32", "int3x3");
@@ -2063,12 +2063,12 @@ namespace nrhi {
 		data_type_manager_p->register_size("float3x3", 4 * 3 * 3);
 		data_type_manager_p->register_size("double3x3", 8 * 3 * 3);
 
-		name_manager_p->register_name("bool4x4", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("int4x4", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("uint4x4", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("half4x4", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("float4x4", E_nsl_name_type::DATA_TYPE);
-		name_manager_p->register_name("double4x4", E_nsl_name_type::DATA_TYPE);
+		name_manager_p->template T_register_name<FE_nsl_name_types>("bool4x4");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("int4x4");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("uint4x4");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("half4x4");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("float4x4");
+		name_manager_p->template T_register_name<FE_nsl_name_types>("double4x4");
 
 		name_manager_p->register_name("F_matrix4x4_b8", "bool4x4");
 		name_manager_p->register_name("F_matrix4x4_i32", "int4x4");
