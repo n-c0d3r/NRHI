@@ -536,6 +536,60 @@ namespace nrhi {
 
 
 
+	class NRHI_API F_nsl_undef_object final : public A_nsl_object {
+
+	public:
+		G_string target;
+
+
+
+	public:
+		F_nsl_undef_object(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			TKPA_valid<A_nsl_object_type> type_p,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			const G_string& name = ""
+		);
+		virtual ~F_nsl_undef_object();
+
+	public:
+		NCPP_OBJECT(F_nsl_undef_object);
+
+	public:
+		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
+			F_nsl_context& context,
+			TK_valid<F_nsl_translation_unit> unit_p,
+			TG_vector<F_nsl_ast_tree>& trees,
+			sz index,
+			F_nsl_error_stack* error_stack_p
+		) override;
+
+	};
+
+
+
+	class NRHI_API F_nsl_undef_object_type final : public A_nsl_object_type {
+
+	public:
+		F_nsl_undef_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_undef_object_type();
+
+	public:
+		NCPP_OBJECT(F_nsl_undef_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+
+	};
+
+
+
 	class NRHI_API F_nsl_if_object final : public A_nsl_object {
 
 	public:
@@ -1180,8 +1234,6 @@ namespace nrhi {
 			G_string result = "";
 			auto it = name_to_target_map_.find(name);
 
-			NCPP_ASSERT(it != name_to_target_map_.end()) << T_cout_value(name) << " is not registered";
-
 			while(it != name_to_target_map_.end()) {
 
 				result = it->second;
@@ -1196,7 +1248,8 @@ namespace nrhi {
 				target(name)
 			);
 
-			NCPP_ASSERT(it != name_to_name_type_map_.end()) << "can't find " << T_cout_value(name);
+			if(it == name_to_name_type_map_.end())
+				return 0;
 
 			return it->second;
 		}
@@ -1228,6 +1281,21 @@ namespace nrhi {
 
 			name_to_name_type_map_[name] = T_type_hash_code<F__>;
 			name_to_target_map_[name] = name;
+		}
+		NCPP_FORCE_INLINE void deregister_name(const G_string& name) {
+
+			NCPP_ASSERT(
+				(name_to_target_map_.find(name) != name_to_target_map_.end())
+				|| (name_to_name_type_map_.find(name) != name_to_name_type_map_.end())
+			) << T_cout_value(name) << " is exists";
+
+			auto it1 = name_to_name_type_map_.find(name);
+			auto it2 = name_to_target_map_.find(name);
+
+			if(it1 != name_to_name_type_map_.end())
+				name_to_name_type_map_.erase(it1);
+			if(it2 != name_to_target_map_.end())
+				name_to_target_map_.erase(it2);
 		}
 
 	};

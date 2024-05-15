@@ -289,7 +289,7 @@ namespace nrhi {
 									return eastl::nullopt;
 								}
 
-								childs = childs_opt.value();
+								childs = std::move(childs_opt.value());
 								child_src_content = std::move(childs_src);
 
 								i = end_arg_location + 1;
@@ -684,7 +684,7 @@ namespace nrhi {
 				if(!result_opt)
 					return eastl::nullopt;
 
-				auto try_build_result = result_opt.value();
+				auto try_build_result = std::move(result_opt.value());
 
 				if(try_build_result.trees.size()) {
 
@@ -773,7 +773,7 @@ namespace nrhi {
 				return eastl::nullopt;
 			}
 
-			tree.childs = childs_opt.value();
+			tree.childs = std::move(childs_opt.value());
 			++tree_index;
 		}
 
@@ -989,7 +989,7 @@ namespace nrhi {
 
 		if(load_result_opt) {
 
-			const auto& load_result = load_result_opt.value();
+			const auto& load_result = std::move(load_result_opt.value());
 			const auto& abs_path = load_result.abs_path;
 
 			auto it = abs_path_to_translation_unit_p_.find(abs_path);
@@ -1180,7 +1180,9 @@ namespace nrhi {
 
 		target = new_target;
 
-		if(shader_compiler_p()->name_manager_p()->is_name_registered(target)) {
+		if(
+			shader_compiler_p()->name_manager_p()->is_name_registered(target) != (tree.object_implementation.name == "!")
+		) {
 
 			context.parent_object_p = NCPP_KTHIS().no_requirements();
 
@@ -1201,8 +1203,6 @@ namespace nrhi {
 				);
 				return eastl::nullopt;
 			}
-
-			const G_string& src_content = unit_p->preprocessed_src().content;
 
 			auto childs = std::move(childs_opt.value());
 
@@ -1280,6 +1280,8 @@ namespace nrhi {
 
 		auto& target_content_body = tree.object_implementation.bodies[0];
 
+		auto name_manager_p = shader_compiler_p()->name_manager_p();
+
 		G_string new_target = H_nsl_utilities::clear_space_head_tail(
 			target_content_body.content
 		);
@@ -1295,9 +1297,20 @@ namespace nrhi {
 			return eastl::nullopt;
 		}
 
+		if(name_manager_p->is_name_registered(new_target)) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				&(unit_p->error_group_p()->stack()),
+				target_content_body.begin_location,
+				new_target + " is already registered"
+			);
+
+			return eastl::nullopt;
+		}
+
 		target = new_target;
 
-		shader_compiler_p()->name_manager_p()->register_name(target);
+		name_manager_p->register_name(target);
 
 		return TG_vector<F_nsl_ast_tree>();
 	}
@@ -1328,6 +1341,111 @@ namespace nrhi {
 
 		auto object_p = register_object(
 			TU<F_nsl_define_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_undef_object::F_nsl_undef_object(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		TKPA_valid<A_nsl_object_type> type_p,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const G_string& name
+	) :
+		A_nsl_object(
+			shader_compiler_p,
+			type_p,
+			translation_unit_p,
+			name
+		)
+	{
+	}
+	F_nsl_undef_object::~F_nsl_undef_object() {
+	}
+
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_undef_object::recursive_build_ast_tree(
+		F_nsl_context& context,
+		TK_valid<F_nsl_translation_unit> unit_p,
+		TG_vector<F_nsl_ast_tree>& trees,
+		sz index,
+		F_nsl_error_stack* error_stack_p
+	) {
+		const auto& tree = trees[index];
+
+		auto& target_content_body = tree.object_implementation.bodies[0];
+
+		auto name_manager_p = shader_compiler_p()->name_manager_p();
+
+		G_string new_target = H_nsl_utilities::clear_space_head_tail(
+			target_content_body.content
+		);
+
+		if(!H_nsl_utilities::is_variable_name(new_target)) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				&(unit_p->error_group_p()->stack()),
+				target_content_body.begin_location,
+				"invalid name: " + new_target
+			);
+
+			return eastl::nullopt;
+		}
+
+		if(
+			!(name_manager_p->is_name_registered(new_target))
+		) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				&(unit_p->error_group_p()->stack()),
+				target_content_body.begin_location,
+				new_target + " is not registered"
+			);
+
+			return eastl::nullopt;
+		}
+
+		target = new_target;
+
+		name_manager_p->deregister_name(target);
+
+		return TG_vector<F_nsl_ast_tree>();
+	}
+
+
+
+	F_nsl_undef_object_type::F_nsl_undef_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"!undef",
+			false,
+			1,
+			1
+		)
+	{
+	}
+	F_nsl_undef_object_type::~F_nsl_undef_object_type() {
+	}
+
+	TK<A_nsl_object> F_nsl_undef_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	) {
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_undef_object>()(
 				shader_compiler_p(),
 				NCPP_KTHIS(),
 				translation_unit_p,
@@ -1556,6 +1674,9 @@ namespace nrhi {
 			TU<F_nsl_define_object_type>()(shader_compiler_p_)
 		);
 		register_type(
+			TU<F_nsl_undef_object_type>()(shader_compiler_p_)
+		);
+		register_type(
 			TU<F_nsl_elif_object_type>()(shader_compiler_p_)
 		);
 		register_type(
@@ -1697,7 +1818,7 @@ namespace nrhi {
 		auto comment_removed_src_content_opt = H_nsl_utilities::remove_comments(raw_src_content, &(error_group_p->stack()));
 
 		if(comment_removed_src_content_opt) {
-			const auto& comment_removed_src_content = comment_removed_src_content_opt.value();
+			const auto& comment_removed_src_content = std::move(comment_removed_src_content_opt.value());
 
 			F_nsl_preprocessed_src preprocessed_src = {
 				.content = comment_removed_src_content.first(),
@@ -1798,7 +1919,7 @@ namespace nrhi {
 
 		if(ast_trees_opt) {
 
-			unit_p->ast_trees() = ast_trees_opt.value();
+			unit_p->ast_trees() = std::move(ast_trees_opt.value());
 
 			return true;
 		}
@@ -1863,7 +1984,7 @@ namespace nrhi {
 
 		if(ast_trees_opt) {
 
-			return ast_trees_opt.value();
+			return std::move(ast_trees_opt.value());
 		}
 
 		return eastl::nullopt;
@@ -1986,6 +2107,8 @@ namespace nrhi {
 
 		auto name_manager_p = shader_compiler_p()->name_manager_p();
 		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
+
+		name_manager_p->register_name("NSL_OUTPUT_HLSL");
 
 		name_manager_p->template T_register_name<FE_nsl_name_types>("bool");
 		name_manager_p->template T_register_name<FE_nsl_name_types>("int");
