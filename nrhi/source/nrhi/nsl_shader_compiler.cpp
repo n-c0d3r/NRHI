@@ -1822,6 +1822,143 @@ namespace nrhi {
 
 
 
+	F_nsl_data_type_manager::F_nsl_data_type_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
+		shader_compiler_p_(shader_compiler_p)
+	{
+	}
+	F_nsl_data_type_manager::~F_nsl_data_type_manager() {
+	}
+
+
+
+	A_nsl_output_language::A_nsl_output_language(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		E_nsl_output_language as_enum
+	) :
+		shader_compiler_p_(shader_compiler_p),
+		as_enum_(as_enum)
+	{
+	}
+	A_nsl_output_language::~A_nsl_output_language() {
+	}
+
+
+
+	F_nsl_output_hlsl::F_nsl_output_hlsl(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_output_language(shader_compiler_p, E_nsl_output_language::HLSL)
+	{
+		register_data_types_internal();
+	}
+	F_nsl_output_hlsl::~F_nsl_output_hlsl() {
+	}
+
+	void F_nsl_output_hlsl::register_data_types_internal() {
+
+		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
+
+		data_type_manager_p->register_target("b8", "bool");
+		data_type_manager_p->register_target("i32", "int");
+		data_type_manager_p->register_target("u32", "uint");
+		data_type_manager_p->register_target("f16", "half");
+		data_type_manager_p->register_target("f32", "float");
+		data_type_manager_p->register_target("f64", "double");
+
+		data_type_manager_p->register_size("b8", 1);
+		data_type_manager_p->register_size("i32", 4);
+		data_type_manager_p->register_size("u32", 4);
+		data_type_manager_p->register_size("f16", 2);
+		data_type_manager_p->register_size("f32", 4);
+		data_type_manager_p->register_size("f64", 8);
+
+		data_type_manager_p->register_target("F_vector2_b8", "bool2");
+		data_type_manager_p->register_target("F_vector2_i32", "int2");
+		data_type_manager_p->register_target("F_vector2_u32", "uint2");
+		data_type_manager_p->register_target("F_vector2_f16", "half2");
+		data_type_manager_p->register_target("F_vector2_f32", "float2");
+		data_type_manager_p->register_target("F_vector2_f64", "double2");
+
+		data_type_manager_p->register_size("F_vector2_b8", 1 * 2);
+		data_type_manager_p->register_size("F_vector2_i32", 4 * 2);
+		data_type_manager_p->register_size("F_vector2_u32", 4 * 2);
+		data_type_manager_p->register_size("F_vector2_f16", 2 * 2);
+		data_type_manager_p->register_size("F_vector2_f32", 4 * 2);
+		data_type_manager_p->register_size("F_vector2_f64", 8 * 2);
+
+		data_type_manager_p->register_target("F_vector3_b8", "bool3");
+		data_type_manager_p->register_target("F_vector3_i32", "int3");
+		data_type_manager_p->register_target("F_vector3_u32", "uint3");
+		data_type_manager_p->register_target("F_vector3_f16", "half3");
+		data_type_manager_p->register_target("F_vector3_f32", "float3");
+		data_type_manager_p->register_target("F_vector3_f64", "double3");
+
+		data_type_manager_p->register_size("F_vector3_b8", 1 * 3);
+		data_type_manager_p->register_size("F_vector3_i32", 4 * 3);
+		data_type_manager_p->register_size("F_vector3_u32", 4 * 3);
+		data_type_manager_p->register_size("F_vector3_f16", 2 * 3);
+		data_type_manager_p->register_size("F_vector3_f32", 4 * 3);
+		data_type_manager_p->register_size("F_vector3_f64", 8 * 3);
+
+		data_type_manager_p->register_target("F_vector4_b8", "bool4");
+		data_type_manager_p->register_target("F_vector4_i32", "int4");
+		data_type_manager_p->register_target("F_vector4_u32", "uint4");
+		data_type_manager_p->register_target("F_vector4_f16", "half4");
+		data_type_manager_p->register_target("F_vector4_f32", "float4");
+		data_type_manager_p->register_target("F_vector4_f64", "double4");
+
+		data_type_manager_p->register_size("F_vector4_b8", 1 * 4);
+		data_type_manager_p->register_size("F_vector4_i32", 4 * 4);
+		data_type_manager_p->register_size("F_vector4_u32", 4 * 4);
+		data_type_manager_p->register_size("F_vector4_f16", 2 * 4);
+		data_type_manager_p->register_size("F_vector4_f32", 4 * 4);
+		data_type_manager_p->register_size("F_vector4_f64", 8 * 4);
+
+		data_type_manager_p->register_target("F_matrix2x2_b8", "bool2x2");
+		data_type_manager_p->register_target("F_matrix2x2_i32", "int2x2");
+		data_type_manager_p->register_target("F_matrix2x2_u32", "uint2x2");
+		data_type_manager_p->register_target("F_matrix2x2_f16", "half2x2");
+		data_type_manager_p->register_target("F_matrix2x2_f32", "float2x2");
+		data_type_manager_p->register_target("F_matrix2x2_f64", "double2x2");
+
+		data_type_manager_p->register_size("F_matrix2x2_b8", 1 * 2 * 2);
+		data_type_manager_p->register_size("F_matrix2x2_i32", 4 * 2 * 2);
+		data_type_manager_p->register_size("F_matrix2x2_u32", 4 * 2 * 2);
+		data_type_manager_p->register_size("F_matrix2x2_f16", 2 * 2 * 2);
+		data_type_manager_p->register_size("F_matrix2x2_f32", 4 * 2 * 2);
+		data_type_manager_p->register_size("F_matrix2x2_f64", 8 * 2 * 2);
+
+		data_type_manager_p->register_target("F_matrix3x3_b8", "bool3x3");
+		data_type_manager_p->register_target("F_matrix3x3_i32", "int3x3");
+		data_type_manager_p->register_target("F_matrix3x3_u32", "uint3x3");
+		data_type_manager_p->register_target("F_matrix3x3_f16", "half3x3");
+		data_type_manager_p->register_target("F_matrix3x3_f32", "float3x3");
+		data_type_manager_p->register_target("F_matrix3x3_f64", "double3x3");
+
+		data_type_manager_p->register_size("F_matrix3x3_b8", 1 * 3 * 3);
+		data_type_manager_p->register_size("F_matrix3x3_i32", 4 * 3 * 3);
+		data_type_manager_p->register_size("F_matrix3x3_u32", 4 * 3 * 3);
+		data_type_manager_p->register_size("F_matrix3x3_f16", 2 * 3 * 3);
+		data_type_manager_p->register_size("F_matrix3x3_f32", 4 * 3 * 3);
+		data_type_manager_p->register_size("F_matrix3x3_f64", 8 * 3 * 3);
+
+		data_type_manager_p->register_target("F_matrix4x4_b8", "bool4x4");
+		data_type_manager_p->register_target("F_matrix4x4_i32", "int4x4");
+		data_type_manager_p->register_target("F_matrix4x4_u32", "uint4x4");
+		data_type_manager_p->register_target("F_matrix4x4_f16", "half4x4");
+		data_type_manager_p->register_target("F_matrix4x4_f32", "float4x4");
+		data_type_manager_p->register_target("F_matrix4x4_f64", "double4x4");
+
+		data_type_manager_p->register_size("F_matrix4x4_b8", 1 * 4 * 4);
+		data_type_manager_p->register_size("F_matrix4x4_i32", 4 * 4 * 4);
+		data_type_manager_p->register_size("F_matrix4x4_u32", 4 * 4 * 4);
+		data_type_manager_p->register_size("F_matrix4x4_f16", 2 * 4 * 4);
+		data_type_manager_p->register_size("F_matrix4x4_f32", 4 * 4 * 4);
+		data_type_manager_p->register_size("F_matrix4x4_f64", 8 * 4 * 4);
+	}
+
+
+
 	F_nsl_shader_compiler::F_nsl_shader_compiler() :
 		module_manager_p_(
 			TU<F_nsl_shader_module_manager>()(NCPP_KTHIS())
@@ -1840,6 +1977,9 @@ namespace nrhi {
 		),
 		section_storage_p_(
 			TU<F_nsl_section_storage>()(NCPP_KTHIS())
+		),
+		data_type_manager_p_(
+			TU<F_nsl_data_type_manager>()(NCPP_KTHIS())
 		)
 	{
 	}
@@ -1849,17 +1989,26 @@ namespace nrhi {
 		TU<F_nsl_translation_unit_compiler>&& translation_unit_compiler_p,
 		TU<F_nsl_error_storage>&& error_storage_p,
 		TU<F_nsl_object_manager>&& object_manager_p,
-		TU<A_nsl_section_storage>&& section_storage_p
+		TU<A_nsl_section_storage>&& section_storage_p,
+		TU<F_nsl_data_type_manager>&& data_type_manager_p
 	) :
 		module_manager_p_(std::move(module_manager_p)),
 		translation_unit_manager_p_(std::move(translation_unit_manager_p)),
 		translation_unit_compiler_p_(std::move(translation_unit_compiler_p)),
 		error_storage_p_(std::move(error_storage_p)),
 		object_manager_p_(std::move(object_manager_p)),
-		section_storage_p_(std::move(section_storage_p))
+		section_storage_p_(std::move(section_storage_p)),
+		data_type_manager_p_(std::move(data_type_manager_p))
 	{
 	}
 	F_nsl_shader_compiler::~F_nsl_shader_compiler() {
+	}
+
+	TU<A_nsl_output_language> F_nsl_shader_compiler::create_output_language() {
+
+		return TU<F_nsl_output_hlsl>()(
+			NCPP_KTHIS()
+		);
 	}
 
 	eastl::optional<G_string> F_nsl_shader_compiler::compile(
@@ -1867,6 +2016,7 @@ namespace nrhi {
 		E_nsl_output_language output_language,
 		const G_string& abs_path
 	) {
+		output_language_p_ = create_output_language();
 
 		if(
 			!(
