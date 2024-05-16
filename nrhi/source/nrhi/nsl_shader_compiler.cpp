@@ -1504,7 +1504,7 @@ namespace nrhi {
 					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 						&(unit_p->error_group_p()->stack()),
 						prev_tree.begin_location,
-						"invalid section, require \'require(){}\' or \'otherwise{}\' before \'otherwise{}\'"
+						"invalid section, require \'require(){}\' or \'otherwise(){}\' before \'otherwise(){}\'"
 					);
 					return eastl::nullopt;
 				}
@@ -1520,7 +1520,7 @@ namespace nrhi {
 						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 							&(unit_p->error_group_p()->stack()),
 							prev_tree.begin_location,
-							"invalid section, require \'require(){}\' or \'otherwise{}\' before \'otherwise{}\'"
+							"invalid section, require \'require(){}\' or \'otherwise(){}\' before \'otherwise(){}\'"
 						);
 						return eastl::nullopt;
 					}
@@ -1612,7 +1612,7 @@ namespace nrhi {
 			shader_compiler_p,
 			"otherwise",
 			false,
-			1,
+			2,
 			2
 		)
 	{
