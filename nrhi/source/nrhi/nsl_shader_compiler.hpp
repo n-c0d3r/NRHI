@@ -590,24 +590,27 @@ namespace nrhi {
 
 
 
-	class NRHI_API F_nsl_if_object final : public A_nsl_object {
+	class NRHI_API F_nsl_require_object final : public A_nsl_object {
+
+	private:
+		b8 is_enabled_ = false;
 
 	public:
-		G_string target;
+		NCPP_FORCE_INLINE b8 is_enabled() const noexcept { return is_enabled_; }
 
 
 
 	public:
-		F_nsl_if_object(
+		F_nsl_require_object(
 			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 			TKPA_valid<A_nsl_object_type> type_p,
 			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 			const G_string& name = ""
 		);
-		virtual ~F_nsl_if_object();
+		virtual ~F_nsl_require_object();
 
 	public:
-		NCPP_OBJECT(F_nsl_if_object);
+		NCPP_OBJECT(F_nsl_require_object);
 
 	public:
 		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
@@ -622,13 +625,13 @@ namespace nrhi {
 
 
 
-	class NRHI_API F_nsl_if_object_type final : public A_nsl_object_type {
+	class NRHI_API F_nsl_require_object_type final : public A_nsl_object_type {
 
 	public:
-		F_nsl_if_object_type(
+		F_nsl_require_object_type(
 			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
 		);
-		virtual ~F_nsl_if_object_type();
+		virtual ~F_nsl_require_object_type();
 
 	public:
 		virtual TK<A_nsl_object> create_object(
@@ -638,30 +641,33 @@ namespace nrhi {
 		) override;
 
 	public:
-		NCPP_OBJECT(F_nsl_if_object_type);
+		NCPP_OBJECT(F_nsl_require_object_type);
 
 	};
 
 
 
-	class NRHI_API F_nsl_elif_object final : public A_nsl_object {
+	class NRHI_API F_nsl_otherwise_object final : public A_nsl_object {
+
+	private:
+		b8 is_enabled_ = false;
 
 	public:
-		G_string target;
+		NCPP_FORCE_INLINE b8 is_enabled() const noexcept { return is_enabled_; }
 
 
 
 	public:
-		F_nsl_elif_object(
+		F_nsl_otherwise_object(
 			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 			TKPA_valid<A_nsl_object_type> type_p,
 			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 			const G_string& name = ""
 		);
-		virtual ~F_nsl_elif_object();
+		virtual ~F_nsl_otherwise_object();
 
 	public:
-		NCPP_OBJECT(F_nsl_elif_object);
+		NCPP_OBJECT(F_nsl_otherwise_object);
 
 	public:
 		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
@@ -676,13 +682,13 @@ namespace nrhi {
 
 
 
-	class NRHI_API F_nsl_elif_object_type final : public A_nsl_object_type {
+	class NRHI_API F_nsl_otherwise_object_type final : public A_nsl_object_type {
 
 	public:
-		F_nsl_elif_object_type(
+		F_nsl_otherwise_object_type(
 			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
 		);
-		virtual ~F_nsl_elif_object_type();
+		virtual ~F_nsl_otherwise_object_type();
 
 	public:
 		virtual TK<A_nsl_object> create_object(
@@ -692,61 +698,7 @@ namespace nrhi {
 		) override;
 
 	public:
-		NCPP_OBJECT(F_nsl_elif_object_type);
-
-	};
-
-
-
-	class NRHI_API F_nsl_else_object final : public A_nsl_object {
-
-	public:
-		G_string target;
-
-
-
-	public:
-		F_nsl_else_object(
-			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
-			TKPA_valid<A_nsl_object_type> type_p,
-			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
-			const G_string& name = ""
-		);
-		virtual ~F_nsl_else_object();
-
-	public:
-		NCPP_OBJECT(F_nsl_else_object);
-
-	public:
-		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
-			F_nsl_context& context,
-			TK_valid<F_nsl_translation_unit> unit_p,
-			TG_vector<F_nsl_ast_tree>& trees,
-			sz index,
-			F_nsl_error_stack* error_stack_p
-		) override;
-
-	};
-
-
-
-	class NRHI_API F_nsl_else_object_type final : public A_nsl_object_type {
-
-	public:
-		F_nsl_else_object_type(
-			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
-		);
-		virtual ~F_nsl_else_object_type();
-
-	public:
-		virtual TK<A_nsl_object> create_object(
-			F_nsl_ast_tree& tree,
-			F_nsl_context& context,
-			TKPA_valid<F_nsl_translation_unit> translation_unit_p
-		) override;
-
-	public:
-		NCPP_OBJECT(F_nsl_else_object_type);
+		NCPP_OBJECT(F_nsl_otherwise_object_type);
 
 	};
 
@@ -1297,6 +1249,13 @@ namespace nrhi {
 			if(it2 != name_to_target_map_.end())
 				name_to_target_map_.erase(it2);
 		}
+
+	public:
+		eastl::optional<b8> check_formula(
+			TK_valid<F_nsl_translation_unit> translation_unit_p,
+			sz location,
+			const G_string& formula
+		);
 
 	};
 

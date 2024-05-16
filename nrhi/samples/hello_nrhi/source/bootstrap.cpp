@@ -259,7 +259,9 @@ int main() {
 	auto compiler_p = TU<F_nsl_shader_compiler>()();
 	compiler_p->compile(
 "\n"
-"!if (NSL_OUTPUT_HLSL) {\n"
+"define(DEMO)\n"
+"undef(DEMO)\n"
+"require(DEMO) {} otherwise require(!DEMO) {\n"
 "	alias F_texture_2d { Texture2D }\n"
 "}\n"
 "\n",

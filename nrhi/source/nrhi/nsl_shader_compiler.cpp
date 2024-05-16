@@ -1101,7 +1101,7 @@ namespace nrhi {
 	) :
 		A_nsl_object_type(
 			shader_compiler_p,
-			"!import",
+			"import",
 			true,
 			1,
 			1
@@ -1134,7 +1134,7 @@ namespace nrhi {
 
 
 
-	F_nsl_if_object::F_nsl_if_object(
+	F_nsl_require_object::F_nsl_require_object(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 		TKPA_valid<A_nsl_object_type> type_p,
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
@@ -1148,10 +1148,10 @@ namespace nrhi {
 		)
 	{
 	}
-	F_nsl_if_object::~F_nsl_if_object() {
+	F_nsl_require_object::~F_nsl_require_object() {
 	}
 
-	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_if_object::recursive_build_ast_tree(
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_require_object::recursive_build_ast_tree(
 		F_nsl_context& context,
 		TK_valid<F_nsl_translation_unit> unit_p,
 		TG_vector<F_nsl_ast_tree>& trees,
@@ -1160,29 +1160,22 @@ namespace nrhi {
 	) {
 		const auto& tree = trees[index];
 
-		auto& target_content_body = tree.object_implementation.bodies[0];
+		auto& formula_content_body = tree.object_implementation.bodies[0];
 		auto& body_content_body = tree.object_implementation.bodies[1];
 
-		G_string new_target = H_nsl_utilities::clear_space_head_tail(
-			target_content_body.content
+		auto name_manager_p = shader_compiler_p()->name_manager_p();
+
+		auto formula_checked_opt = name_manager_p->check_formula(
+			unit_p,
+			formula_content_body.begin_location,
+			formula_content_body.content
 		);
-
-		if(!H_nsl_utilities::is_variable_name(new_target)) {
-
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				&(unit_p->error_group_p()->stack()),
-				target_content_body.begin_location,
-				"invalid name: " + new_target
-			);
-
+		if(!formula_checked_opt)
 			return eastl::nullopt;
-		}
 
-		target = new_target;
+		is_enabled_ = formula_checked_opt.value();
 
-		if(
-			shader_compiler_p()->name_manager_p()->is_name_registered(target) != (tree.object_implementation.name == "!")
-		) {
+		if(is_enabled_) {
 
 			context.parent_object_p = NCPP_KTHIS().no_requirements();
 
@@ -1199,7 +1192,7 @@ namespace nrhi {
 				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 					&(unit_p->error_group_p()->stack()),
 					body_content_body.begin_location,
-					"can't not parse !if body"
+					"can't not parse require body"
 				);
 				return eastl::nullopt;
 			}
@@ -1214,22 +1207,22 @@ namespace nrhi {
 
 
 
-	F_nsl_if_object_type::F_nsl_if_object_type(
+	F_nsl_require_object_type::F_nsl_require_object_type(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
 	) :
 		A_nsl_object_type(
 			shader_compiler_p,
-			"!if",
+			"require",
 			false,
 			2,
 			2
 		)
 	{
 	}
-	F_nsl_if_object_type::~F_nsl_if_object_type() {
+	F_nsl_require_object_type::~F_nsl_require_object_type() {
 	}
 
-	TK<A_nsl_object> F_nsl_if_object_type::create_object(
+	TK<A_nsl_object> F_nsl_require_object_type::create_object(
 		F_nsl_ast_tree& tree,
 		F_nsl_context& context,
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p
@@ -1237,7 +1230,7 @@ namespace nrhi {
 		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
 
 		auto object_p = register_object(
-			TU<F_nsl_if_object>()(
+			TU<F_nsl_require_object>()(
 				shader_compiler_p(),
 				NCPP_KTHIS(),
 				translation_unit_p,
@@ -1322,7 +1315,7 @@ namespace nrhi {
 	) :
 		A_nsl_object_type(
 			shader_compiler_p,
-			"!define",
+			"define",
 			false,
 			1,
 			1
@@ -1427,7 +1420,7 @@ namespace nrhi {
 	) :
 		A_nsl_object_type(
 			shader_compiler_p,
-			"!undef",
+			"undef",
 			false,
 			1,
 			1
@@ -1460,7 +1453,7 @@ namespace nrhi {
 
 
 
-	F_nsl_elif_object::F_nsl_elif_object(
+	F_nsl_otherwise_object::F_nsl_otherwise_object(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 		TKPA_valid<A_nsl_object_type> type_p,
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
@@ -1474,37 +1467,160 @@ namespace nrhi {
 		)
 	{
 	}
-	F_nsl_elif_object::~F_nsl_elif_object() {
+	F_nsl_otherwise_object::~F_nsl_otherwise_object() {
 	}
 
-	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_elif_object::recursive_build_ast_tree(
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_otherwise_object::recursive_build_ast_tree(
 		F_nsl_context& context,
 		TK_valid<F_nsl_translation_unit> unit_p,
 		TG_vector<F_nsl_ast_tree>& trees,
 		sz index,
 		F_nsl_error_stack* error_stack_p
 	) {
+		const auto& tree = trees[index];
+
+		// check for prev conditional section
+		{
+			ptrdiff_t prev_index = index - 1;
+
+			while(true)
+			{
+				if(prev_index < 0) {
+
+					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+						&(unit_p->error_group_p()->stack()),
+						tree.begin_location,
+						"no prev conditional section found"
+					);
+					return eastl::nullopt;
+				}
+
+				const auto& prev_tree = trees[prev_index];
+
+				if(
+					(prev_tree.type != E_nsl_ast_tree_type::PLAIN_TEXT)
+					&& (prev_tree.type != E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION)
+				) {
+					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+						&(unit_p->error_group_p()->stack()),
+						prev_tree.begin_location,
+						"invalid section, require \'require(){}\' or \'otherwise{}\' before \'otherwise{}\'"
+					);
+					return eastl::nullopt;
+				}
+
+				if(prev_tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) {
+
+					const auto& object_implementation = prev_tree.object_implementation;
+
+					if(
+						(object_implementation.keyword != "require")
+						&& (object_implementation.keyword != "otherwise")
+					) {
+						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+							&(unit_p->error_group_p()->stack()),
+							prev_tree.begin_location,
+							"invalid section, require \'require(){}\' or \'otherwise{}\' before \'otherwise{}\'"
+						);
+						return eastl::nullopt;
+					}
+
+					if(object_implementation.keyword == "require")
+					{
+						is_enabled_ = !(object_implementation.attached_object_p.T_cast<F_nsl_require_object>()->is_enabled());
+						break;
+					}
+					if(object_implementation.keyword == "otherwise")
+					{
+						is_enabled_ = !(object_implementation.attached_object_p.T_cast<F_nsl_otherwise_object>()->is_enabled());
+						break;
+					}
+				}
+
+				--prev_index;
+			}
+		}
+
+		if(!is_enabled_)
+			return TG_vector<F_nsl_ast_tree>();
+
+		if(name() == "require") {
+
+			if(tree.object_implementation.bodies.size() < 2) {
+
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					&(unit_p->error_group_p()->stack()),
+					tree.begin_location,
+					"require condition and body"
+				);
+				return eastl::nullopt;
+			}
+
+			auto name_manager_p = shader_compiler_p()->name_manager_p();
+
+			auto& formula_content_body = tree.object_implementation.bodies[0];
+
+			auto formula_checked_opt = name_manager_p->check_formula(
+				unit_p,
+				formula_content_body.begin_location,
+				formula_content_body.content
+			);
+			if(!formula_checked_opt)
+				return eastl::nullopt;
+
+			is_enabled_ = formula_checked_opt.value();
+		}
+
+		auto& body_content_body = tree.object_implementation.bodies.back();
+
+		if(is_enabled_) {
+
+			context.parent_object_p = NCPP_KTHIS().no_requirements();
+
+			auto translation_unit_compiler_p = shader_compiler_p()->translation_unit_compiler_p();
+			auto childs_opt = translation_unit_compiler_p->parse(
+				unit_p,
+				body_content_body.content,
+				context,
+				body_content_body.begin_location
+			);
+
+			if(!childs_opt) {
+
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					&(unit_p->error_group_p()->stack()),
+					body_content_body.begin_location,
+					"can't not parse require body"
+				);
+				return eastl::nullopt;
+			}
+
+			auto childs = std::move(childs_opt.value());
+
+			return std::move(childs);
+		}
+
 		return TG_vector<F_nsl_ast_tree>();
 	}
 
 
 
-	F_nsl_elif_object_type::F_nsl_elif_object_type(
+	F_nsl_otherwise_object_type::F_nsl_otherwise_object_type(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
 	) :
 		A_nsl_object_type(
 			shader_compiler_p,
-			"!elif",
-			true,
+			"otherwise",
+			false,
 			1,
-			1
+			2
 		)
 	{
 	}
-	F_nsl_elif_object_type::~F_nsl_elif_object_type() {
+	F_nsl_otherwise_object_type::~F_nsl_otherwise_object_type() {
 	}
 
-	TK<A_nsl_object> F_nsl_elif_object_type::create_object(
+	TK<A_nsl_object> F_nsl_otherwise_object_type::create_object(
 		F_nsl_ast_tree& tree,
 		F_nsl_context& context,
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p
@@ -1512,74 +1628,7 @@ namespace nrhi {
 		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
 
 		auto object_p = register_object(
-			TU<F_nsl_elif_object>()(
-				shader_compiler_p(),
-				NCPP_KTHIS(),
-				translation_unit_p,
-				tree.object_implementation.name
-			)
-		);
-
-		tree.object_implementation.attached_object_p = object_p;
-
-		return object_p;
-	}
-
-
-
-	F_nsl_else_object::F_nsl_else_object(
-		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
-		TKPA_valid<A_nsl_object_type> type_p,
-		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
-		const G_string& name
-	) :
-		A_nsl_object(
-			shader_compiler_p,
-			type_p,
-			translation_unit_p,
-			name
-		)
-	{
-	}
-	F_nsl_else_object::~F_nsl_else_object() {
-	}
-
-	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_else_object::recursive_build_ast_tree(
-		F_nsl_context& context,
-		TK_valid<F_nsl_translation_unit> unit_p,
-		TG_vector<F_nsl_ast_tree>& trees,
-		sz index,
-		F_nsl_error_stack* error_stack_p
-	) {
-		return TG_vector<F_nsl_ast_tree>();
-	}
-
-
-
-	F_nsl_else_object_type::F_nsl_else_object_type(
-		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
-	) :
-		A_nsl_object_type(
-			shader_compiler_p,
-			"!else",
-			true,
-			1,
-			1
-		)
-	{
-	}
-	F_nsl_else_object_type::~F_nsl_else_object_type() {
-	}
-
-	TK<A_nsl_object> F_nsl_else_object_type::create_object(
-		F_nsl_ast_tree& tree,
-		F_nsl_context& context,
-		TKPA_valid<F_nsl_translation_unit> translation_unit_p
-	) {
-		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
-
-		auto object_p = register_object(
-			TU<F_nsl_else_object>()(
+			TU<F_nsl_otherwise_object>()(
 				shader_compiler_p(),
 				NCPP_KTHIS(),
 				translation_unit_p,
@@ -1668,7 +1717,7 @@ namespace nrhi {
 			TU<F_nsl_import_object_type>()(shader_compiler_p_)
 		);
 		register_type(
-			TU<F_nsl_if_object_type>()(shader_compiler_p_)
+			TU<F_nsl_require_object_type>()(shader_compiler_p_)
 		);
 		register_type(
 			TU<F_nsl_define_object_type>()(shader_compiler_p_)
@@ -1677,10 +1726,7 @@ namespace nrhi {
 			TU<F_nsl_undef_object_type>()(shader_compiler_p_)
 		);
 		register_type(
-			TU<F_nsl_elif_object_type>()(shader_compiler_p_)
-		);
-		register_type(
-			TU<F_nsl_else_object_type>()(shader_compiler_p_)
+			TU<F_nsl_otherwise_object_type>()(shader_compiler_p_)
 		);
 		register_type(
 			TU<F_nsl_alias_object_type>()(shader_compiler_p_)
@@ -2067,6 +2113,51 @@ namespace nrhi {
 	{
 	}
 	F_nsl_name_manager::~F_nsl_name_manager() {
+	}
+
+	eastl::optional<b8> F_nsl_name_manager::check_formula(
+		TK_valid<F_nsl_translation_unit> translation_unit_p,
+		sz location,
+		const G_string& formula
+	) {
+
+		G_string space_cleared_formula = H_nsl_utilities::clear_space_head_tail(formula);
+
+		i32 i = formula.length() - 1;
+		for(; i >= 0; --i) {
+
+			if(!H_nsl_utilities::is_variable_name_character(formula[i]))
+				break;
+		}
+
+		G_string name = space_cleared_formula.substr(i + 1, space_cleared_formula.length() - i - 1);
+
+		i32 j = 0;
+		i32 negative_count = 0;
+		for(; j <= i; ++j) {
+
+			if(
+				(formula[j] == ' ')
+				|| (formula[j] == '\t')
+				|| (formula[j] == '\n')
+				|| (formula[j] == '\r')
+				|| (formula[j] == '!')
+			) {
+				if(formula[j] == '!')
+					++negative_count;
+			}
+			else {
+
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					&(translation_unit_p->error_group_p()->stack()),
+					location,
+					"invalid character \'" + G_string(space_cleared_formula[j], 1) + "\' in formula"
+				);
+				return eastl::nullopt;
+			}
+		}
+
+		return ((negative_count % 2 == 0) == is_name_registered(name));
 	}
 
 
