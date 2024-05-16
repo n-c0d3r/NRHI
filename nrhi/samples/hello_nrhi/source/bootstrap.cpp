@@ -259,10 +259,8 @@ int main() {
 	auto compiler_p = TU<F_nsl_shader_compiler>()();
 	compiler_p->compile(
 "\n"
-"define(DEMO)\n"
-"undef(DEMO)\n"
-"require(DEMO) {} otherwise require(!DEMO) {\n"
-"	alias F_texture_2d { Texture2D }\n"
+"vertex_shader vs_main(local_position(POSITION) out clip_position(float4 SV_POSITION))\n"
+"{\n"
 "}\n"
 "\n",
 		E_nsl_output_language::HLSL
