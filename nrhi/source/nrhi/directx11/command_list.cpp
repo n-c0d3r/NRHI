@@ -481,7 +481,7 @@ namespace nrhi {
 
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
 
-		ID3D11ShaderResourceView* d3d11_srv_p =(ID3D11ShaderResourceView*)(srv_p.T_cast<F_directx11_unordered_access_view>()->d3d11_view_p());
+		ID3D11ShaderResourceView* d3d11_srv_p =(ID3D11ShaderResourceView*)(srv_p.T_cast<F_directx11_shader_resource_view>()->d3d11_view_p());
 
 		d3d11_device_context_p->VSSetShaderResources(
 			slot_index,
@@ -599,7 +599,7 @@ namespace nrhi {
 
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
 
-		ID3D11ShaderResourceView* d3d11_srv_p =(ID3D11ShaderResourceView*)(srv_p.T_cast<F_directx11_unordered_access_view>()->d3d11_view_p());
+		ID3D11ShaderResourceView* d3d11_srv_p =(ID3D11ShaderResourceView*)(srv_p.T_cast<F_directx11_shader_resource_view>()->d3d11_view_p());
 
 		d3d11_device_context_p->PSSetShaderResources(
 			slot_index,
@@ -630,7 +630,7 @@ namespace nrhi {
 
 			const auto& uav_p = uav_p_span[i];
 
-			d3d11_uav_p_vector[i] = (ID3D11UnorderedAccessView*)(uav_p.T_cast<F_directx11_shader_resource_view>()->d3d11_view_p());
+			d3d11_uav_p_vector[i] = (ID3D11UnorderedAccessView*)(uav_p.T_cast<F_directx11_unordered_access_view>()->d3d11_view_p());
 		}
 
 		d3d11_device_context_p->CSSetUnorderedAccessViews(
