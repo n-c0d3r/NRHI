@@ -74,6 +74,10 @@ namespace nrhi {
 			TKPA_valid<A_device> device_p,
 			const F_pipeline_state_desc& desc
 		);
+		static U_compute_pipeline_state_handle create_compute_pipeline_state(
+			TKPA_valid<A_device> device_p,
+			const F_pipeline_state_desc& desc
+		);
 
 	};
 

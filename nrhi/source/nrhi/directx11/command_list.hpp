@@ -137,6 +137,10 @@ namespace nrhi {
 		);
 
 	public:
+		static void bind_pipeline_state(
+			TKPA_valid<A_command_list> command_list_p,
+			TKPA_valid<A_pipeline_state> pipeline_state_p
+		);
 		static void bind_graphics_pipeline_state(
 			TKPA_valid<A_command_list> command_list_p,
 			KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p

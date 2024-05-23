@@ -30,7 +30,7 @@ namespace nrhi {
 		case E_pipeline_state_type::GRAPHICS:
 			return TU<F_directx11_graphics_pipeline_state>()(device_p, desc);
 		case E_pipeline_state_type::COMPUTE:
-			return TU<F_directx11_graphics_pipeline_state>()(device_p, desc);
+			return TU<F_directx11_compute_pipeline_state>()(device_p, desc);
 		}
 	}
 
@@ -40,6 +40,13 @@ namespace nrhi {
 	) {
 
 		return { TU<F_directx11_graphics_pipeline_state>()(device_p, desc) };
+	}
+	U_compute_pipeline_state_handle HD_directx11_pipeline_state::create_compute_pipeline_state(
+		TKPA_valid<A_device> device_p,
+		const F_pipeline_state_desc& desc
+	) {
+
+		return { TU<F_directx11_compute_pipeline_state>()(device_p, desc) };
 	}
 
 }

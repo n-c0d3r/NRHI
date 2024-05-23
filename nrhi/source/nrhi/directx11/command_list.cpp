@@ -100,6 +100,30 @@ namespace nrhi {
 		);
 	}
 
+	void HD_directx11_command_list::bind_pipeline_state(
+		TKPA_valid<A_command_list> command_list_p,
+		TKPA_valid<A_pipeline_state> pipeline_state_p
+	) {
+		switch(pipeline_state_p->desc().type) {
+
+		case E_pipeline_state_type::GRAPHICS:
+			bind_graphics_pipeline_state(
+				command_list_p,
+				{
+					pipeline_state_p
+				}
+			);
+			break;
+		case E_pipeline_state_type::COMPUTE:
+			bind_compute_pipeline_state(
+				command_list_p,
+				{
+					pipeline_state_p
+				}
+			);
+			break;
+		}
+	}
 	void HD_directx11_command_list::bind_graphics_pipeline_state(
 		TKPA_valid<A_command_list> command_list_p,
 		KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p

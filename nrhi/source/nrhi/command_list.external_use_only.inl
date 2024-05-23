@@ -66,6 +66,10 @@ namespace nrhi {
 		);
 	}
 
+	NCPP_FORCE_INLINE void A_command_list::bind_pipeline_state(TKPA_valid<A_pipeline_state> pipeline_state_p) {
+
+		H_command_list::bind_pipeline_state(NCPP_KTHIS(), pipeline_state_p);
+	}
 	NCPP_FORCE_INLINE void A_command_list::bind_graphics_pipeline_state(KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p) {
 
 		H_command_list::bind_graphics_pipeline_state(NCPP_KTHIS(), graphics_pipeline_state_p);

@@ -93,6 +93,7 @@ namespace nrhi {
 		);
 
 	public:
+		void bind_pipeline_state(TKPA_valid<A_pipeline_state> pipeline_state_p);
 		void bind_graphics_pipeline_state(KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p);
 		void bind_compute_pipeline_state(KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p);
 
