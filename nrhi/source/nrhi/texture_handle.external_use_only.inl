@@ -51,7 +51,7 @@ namespace nrhi {
 			oref->device_p(),
 			{
 				.overrided_resource_type = E_resource_type::TEXTURE_2D_ARRAY,
-				.resource_p = NCPP_KTHIS(),
+				.resource_p = NCPP_FOH_VALID(oref),
 				.base_mip_level = base_mip_level,
 				.index = index,
 				.count = count
@@ -65,7 +65,7 @@ namespace nrhi {
 			oref->device_p(),
 			{
 				.overrided_resource_type = E_resource_type::TEXTURE_2D_ARRAY,
-				.resource_p = NCPP_KTHIS(),
+				.resource_p = NCPP_FOH_VALID(oref),
 				.base_mip_level = base_mip_level,
 				.index = index,
 				.count = count
@@ -79,7 +79,7 @@ namespace nrhi {
 			oref->device_p(),
 			{
 				.overrided_resource_type = E_resource_type::TEXTURE_2D_ARRAY,
-				.resource_p = NCPP_KTHIS(),
+				.resource_p = NCPP_FOH_VALID(oref),
 				.target_mip_level = target_mip_level,
 				.index = index,
 				.count = 1
@@ -94,7 +94,7 @@ namespace nrhi {
 			oref->device_p(),
 			{
 				.overrided_resource_type = E_resource_type::TEXTURE_CUBE,
-				.resource_p = NCPP_KTHIS(),
+				.resource_p = NCPP_FOH_VALID(oref),
 				.base_mip_level = base_mip_level,
 				.index = (u32)D3D11_TEXTURECUBE_FACE(face),
 				.count = 1
@@ -108,7 +108,7 @@ namespace nrhi {
 			oref->device_p(),
 			{
 				.overrided_resource_type = E_resource_type::TEXTURE_2D_ARRAY,
-				.resource_p = NCPP_KTHIS(),
+				.resource_p = NCPP_FOH_VALID(oref),
 				.base_mip_level = base_mip_level,
 				.index = (u32)D3D11_TEXTURECUBE_FACE(face),
 				.count = 1
@@ -122,7 +122,7 @@ namespace nrhi {
 			oref->device_p(),
 			{
 				.overrided_resource_type = E_resource_type::TEXTURE_2D_ARRAY,
-				.resource_p = NCPP_KTHIS(),
+				.resource_p = NCPP_FOH_VALID(oref),
 				.base_mip_level = base_mip_level,
 				.index = (u32)D3D11_TEXTURECUBE_FACE(face),
 				.count = 1
