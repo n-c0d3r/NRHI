@@ -29,6 +29,8 @@ namespace nrhi {
 
 		case E_pipeline_state_type::GRAPHICS:
 			return TU<F_directx11_graphics_pipeline_state>()(device_p, desc);
+		case E_pipeline_state_type::COMPUTE:
+			return TU<F_directx11_graphics_pipeline_state>()(device_p, desc);
 		}
 	}
 
