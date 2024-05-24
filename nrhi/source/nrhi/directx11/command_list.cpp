@@ -45,7 +45,6 @@ namespace nrhi {
 	void HD_directx11_command_list::clear_state(
 		TKPA_valid<A_command_list> command_list_p
 	) {
-
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
 		directx11_command_list_p->temp_state_ = F_directx11_temp_command_list_state {};
@@ -59,7 +58,6 @@ namespace nrhi {
 		KPA_valid_rtv_handle rtv_p,
 		PA_vector4 color
 	) {
-
 		NCPP_ASSERT(rtv_p->is_valid_generation()) << "render target view's generation is not valid";
 
 		ID3D11DeviceContext* d3d11_device_context_p = command_list_p.T_cast<F_directx11_command_list>()->d3d11_device_context_p();
@@ -89,7 +87,6 @@ namespace nrhi {
 		f32 depth,
 		u8 stencil
 	) {
-
 		ID3D11DeviceContext* d3d11_device_context_p = command_list_p.T_cast<F_directx11_command_list>()->d3d11_device_context_p();
 
 		d3d11_device_context_p->ClearDepthStencilView(
@@ -128,7 +125,6 @@ namespace nrhi {
 		TKPA_valid<A_command_list> command_list_p,
 		KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p
 	) {
-
 		const auto desc = graphics_pipeline_state_p->desc();
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
@@ -193,7 +189,6 @@ namespace nrhi {
 		TKPA_valid<A_command_list> command_list_p,
 		KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p
 	) {
-
 		const auto desc = compute_pipeline_state_p->desc();
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
@@ -224,7 +219,6 @@ namespace nrhi {
 		KPA_valid_buffer_handle index_buffer_p,
 		u32 offset
 	) {
-
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
 		NCPP_ENABLE_IF_ASSERTION_ENABLED(
@@ -255,7 +249,6 @@ namespace nrhi {
 		const TG_span<u32>& offset_span,
 		u32 base_slot_index
 	) {
-
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
 		auto& temp_state = directx11_command_list_p->temp_state_;
@@ -296,7 +289,6 @@ namespace nrhi {
 		u32 offset,
 		u32 slot_index
 	) {
-
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
 		auto& temp_state = directx11_command_list_p->temp_state_;
@@ -328,7 +320,6 @@ namespace nrhi {
 		const TG_span<u32>& offset_span,
 		u32 base_slot_index
 	) {
-
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
 		auto& temp_state = directx11_command_list_p->temp_state_;
@@ -369,7 +360,6 @@ namespace nrhi {
 		u32 offset,
 		u32 slot_index
 	) {
-
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
 		auto& temp_state = directx11_command_list_p->temp_state_;
@@ -402,7 +392,6 @@ namespace nrhi {
 		u32 base_slot_index
 	)
 	{
-
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
@@ -439,7 +428,6 @@ namespace nrhi {
 		u32 slot_index
 	)
 	{
-
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
@@ -466,7 +454,6 @@ namespace nrhi {
 		const TG_span<K_valid_srv_handle>& srv_p_span,
 		u32 base_slot_index
 	) {
-
 		NCPP_ENABLE_IF_ASSERTION_ENABLED(
 			for(const auto& srv_p : srv_p_span)
 				NCPP_ASSERT(srv_p->is_valid_generation()) << "shader resource view's generation is not valid";
@@ -498,7 +485,6 @@ namespace nrhi {
 		KPA_valid_srv_handle srv_p,
 		u32 slot_index
 	) {
-
 		NCPP_ASSERT(srv_p->is_valid_generation()) << "shader resource view's generation is not valid";
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
@@ -520,7 +506,6 @@ namespace nrhi {
 		u32 base_slot_index
 	)
 	{
-
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
@@ -557,7 +542,6 @@ namespace nrhi {
 		u32 slot_index
 	)
 	{
-
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
@@ -584,7 +568,6 @@ namespace nrhi {
 		const TG_span<K_valid_srv_handle>& srv_p_span,
 		u32 base_slot_index
 	) {
-
 		NCPP_ENABLE_IF_ASSERTION_ENABLED(
 			for(const auto& srv_p : srv_p_span)
 				NCPP_ASSERT(srv_p->is_valid_generation()) << "shader resource view's generation is not valid";
@@ -616,7 +599,6 @@ namespace nrhi {
 		KPA_valid_srv_handle srv_p,
 		u32 slot_index
 	) {
-
 		NCPP_ASSERT(srv_p->is_valid_generation()) << "shader resource view's generation is not valid";
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
@@ -631,66 +613,11 @@ namespace nrhi {
 			&d3d11_srv_p
 		);
 	}
-	void HD_directx11_command_list::ZCS_bind_uavs(
-		TKPA_valid<A_command_list> command_list_p,
-		const TG_span<K_valid_uav_handle>& uav_p_span,
-		u32 base_slot_index
-	) {
-
-		NCPP_ENABLE_IF_ASSERTION_ENABLED(
-			for(const auto& uav_p : uav_p_span)
-				NCPP_ASSERT(uav_p->is_valid_generation()) << "unordered access view's generation is not valid";
-		);
-
-		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
-
-		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
-
-		u32 uav_count = (u32)(uav_p_span.size());
-
-		TG_vector<ID3D11UnorderedAccessView*> d3d11_uav_p_vector(uav_count);
-
-		for(u32 i = 0; i < uav_count; ++i) {
-
-			const auto& uav_p = uav_p_span[i];
-
-			d3d11_uav_p_vector[i] = (ID3D11UnorderedAccessView*)(uav_p.T_cast<F_directx11_unordered_access_view>()->d3d11_view_p());
-		}
-
-		d3d11_device_context_p->CSSetUnorderedAccessViews(
-			base_slot_index,
-			uav_count,
-			d3d11_uav_p_vector.data(),
-			0
-		);
-	}
-	void HD_directx11_command_list::ZCS_bind_uav(
-		TKPA_valid<A_command_list> command_list_p,
-		KPA_valid_uav_handle uav_p,
-		u32 slot_index
-	) {
-
-		NCPP_ASSERT(uav_p->is_valid_generation()) << "unordered access view's generation is not valid";
-
-		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
-
-		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
-
-		ID3D11UnorderedAccessView* d3d11_uav_p =(ID3D11UnorderedAccessView*)(uav_p.T_cast<F_directx11_unordered_access_view>()->d3d11_view_p());
-
-		d3d11_device_context_p->CSSetUnorderedAccessViews(
-			slot_index,
-			1,
-			&d3d11_uav_p,
-			0
-		);
-	}
 
 	void HD_directx11_command_list::ZOM_bind_frame_buffer(
 		TKPA_valid<A_command_list> command_list_p,
 		TKPA_valid<A_frame_buffer> frame_buffer_p
 	) {
-
 		NCPP_ASSERT(frame_buffer_p->is_valid_generation()) << "frame buffer's generation is not valid";
 
 		const auto& frame_buffer_desc = frame_buffer_p->desc();
@@ -735,6 +662,170 @@ namespace nrhi {
 			color_attachment_count,
 			d3d11_rtv_array,
 			d3d11_depth_stencil_view_p
+		);
+	}
+
+	void HD_directx11_command_list::ZCS_bind_constant_buffers(
+		TKPA_valid<A_command_list> command_list_p,
+		const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
+		u32 base_slot_index
+	) {
+		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
+
+		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
+
+		u32 constant_buffer_count = (u32)(constant_buffer_p_span.size());
+
+		ID3D11Buffer* d3d11_constant_buffer_p_array[NRHI_MAX_CONSTANT_BUFFER_COUNT_PER_DRAWCALL];
+
+		for(u32 i = 0; i < constant_buffer_count; ++i) {
+
+			const auto& constant_buffer_p = constant_buffer_p_span[i];
+
+			NCPP_ASSERT(
+				u32(
+					flag_combine(
+						constant_buffer_p->desc().bind_flags,
+						E_resource_bind_flag::CBV
+					)
+				)
+			) << "invalid resource bind flag";
+
+			d3d11_constant_buffer_p_array[i] = (ID3D11Buffer*)(constant_buffer_p.T_cast<F_directx11_buffer>()->d3d11_resource_p());
+		}
+
+		d3d11_device_context_p->CSSetConstantBuffers(
+			base_slot_index,
+			constant_buffer_count,
+			d3d11_constant_buffer_p_array
+		);
+	}
+	void HD_directx11_command_list::ZCS_bind_constant_buffer(
+		TKPA_valid<A_command_list> command_list_p,
+		KPA_valid_buffer_handle constant_buffer_p,
+		u32 slot_index
+	) {
+		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
+
+		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
+
+		NCPP_ASSERT(
+			u32(
+				flag_combine(
+					constant_buffer_p->desc().bind_flags,
+					E_resource_bind_flag::CBV
+				)
+			)
+		) << "invalid resource bind flag";
+
+		ID3D11Buffer* d3d11_constant_buffer_p =(ID3D11Buffer*)(constant_buffer_p.T_cast<F_directx11_buffer>()->d3d11_resource_p());
+
+		d3d11_device_context_p->CSSetConstantBuffers(
+			slot_index,
+			1,
+			&d3d11_constant_buffer_p
+		);
+	}
+	void HD_directx11_command_list::ZCS_bind_srvs(
+		TKPA_valid<A_command_list> command_list_p,
+		const TG_span<K_valid_srv_handle>& srv_p_span,
+		u32 base_slot_index
+	) {
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
+			for(const auto& srv_p : srv_p_span)
+				NCPP_ASSERT(srv_p->is_valid_generation()) << "shader resource view's generation is not valid";
+		);
+
+		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
+
+		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
+
+		u32 srv_count = (u32)(srv_p_span.size());
+
+		TG_vector<ID3D11ShaderResourceView*> d3d11_srv_p_vector(srv_count);
+
+		for(u32 i = 0; i < srv_count; ++i) {
+
+			const auto& srv_p = srv_p_span[i];
+
+			d3d11_srv_p_vector[i] = (ID3D11ShaderResourceView*)(srv_p.T_cast<F_directx11_shader_resource_view>()->d3d11_view_p());
+		}
+
+		d3d11_device_context_p->CSSetShaderResources(
+			base_slot_index,
+			srv_count,
+			d3d11_srv_p_vector.data()
+		);
+	}
+	void HD_directx11_command_list::ZCS_bind_srv(
+		TKPA_valid<A_command_list> command_list_p,
+		KPA_valid_srv_handle srv_p,
+		u32 slot_index
+	) {
+		NCPP_ASSERT(srv_p->is_valid_generation()) << "shader resource view's generation is not valid";
+
+		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
+
+		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
+
+		ID3D11ShaderResourceView* d3d11_srv_p =(ID3D11ShaderResourceView*)(srv_p.T_cast<F_directx11_shader_resource_view>()->d3d11_view_p());
+
+		d3d11_device_context_p->CSSetShaderResources(
+			slot_index,
+			1,
+			&d3d11_srv_p
+		);
+	}
+	void HD_directx11_command_list::ZCS_bind_uavs(
+		TKPA_valid<A_command_list> command_list_p,
+		const TG_span<K_valid_uav_handle>& uav_p_span,
+		u32 base_slot_index
+	) {
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
+			for(const auto& uav_p : uav_p_span)
+				NCPP_ASSERT(uav_p->is_valid_generation()) << "unordered access view's generation is not valid";
+		);
+
+		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
+
+		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
+
+		u32 uav_count = (u32)(uav_p_span.size());
+
+		TG_vector<ID3D11UnorderedAccessView*> d3d11_uav_p_vector(uav_count);
+
+		for(u32 i = 0; i < uav_count; ++i) {
+
+			const auto& uav_p = uav_p_span[i];
+
+			d3d11_uav_p_vector[i] = (ID3D11UnorderedAccessView*)(uav_p.T_cast<F_directx11_unordered_access_view>()->d3d11_view_p());
+		}
+
+		d3d11_device_context_p->CSSetUnorderedAccessViews(
+			base_slot_index,
+			uav_count,
+			d3d11_uav_p_vector.data(),
+			0
+		);
+	}
+	void HD_directx11_command_list::ZCS_bind_uav(
+		TKPA_valid<A_command_list> command_list_p,
+		KPA_valid_uav_handle uav_p,
+		u32 slot_index
+	) {
+		NCPP_ASSERT(uav_p->is_valid_generation()) << "unordered access view's generation is not valid";
+
+		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
+
+		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
+
+		ID3D11UnorderedAccessView* d3d11_uav_p =(ID3D11UnorderedAccessView*)(uav_p.T_cast<F_directx11_unordered_access_view>()->d3d11_view_p());
+
+		d3d11_device_context_p->CSSetUnorderedAccessViews(
+			slot_index,
+			1,
+			&d3d11_uav_p,
+			0
 		);
 	}
 
