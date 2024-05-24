@@ -90,7 +90,7 @@ namespace nrhi {
 				);
 				NCPP_ASSERT(!FAILED(hr))
 					<< "can't compile "
-					<< ncpp::T_cout_field_name("pixel")
+					<< ncpp::T_cout_field_name("compute")
 					<< " shader blob "
 					<< ncpp::T_cout_value(kernel_desc.name)
 					<< std::endl
@@ -192,7 +192,7 @@ namespace nrhi {
 				);
 				NCPP_ASSERT(!FAILED(hr))
 				<< "can't compile "
-				<< ncpp::T_cout_field_name("pixel")
+				<< ncpp::T_cout_field_name("compute")
 				<< " shader blob "
 				<< ncpp::T_cout_value(kernel_desc.name)
 				<< std::endl
