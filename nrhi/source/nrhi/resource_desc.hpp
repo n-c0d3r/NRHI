@@ -83,7 +83,7 @@ namespace nrhi {
 
         E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE;
 
-		b8 is_mip_map_generatable = true;
+		b8 is_mip_map_generatable = false;
 
         E_resource_type type = E_resource_type::NONE;
 
@@ -156,7 +156,7 @@ namespace nrhi {
             u32 mip_level_count = 1,
             E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
             E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE,
-			b8 is_mip_map_generatable = true
+			b8 is_mip_map_generatable = false
         );
 
     public:
@@ -168,7 +168,7 @@ namespace nrhi {
 			F_sample_desc sample_desc = F_sample_desc{},
             E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
             E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE,
-			b8 is_mip_map_generatable = true
+			b8 is_mip_map_generatable = false
         );
 
     public:
@@ -180,7 +180,7 @@ namespace nrhi {
             u32 mip_level_count = 1,
             E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
             E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE,
-			b8 is_mip_map_generatable = true
+			b8 is_mip_map_generatable = false
         );
 
 	public:
@@ -193,7 +193,7 @@ namespace nrhi {
 			F_sample_desc sample_desc = F_sample_desc{},
 			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
 			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE,
-			b8 is_mip_map_generatable = true
+			b8 is_mip_map_generatable = false
 		);
 
 	public:
@@ -204,7 +204,7 @@ namespace nrhi {
 			F_sample_desc sample_desc = F_sample_desc{},
 			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
 			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE,
-			b8 is_mip_map_generatable = true
+			b8 is_mip_map_generatable = false
 		);
 
 	public:
