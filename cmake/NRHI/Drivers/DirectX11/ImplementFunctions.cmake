@@ -16,6 +16,7 @@ include(NRHI/Drivers/DirectX11/ImplementShader)
 include(NRHI/Drivers/DirectX11/ImplementShaderBlob)
 include(NRHI/Drivers/DirectX11/ImplementPipelineState)
 include(NRHI/Drivers/DirectX11/ImplementFrameBuffer)
+include(NRHI/Drivers/DirectX11/ImplementSamplerState)
 include(NRHI/Drivers/DXGI/AdapterHelper)
 
 

@@ -187,6 +187,28 @@ namespace nrhi {
 			slot_index
 		);
 	}
+	NCPP_FORCE_INLINE void A_command_list::ZVS_bind_sampler_states(
+		const TG_span<TK_valid<A_sampler_state>>& sampler_state_p_span,
+		u32 base_slot_index
+	) {
+
+		H_command_list::ZVS_bind_sampler_states(
+			NCPP_KTHIS(),
+			sampler_state_p_span,
+			base_slot_index
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::ZVS_bind_sampler_state(
+		TKPA_valid<A_sampler_state> sampler_state_p,
+		u32 slot_index
+	) {
+
+		H_command_list::ZVS_bind_sampler_state(
+			NCPP_KTHIS(),
+			sampler_state_p,
+			slot_index
+		);
+	}
 
 	NCPP_FORCE_INLINE void A_command_list::ZPS_bind_constant_buffers(
 		const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
@@ -229,6 +251,28 @@ namespace nrhi {
 		H_command_list::ZPS_bind_srv(
 			NCPP_KTHIS(),
 			srv_p,
+			slot_index
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::ZPS_bind_sampler_states(
+		const TG_span<TK_valid<A_sampler_state>>& sampler_state_p_span,
+		u32 base_slot_index
+	) {
+
+		H_command_list::ZPS_bind_sampler_states(
+			NCPP_KTHIS(),
+			sampler_state_p_span,
+			base_slot_index
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::ZPS_bind_sampler_state(
+		TKPA_valid<A_sampler_state> sampler_state_p,
+		u32 slot_index
+	) {
+
+		H_command_list::ZPS_bind_sampler_state(
+			NCPP_KTHIS(),
+			sampler_state_p,
 			slot_index
 		);
 	}
@@ -301,6 +345,28 @@ namespace nrhi {
 		H_command_list::ZCS_bind_uav(
 			NCPP_KTHIS(),
 			uav_p,
+			slot_index
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::ZCS_bind_sampler_states(
+		const TG_span<TK_valid<A_sampler_state>>& sampler_state_p_span,
+		u32 base_slot_index
+	) {
+
+		H_command_list::ZCS_bind_sampler_states(
+			NCPP_KTHIS(),
+			sampler_state_p_span,
+			base_slot_index
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::ZCS_bind_sampler_state(
+		TKPA_valid<A_sampler_state> sampler_state_p,
+		u32 slot_index
+	) {
+
+		H_command_list::ZCS_bind_sampler_state(
+			NCPP_KTHIS(),
+			sampler_state_p,
 			slot_index
 		);
 	}

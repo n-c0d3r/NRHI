@@ -86,6 +86,8 @@ namespace nrhi {
             NRHI_ENUM_TRY_UPDATE_MAP(E_primitive_topology);
             NRHI_ENUM_TRY_UPDATE_MAP(E_clear_flag);
             NRHI_ENUM_TRY_UPDATE_MAP(E_texture_cube_face);
+            NRHI_ENUM_TRY_UPDATE_MAP(E_filter);
+            NRHI_ENUM_TRY_UPDATE_MAP(E_texcoord_address_mode);
 
         }
         void try_update_map_functions(bool clear){
@@ -105,6 +107,7 @@ namespace nrhi {
             NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(clear, H_shader);
             NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(clear, H_shader_blob);
             NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(clear, H_pipeline_state);
+            NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(clear, H_sampler_state);
 
         }
         void try_update_map(bool clear){

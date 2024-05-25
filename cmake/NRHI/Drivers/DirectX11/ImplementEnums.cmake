@@ -19,6 +19,8 @@ include(NRHI/Drivers/DirectX11/ImplementDepthComparisonFunc)
 include(NRHI/Drivers/DirectX11/ImplementPrimitiveTopology)
 include(NRHI/Drivers/DirectX11/ImplementClearFlag)
 include(NRHI/Drivers/DirectX11/ImplementTextureCubeFace)
+include(NRHI/Drivers/DirectX11/ImplementFilter)
+include(NRHI/Drivers/DirectX11/ImplementTexCoordAddressMode)
 
 
 

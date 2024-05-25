@@ -51,6 +51,7 @@ namespace nrhi {
     class A_device;
     class A_pipeline_state;
     class A_frame_buffer;
+    class A_sampler_state;
 
     class F_directx11_graphics_pipeline_state;
 
@@ -202,6 +203,16 @@ namespace nrhi {
 			KPA_valid_srv_handle srv_p,
 			u32 slot_index
 		);
+		static void ZVS_bind_sampler_states(
+			TKPA_valid<A_command_list> command_list_p,
+			const TG_span<TK_valid<A_sampler_state>>& sampler_state_p_span,
+			u32 base_slot_index
+		);
+		static void ZVS_bind_sampler_state(
+			TKPA_valid<A_command_list> command_list_p,
+			TKPA_valid<A_sampler_state> sampler_state_p,
+			u32 slot_index
+		);
 
 	public:
 		static void ZPS_bind_constant_buffers(
@@ -222,6 +233,16 @@ namespace nrhi {
 		static void ZPS_bind_srv(
 			TKPA_valid<A_command_list> command_list_p,
 			KPA_valid_srv_handle srv_p,
+			u32 slot_index
+		);
+		static void ZPS_bind_sampler_states(
+			TKPA_valid<A_command_list> command_list_p,
+			const TG_span<TK_valid<A_sampler_state>>& sampler_state_p_span,
+			u32 base_slot_index
+		);
+		static void ZPS_bind_sampler_state(
+			TKPA_valid<A_command_list> command_list_p,
+			TKPA_valid<A_sampler_state> sampler_state_p,
 			u32 slot_index
 		);
 
@@ -260,6 +281,16 @@ namespace nrhi {
 		static void ZCS_bind_uav(
 			TKPA_valid<A_command_list> command_list_p,
 			KPA_valid_uav_handle uav_p,
+			u32 slot_index
+		);
+		static void ZCS_bind_sampler_states(
+			TKPA_valid<A_command_list> command_list_p,
+			const TG_span<TK_valid<A_sampler_state>>& sampler_state_p_span,
+			u32 base_slot_index
+		);
+		static void ZCS_bind_sampler_state(
+			TKPA_valid<A_command_list> command_list_p,
+			TKPA_valid<A_sampler_state> sampler_state_p,
 			u32 slot_index
 		);
 

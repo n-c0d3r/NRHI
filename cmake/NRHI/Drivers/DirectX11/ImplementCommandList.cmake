@@ -97,6 +97,16 @@ NRHI_FunctionHelper_CreateFunctionClass(
             KPA_valid_srv_handle srv_p,
             u32 slot_index
         )"
+        "ZVS_bind_sampler_states" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            const TG_span<TK_valid<A_sampler_state>>& sampler_state_p_span,
+            u32 base_slot_index
+        )"
+        "ZVS_bind_sampler_state" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            TKPA_valid<A_sampler_state> sampler_state_p,
+            u32 slot_index
+        )"
         "ZPS_bind_constant_buffers" "void(
             TKPA_valid<A_command_list> command_list_p,
             const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
@@ -115,6 +125,16 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "ZPS_bind_srv" "void(
             TKPA_valid<A_command_list> command_list_p,
             KPA_valid_srv_handle srv_p,
+            u32 slot_index
+        )"
+        "ZPS_bind_sampler_states" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            const TG_span<TK_valid<A_sampler_state>>& sampler_state_p_span,
+            u32 base_slot_index
+        )"
+        "ZPS_bind_sampler_state" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            TKPA_valid<A_sampler_state> sampler_state_p,
             u32 slot_index
         )"
         "ZOM_bind_frame_buffer" "void(
@@ -149,6 +169,16 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "ZCS_bind_uav" "void(
             TKPA_valid<A_command_list> command_list_p,
             KPA_valid_uav_handle uav_p,
+            u32 slot_index
+        )"
+        "ZCS_bind_sampler_states" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            const TG_span<TK_valid<A_sampler_state>>& sampler_state_p_span,
+            u32 base_slot_index
+        )"
+        "ZCS_bind_sampler_state" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            TKPA_valid<A_sampler_state> sampler_state_p,
             u32 slot_index
         )"
         "draw" "void(

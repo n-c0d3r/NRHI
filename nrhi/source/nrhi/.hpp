@@ -98,6 +98,7 @@ namespace nrhi { }
 #include <nrhi/compute_pipeline_state.hpp>
 #include <nrhi/graphics_pipeline_state.hpp>
 #include <nrhi/frame_buffer.hpp>
+#include <nrhi/sampler_state.hpp>
 
 #ifdef NRHI_DRIVER_DIRECTX_11
 #include <nrhi/directx11/buffer.hpp>

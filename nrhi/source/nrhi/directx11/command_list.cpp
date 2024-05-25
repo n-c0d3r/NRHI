@@ -10,6 +10,7 @@
 #include <nrhi/directx11/shader_resource_view.hpp>
 #include <nrhi/directx11/resource.hpp>
 #include <nrhi/directx11/buffer.hpp>
+#include <nrhi/directx11/sampler_state.hpp>
 
 
 
@@ -499,6 +500,49 @@ namespace nrhi {
 			&d3d11_srv_p
 		);
 	}
+	void HD_directx11_command_list::ZVS_bind_sampler_states(
+		TKPA_valid<A_command_list> command_list_p,
+		const TG_span<TK_valid<A_sampler_state>>& sampler_state_p_span,
+		u32 base_slot_index
+	) {
+		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
+
+		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
+
+		u32 sampler_state_count = (u32)(sampler_state_p_span.size());
+
+		TG_vector<ID3D11SamplerState*> d3d11_sampler_state_p_vector(sampler_state_count);
+
+		for(u32 i = 0; i < sampler_state_count; ++i) {
+
+			const auto& sampler_state_p = sampler_state_p_span[i];
+
+			d3d11_sampler_state_p_vector[i] = (ID3D11SamplerState*)(sampler_state_p.T_cast<F_directx11_sampler_state>()->d3d11_sampler_state_p());
+		}
+
+		d3d11_device_context_p->VSSetSamplers(
+			base_slot_index,
+			sampler_state_count,
+			d3d11_sampler_state_p_vector.data()
+		);
+	}
+	void HD_directx11_command_list::ZVS_bind_sampler_state(
+		TKPA_valid<A_command_list> command_list_p,
+		TKPA_valid<A_sampler_state> sampler_state_p,
+		u32 slot_index
+	) {
+		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
+
+		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
+
+		ID3D11SamplerState* d3d11_sampler_state_p =(ID3D11SamplerState*)(sampler_state_p.T_cast<F_directx11_sampler_state>()->d3d11_sampler_state_p());
+
+		d3d11_device_context_p->VSSetSamplers(
+			slot_index,
+			1,
+			&d3d11_sampler_state_p
+		);
+	}
 
 	void HD_directx11_command_list::ZPS_bind_constant_buffers(
 		TKPA_valid<A_command_list> command_list_p,
@@ -611,6 +655,49 @@ namespace nrhi {
 			slot_index,
 			1,
 			&d3d11_srv_p
+		);
+	}
+	void HD_directx11_command_list::ZPS_bind_sampler_states(
+		TKPA_valid<A_command_list> command_list_p,
+		const TG_span<TK_valid<A_sampler_state>>& sampler_state_p_span,
+		u32 base_slot_index
+	) {
+		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
+
+		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
+
+		u32 sampler_state_count = (u32)(sampler_state_p_span.size());
+
+		TG_vector<ID3D11SamplerState*> d3d11_sampler_state_p_vector(sampler_state_count);
+
+		for(u32 i = 0; i < sampler_state_count; ++i) {
+
+			const auto& sampler_state_p = sampler_state_p_span[i];
+
+			d3d11_sampler_state_p_vector[i] = (ID3D11SamplerState*)(sampler_state_p.T_cast<F_directx11_sampler_state>()->d3d11_sampler_state_p());
+		}
+
+		d3d11_device_context_p->PSSetSamplers(
+			base_slot_index,
+			sampler_state_count,
+			d3d11_sampler_state_p_vector.data()
+		);
+	}
+	void HD_directx11_command_list::ZPS_bind_sampler_state(
+		TKPA_valid<A_command_list> command_list_p,
+		TKPA_valid<A_sampler_state> sampler_state_p,
+		u32 slot_index
+	) {
+		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
+
+		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
+
+		ID3D11SamplerState* d3d11_sampler_state_p =(ID3D11SamplerState*)(sampler_state_p.T_cast<F_directx11_sampler_state>()->d3d11_sampler_state_p());
+
+		d3d11_device_context_p->PSSetSamplers(
+			slot_index,
+			1,
+			&d3d11_sampler_state_p
 		);
 	}
 
@@ -826,6 +913,49 @@ namespace nrhi {
 			1,
 			&d3d11_uav_p,
 			0
+		);
+	}
+	void HD_directx11_command_list::ZCS_bind_sampler_states(
+		TKPA_valid<A_command_list> command_list_p,
+		const TG_span<TK_valid<A_sampler_state>>& sampler_state_p_span,
+		u32 base_slot_index
+	) {
+		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
+
+		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
+
+		u32 sampler_state_count = (u32)(sampler_state_p_span.size());
+
+		TG_vector<ID3D11SamplerState*> d3d11_sampler_state_p_vector(sampler_state_count);
+
+		for(u32 i = 0; i < sampler_state_count; ++i) {
+
+			const auto& sampler_state_p = sampler_state_p_span[i];
+
+			d3d11_sampler_state_p_vector[i] = (ID3D11SamplerState*)(sampler_state_p.T_cast<F_directx11_sampler_state>()->d3d11_sampler_state_p());
+		}
+
+		d3d11_device_context_p->CSSetSamplers(
+			base_slot_index,
+			sampler_state_count,
+			d3d11_sampler_state_p_vector.data()
+		);
+	}
+	void HD_directx11_command_list::ZCS_bind_sampler_state(
+		TKPA_valid<A_command_list> command_list_p,
+		TKPA_valid<A_sampler_state> sampler_state_p,
+		u32 slot_index
+	) {
+		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
+
+		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
+
+		ID3D11SamplerState* d3d11_sampler_state_p =(ID3D11SamplerState*)(sampler_state_p.T_cast<F_directx11_sampler_state>()->d3d11_sampler_state_p());
+
+		d3d11_device_context_p->CSSetSamplers(
+			slot_index,
+			1,
+			&d3d11_sampler_state_p
 		);
 	}
 

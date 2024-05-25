@@ -48,6 +48,7 @@ namespace nrhi {
 
     class A_device;
     class A_frame_buffer;
+    class A_sampler_state;
 
 
 
@@ -140,6 +141,14 @@ namespace nrhi {
 			KPA_valid_srv_handle srv_p,
 			u32 slot_index
 		);
+		void ZVS_bind_sampler_states(
+			const TG_span<TK_valid<A_sampler_state>>& sampler_state_p_span,
+			u32 base_slot_index
+		);
+		void ZVS_bind_sampler_state(
+			TKPA_valid<A_sampler_state> sampler_state_p,
+			u32 slot_index
+		);
 
 	public:
 		void ZPS_bind_constant_buffers(
@@ -156,6 +165,14 @@ namespace nrhi {
 		);
 		void ZPS_bind_srv(
 			KPA_valid_srv_handle srv_p,
+			u32 slot_index
+		);
+		void ZPS_bind_sampler_states(
+			const TG_span<TK_valid<A_sampler_state>>& sampler_state_p_span,
+			u32 base_slot_index
+		);
+		void ZPS_bind_sampler_state(
+			TKPA_valid<A_sampler_state> sampler_state_p,
 			u32 slot_index
 		);
 
@@ -185,6 +202,14 @@ namespace nrhi {
 		);
 		void ZCS_bind_uav(
 			KPA_valid_uav_handle uav_p,
+			u32 slot_index
+		);
+		void ZCS_bind_sampler_states(
+			const TG_span<TK_valid<A_sampler_state>>& sampler_state_p_span,
+			u32 base_slot_index
+		);
+		void ZCS_bind_sampler_state(
+			TKPA_valid<A_sampler_state> sampler_state_p,
 			u32 slot_index
 		);
 
