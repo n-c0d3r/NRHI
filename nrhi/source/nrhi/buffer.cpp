@@ -7,7 +7,7 @@ namespace nrhi {
 
     U_buffer_handle H_buffer::create(
         TKPA_valid<A_device> device_p,
-        F_initial_resource_data initial_data,
+        const F_initial_resource_data& initial_data,
         u32 count,
         u32 stride,
         E_resource_bind_flag bind_flags,
@@ -28,7 +28,7 @@ namespace nrhi {
 
     U_buffer_handle H_buffer::create(
         TKPA_valid<A_device> device_p,
-        F_initial_resource_data initial_data,
+        const F_initial_resource_data& initial_data,
         u32 count,
         E_format format,
         E_resource_bind_flag bind_flags,
@@ -49,7 +49,7 @@ namespace nrhi {
 
     U_structured_buffer_handle H_buffer::create_structured(
         TKPA_valid<A_device> device_p,
-        F_initial_resource_data initial_data,
+        const F_initial_resource_data& initial_data,
         u32 count,
         u32 stride,
         E_resource_bind_flag bind_flags,
@@ -70,7 +70,7 @@ namespace nrhi {
 
 	U_indirect_buffer_handle H_buffer::create_indirect(
 		TKPA_valid<A_device> device_p,
-		F_initial_resource_data initial_data,
+		const F_initial_resource_data& initial_data,
 		u32 count,
 		E_resource_bind_flag bind_flags,
 		E_resource_heap_type heap_type
@@ -91,7 +91,7 @@ namespace nrhi {
 
 	void H_buffer::rebuild(
 		KPA_valid_buffer_handle buffer_p,
-		F_initial_resource_data initial_data,
+		const F_initial_resource_data& initial_data,
 		u32 count,
 		u32 stride,
 		E_resource_bind_flag bind_flags,
@@ -111,7 +111,7 @@ namespace nrhi {
 
 	void H_buffer::rebuild(
 		KPA_valid_buffer_handle buffer_p,
-		F_initial_resource_data initial_data,
+		const F_initial_resource_data& initial_data,
 		u32 count,
 		E_format format,
 		E_resource_bind_flag bind_flags,
@@ -131,7 +131,7 @@ namespace nrhi {
 
 	void H_buffer::rebuild_structured(
 		KPA_valid_structured_buffer_handle structured_buffer_p,
-		F_initial_resource_data initial_data,
+		const F_initial_resource_data& initial_data,
 		u32 count,
 		u32 stride,
 		E_resource_bind_flag bind_flags,
@@ -151,7 +151,7 @@ namespace nrhi {
 
 	void H_buffer::rebuild_indirect(
 		KPA_valid_indirect_buffer_handle indirect_buffer_p,
-		F_initial_resource_data initial_data,
+		const F_initial_resource_data& initial_data,
 		u32 count,
 		E_resource_bind_flag bind_flags,
 		E_resource_heap_type heap_type

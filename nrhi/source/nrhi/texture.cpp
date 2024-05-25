@@ -7,7 +7,7 @@ namespace nrhi {
 
     U_texture_1d_handle H_texture::create_1d(
         TKPA_valid<A_device> device_p,
-        F_initial_resource_data initial_data,
+        const F_initial_resource_data& initial_data,
         u32 width,
         E_format format,
         u32 mip_level_count,
@@ -30,7 +30,7 @@ namespace nrhi {
 
     U_texture_2d_handle H_texture::create_2d(
         TKPA_valid<A_device> device_p,
-        F_initial_resource_data initial_data,
+        const F_initial_resource_data& initial_data,
         u32 width,
         u32 height,
         E_format format,
@@ -57,7 +57,7 @@ namespace nrhi {
 
     U_texture_3d_handle H_texture::create_3d(
         TKPA_valid<A_device> device_p,
-        F_initial_resource_data initial_data,
+        const F_initial_resource_data& initial_data,
         u32 width,
         u32 height,
         u32 depth,
@@ -84,7 +84,7 @@ namespace nrhi {
 
 	U_texture_2d_array_handle H_texture::create_2d_array(
 		TKPA_valid<A_device> device_p,
-		F_initial_resource_data initial_data,
+		const F_initial_resource_data& initial_data,
 		u32 width,
 		u32 height,
 		u32 count,
@@ -113,7 +113,7 @@ namespace nrhi {
 
 	U_texture_cube_handle H_texture::create_cube(
 		TKPA_valid<A_device> device_p,
-		F_initial_resource_data initial_data,
+		const F_initial_resource_data& initial_data,
 		u32 width,
 		E_format format,
 		u32 mip_level_count,
@@ -140,7 +140,7 @@ namespace nrhi {
 
 	void H_texture::rebuild_1d(
 		KPA_valid_texture_1d_handle texture_1d_p,
-		F_initial_resource_data initial_data,
+		const F_initial_resource_data& initial_data,
 		u32 width,
 		E_format format,
 		u32 mip_level_count,
@@ -162,7 +162,7 @@ namespace nrhi {
 
 	void H_texture::rebuild_2d(
 		KPA_valid_texture_2d_handle texture_2d_p,
-		F_initial_resource_data initial_data,
+		const F_initial_resource_data& initial_data,
 		u32 width,
 		u32 height,
 		E_format format,
@@ -188,7 +188,7 @@ namespace nrhi {
 
 	void H_texture::rebuild_3d(
 		KPA_valid_texture_3d_handle texture_3d_p,
-		F_initial_resource_data initial_data,
+		const F_initial_resource_data& initial_data,
 		u32 width,
 		u32 height,
 		u32 depth,
@@ -214,7 +214,7 @@ namespace nrhi {
 
 	void H_texture::rebuild_2d_array(
 		KPA_valid_texture_2d_array_handle texture_2d_array_p,
-		F_initial_resource_data initial_data,
+		const F_initial_resource_data& initial_data,
 		u32 width,
 		u32 height,
 		u32 count,
@@ -242,7 +242,7 @@ namespace nrhi {
 
 	void H_texture::rebuild_cube(
 		KPA_valid_texture_cube_handle texture_cube_p,
-		F_initial_resource_data initial_data,
+		const F_initial_resource_data& initial_data,
 		u32 width,
 		E_format format,
 		u32 mip_level_count,

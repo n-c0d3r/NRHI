@@ -71,9 +71,9 @@ namespace nrhi {
 
         D3D11_SUBRESOURCE_DATA d3d11_subresource_data;
         D3D11_SUBRESOURCE_DATA* d3d11_subresource_data_p = 0;
-        if(initial_data_.is_valid()) {
+        if(initial_data_.size()) {
 
-            d3d11_subresource_data.pSysMem = initial_data_.data_p;
+            d3d11_subresource_data.pSysMem = initial_data_[0].data_p;
             d3d11_subresource_data.SysMemPitch = 0;
             d3d11_subresource_data.SysMemSlicePitch = 0;
             d3d11_subresource_data_p = &d3d11_subresource_data;
@@ -174,9 +174,9 @@ namespace nrhi {
 
         D3D11_SUBRESOURCE_DATA d3d11_subresource_data;
         D3D11_SUBRESOURCE_DATA* d3d11_subresource_data_p = 0;
-        if(initial_data_.is_valid()) {
+        if(initial_data_.size()) {
 
-            d3d11_subresource_data.pSysMem = initial_data_.data_p;
+            d3d11_subresource_data.pSysMem = initial_data_[0].data_p;
             d3d11_subresource_data.SysMemPitch = 0;
             d3d11_subresource_data.SysMemSlicePitch = 0;
             d3d11_subresource_data_p = &d3d11_subresource_data;
@@ -277,9 +277,9 @@ namespace nrhi {
 
 		D3D11_SUBRESOURCE_DATA d3d11_subresource_data;
 		D3D11_SUBRESOURCE_DATA* d3d11_subresource_data_p = 0;
-		if(initial_data_.is_valid()) {
+		if(initial_data_.size()) {
 
-			d3d11_subresource_data.pSysMem = initial_data_.data_p;
+			d3d11_subresource_data.pSysMem = initial_data_[0].data_p;
 			d3d11_subresource_data.SysMemPitch = 0;
 			d3d11_subresource_data.SysMemSlicePitch = 0;
 			d3d11_subresource_data_p = &d3d11_subresource_data;

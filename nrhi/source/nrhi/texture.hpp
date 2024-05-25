@@ -52,7 +52,7 @@ namespace nrhi {
     public:
         static U_texture_1d_handle create_1d(
             TKPA_valid<A_device> device_p,
-            F_initial_resource_data initial_data,
+            const F_initial_resource_data& initial_data,
             u32 width,
             E_format format = E_format::R8G8B8A8_UNORM,
             u32 mip_level_count = 1,
@@ -63,7 +63,7 @@ namespace nrhi {
     public:
         static U_texture_2d_handle create_2d(
             TKPA_valid<A_device> device_p,
-            F_initial_resource_data initial_data,
+            const F_initial_resource_data& initial_data,
             u32 width,
             u32 height,
             E_format format = E_format::R8G8B8A8_UNORM,
@@ -76,7 +76,7 @@ namespace nrhi {
     public:
         static U_texture_3d_handle create_3d(
             TKPA_valid<A_device> device_p,
-            F_initial_resource_data initial_data,
+            const F_initial_resource_data& initial_data,
             u32 width,
             u32 height,
             u32 depth,
@@ -89,7 +89,7 @@ namespace nrhi {
 	public:
 		static U_texture_2d_array_handle create_2d_array(
 			TKPA_valid<A_device> device_p,
-			F_initial_resource_data initial_data,
+			const F_initial_resource_data& initial_data,
 			u32 width,
 			u32 height,
 			u32 count,
@@ -103,7 +103,7 @@ namespace nrhi {
 	public:
 		static U_texture_cube_handle create_cube(
 			TKPA_valid<A_device> device_p,
-			F_initial_resource_data initial_data,
+			const F_initial_resource_data& initial_data,
 			u32 width,
 			E_format format = E_format::R8G8B8A8_UNORM,
 			u32 mip_level_count = 1,
@@ -117,7 +117,7 @@ namespace nrhi {
 	public:
 		static void rebuild_1d(
 			KPA_valid_texture_1d_handle texture_1d_p,
-			F_initial_resource_data initial_data,
+			const F_initial_resource_data& initial_data,
 			u32 width,
 			E_format format = E_format::R8G8B8A8_UNORM,
 			u32 mip_level_count = 1,
@@ -128,7 +128,7 @@ namespace nrhi {
 	public:
 		static void rebuild_2d(
 			KPA_valid_texture_2d_handle texture_2d_p,
-			F_initial_resource_data initial_data,
+			const F_initial_resource_data& initial_data,
 			u32 width,
 			u32 height,
 			E_format format = E_format::R8G8B8A8_UNORM,
@@ -141,7 +141,7 @@ namespace nrhi {
 	public:
 		static void rebuild_3d(
 			KPA_valid_texture_3d_handle texture_3d_p,
-			F_initial_resource_data initial_data,
+			const F_initial_resource_data& initial_data,
 			u32 width,
 			u32 height,
 			u32 depth,
@@ -154,7 +154,7 @@ namespace nrhi {
 	public:
 		static void rebuild_2d_array(
 			KPA_valid_texture_2d_array_handle texture_2d_array_p,
-			F_initial_resource_data initial_data,
+			const F_initial_resource_data& initial_data,
 			u32 width,
 			u32 height,
 			u32 count,
@@ -168,7 +168,7 @@ namespace nrhi {
 	public:
 		static void rebuild_cube(
 			KPA_valid_texture_cube_handle texture_cube_p,
-			F_initial_resource_data initial_data,
+			const F_initial_resource_data& initial_data,
 			u32 width,
 			E_format format = E_format::R8G8B8A8_UNORM,
 			u32 mip_level_count = 1,
