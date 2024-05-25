@@ -423,4 +423,13 @@ namespace nrhi {
 		);
 	}
 
+	NCPP_FORCE_INLINE void A_command_list::generate_mips(
+		KPA_valid_srv_handle srv_p
+	) {
+		H_command_list::generate_mips(
+			NCPP_KTHIS(),
+			srv_p
+		);
+	}
+
 }

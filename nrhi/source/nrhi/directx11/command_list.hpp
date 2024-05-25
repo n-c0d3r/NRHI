@@ -326,6 +326,12 @@ namespace nrhi {
 			u32 dst_data_offset
 		);
 
+	public:
+		static void generate_mips(
+			TKPA_valid<A_command_list> command_list_p,
+			KPA_valid_srv_handle srv_p
+		);
+
 
 
 	private:

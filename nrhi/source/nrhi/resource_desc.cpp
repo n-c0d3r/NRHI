@@ -82,7 +82,8 @@ namespace nrhi {
         E_format format,
         u32 mip_level_count,
         E_resource_bind_flag bind_flags,
-        E_resource_heap_type heap_type
+        E_resource_heap_type heap_type,
+		b8 is_mip_map_generatable
     ) {
 
 		u32 stride = H_format::stride(format);
@@ -104,6 +105,8 @@ namespace nrhi {
             .bind_flags = bind_flags,
             .heap_type = heap_type,
 
+			.is_mip_map_generatable = is_mip_map_generatable,
+
             .type = E_resource_type::TEXTURE_1D
 
         };
@@ -116,7 +119,8 @@ namespace nrhi {
         u32 mip_level_count,
         F_sample_desc sample_desc,
         E_resource_bind_flag bind_flags,
-        E_resource_heap_type heap_type
+        E_resource_heap_type heap_type,
+		b8 is_mip_map_generatable
     ) {
 
 		u32 stride = H_format::stride(format);
@@ -139,6 +143,8 @@ namespace nrhi {
             .bind_flags = bind_flags,
             .heap_type = heap_type,
 
+			.is_mip_map_generatable = is_mip_map_generatable,
+
             .type = E_resource_type::TEXTURE_2D
 
         };
@@ -151,7 +157,8 @@ namespace nrhi {
         E_format format,
         u32 mip_level_count,
         E_resource_bind_flag bind_flags,
-        E_resource_heap_type heap_type
+        E_resource_heap_type heap_type,
+		b8 is_mip_map_generatable
     ) {
 
 		u32 stride = H_format::stride(format);
@@ -173,6 +180,8 @@ namespace nrhi {
             .bind_flags = bind_flags,
             .heap_type = heap_type,
 
+			.is_mip_map_generatable = is_mip_map_generatable,
+
             .type = E_resource_type::TEXTURE_3D
 
         };
@@ -186,7 +195,8 @@ namespace nrhi {
 		u32 mip_level_count,
 		F_sample_desc sample_desc,
 		E_resource_bind_flag bind_flags,
-		E_resource_heap_type heap_type
+		E_resource_heap_type heap_type,
+		b8 is_mip_map_generatable
 	) {
 
 		u32 stride = H_format::stride(format);
@@ -209,6 +219,8 @@ namespace nrhi {
 			.bind_flags = bind_flags,
 			.heap_type = heap_type,
 
+			.is_mip_map_generatable = is_mip_map_generatable,
+
 			.type = E_resource_type::TEXTURE_2D
 
 		};
@@ -220,7 +232,8 @@ namespace nrhi {
 		u32 mip_level_count,
 		F_sample_desc sample_desc,
 		E_resource_bind_flag bind_flags,
-		E_resource_heap_type heap_type
+		E_resource_heap_type heap_type,
+		b8 is_mip_map_generatable
 	) {
 
 		u32 stride = H_format::stride(format);
@@ -242,6 +255,8 @@ namespace nrhi {
 
 			.bind_flags = bind_flags,
 			.heap_type = heap_type,
+
+			.is_mip_map_generatable = is_mip_map_generatable,
 
 			.type = E_resource_type::TEXTURE_CUBE
 

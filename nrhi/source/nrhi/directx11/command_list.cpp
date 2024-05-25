@@ -1066,7 +1066,6 @@ namespace nrhi {
 		u32 src_data_offset,
 		u32 dst_data_offset
 	) {
-
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 		const auto& directx11_resource_p = resource_p.T_cast<F_directx11_resource>();
 
@@ -1093,6 +1092,21 @@ namespace nrhi {
 			d3d11_resource_p,
 			0
 		);
+	}
+
+	void HD_directx11_command_list::generate_mips(
+		TKPA_valid<A_command_list> command_list_p,
+		KPA_valid_srv_handle srv_p
+	) {
+		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
+		const auto& directx11_srv_p = srv_p.T_cast<F_directx11_shader_resource_view>();
+
+		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
+		ID3D11ShaderResourceView* d3d11_srv_p = (ID3D11ShaderResourceView*)(directx11_srv_p->d3d11_view_p());
+
+		NCPP_ASSERT(directx11_srv_p->desc().resource_p->desc().is_mip_map_generatable) << "this resource is not mip map generatable";
+
+		d3d11_device_context_p->GenerateMips(d3d11_srv_p);
 	}
 
 

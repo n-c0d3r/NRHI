@@ -240,6 +240,11 @@ namespace nrhi {
 			u32 dst_data_offset = 0
 		);
 
+	public:
+		void generate_mips(
+			KPA_valid_srv_handle srv_p
+		);
+
     };
 
 }

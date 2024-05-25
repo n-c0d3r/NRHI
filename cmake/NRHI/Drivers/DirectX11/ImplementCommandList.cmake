@@ -204,6 +204,10 @@ NRHI_FunctionHelper_CreateFunctionClass(
             u32 src_data_offset,
             u32 dst_data_offset
 		)"
+        "generate_mips" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            KPA_valid_srv_handle srv_p
+        )"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX11> Implement command_list done")
