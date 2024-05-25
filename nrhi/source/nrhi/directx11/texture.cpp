@@ -71,7 +71,7 @@ namespace nrhi {
         }
         d3d11_texture_1d_desc.MiscFlags = 0;
 
-		if(desc_.is_mip_map_generatable)
+		if((desc_.mip_level_count > 1) && desc_.is_mip_map_generatable)
 			d3d11_texture_1d_desc.MiscFlags |= D3D11_RESOURCE_MISC_GENERATE_MIPS;
 
 		TG_vector<D3D11_SUBRESOURCE_DATA> d3d11_subresource_datas(initial_data_.size());
@@ -184,7 +184,7 @@ namespace nrhi {
         }
         d3d11_texture_2d_desc.MiscFlags = 0;
 
-		if(desc_.is_mip_map_generatable)
+		if((desc_.mip_level_count > 1) && desc_.is_mip_map_generatable)
 			d3d11_texture_2d_desc.MiscFlags |= D3D11_RESOURCE_MISC_GENERATE_MIPS;
 
 		TG_vector<D3D11_SUBRESOURCE_DATA> d3d11_subresource_datas(initial_data_.size());
@@ -295,7 +295,7 @@ namespace nrhi {
         }
         d3d11_texture_3d_desc.MiscFlags = 0;
 
-		if(desc_.is_mip_map_generatable)
+		if((desc_.mip_level_count > 1) && desc_.is_mip_map_generatable)
 			d3d11_texture_3d_desc.MiscFlags |= D3D11_RESOURCE_MISC_GENERATE_MIPS;
 
 		TG_vector<D3D11_SUBRESOURCE_DATA> d3d11_subresource_datas(initial_data_.size());
@@ -407,7 +407,7 @@ namespace nrhi {
 		}
 		d3d11_texture_2d_array_desc.MiscFlags = 0;
 
-		if(desc_.is_mip_map_generatable)
+		if((desc_.mip_level_count > 1) && desc_.is_mip_map_generatable)
 			d3d11_texture_2d_array_desc.MiscFlags |= D3D11_RESOURCE_MISC_GENERATE_MIPS;
 
 		NCPP_ASSERT(desc_.array_size) << "texture 2d array size can't be zero";
@@ -521,7 +521,7 @@ namespace nrhi {
 		}
 		d3d11_texture_cube_desc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
 
-		if(desc_.is_mip_map_generatable)
+		if((desc_.mip_level_count > 1) && desc_.is_mip_map_generatable)
 			d3d11_texture_cube_desc.MiscFlags |= D3D11_RESOURCE_MISC_GENERATE_MIPS;
 
 		TG_vector<D3D11_SUBRESOURCE_DATA> d3d11_subresource_datas(initial_data_.size());
