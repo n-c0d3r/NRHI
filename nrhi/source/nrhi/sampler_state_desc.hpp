@@ -45,7 +45,11 @@ namespace nrhi {
 	struct F_sampler_state_desc {
 
 		E_filter filter = E_filter::MIN_MAG_MIP_LINEAR;
-		TG_array<E_texcoord_address_mode, 3> texcoord_address_modes;
+		TG_array<E_texcoord_address_mode, 3> texcoord_address_modes = {
+			E_texcoord_address_mode::WRAP,
+			E_texcoord_address_mode::WRAP,
+			E_texcoord_address_mode::WRAP
+		};
 
 	};
 

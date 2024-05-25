@@ -42,6 +42,7 @@ namespace nrhi {
 		ID3D11SamplerState* d3d11_sampler_state_p = 0;
 
 		D3D11_SAMPLER_DESC d3d11_sampler_state_desc;
+		memset(&d3d11_sampler_state_desc, 0, sizeof(D3D11_SAMPLER_DESC));
 		d3d11_sampler_state_desc.Filter = D3D11_FILTER(desc.filter);
 		d3d11_sampler_state_desc.AddressU = D3D11_TEXTURE_ADDRESS_MODE(desc.texcoord_address_modes[0]);
 		d3d11_sampler_state_desc.AddressV = D3D11_TEXTURE_ADDRESS_MODE(desc.texcoord_address_modes[1]);
