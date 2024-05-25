@@ -51,6 +51,10 @@ namespace nrhi {
 			E_texcoord_address_mode::WRAP
 		};
 
+		f32 lod_offset = 0;
+		f32 min_lod = 0;
+		f32 max_lod = NMATH_F32_INFINITY;
+
 	};
 
 }

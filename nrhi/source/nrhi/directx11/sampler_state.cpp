@@ -47,6 +47,9 @@ namespace nrhi {
 		d3d11_sampler_state_desc.AddressU = D3D11_TEXTURE_ADDRESS_MODE(desc.texcoord_address_modes[0]);
 		d3d11_sampler_state_desc.AddressV = D3D11_TEXTURE_ADDRESS_MODE(desc.texcoord_address_modes[1]);
 		d3d11_sampler_state_desc.AddressW = D3D11_TEXTURE_ADDRESS_MODE(desc.texcoord_address_modes[2]);
+		d3d11_sampler_state_desc.MipLODBias = desc.lod_offset;
+		d3d11_sampler_state_desc.MinLOD = desc.min_lod;
+		d3d11_sampler_state_desc.MaxLOD = desc.max_lod;
 
 		d3d11_device_p->CreateSamplerState(
 			&d3d11_sampler_state_desc,
