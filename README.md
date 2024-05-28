@@ -63,7 +63,7 @@ NCoder's Learning Aimed C++ Render Hardware Interface Library.
     + Step 1: Clone [NRHI git repository](https://github.com/Abytek/NRHI) from GitHub
     + Step 2: Generate Visual Studio 2022 solution by running **scripts/generate_vs2022.bat**
     + Step 3: Navigate to **build/vs2022**
-    + Step 4: Open **npp.sln**
+    + Step 4: Open **nrhi.sln**
     + Step 5: Set **nrhi.samples.hello_nrhi** as startup project
     + Step 6: Run and enjoy!
   + **Xcode** (MacOS):
