@@ -16,7 +16,6 @@ NCoder's Learning Aimed C++ Render Hardware Interface Library.
   + NSL (`NCoder's shading language`) (`currently in development`)
 
 ---
-
 ![alt text](./nrhi/resources/textures/screenshots/hello_nrhi.png)
 ---
 
