@@ -17,6 +17,9 @@ NCoder's Learning Aimed C++ Render Hardware Interface Library.
 
 ---
 
+![alt text](./nrhi/resources/textures/screenshots/hello_nrhi.png)
+---
+
 ## Core Dependencies
 + NCPP
 + NMath
