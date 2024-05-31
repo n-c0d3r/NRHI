@@ -132,7 +132,7 @@ namespace nrhi {
 
     void F_directx11_swapchain::update_d3d11_object_for_back_rtv(){
 
-        auto& d3d11_back_rtv_p = back_rtv_p_.T_cast<F_directx11_render_target_view>();
+        auto d3d11_back_rtv_p = back_rtv_p_.T_cast<F_directx11_render_target_view>();
 
         auto device_p = command_queue_p()->device_p();
 
