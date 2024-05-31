@@ -12,7 +12,7 @@ namespace nrhi {
 
     F_directx11_swapchain::F_directx11_swapchain(
         TKPA_valid<A_command_queue> command_queue_p,
-        TKPA_valid<A_surface> surface_p,
+        TKPA_valid<F_surface> surface_p,
         const F_swapchain_desc& desc
     ) :
         A_swapchain(
@@ -27,13 +27,11 @@ namespace nrhi {
 
 
         // create d3d11 swapchain
-        auto surface_desc = surface_p->desc();
-
         DXGI_SWAP_CHAIN_DESC dxgi_swapchain_desc;
         ZeroMemory(&dxgi_swapchain_desc, sizeof(dxgi_swapchain_desc));
         dxgi_swapchain_desc.BufferCount = 1;
-        dxgi_swapchain_desc.BufferDesc.Width = surface_desc.size.x;
-        dxgi_swapchain_desc.BufferDesc.Height = surface_desc.size.y;
+        dxgi_swapchain_desc.BufferDesc.Width = surface_p->client_size().x;
+        dxgi_swapchain_desc.BufferDesc.Height = surface_p->client_size().y;
         dxgi_swapchain_desc.BufferDesc.Format = (DXGI_FORMAT)(desc.format);
         dxgi_swapchain_desc.BufferDesc.RefreshRate.Numerator = 60;
         dxgi_swapchain_desc.BufferDesc.RefreshRate.Denominator = 1;
@@ -53,8 +51,8 @@ namespace nrhi {
 
         // create back texture 2d resource
         F_resource_desc back_texture_2d_desc = H_resource_desc::create_texture_2d_desc(
-            surface_desc.size.x,
-            surface_desc.size.y,
+			surface_p->client_size().x,
+			surface_p->client_size().y,
             desc.format,
             1,
             desc.sample_desc,
@@ -101,7 +99,7 @@ namespace nrhi {
             if(d3d11_back_rtv_p->d3d11_view_p())
                 d3d11_back_rtv_p->d3d11_view_p()->Release();
 
-			auto surface_size = this->surface_p()->desc().size;
+			auto surface_size = this->surface_p()->client_size();
 
 		  	auto& back_texture_2d_desc = inject_resource_desc(NCPP_FHANDLE_VALID_AS_OREF(back_texture_2d_p_));
 		  	back_texture_2d_desc.width = surface_size.x;
@@ -156,7 +154,7 @@ namespace nrhi {
 
     TU<A_swapchain> HD_directx11_swapchain::create(
         TKPA_valid<A_command_queue> command_queue_p,
-        TKPA_valid<A_surface> surface_p,
+        TKPA_valid<F_surface> surface_p,
         const F_swapchain_desc& desc
     ){
 

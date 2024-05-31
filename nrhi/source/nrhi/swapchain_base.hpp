@@ -60,7 +60,7 @@ namespace nrhi {
 
     private:
         TK_valid<A_command_queue> command_queue_p_;
-        TK_valid<A_surface> surface_p_;
+        TK_valid<F_surface> surface_p_;
         F_swapchain_desc desc_;
 
     protected:
@@ -69,7 +69,7 @@ namespace nrhi {
 
     public:
         NCPP_FORCE_INLINE TK_valid<A_command_queue> command_queue_p() noexcept { return command_queue_p_; }
-        NCPP_FORCE_INLINE TK_valid<A_surface> surface_p() noexcept { return surface_p_; }
+        NCPP_FORCE_INLINE TK_valid<F_surface> surface_p() noexcept { return surface_p_; }
         NCPP_FORCE_INLINE const F_swapchain_desc& desc() const noexcept { return desc_; }
         NCPP_FORCE_INLINE K_valid_rtv_handle back_rtv_p() noexcept {
             return NCPP_FHANDLE_VALID(back_rtv_p_);
@@ -80,7 +80,7 @@ namespace nrhi {
     protected:
         A_swapchain(
             TKPA_valid<A_command_queue> command_queue_p,
-            TKPA_valid<A_surface> surface_p,
+            TKPA_valid<F_surface> surface_p,
             const F_swapchain_desc& desc
         );
 
