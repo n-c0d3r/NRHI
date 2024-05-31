@@ -96,7 +96,7 @@ namespace nrhi {
         // also update_d3d11_object_for_back_rtv when surface is resized
         surface_resize_handle_ = surface_p->T_get_event<F_surface_resize_event>().T_push_back_listener([this](auto& event){
 
-            auto d3d11_back_rtv_p = back_rtv_p_.T_cast<F_directx11_render_target_view>();
+            auto d3d11_back_rtv_p = NCPP_FOH_VALID(back_rtv_p_).T_cast<F_directx11_render_target_view>();
 
             if(d3d11_back_rtv_p->d3d11_view_p())
                 d3d11_back_rtv_p->d3d11_view_p()->Release();
@@ -132,7 +132,7 @@ namespace nrhi {
 
     void F_directx11_swapchain::update_d3d11_object_for_back_rtv(){
 
-        auto d3d11_back_rtv_p = back_rtv_p_.T_cast<F_directx11_render_target_view>();
+        auto d3d11_back_rtv_p = NCPP_FOH_VALID(back_rtv_p_).T_cast<F_directx11_render_target_view>();
 
         auto device_p = command_queue_p()->device_p();
 
