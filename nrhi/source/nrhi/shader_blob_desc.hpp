@@ -52,6 +52,7 @@ namespace nrhi {
 		G_string name;
 		E_format format;
 		u32 duplicate_count = 1;
+		i32 offset = -1;
 
 	};
 	struct F_instance_attribute {
@@ -59,6 +60,7 @@ namespace nrhi {
 		G_string name;
 		E_format format;
 		u32 duplicate_count = 1;
+		i32 offset = -1;
 
 	};
 

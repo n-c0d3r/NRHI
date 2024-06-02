@@ -23,6 +23,7 @@ NRHI_FunctionHelper_CreateFunctionClass(
         ""
     VALUES
         "stride" "u32(E_format)"
+        "aligned_stride" "u32(E_format)"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX11> Implement format helper done")

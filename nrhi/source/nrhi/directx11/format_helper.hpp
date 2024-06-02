@@ -45,6 +45,7 @@ namespace nrhi {
 
     public:
         static u32 stride(E_format format);
+        static u32 aligned_stride(E_format format);
 
     };
 

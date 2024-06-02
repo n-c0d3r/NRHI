@@ -108,18 +108,22 @@ namespace nrhi {
 
 				for(u32 t = 0; t < vertex_attribute_desc.duplicate_count; ++t) {
 
+					u32 aligned_attribute_stride = H_format::aligned_stride(vertex_attribute_desc.format);
+
+					byte_offset = align_address(byte_offset, aligned_attribute_stride);
+
 					d3d11_input_element_desc_vector[element_index] = {
 						.SemanticName = vertex_attribute_desc.name.c_str(),
 						.SemanticIndex = t,
 						.Format = DXGI_FORMAT(vertex_attribute_desc.format),
 						.InputSlot = i,
-						.AlignedByteOffset = byte_offset,
+						.AlignedByteOffset = ((vertex_attribute_desc.offset == -1) ? byte_offset : vertex_attribute_desc.offset),
 						.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA,
 						.InstanceDataStepRate = 0
 					};
 
 					++element_index;
-					byte_offset += H_format::stride(vertex_attribute_desc.format);
+					byte_offset += aligned_attribute_stride;
 				}
 			}
 
@@ -137,18 +141,22 @@ namespace nrhi {
 
 				for(u32 t = 0; t < instance_attribute_desc.duplicate_count; ++t) {
 
+					u32 aligned_attribute_stride = H_format::aligned_stride(instance_attribute_desc.format);
+
+					byte_offset = align_address(byte_offset, aligned_attribute_stride);
+
 					d3d11_input_element_desc_vector[element_index] = {
 						.SemanticName = instance_attribute_desc.name.c_str(),
 						.SemanticIndex = t,
 						.Format = DXGI_FORMAT(instance_attribute_desc.format),
 						.InputSlot = vertex_attribute_group_count + i,
-						.AlignedByteOffset = byte_offset,
+						.AlignedByteOffset = ((instance_attribute_desc.offset == -1) ? byte_offset : instance_attribute_desc.offset),
 						.InputSlotClass = D3D11_INPUT_PER_INSTANCE_DATA,
 						.InstanceDataStepRate = 1
 					};
 
 					++element_index;
-					byte_offset += H_format::stride(instance_attribute_desc.format);
+					byte_offset += aligned_attribute_stride;
 				}
 			}
 
