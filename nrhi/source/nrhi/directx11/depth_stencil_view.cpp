@@ -60,8 +60,6 @@ namespace nrhi {
 		if(target_resource_type == E_resource_type::NONE)
 			target_resource_type = resource_desc.type;
 
-		NCPP_ASSERT(target_resource_type == E_resource_type::TEXTURE_2D) << "only support texture 2d";
-
 		E_format target_format = desc.overrided_format;
 		if(target_format == E_format::NONE)
 			target_format = resource_desc.format;
