@@ -164,8 +164,9 @@ namespace nrhi {
 
 		// bind shaders and input layout
 		{
-			if(auto d3d11_vertex_shader_p = directx11_graphics_pipeline_state_p->d3d11_vertex_shader_p()) {
-
+			auto d3d11_vertex_shader_p = directx11_graphics_pipeline_state_p->d3d11_vertex_shader_p();
+			NCPP_ASSERT(d3d11_vertex_shader_p) << "vertex shader is required";
+			{
 				d3d11_device_context_p->IASetInputLayout(
 					directx11_graphics_pipeline_state_p->d3d11_input_layout_p()
 				);
@@ -180,6 +181,13 @@ namespace nrhi {
 
 				d3d11_device_context_p->PSSetShader(
 					d3d11_pixel_shader_p,
+					0,
+					0
+				);
+			}
+			else {
+				d3d11_device_context_p->PSSetShader(
+					0,
 					0,
 					0
 				);
