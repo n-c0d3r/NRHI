@@ -1002,7 +1002,6 @@ namespace nrhi {
 				).no_requirements();
 			}
 			else {
-
 				return it->second;
 			}
 		}
@@ -1044,13 +1043,15 @@ namespace nrhi {
 		const G_string& name,
 		b8 is_object_name_required,
 		sz min_object_body_count,
-		sz max_object_body_count
+		sz max_object_body_count,
+		F_nsl_object_type_channel_mask channel_mask
 	) :
 		shader_compiler_p_(shader_compiler_p),
 		name_(name),
 		is_object_name_required_(is_object_name_required),
 		min_object_body_count_(min_object_body_count),
-		max_object_body_count_(max_object_body_count)
+		max_object_body_count_(max_object_body_count),
+		channel_mask_(channel_mask)
 	{
 	}
 	A_nsl_object_type::~A_nsl_object_type() {
@@ -1710,13 +1711,51 @@ namespace nrhi {
 
 
 
-	F_nsl_vertex_shader_object::F_nsl_vertex_shader_object(
+	A_nsl_shader_object::A_nsl_shader_object(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 		TKPA_valid<A_nsl_object_type> type_p,
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 		const G_string& name
 	) :
 		A_nsl_object(
+			shader_compiler_p,
+			type_p,
+			translation_unit_p,
+			name
+		)
+	{
+	}
+	A_nsl_shader_object::~A_nsl_shader_object() {
+	}
+
+
+
+	A_nsl_shader_object_type::A_nsl_shader_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		const G_string& name
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			name,
+			true,
+			2,
+			2,
+			nsl_global_object_type_channel_mask
+		)
+	{
+	}
+	A_nsl_shader_object_type::~A_nsl_shader_object_type() {
+	}
+
+
+
+	F_nsl_vertex_shader_object::F_nsl_vertex_shader_object(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		TKPA_valid<A_nsl_object_type> type_p,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const G_string& name
+	) :
+		A_nsl_shader_object(
 			shader_compiler_p,
 			type_p,
 			translation_unit_p,
@@ -1734,7 +1773,72 @@ namespace nrhi {
 		sz index,
 		F_nsl_error_stack* error_stack_p
 	) {
-		return TG_vector<F_nsl_ast_tree>();
+		auto& tree = trees[index];
+		auto& object_implementation = tree.object_implementation;
+
+		context.parent_object_p = NCPP_KTHIS().no_requirements();
+
+		auto translation_unit_compiler_p = shader_compiler_p()->translation_unit_compiler_p();
+
+		auto param_child_info_trees_opt = H_nsl_utilities::build_info_trees(
+			object_implementation.bodies[0].content,
+			object_implementation.bodies[0].begin_location,
+			&(unit_p->error_group_p()->stack())
+		);
+		if(!param_child_info_trees_opt) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				&(unit_p->error_group_p()->stack()),
+				object_implementation.bodies[0].begin_location,
+				"can't not parse vertex shader params"
+			);
+			return eastl::nullopt;
+		}
+		auto& param_child_info_trees = param_child_info_trees_opt.value();
+		TG_vector<F_nsl_ast_tree> param_childs(param_child_info_trees.size());
+		for(u32 i = 0; i < param_childs.size(); ++i) {
+
+			auto& param_child_info_tree = param_child_info_trees[i];
+
+			param_childs[i] = F_nsl_ast_tree {
+				.type = E_nsl_ast_tree_type::INFO_TREE,
+				.info_tree = param_child_info_tree,
+				.begin_location = param_child_info_tree.begin_location,
+				.end_location = param_child_info_tree.end_name_location
+			};
+		}
+
+		context.object_type_channel_mask_stack.push(nsl_function_body_object_type_channel_mask);
+
+		auto body_childs_opt = translation_unit_compiler_p->parse(
+			unit_p,
+			object_implementation.bodies[1].content,
+			context,
+			object_implementation.bodies[1].begin_location,
+			0
+		);
+		if(!body_childs_opt) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				&(unit_p->error_group_p()->stack()),
+				object_implementation.bodies[1].begin_location,
+				"can't not parse vertex shader body"
+			);
+			return eastl::nullopt;
+		}
+
+		context.object_type_channel_mask_stack.pop();
+
+		auto body_childs = std::move(body_childs_opt.value());
+
+		auto childs = std::move(param_childs);
+		childs.insert(
+			childs.end(),
+			body_childs.begin(),
+			body_childs.end()
+		);
+
+		return std::move(childs);
 	}
 
 
@@ -1742,12 +1846,9 @@ namespace nrhi {
 	F_nsl_vertex_shader_object_type::F_nsl_vertex_shader_object_type(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
 	) :
-		A_nsl_object_type(
+		A_nsl_shader_object_type(
 			shader_compiler_p,
-			"vertex_shader",
-			true,
-			2,
-			2
+			"vertex_shader"
 		)
 	{
 	}
@@ -1783,7 +1884,7 @@ namespace nrhi {
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 		const G_string& name
 	) :
-		A_nsl_object(
+		A_nsl_shader_object(
 			shader_compiler_p,
 			type_p,
 			translation_unit_p,
@@ -1809,12 +1910,9 @@ namespace nrhi {
 	F_nsl_pixel_shader_object_type::F_nsl_pixel_shader_object_type(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
 	) :
-		A_nsl_object_type(
+		A_nsl_shader_object_type(
 			shader_compiler_p,
-			"pixel_shader",
-			true,
-			2,
-			2
+			"pixel_shader"
 		)
 	{
 	}
@@ -1850,7 +1948,7 @@ namespace nrhi {
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 		const G_string& name
 	) :
-		A_nsl_object(
+		A_nsl_shader_object(
 			shader_compiler_p,
 			type_p,
 			translation_unit_p,
@@ -1876,12 +1974,9 @@ namespace nrhi {
 	F_nsl_compute_shader_object_type::F_nsl_compute_shader_object_type(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
 	) :
-		A_nsl_object_type(
+		A_nsl_shader_object_type(
 			shader_compiler_p,
-			"compute_shader",
-			true,
-			2,
-			2
+			"compute_shader"
 		)
 	{
 	}
@@ -1954,7 +2049,7 @@ namespace nrhi {
 		return keyed_object_type_p;
 	}
 
-	TG_vector<F_nsl_ast_tree_try_build_functor> F_nsl_object_manager::ast_tree_try_build_functors() {
+	TG_vector<F_nsl_ast_tree_try_build_functor> F_nsl_object_manager::ast_tree_try_build_functors(F_nsl_object_type_channel_mask mask) {
 
 		TG_vector<F_nsl_ast_tree_try_build_functor> result;
 		result.reserve(type_p_map_.size());
@@ -1962,14 +2057,21 @@ namespace nrhi {
 		for(const auto& it : type_p_map_) {
 
 			auto object_type_p = NCPP_FOH_VALID(it.second);
-			result.push_back(
-				H_nsl_utilities::make_try_build_object_implementation_functor(
-					object_type_p->name(),
-					object_type_p->is_object_name_required(),
-					object_type_p->min_object_body_count(),
-					object_type_p->max_object_body_count()
+
+			if(
+				flag_is_has(
+					object_type_p->channel_mask(),
+					mask
 				)
-			);
+			)
+				result.push_back(
+					H_nsl_utilities::make_try_build_object_implementation_functor(
+						object_type_p->name(),
+						object_type_p->is_object_name_required(),
+						object_type_p->min_object_body_count(),
+						object_type_p->max_object_body_count()
+					)
+				);
 		}
 
 		return std::move(result);
@@ -2212,10 +2314,13 @@ namespace nrhi {
 		TK_valid<F_nsl_translation_unit> unit_p,
 		const G_string& src_content,
 		F_nsl_context& context,
-		sz location_offset_to_safe
+		sz location_offset_to_safe,
+		F_nsl_object_type_channel_mask additional_object_type_channel_mask
 	) {
-
-		auto try_build_functors = shader_compiler_p_->object_manager_p()->ast_tree_try_build_functors();
+		auto try_build_functors = shader_compiler_p_->object_manager_p()->ast_tree_try_build_functors(
+			additional_object_type_channel_mask
+			| context.object_type_channel_mask_stack.get_container().back()
+		);
 
 		auto ast_trees_opt = H_nsl_utilities::build_ast_trees(
 			src_content,
@@ -2270,7 +2375,6 @@ namespace nrhi {
 			);
 			if(!object_p)
 				return eastl::nullopt;
-			NCPP_INFO() << "OK";
 			result = object_p->recursive_build_ast_tree(
 				context,
 				unit_p,

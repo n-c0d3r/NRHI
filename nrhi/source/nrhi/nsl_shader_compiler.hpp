@@ -119,6 +119,12 @@ namespace nrhi {
 
 	};
 
+	using F_nsl_object_type_channel_mask = u32;
+	using F_nsl_object_type_channel = u8;
+	static constexpr F_nsl_object_type_channel_mask nsl_default_object_type_channel_mask = NCPP_U32_MAX;
+	static constexpr F_nsl_object_type_channel_mask nsl_global_object_type_channel_mask = 0x1;
+	static constexpr F_nsl_object_type_channel_mask nsl_function_body_object_type_channel_mask = 0x2;
+
 	struct NRHI_API F_nsl_str_state {
 
 		b8 value = false;
@@ -209,6 +215,8 @@ namespace nrhi {
 	struct F_nsl_context {
 
 		TK<A_nsl_object> parent_object_p;
+
+		TG_stack<F_nsl_object_type_channel_mask> object_type_channel_mask_stack = { nsl_default_object_type_channel_mask };
 
 	};
 
@@ -390,6 +398,7 @@ namespace nrhi {
 		b8 is_object_name_required_ = true;
 		sz min_object_body_count_ = 0;
 		sz max_object_body_count_ = 2;
+		F_nsl_object_type_channel_mask channel_mask_ = nsl_default_object_type_channel_mask;
 
 		TG_vector<TU<A_nsl_object>> object_p_vector_;
 
@@ -399,6 +408,7 @@ namespace nrhi {
 		NCPP_FORCE_INLINE b8 is_object_name_required() const noexcept { return is_object_name_required_; }
 		NCPP_FORCE_INLINE sz min_object_body_count() const noexcept { return min_object_body_count_; }
 		NCPP_FORCE_INLINE sz max_object_body_count() const noexcept { return max_object_body_count_; }
+		NCPP_FORCE_INLINE F_nsl_object_type_channel_mask channel_mask() const noexcept { return channel_mask_; }
 
 		NCPP_FORCE_INLINE const TG_vector<TU<A_nsl_object>>& object_p_vector() const noexcept { return object_p_vector_; }
 
@@ -410,7 +420,8 @@ namespace nrhi {
 			const G_string& name,
 			b8 is_object_name_required = true,
 			sz min_object_body_count = 0,
-			sz max_object_body_count = 2
+			sz max_object_body_count = 2,
+			F_nsl_object_type_channel_mask channel_mask = nsl_default_object_type_channel_mask
 		);
 
 	public:
@@ -758,7 +769,41 @@ namespace nrhi {
 
 
 
-	class NRHI_API F_nsl_vertex_shader_object final : public A_nsl_object {
+	class NRHI_API A_nsl_shader_object : public A_nsl_object {
+
+	public:
+		A_nsl_shader_object(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			TKPA_valid<A_nsl_object_type> type_p,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			const G_string& name = ""
+		);
+		virtual ~A_nsl_shader_object();
+
+	public:
+		NCPP_OBJECT(A_nsl_shader_object);
+
+	};
+
+
+
+	class NRHI_API A_nsl_shader_object_type : public A_nsl_object_type {
+
+	public:
+		A_nsl_shader_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			const G_string& name
+		);
+		virtual ~A_nsl_shader_object_type();
+
+	public:
+		NCPP_OBJECT(A_nsl_shader_object_type);
+
+	};
+
+
+
+	class NRHI_API F_nsl_vertex_shader_object final : public A_nsl_shader_object {
 
 	public:
 		F_nsl_vertex_shader_object(
@@ -785,7 +830,7 @@ namespace nrhi {
 
 
 
-	class NRHI_API F_nsl_vertex_shader_object_type final : public A_nsl_object_type {
+	class NRHI_API F_nsl_vertex_shader_object_type final : public A_nsl_shader_object_type {
 
 	public:
 		F_nsl_vertex_shader_object_type(
@@ -807,7 +852,7 @@ namespace nrhi {
 
 
 
-	class NRHI_API F_nsl_pixel_shader_object final : public A_nsl_object {
+	class NRHI_API F_nsl_pixel_shader_object final : public A_nsl_shader_object {
 
 	public:
 		F_nsl_pixel_shader_object(
@@ -834,7 +879,7 @@ namespace nrhi {
 
 
 
-	class NRHI_API F_nsl_pixel_shader_object_type final : public A_nsl_object_type {
+	class NRHI_API F_nsl_pixel_shader_object_type final : public A_nsl_shader_object_type {
 
 	public:
 		F_nsl_pixel_shader_object_type(
@@ -856,7 +901,7 @@ namespace nrhi {
 
 
 
-	class NRHI_API F_nsl_compute_shader_object final : public A_nsl_object {
+	class NRHI_API F_nsl_compute_shader_object final : public A_nsl_shader_object {
 
 	public:
 		F_nsl_compute_shader_object(
@@ -883,7 +928,7 @@ namespace nrhi {
 
 
 
-	class NRHI_API F_nsl_compute_shader_object_type final : public A_nsl_object_type {
+	class NRHI_API F_nsl_compute_shader_object_type final : public A_nsl_shader_object_type {
 
 	public:
 		F_nsl_compute_shader_object_type(
@@ -944,7 +989,7 @@ namespace nrhi {
 			return NCPP_FOH_VALID(it->second);
 		}
 
-		TG_vector<F_nsl_ast_tree_try_build_functor> ast_tree_try_build_functors();
+		TG_vector<F_nsl_ast_tree_try_build_functor> ast_tree_try_build_functors(F_nsl_object_type_channel_mask mask = nsl_default_object_type_channel_mask);
 
 	};
 
@@ -1166,7 +1211,8 @@ namespace nrhi {
 			TK_valid<F_nsl_translation_unit> unit_p,
 			const G_string& src_content,
 			F_nsl_context& context,
-			sz location_offset_to_safe = 0
+			sz location_offset_to_safe = 0,
+			F_nsl_object_type_channel_mask additional_object_type_channel_mask = 0
 		);
 		eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
 			F_nsl_context& context,

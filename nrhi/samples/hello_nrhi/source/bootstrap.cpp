@@ -257,16 +257,6 @@ int main() {
 		)
 	);
 
-	auto compiler_p = TU<F_nsl_shader_compiler>()();
-	compiler_p->compile(
-"\n"
-"vertex_shader vs_main(local_position(POSITION) out clip_position(float4 SV_POSITION))\n"
-"{\n"
-"}\n"
-"\n",
-		E_nsl_output_language::HLSL
-	);
-
 	// create vertex shader from vertex shader blob
 	auto vshader_p = H_vertex_shader::create(
 		NCPP_FOREF_VALID(device_p),
