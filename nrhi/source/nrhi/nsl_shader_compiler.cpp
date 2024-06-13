@@ -1367,33 +1367,31 @@ namespace nrhi {
 
 		auto name_manager_p = shader_compiler_p()->name_manager_p();
 
-		target = tree.object_implementation.name;
-
-		if(!H_nsl_utilities::is_variable_name(target)) {
+		if(!H_nsl_utilities::is_variable_name(tree.object_implementation.name)) {
 
 			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 				&(unit_p->error_group_p()->stack()),
 				tree.object_implementation.begin_name_location,
-				"invalid name: " + target
+				"invalid name: " + tree.object_implementation.name
 			);
 
 			return eastl::nullopt;
 		}
 
 		if(
-			!(name_manager_p->is_name_registered(target))
+			!(name_manager_p->is_name_registered(tree.object_implementation.name))
 		) {
 
 			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 				&(unit_p->error_group_p()->stack()),
 				tree.object_implementation.begin_name_location,
-				target + " is not registered"
+				tree.object_implementation.name + " is not registered"
 			);
 
 			return eastl::nullopt;
 		}
 
-		name_manager_p->deregister_name(target);
+		name_manager_p->deregister_name(tree.object_implementation.name);
 
 		return TG_vector<F_nsl_ast_tree>();
 	}
@@ -1724,14 +1722,12 @@ namespace nrhi {
 		auto name_manager_p = shader_compiler_p()->name_manager_p();
 		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
 
-		target = tree.object_implementation.name;
-
-		if(name_manager_p->is_name_registered(target)) {
+		if(name_manager_p->is_name_registered(tree.object_implementation.name)) {
 
 			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 				&(unit_p->error_group_p()->stack()),
 				tree.object_implementation.begin_name_location,
-				target + " is already registered"
+				tree.object_implementation.name + " is already registered"
 			);
 
 			return eastl::nullopt;
@@ -1751,8 +1747,8 @@ namespace nrhi {
 			return eastl::nullopt;
 		}
 
-		name_manager_p->template T_register_name<FE_nsl_name_types::SEMANTIC>(target);
-		data_type_manager_p->register_semantic(target, target_type);
+		name_manager_p->template T_register_name<FE_nsl_name_types::SEMANTIC>(tree.object_implementation.name);
+		data_type_manager_p->register_semantic(tree.object_implementation.name, target_type);
 
 		return TG_vector<F_nsl_ast_tree>();
 	}
@@ -1945,6 +1941,10 @@ namespace nrhi {
 			body_childs.begin(),
 			body_childs.end()
 		);
+
+		auto name_manager_p = shader_compiler_p()->name_manager_p();
+
+		name_manager_p->template T_register_name<FE_nsl_name_types::SHADER>(tree.object_implementation.name);
 
 		return std::move(childs);
 	}

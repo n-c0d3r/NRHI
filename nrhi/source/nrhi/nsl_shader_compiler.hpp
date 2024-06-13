@@ -227,14 +227,17 @@ namespace nrhi {
 		struct DATA_TYPE {};
 		struct SEMANTIC {};
 		struct RESOURCE {};
+		struct SHADER {};
 
 	};
 
+	using F_nsl_object_config = TG_unordered_map<G_string, G_string>;
 	struct F_nsl_context {
 
 		TK<A_nsl_object> parent_object_p;
 
 		TG_stack<F_nsl_object_type_channel_mask> object_type_channel_mask_stack = { nsl_default_object_type_channel_mask };
+		TG_unordered_map<G_string, F_nsl_object_config> object_config_map;
 
 	};
 
@@ -568,11 +571,6 @@ namespace nrhi {
 	class NRHI_API F_nsl_undef_object final : public A_nsl_object {
 
 	public:
-		G_string target;
-
-
-
-	public:
 		F_nsl_undef_object(
 			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 			TKPA_valid<A_nsl_object_type> type_p,
@@ -790,7 +788,6 @@ namespace nrhi {
 	class NRHI_API F_nsl_semantic_object final : public A_nsl_object {
 
 	public:
-		G_string target;
 		G_string target_type;
 
 
