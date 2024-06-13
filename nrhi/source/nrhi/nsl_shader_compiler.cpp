@@ -2631,7 +2631,7 @@ namespace nrhi {
 		}
 
 		out_desc = F_nsl_data_type_desc {
-			.name = target,
+			.name = target_name,
 			.semantic = std::move(semantic),
 			.size = size(target_name)
 		};
