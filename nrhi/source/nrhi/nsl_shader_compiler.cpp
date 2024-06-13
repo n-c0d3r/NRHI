@@ -389,7 +389,22 @@ namespace nrhi {
 			for(; j < src_length; ++j)
 			{
 				if(
-					!(src_content[j] == keyword[j - begin_keyword_location])
+					(
+						(
+							src_content[j]
+							!= keyword[
+								eastl::min<sz>(
+									j - begin_keyword_location,
+									keyword.size() - 1
+								)
+							]
+						)
+						&& (keyword[0] != '@')
+					)
+					|| (
+						(!H_nsl_utilities::is_object_name_character(src_content[j]))
+						&& (keyword[0] == '@')
+					)
 				)
 				{
 					break;
@@ -398,9 +413,15 @@ namespace nrhi {
 			end_keyword_location = j;
 
 			if(
-				(end_keyword_location - begin_keyword_location) == keyword.length()
+				(
+					((end_keyword_location - begin_keyword_location) == keyword.length())
+					&& (keyword[0] != '@')
+				)
+				|| (
+					(src_content[begin_keyword_location] == '@')
+					&& (keyword[0] == '@')
+				)
 			) {
-
 				b8 is_left_correct = true;
 				b8 is_right_correct = true;
 
@@ -414,33 +435,35 @@ namespace nrhi {
 				if(is_left_correct && is_right_correct) {
 
 					sz j2 = end_keyword_location;
-					for(; j2 < src_length; ++j2)
-					{
-						if(
-							!(
-								(src_content[j2] == ' ')
-								|| (src_content[j2] == '\t')
-								|| (src_content[j2] == '\n')
-								|| (src_content[j2] == '\r')
-							)
-						)
+					if(is_object_name_required)
+						for(; j2 < src_length; ++j2)
 						{
-							break;
+							if(
+								!(
+									(src_content[j2] == ' ')
+									|| (src_content[j2] == '\t')
+									|| (src_content[j2] == '\n')
+									|| (src_content[j2] == '\r')
+								)
+							)
+							{
+								break;
+							}
 						}
-					}
 
 					sz begin_name_location = j2;
 
 					sz j3 = begin_name_location;
-					for(; j3 < src_length; ++j3)
-					{
-						if(
-							!is_object_name_character(src_content[j3])
-						)
+					if(is_object_name_required)
+						for(; j3 < src_length; ++j3)
 						{
-							break;
+							if(
+								!is_object_name_character(src_content[j3])
+							)
+							{
+								break;
+							}
 						}
-					}
 					sz end_name_location = j3;
 
 					if(is_object_name_required && (begin_name_location == end_name_location)) {
@@ -456,12 +479,32 @@ namespace nrhi {
 
 					temp_end_location = end_name_location;
 
-					G_string name = src_content.substr(begin_name_location, end_name_location - begin_name_location);
+					G_string name;
+
+					if(keyword[0] == '@') {
+						name = src_content.substr(begin_keyword_location + 1, end_keyword_location - begin_keyword_location - 1);
+
+						begin_name_location = begin_keyword_location + 1;
+
+						end_keyword_location = begin_keyword_location + 1;
+					}
+					else {
+						name = src_content.substr(begin_name_location, end_name_location - begin_name_location);
+					}
 
 					sz begin_body_location = end_name_location;
 					sz end_body_location = begin_body_location;
 
 					TG_vector<F_nsl_object_implementation_body> bodies;
+
+					char open_body_chars[] = {
+						'(',
+						'{'
+					};
+					char close_body_chars[] = {
+						')',
+						'}'
+					};
 
 					sz detected_object_body_count = 0;
 					for(sz object_body_index = 0; object_body_index < max_object_body_count; ++object_body_index)
@@ -484,14 +527,8 @@ namespace nrhi {
 
 						if (t < src_length)
 						{
-							char open_body_character = '(';
-							char close_body_character = ')';
-
-							if (src_content[t] == '{') {
-
-								open_body_character = '{';
-								close_body_character = '}';
-							}
+							char open_body_character = open_body_chars[object_body_index];
+							char close_body_character = close_body_chars[object_body_index];
 
 							if (src_content[t] == open_body_character)
 							{
@@ -1626,7 +1663,7 @@ namespace nrhi {
 
 
 
-	F_nsl_alias_object::F_nsl_alias_object(
+	F_nsl_annotation_object::F_nsl_annotation_object(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 		TKPA_valid<A_nsl_object_type> type_p,
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
@@ -1640,37 +1677,42 @@ namespace nrhi {
 		)
 	{
 	}
-	F_nsl_alias_object::~F_nsl_alias_object() {
+	F_nsl_annotation_object::~F_nsl_annotation_object() {
 	}
 
-	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_alias_object::recursive_build_ast_tree(
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_annotation_object::recursive_build_ast_tree(
 		F_nsl_context& context,
 		TK_valid<F_nsl_translation_unit> unit_p,
 		TG_vector<F_nsl_ast_tree>& trees,
 		sz index,
 		F_nsl_error_stack* error_stack_p
 	) {
+		auto& tree = trees[index];
+		auto& object_implementation = tree.object_implementation;
+
+		context.temp_object_config[object_implementation.name] = object_implementation;
+
 		return TG_vector<F_nsl_ast_tree>();
 	}
 
 
 
-	F_nsl_alias_object_type::F_nsl_alias_object_type(
+	F_nsl_annotation_object_type::F_nsl_annotation_object_type(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
 	) :
 		A_nsl_object_type(
 			shader_compiler_p,
-			"alias",
-			true,
-			1,
+			"@",
+			false,
+			0,
 			1
 		)
 	{
 	}
-	F_nsl_alias_object_type::~F_nsl_alias_object_type() {
+	F_nsl_annotation_object_type::~F_nsl_annotation_object_type() {
 	}
 
-	TK<A_nsl_object> F_nsl_alias_object_type::create_object(
+	TK<A_nsl_object> F_nsl_annotation_object_type::create_object(
 		F_nsl_ast_tree& tree,
 		F_nsl_context& context,
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p
@@ -1678,7 +1720,7 @@ namespace nrhi {
 		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
 
 		auto object_p = register_object(
-			TU<F_nsl_alias_object>()(
+			TU<F_nsl_annotation_object>()(
 				shader_compiler_p(),
 				NCPP_KTHIS(),
 				translation_unit_p,
@@ -2151,7 +2193,7 @@ namespace nrhi {
 			TU<F_nsl_otherwise_object_type>()(shader_compiler_p_)
 		);
 		register_type(
-			TU<F_nsl_alias_object_type>()(shader_compiler_p_)
+			TU<F_nsl_annotation_object_type>()(shader_compiler_p_)
 		);
 		register_type(
 			TU<F_nsl_semantic_object_type>()(shader_compiler_p_)
@@ -2493,10 +2535,31 @@ namespace nrhi {
 
 		eastl::optional<TG_vector<F_nsl_ast_tree>> result = TG_vector<F_nsl_ast_tree>();
 
+		G_string object_type_name;
+		b8 is_annotation = false;
+
 		switch (tree.type)
 		{
 		case E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION:
-			object_type_p = shader_compiler_p_->object_manager_p()->type_p(tree.object_implementation.keyword).no_requirements();
+			// check for the case of annotation object
+			if(tree.object_implementation.keyword.size())
+			{
+				if(tree.object_implementation.keyword[0] == '@') {
+					is_annotation = true;
+					object_type_name = "@";
+				}
+				else object_type_name = tree.object_implementation.keyword;
+			}
+			else object_type_name = tree.object_implementation.keyword;
+
+			// push current object config map to stack
+			if(!is_annotation) {
+				context.current_object_config = context.temp_object_config;
+				context.object_config_stack.push(context.current_object_config);
+				context.temp_object_config = {};
+			}
+
+			object_type_p = shader_compiler_p_->object_manager_p()->type_p(object_type_name).no_requirements();
 			object_p = object_type_p->create_object(
 				tree,
 				context,
@@ -2511,6 +2574,16 @@ namespace nrhi {
 				index,
 				error_stack_p
 			);
+
+			// pop current object config map
+			if(!is_annotation) {
+				context.current_object_config = {};
+				context.temp_object_config = {};
+				context.object_config_stack.pop();
+				if(context.object_config_stack.size())
+					context.current_object_config = context.object_config_stack.get_container().back();
+			}
+
 			if(!result) {
 				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 					error_stack_p,

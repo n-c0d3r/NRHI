@@ -1,0 +1,74 @@
+
+import(nrhi.common)
+
+struct F_cluster_header
+(
+    base_index_id(u32)
+    index_count(u32)
+)
+
+@type(u32)
+enum E_primitive_type
+(
+    POINT_LIST
+    TRIANGLE_LIST
+)
+
+semantic POSITION(f32x3)
+semantic NORMAL(f32x3)
+
+resource demo_texture_2d
+(
+    Texture2D(f32x4)
+)
+
+resource demo_structured_buffer
+(
+    StructuredBuffer(F_cluster_header)
+)
+
+uniform_buffer per_view_cb
+(
+    proj_matrix(f32x4x4)
+    view_matrix(f32x4x4)
+)
+
+uniform_buffer per_object_cb
+(
+    local_to_world_matrix(f32x4x4)
+)
+
+vertex_shader vs_main
+(
+    @buffer(0)
+    @offset(0)
+    local_position(POSITION)
+
+    @buffer(0)
+    @offset(16)
+    local_normal(NORMAL)
+
+    out clip_position(SV_POSITION)
+)
+{
+}
+
+pixel_shader ps_main
+(
+    clip_position(SV_POSITION)
+    out color(SV_TARGET)
+)
+{
+}
+
+@thread_group_size(4, 4, 4)
+compute_shader cs_main()
+{
+}
+
+@rasterizer
+(
+    cull_mode(BACK)
+)
+@shaders(vs_main ps_main)
+graphics_pso pso_main

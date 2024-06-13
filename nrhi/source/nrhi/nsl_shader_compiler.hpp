@@ -231,13 +231,17 @@ namespace nrhi {
 
 	};
 
-	using F_nsl_object_config = TG_unordered_map<G_string, G_string>;
+	using F_nsl_object_config = TG_unordered_map<G_string, F_nsl_object_implementation>;
+
 	struct F_nsl_context {
 
 		TK<A_nsl_object> parent_object_p;
 
 		TG_stack<F_nsl_object_type_channel_mask> object_type_channel_mask_stack = { nsl_default_object_type_channel_mask };
-		TG_unordered_map<G_string, F_nsl_object_config> object_config_map;
+
+		F_nsl_object_config temp_object_config;
+		F_nsl_object_config current_object_config;
+		TG_stack<F_nsl_object_config> object_config_stack;
 
 	};
 
@@ -731,24 +735,19 @@ namespace nrhi {
 
 
 
-	class NRHI_API F_nsl_alias_object final : public A_nsl_object {
+	class NRHI_API F_nsl_annotation_object final : public A_nsl_object {
 
 	public:
-		G_string target;
-
-
-
-	public:
-		F_nsl_alias_object(
+		F_nsl_annotation_object(
 			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 			TKPA_valid<A_nsl_object_type> type_p,
 			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 			const G_string& name = ""
 		);
-		virtual ~F_nsl_alias_object();
+		virtual ~F_nsl_annotation_object();
 
 	public:
-		NCPP_OBJECT(F_nsl_alias_object);
+		NCPP_OBJECT(F_nsl_annotation_object);
 
 	public:
 		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
@@ -763,13 +762,13 @@ namespace nrhi {
 
 
 
-	class NRHI_API F_nsl_alias_object_type final : public A_nsl_object_type {
+	class NRHI_API F_nsl_annotation_object_type final : public A_nsl_object_type {
 
 	public:
-		F_nsl_alias_object_type(
+		F_nsl_annotation_object_type(
 			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
 		);
-		virtual ~F_nsl_alias_object_type();
+		virtual ~F_nsl_annotation_object_type();
 
 	public:
 		virtual TK<A_nsl_object> create_object(
@@ -779,7 +778,7 @@ namespace nrhi {
 		) override;
 
 	public:
-		NCPP_OBJECT(F_nsl_alias_object_type);
+		NCPP_OBJECT(F_nsl_annotation_object_type);
 
 	};
 
