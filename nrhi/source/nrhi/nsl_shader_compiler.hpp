@@ -125,6 +125,23 @@ namespace nrhi {
 	static constexpr F_nsl_object_type_channel_mask nsl_global_object_type_channel_mask = 0x1;
 	static constexpr F_nsl_object_type_channel_mask nsl_function_body_object_type_channel_mask = 0x2;
 
+	struct F_nsl_data_type_desc {
+
+		G_string name;
+		G_string semantic;
+		sz size = 0;
+
+	};
+
+	struct F_nsl_data_param_desc {
+
+		G_string name;
+		F_nsl_data_type_desc type_desc;
+		b8 is_in = false;
+		b8 is_out = false;
+
+	};
+
 	struct NRHI_API F_nsl_str_state {
 
 		b8 value = false;
@@ -769,7 +786,70 @@ namespace nrhi {
 
 
 
+	class NRHI_API F_nsl_semantic_object final : public A_nsl_object {
+
+	public:
+		G_string target;
+		G_string target_type;
+
+
+
+	public:
+		F_nsl_semantic_object(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			TKPA_valid<A_nsl_object_type> type_p,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			const G_string& name = ""
+		);
+		virtual ~F_nsl_semantic_object();
+
+	public:
+		NCPP_OBJECT(F_nsl_semantic_object);
+
+	public:
+		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
+			F_nsl_context& context,
+			TK_valid<F_nsl_translation_unit> unit_p,
+			TG_vector<F_nsl_ast_tree>& trees,
+			sz index,
+			F_nsl_error_stack* error_stack_p
+		) override;
+
+	};
+
+
+
+	class NRHI_API F_nsl_semantic_object_type final : public A_nsl_object_type {
+
+	public:
+		F_nsl_semantic_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_semantic_object_type();
+
+	public:
+		NCPP_OBJECT(F_nsl_semantic_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+
+	};
+
+
+
 	class NRHI_API A_nsl_shader_object : public A_nsl_object {
+
+	protected:
+		TG_vector<F_nsl_data_param_desc> data_param_descs_;
+
+	public:
+		NCPP_FORCE_INLINE const auto& data_param_descs() const noexcept { return data_param_descs_; }
+
+
 
 	public:
 		A_nsl_shader_object(
@@ -782,6 +862,15 @@ namespace nrhi {
 
 	public:
 		NCPP_OBJECT(A_nsl_shader_object);
+
+	public:
+		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
+			F_nsl_context& context,
+			TK_valid<F_nsl_translation_unit> unit_p,
+			TG_vector<F_nsl_ast_tree>& trees,
+			sz index,
+			F_nsl_error_stack* error_stack_p
+		) override;
 
 	};
 
@@ -816,15 +905,6 @@ namespace nrhi {
 
 	public:
 		NCPP_OBJECT(F_nsl_vertex_shader_object);
-
-	public:
-		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
-			F_nsl_context& context,
-			TK_valid<F_nsl_translation_unit> unit_p,
-			TG_vector<F_nsl_ast_tree>& trees,
-			sz index,
-			F_nsl_error_stack* error_stack_p
-		) override;
 
 	};
 
@@ -866,15 +946,6 @@ namespace nrhi {
 	public:
 		NCPP_OBJECT(F_nsl_pixel_shader_object);
 
-	public:
-		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
-			F_nsl_context& context,
-			TK_valid<F_nsl_translation_unit> unit_p,
-			TG_vector<F_nsl_ast_tree>& trees,
-			sz index,
-			F_nsl_error_stack* error_stack_p
-		) override;
-
 	};
 
 
@@ -914,15 +985,6 @@ namespace nrhi {
 
 	public:
 		NCPP_OBJECT(F_nsl_compute_shader_object);
-
-	public:
-		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
-			F_nsl_context& context,
-			TK_valid<F_nsl_translation_unit> unit_p,
-			TG_vector<F_nsl_ast_tree>& trees,
-			sz index,
-			F_nsl_error_stack* error_stack_p
-		) override;
 
 	};
 
@@ -1376,12 +1438,17 @@ namespace nrhi {
 		}
 		NCPP_FORCE_INLINE G_string target(const G_string& name) const {
 
-			G_string result = "";
+			G_string result = name;
 			auto it = name_to_target_map_.find(name);
 
-			while(it != name_to_target_map_.end()) {
+			while(
+				(it != name_to_target_map_.end())
+			) {
+				if(it->second == result)
+					return result;
 
 				result = it->second;
+
 				it = name_to_target_map_.find(result);
 			}
 
@@ -1401,7 +1468,7 @@ namespace nrhi {
 		NCPP_FORCE_INLINE void register_name(const G_string& name, const G_string& target) {
 
 			NCPP_ASSERT(name_to_target_map_.find(name) == name_to_target_map_.end()) << T_cout_value(name) << " already exists";
-			NCPP_ASSERT(is_name_has_target(target)) << T_cout_value(target) << " is not registered";
+			NCPP_ASSERT(is_name_has_target(target) || (name == target)) << T_cout_value(target) << " is not registered";
 
 			name_to_target_map_[name] = target;
 		}
@@ -1432,7 +1499,7 @@ namespace nrhi {
 			NCPP_ASSERT(
 				(name_to_target_map_.find(name) != name_to_target_map_.end())
 				|| (name_to_name_type_map_.find(name) != name_to_name_type_map_.end())
-			) << T_cout_value(name) << " is exists";
+			) << T_cout_value(name) << " is not exists";
 
 			auto it1 = name_to_name_type_map_.find(name);
 			auto it2 = name_to_target_map_.find(name);
@@ -1461,11 +1528,13 @@ namespace nrhi {
 
 	protected:
 		TG_unordered_map<G_string, sz> name_to_size_map_;
+		TG_unordered_map<G_string, G_string> name_to_semantic_target_type_map_;
 
 	public:
 		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
 
 		NCPP_FORCE_INLINE const TG_unordered_map<G_string, sz>& name_to_size_map() const noexcept { return name_to_size_map_; }
+		NCPP_FORCE_INLINE const TG_unordered_map<G_string, G_string>& name_to_semantic_target_type_map() const noexcept { return name_to_semantic_target_type_map_; }
 
 
 
@@ -1475,6 +1544,9 @@ namespace nrhi {
 
 	public:
 		NCPP_OBJECT(F_nsl_data_type_manager);
+
+	public:
+		b8 search_data_type(const G_string& name, F_nsl_data_type_desc& out_desc) const;
 
 	public:
 		NCPP_FORCE_INLINE b8 is_name_has_size(const G_string& name) const {
@@ -1496,6 +1568,42 @@ namespace nrhi {
 			NCPP_ASSERT(name_to_size_map_.find(name) == name_to_size_map_.end()) << T_cout_value(name) << " already exists";
 
 			name_to_size_map_[name] = size;
+		}
+		NCPP_FORCE_INLINE void deregister_size(const G_string& name) {
+
+			NCPP_ASSERT(name_to_size_map_.find(name) != name_to_size_map_.end()) << T_cout_value(name) << " is not exists";
+
+			auto it = name_to_size_map_.find(name);
+			name_to_size_map_.erase(it);
+		}
+
+	public:
+		NCPP_FORCE_INLINE b8 is_name_has_semantic_target_type(const G_string& name) const {
+
+			auto it = name_to_semantic_target_type_map_.find(name);
+
+			return (it != name_to_semantic_target_type_map_.end());
+		}
+		NCPP_FORCE_INLINE G_string semantic_target_type(const G_string& name) const {
+
+			auto it = name_to_semantic_target_type_map_.find(name);
+
+			NCPP_ASSERT(it != name_to_semantic_target_type_map_.end()) << "can't find " << T_cout_value(name);
+
+			return it->second;
+		}
+		NCPP_FORCE_INLINE void register_semantic(const G_string& name, const G_string& semantic_target_type) {
+
+			NCPP_ASSERT(name_to_semantic_target_type_map_.find(name) == name_to_semantic_target_type_map_.end()) << T_cout_value(name) << " already exists";
+
+			name_to_semantic_target_type_map_[name] = semantic_target_type;
+		}
+		NCPP_FORCE_INLINE void deregister_semantic(const G_string& name) {
+
+			NCPP_ASSERT(name_to_semantic_target_type_map_.find(name) != name_to_semantic_target_type_map_.end()) << T_cout_value(name) << " is not exists";
+
+			auto it = name_to_semantic_target_type_map_.find(name);
+			name_to_semantic_target_type_map_.erase(it);
 		}
 
 	};

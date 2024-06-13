@@ -10,9 +10,22 @@ int main() {
 	auto compiler_p = TU<F_nsl_shader_compiler>()();
 	compiler_p->compile(
 "\n"
-"vertex_shader vs_main(local_position(POSITION) out clip_position(float4 SV_POSITION))\n"
+"semantic POSITION(float3)\n"
+"semantic NORMAL(float3)\n"
+"\n"
+"vertex_shader vs_main(\n"
+"	local_position(POSITION)\n"
+"	local_normal(NORMAL)\n"
+"	out clip_position(SV_POSITION)\n"
+")\n"
 "{\n"
-"vertex_shader vs_main2(){}\n"
+"}\n"
+"\n"
+"pixel_shader ps_main(\n"
+"	clip_position(SV_POSITION)\n"
+"	out color(SV_TARGET)\n"
+")\n"
+"{\n"
 "}\n"
 "\n",
 		E_nsl_output_language::HLSL

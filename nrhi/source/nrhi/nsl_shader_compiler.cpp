@@ -1272,39 +1272,29 @@ namespace nrhi {
 	) {
 		const auto& tree = trees[index];
 
-		auto& target_content_body = tree.object_implementation.bodies[0];
-
 		auto name_manager_p = shader_compiler_p()->name_manager_p();
 
-		G_string new_target = H_nsl_utilities::clear_space_head_tail(
-			target_content_body.content
-		);
+		target = tree.object_implementation.name;
 
-		if(!H_nsl_utilities::is_variable_name(new_target)) {
+		if(tree.object_implementation.bodies.size()) {
+
+			auto& target_content_body = tree.object_implementation.bodies[0];
+
+			target = target_content_body.content;
+		}
+
+		if(name_manager_p->is_name_registered(tree.object_implementation.name)) {
 
 			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 				&(unit_p->error_group_p()->stack()),
-				target_content_body.begin_location,
-				"invalid name: " + new_target
+				tree.object_implementation.begin_name_location,
+				tree.object_implementation.name + " is already registered"
 			);
 
 			return eastl::nullopt;
 		}
 
-		if(name_manager_p->is_name_registered(new_target)) {
-
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				&(unit_p->error_group_p()->stack()),
-				target_content_body.begin_location,
-				new_target + " is already registered"
-			);
-
-			return eastl::nullopt;
-		}
-
-		target = new_target;
-
-		name_manager_p->register_name(target);
+		name_manager_p->register_name(tree.object_implementation.name, target);
 
 		return TG_vector<F_nsl_ast_tree>();
 	}
@@ -1317,8 +1307,8 @@ namespace nrhi {
 		A_nsl_object_type(
 			shader_compiler_p,
 			"define",
-			false,
-			1,
+			true,
+			0,
 			1
 		)
 	{
@@ -1375,39 +1365,33 @@ namespace nrhi {
 	) {
 		const auto& tree = trees[index];
 
-		auto& target_content_body = tree.object_implementation.bodies[0];
-
 		auto name_manager_p = shader_compiler_p()->name_manager_p();
 
-		G_string new_target = H_nsl_utilities::clear_space_head_tail(
-			target_content_body.content
-		);
+		target = tree.object_implementation.name;
 
-		if(!H_nsl_utilities::is_variable_name(new_target)) {
+		if(!H_nsl_utilities::is_variable_name(target)) {
 
 			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 				&(unit_p->error_group_p()->stack()),
-				target_content_body.begin_location,
-				"invalid name: " + new_target
+				tree.object_implementation.begin_name_location,
+				"invalid name: " + target
 			);
 
 			return eastl::nullopt;
 		}
 
 		if(
-			!(name_manager_p->is_name_registered(new_target))
+			!(name_manager_p->is_name_registered(target))
 		) {
 
 			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 				&(unit_p->error_group_p()->stack()),
-				target_content_body.begin_location,
-				new_target + " is not registered"
+				tree.object_implementation.begin_name_location,
+				target + " is not registered"
 			);
 
 			return eastl::nullopt;
 		}
-
-		target = new_target;
 
 		name_manager_p->deregister_name(target);
 
@@ -1422,9 +1406,9 @@ namespace nrhi {
 		A_nsl_object_type(
 			shader_compiler_p,
 			"undef",
-			false,
-			1,
-			1
+			true,
+			0,
+			0
 		)
 	{
 	}
@@ -1711,6 +1695,109 @@ namespace nrhi {
 
 
 
+	F_nsl_semantic_object::F_nsl_semantic_object(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		TKPA_valid<A_nsl_object_type> type_p,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const G_string& name
+	) :
+		A_nsl_object(
+			shader_compiler_p,
+			type_p,
+			translation_unit_p,
+			name
+		)
+	{
+	}
+	F_nsl_semantic_object::~F_nsl_semantic_object() {
+	}
+
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_semantic_object::recursive_build_ast_tree(
+		F_nsl_context& context,
+		TK_valid<F_nsl_translation_unit> unit_p,
+		TG_vector<F_nsl_ast_tree>& trees,
+		sz index,
+		F_nsl_error_stack* error_stack_p
+	) {
+		const auto& tree = trees[index];
+
+		auto name_manager_p = shader_compiler_p()->name_manager_p();
+		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
+
+		target = tree.object_implementation.name;
+
+		if(name_manager_p->is_name_registered(target)) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				&(unit_p->error_group_p()->stack()),
+				tree.object_implementation.begin_name_location,
+				target + " is already registered"
+			);
+
+			return eastl::nullopt;
+		}
+
+		target_type = H_nsl_utilities::clear_space_head_tail(
+			tree.object_implementation.bodies[0].content
+		);
+		if(!H_nsl_utilities::is_variable_name(target_type)) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				&(unit_p->error_group_p()->stack()),
+				tree.object_implementation.bodies[0].begin_location,
+				"invalid target type " + target_type
+			);
+
+			return eastl::nullopt;
+		}
+
+		name_manager_p->register_name(target);
+		data_type_manager_p->register_semantic(target, target_type);
+
+		return TG_vector<F_nsl_ast_tree>();
+	}
+
+
+
+	F_nsl_semantic_object_type::F_nsl_semantic_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"semantic",
+			true,
+			1,
+			1,
+			nsl_global_object_type_channel_mask
+		)
+	{
+	}
+	F_nsl_semantic_object_type::~F_nsl_semantic_object_type() {
+	}
+
+	TK<A_nsl_object> F_nsl_semantic_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	) {
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_semantic_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
 	A_nsl_shader_object::A_nsl_shader_object(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 		TKPA_valid<A_nsl_object_type> type_p,
@@ -1726,6 +1813,140 @@ namespace nrhi {
 	{
 	}
 	A_nsl_shader_object::~A_nsl_shader_object() {
+	}
+
+	eastl::optional<TG_vector<F_nsl_ast_tree>> A_nsl_shader_object::recursive_build_ast_tree(
+		F_nsl_context& context,
+		TK_valid<F_nsl_translation_unit> unit_p,
+		TG_vector<F_nsl_ast_tree>& trees,
+		sz index,
+		F_nsl_error_stack* error_stack_p
+	) {
+		auto& tree = trees[index];
+		auto& object_implementation = tree.object_implementation;
+
+		context.parent_object_p = NCPP_KTHIS().no_requirements();
+
+		auto translation_unit_compiler_p = shader_compiler_p()->translation_unit_compiler_p();
+		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
+
+		b8 is_in = true;
+		b8 is_out = false;
+
+		// parse params
+		auto param_child_info_trees_opt = H_nsl_utilities::build_info_trees(
+			object_implementation.bodies[0].content,
+			object_implementation.bodies[0].begin_location,
+			&(unit_p->error_group_p()->stack())
+		);
+		if(!param_child_info_trees_opt) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				&(unit_p->error_group_p()->stack()),
+				object_implementation.bodies[0].begin_location,
+				"can't not parse shader params"
+			);
+			return eastl::nullopt;
+		}
+		auto& param_child_info_trees = param_child_info_trees_opt.value();
+		TG_vector<F_nsl_ast_tree> param_childs(param_child_info_trees.size());
+		for(u32 i = 0; i < param_childs.size(); ++i) {
+
+			auto& param_child_info_tree = param_child_info_trees[i];
+
+			if(param_child_info_tree.name == "out") {
+
+				is_in = false;
+				is_out = true;
+			}
+			else if(param_child_info_tree.name == "in") {
+
+				is_in = true;
+				is_out = false;
+			}
+			else if(param_child_info_tree.name == "inout") {
+
+				is_in = true;
+				is_out = true;
+			}
+			else {
+				if(param_child_info_tree.childs.size() != 1) {
+
+					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+						&(unit_p->error_group_p()->stack()),
+						param_child_info_tree.begin_childs_location,
+						"require param type"
+					);
+					return eastl::nullopt;
+				}
+
+				const auto& type_tree = param_child_info_tree.childs[0];
+				const auto& type_name = type_tree.name;
+
+				F_nsl_data_type_desc type_desc;
+
+				if(!(data_type_manager_p->search_data_type(type_name, type_desc))) {
+
+					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+						&(unit_p->error_group_p()->stack()),
+						type_tree.begin_name_location,
+						"not found param type " + type_name
+					);
+					return eastl::nullopt;
+				}
+
+				data_param_descs_.push_back(
+					F_nsl_data_param_desc {
+						.name = param_child_info_tree.name,
+						.type_desc = type_desc,
+						.is_in = is_in,
+						.is_out = is_out
+					}
+				);
+
+				is_in = true;
+				is_out = false;
+			}
+
+			param_childs[i] = F_nsl_ast_tree {
+				.type = E_nsl_ast_tree_type::INFO_TREE,
+				.info_tree = param_child_info_tree,
+				.begin_location = param_child_info_tree.begin_location,
+				.end_location = param_child_info_tree.end_location
+			};
+		}
+
+		// parse body
+		context.object_type_channel_mask_stack.push(nsl_function_body_object_type_channel_mask);
+		auto body_childs_opt = translation_unit_compiler_p->parse(
+			unit_p,
+			object_implementation.bodies[1].content,
+			context,
+			object_implementation.bodies[1].begin_location,
+			0
+		);
+		if(!body_childs_opt) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				&(unit_p->error_group_p()->stack()),
+				object_implementation.bodies[1].begin_location,
+				"can't not parse shader body"
+			);
+			return eastl::nullopt;
+		}
+		context.object_type_channel_mask_stack.pop();
+
+		auto body_childs = std::move(body_childs_opt.value());
+
+		// ast tree childs
+		auto childs = std::move(param_childs);
+		childs.insert(
+			childs.end(),
+			body_childs.begin(),
+			body_childs.end()
+		);
+
+		return std::move(childs);
 	}
 
 
@@ -1764,81 +1985,6 @@ namespace nrhi {
 	{
 	}
 	F_nsl_vertex_shader_object::~F_nsl_vertex_shader_object() {
-	}
-
-	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_vertex_shader_object::recursive_build_ast_tree(
-		F_nsl_context& context,
-		TK_valid<F_nsl_translation_unit> unit_p,
-		TG_vector<F_nsl_ast_tree>& trees,
-		sz index,
-		F_nsl_error_stack* error_stack_p
-	) {
-		auto& tree = trees[index];
-		auto& object_implementation = tree.object_implementation;
-
-		context.parent_object_p = NCPP_KTHIS().no_requirements();
-
-		auto translation_unit_compiler_p = shader_compiler_p()->translation_unit_compiler_p();
-
-		auto param_child_info_trees_opt = H_nsl_utilities::build_info_trees(
-			object_implementation.bodies[0].content,
-			object_implementation.bodies[0].begin_location,
-			&(unit_p->error_group_p()->stack())
-		);
-		if(!param_child_info_trees_opt) {
-
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				&(unit_p->error_group_p()->stack()),
-				object_implementation.bodies[0].begin_location,
-				"can't not parse vertex shader params"
-			);
-			return eastl::nullopt;
-		}
-		auto& param_child_info_trees = param_child_info_trees_opt.value();
-		TG_vector<F_nsl_ast_tree> param_childs(param_child_info_trees.size());
-		for(u32 i = 0; i < param_childs.size(); ++i) {
-
-			auto& param_child_info_tree = param_child_info_trees[i];
-
-			param_childs[i] = F_nsl_ast_tree {
-				.type = E_nsl_ast_tree_type::INFO_TREE,
-				.info_tree = param_child_info_tree,
-				.begin_location = param_child_info_tree.begin_location,
-				.end_location = param_child_info_tree.end_name_location
-			};
-		}
-
-		context.object_type_channel_mask_stack.push(nsl_function_body_object_type_channel_mask);
-
-		auto body_childs_opt = translation_unit_compiler_p->parse(
-			unit_p,
-			object_implementation.bodies[1].content,
-			context,
-			object_implementation.bodies[1].begin_location,
-			0
-		);
-		if(!body_childs_opt) {
-
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				&(unit_p->error_group_p()->stack()),
-				object_implementation.bodies[1].begin_location,
-				"can't not parse vertex shader body"
-			);
-			return eastl::nullopt;
-		}
-
-		context.object_type_channel_mask_stack.pop();
-
-		auto body_childs = std::move(body_childs_opt.value());
-
-		auto childs = std::move(param_childs);
-		childs.insert(
-			childs.end(),
-			body_childs.begin(),
-			body_childs.end()
-		);
-
-		return std::move(childs);
 	}
 
 
@@ -1895,16 +2041,6 @@ namespace nrhi {
 	F_nsl_pixel_shader_object::~F_nsl_pixel_shader_object() {
 	}
 
-	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_pixel_shader_object::recursive_build_ast_tree(
-		F_nsl_context& context,
-		TK_valid<F_nsl_translation_unit> unit_p,
-		TG_vector<F_nsl_ast_tree>& trees,
-		sz index,
-		F_nsl_error_stack* error_stack_p
-	) {
-		return TG_vector<F_nsl_ast_tree>();
-	}
-
 
 
 	F_nsl_pixel_shader_object_type::F_nsl_pixel_shader_object_type(
@@ -1957,16 +2093,6 @@ namespace nrhi {
 	{
 	}
 	F_nsl_compute_shader_object::~F_nsl_compute_shader_object() {
-	}
-
-	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_compute_shader_object::recursive_build_ast_tree(
-		F_nsl_context& context,
-		TK_valid<F_nsl_translation_unit> unit_p,
-		TG_vector<F_nsl_ast_tree>& trees,
-		sz index,
-		F_nsl_error_stack* error_stack_p
-	) {
-		return TG_vector<F_nsl_ast_tree>();
 	}
 
 
@@ -2026,6 +2152,9 @@ namespace nrhi {
 		);
 		register_type(
 			TU<F_nsl_alias_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_semantic_object_type>()(shader_compiler_p_)
 		);
 		register_type(
 			TU<F_nsl_vertex_shader_object_type>()(shader_compiler_p_)
@@ -2483,6 +2612,33 @@ namespace nrhi {
 	F_nsl_data_type_manager::~F_nsl_data_type_manager() {
 	}
 
+	b8 F_nsl_data_type_manager::search_data_type(const G_string& name, F_nsl_data_type_desc& out_desc) const {
+
+		auto name_manager_p = shader_compiler_p_->name_manager_p();
+
+		if(!(name_manager_p->is_name_registered(name)))
+			return false;
+
+		G_string target = name_manager_p->target(name);
+
+		G_string target_name = target;
+		G_string semantic;
+
+		if(is_name_has_semantic_target_type(target)) {
+
+			target_name = this->semantic_target_type(target);
+			semantic = target;
+		}
+
+		out_desc = F_nsl_data_type_desc {
+			.name = target,
+			.semantic = std::move(semantic),
+			.size = size(target_name)
+		};
+
+		return true;
+	}
+
 
 
 	A_nsl_output_language::A_nsl_output_language(
@@ -2515,12 +2671,12 @@ namespace nrhi {
 
 		name_manager_p->register_name("NSL_OUTPUT_HLSL");
 
-		name_manager_p->template T_register_name<FE_nsl_name_types>("bool");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("int");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("uint");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("half");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("float");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("double");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("bool");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("int");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("uint");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("half");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("float");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("double");
 
 		name_manager_p->register_name("b8", "bool");
 		name_manager_p->register_name("i32", "int");
@@ -2536,12 +2692,12 @@ namespace nrhi {
 		data_type_manager_p->register_size("float", 4);
 		data_type_manager_p->register_size("double", 8);
 
-		name_manager_p->template T_register_name<FE_nsl_name_types>("bool2");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("int2");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("uint2");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("half2");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("float2");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("double2");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("bool2");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("int2");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("uint2");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("half2");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("float2");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("double2");
 
 		name_manager_p->register_name("F_vector2_b8", "bool2");
 		name_manager_p->register_name("F_vector2_i32", "int2");
@@ -2557,12 +2713,12 @@ namespace nrhi {
 		data_type_manager_p->register_size("float2", 4 * 2);
 		data_type_manager_p->register_size("double2", 8 * 2);
 
-		name_manager_p->template T_register_name<FE_nsl_name_types>("bool3");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("int3");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("uint3");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("half3");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("float3");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("double3");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("bool3");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("int3");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("uint3");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("half3");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("float3");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("double3");
 
 		name_manager_p->register_name("F_vector3_b8", "bool3");
 		name_manager_p->register_name("F_vector3_i32", "int3");
@@ -2578,12 +2734,12 @@ namespace nrhi {
 		data_type_manager_p->register_size("float3", 4 * 3);
 		data_type_manager_p->register_size("double3", 8 * 3);
 
-		name_manager_p->template T_register_name<FE_nsl_name_types>("bool4");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("int4");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("uint4");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("half4");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("float4");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("double4");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("bool4");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("int4");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("uint4");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("half4");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("float4");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("double4");
 
 		name_manager_p->register_name("F_vector4_b8", "bool4");
 		name_manager_p->register_name("F_vector4_i32", "int4");
@@ -2599,12 +2755,12 @@ namespace nrhi {
 		data_type_manager_p->register_size("float4", 4 * 4);
 		data_type_manager_p->register_size("double4", 8 * 4);
 
-		name_manager_p->template T_register_name<FE_nsl_name_types>("bool2x2");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("int2x2");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("uint2x2");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("half2x2");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("float2x2");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("double2x2");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("bool2x2");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("int2x2");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("uint2x2");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("half2x2");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("float2x2");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("double2x2");
 
 		name_manager_p->register_name("F_matrix2x2_b8", "bool2x2");
 		name_manager_p->register_name("F_matrix2x2_i32", "int2x2");
@@ -2620,12 +2776,12 @@ namespace nrhi {
 		data_type_manager_p->register_size("float2x2", 4 * 2 * 2);
 		data_type_manager_p->register_size("double2x2", 8 * 2 * 2);
 
-		name_manager_p->template T_register_name<FE_nsl_name_types>("bool3x3");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("int3x3");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("uint3x3");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("half3x3");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("float3x3");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("double3x3");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("bool3x3");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("int3x3");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("uint3x3");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("half3x3");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("float3x3");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("double3x3");
 
 		name_manager_p->register_name("F_matrix3x3_b8", "bool3x3");
 		name_manager_p->register_name("F_matrix3x3_i32", "int3x3");
@@ -2641,12 +2797,12 @@ namespace nrhi {
 		data_type_manager_p->register_size("float3x3", 4 * 3 * 3);
 		data_type_manager_p->register_size("double3x3", 8 * 3 * 3);
 
-		name_manager_p->template T_register_name<FE_nsl_name_types>("bool4x4");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("int4x4");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("uint4x4");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("half4x4");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("float4x4");
-		name_manager_p->template T_register_name<FE_nsl_name_types>("double4x4");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("bool4x4");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("int4x4");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("uint4x4");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("half4x4");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("float4x4");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("double4x4");
 
 		name_manager_p->register_name("F_matrix4x4_b8", "bool4x4");
 		name_manager_p->register_name("F_matrix4x4_i32", "int4x4");
@@ -2668,6 +2824,15 @@ namespace nrhi {
 		name_manager_p->register_name("F_matrix2x2", "F_matrix2x2_f32");
 		name_manager_p->register_name("F_matrix3x3", "F_matrix3x3_f32");
 		name_manager_p->register_name("F_matrix4x4", "F_matrix4x4_f32");
+
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("SV_Position");
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("SV_Target");
+
+		name_manager_p->register_name("SV_POSITION", "SV_Position");
+		name_manager_p->register_name("SV_TARGET", "SV_Target");
+
+		data_type_manager_p->register_semantic("SV_Position", "float4");
+		data_type_manager_p->register_semantic("SV_Target", "float4");
 	}
 
 
