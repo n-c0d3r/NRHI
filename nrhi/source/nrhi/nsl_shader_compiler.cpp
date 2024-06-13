@@ -1751,7 +1751,7 @@ namespace nrhi {
 			return eastl::nullopt;
 		}
 
-		name_manager_p->register_name(target);
+		name_manager_p->template T_register_name<FE_nsl_name_types::SEMANTIC>(target);
 		data_type_manager_p->register_semantic(target, target_type);
 
 		return TG_vector<F_nsl_ast_tree>();
@@ -2825,8 +2825,8 @@ namespace nrhi {
 		name_manager_p->register_name("F_matrix3x3", "F_matrix3x3_f32");
 		name_manager_p->register_name("F_matrix4x4", "F_matrix4x4_f32");
 
-		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("SV_Position");
-		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("SV_Target");
+		name_manager_p->template T_register_name<FE_nsl_name_types::SEMANTIC>("SV_Position");
+		name_manager_p->template T_register_name<FE_nsl_name_types::SEMANTIC>("SV_Target");
 
 		name_manager_p->register_name("SV_POSITION", "SV_Position");
 		name_manager_p->register_name("SV_TARGET", "SV_Target");

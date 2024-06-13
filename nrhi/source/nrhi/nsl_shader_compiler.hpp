@@ -225,6 +225,7 @@ namespace nrhi {
 	struct FE_nsl_name_types {
 
 		struct DATA_TYPE {};
+		struct SEMANTIC {};
 		struct RESOURCE {};
 
 	};
