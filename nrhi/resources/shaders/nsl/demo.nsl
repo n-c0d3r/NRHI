@@ -1,5 +1,5 @@
 
-import(nrhi.common)
+import(nrhi)
 
 struct F_cluster_header
 (
@@ -17,26 +17,35 @@ enum E_primitive_type
 semantic POSITION(f32x3)
 semantic NORMAL(f32x3)
 
-resource demo_texture_2d
-(
+@filter(MIN_MAG_MIP_POINT)
+sampler demo_sampler
+
+@slot(0)
+shader_resource_view demo_texture_2d(
     Texture2D(f32x4)
 )
 
-resource demo_structured_buffer
+shader_resource_view demo_structured_buffer
+(
+    StructuredBuffer(F_cluster_header)
+)
+
+unordered_access_view demo_structured_buffer_rw
 (
     StructuredBuffer(F_cluster_header)
 )
 
 uniform_buffer per_view_cb
-(
-    proj_matrix(f32x4x4)
-    view_matrix(f32x4x4)
-)
-
 uniform_buffer per_object_cb
-(
-    local_to_world_matrix(f32x4x4)
-)
+
+@buffer(per_view_cb)
+uniform proj_matrix(f32x4x4)
+@buffer(per_view_cb)
+uniform view_matrix(f32x4x4)
+
+default_uniform_buffer(per_object_cb)
+uniform local_to_world_matrix(f32x4x4)
+uniform color(f32x4)
 
 vertex_shader vs_main
 (
@@ -61,7 +70,7 @@ pixel_shader ps_main
 {
 }
 
-@thread_group_size(4, 4, 4)
+@thread_group_size(4 4 4)
 compute_shader cs_main()
 {
 }
@@ -70,5 +79,10 @@ compute_shader cs_main()
 (
     cull_mode(BACK)
 )
-@shaders(vs_main ps_main)
-graphics_pso pso_main
+@shaders(
+    vs_main 
+    ps_main
+)
+graphics_pso graphics_pso_main
+
+compute_pso compute_pso_main

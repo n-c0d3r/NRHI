@@ -369,6 +369,34 @@ namespace nrhi {
 
 
 
+	class NRHI_API A_nsl_reflection_item {
+
+	private:
+		TK_valid<F_nsl_shader_compiler> shader_compiler_p_;
+		G_string name_;
+
+	public:
+		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
+		NCPP_FORCE_INLINE const G_string& name() const noexcept { return name_; }
+
+
+
+	protected:
+		A_nsl_reflection_item(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			const G_string& name = ""
+		);
+
+	public:
+		virtual ~A_nsl_reflection_item();
+
+	public:
+		NCPP_OBJECT(A_nsl_reflection_item);
+
+	};
+
+
+
 	class NRHI_API A_nsl_object {
 
 	private:

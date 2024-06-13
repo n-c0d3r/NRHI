@@ -1048,6 +1048,20 @@ namespace nrhi {
 
 
 
+	A_nsl_reflection_item::A_nsl_reflection_item(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		const G_string& name
+	) :
+		shader_compiler_p_(shader_compiler_p),
+		name_(name)
+	{
+	}
+	A_nsl_reflection_item::~A_nsl_reflection_item()
+	{
+	}
+
+
+
 	A_nsl_object::A_nsl_object(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 		TKPA_valid<A_nsl_object_type> type_p,
