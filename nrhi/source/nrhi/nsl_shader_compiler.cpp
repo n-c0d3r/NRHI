@@ -1887,6 +1887,141 @@ namespace nrhi {
 
 
 
+	F_nsl_structure_object::F_nsl_structure_object(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		TKPA_valid<A_nsl_object_type> type_p,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const G_string& name
+	) :
+		A_nsl_object(
+			shader_compiler_p,
+			type_p,
+			translation_unit_p,
+			name
+		)
+	{
+	}
+	F_nsl_structure_object::~F_nsl_structure_object() {
+	}
+
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_structure_object::recursive_build_ast_tree(
+		F_nsl_context& context,
+		TK_valid<F_nsl_translation_unit> unit_p,
+		TG_vector<F_nsl_ast_tree>& trees,
+		sz index,
+		F_nsl_error_stack* error_stack_p
+	) {
+		auto& tree = trees[index];
+		auto& object_implementation = tree.object_implementation;
+
+		context.parent_object_p = NCPP_KTHIS().no_requirements();
+
+		auto translation_unit_compiler_p = shader_compiler_p()->translation_unit_compiler_p();
+		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
+
+		F_nsl_data_argument_config_map data_argument_config_map;
+
+		// parse arguments
+		auto argument_child_info_trees_opt = H_nsl_utilities::build_info_trees(
+			object_implementation.bodies[0].content,
+			object_implementation.bodies[0].begin_location,
+			&(unit_p->error_group_p()->stack())
+		);
+		if(!argument_child_info_trees_opt) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				&(unit_p->error_group_p()->stack()),
+				object_implementation.bodies[0].begin_location,
+				"can't not parse struct arguments"
+			);
+			return eastl::nullopt;
+		}
+		auto& argument_child_info_trees = argument_child_info_trees_opt.value();
+		TG_vector<F_nsl_ast_tree> argument_childs(argument_child_info_trees.size());
+		for(u32 i = 0; i < argument_childs.size(); ++i) {
+
+			auto& argument_child_info_tree = argument_child_info_trees[i];
+
+			if(argument_child_info_tree.name[0] == '@') {
+
+				data_argument_config_map[
+					argument_child_info_tree.name.substr(1, argument_child_info_tree.name.length() - 1)
+				] = argument_child_info_tree;
+				continue;
+			}
+
+			if(argument_child_info_tree.childs.size() != 1) {
+
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					&(unit_p->error_group_p()->stack()),
+					argument_child_info_tree.begin_childs_location,
+					"require argument type"
+				);
+				return eastl::nullopt;
+			}
+
+			const auto& type_tree = argument_child_info_tree.childs[0];
+
+			data_arguments_.push_back(
+				F_nsl_data_argument{
+					.name = argument_child_info_tree.name,
+					.type_name = type_tree.name,
+					.config_map = std::move(data_argument_config_map)
+				}
+			);
+
+			argument_childs[i] = F_nsl_ast_tree {
+				.type = E_nsl_ast_tree_type::INFO_TREE,
+				.info_tree = argument_child_info_tree,
+				.begin_location = argument_child_info_tree.begin_location,
+				.end_location = argument_child_info_tree.end_location
+			};
+		}
+
+		return std::move(argument_childs);
+	}
+
+
+
+	F_nsl_structure_object_type::F_nsl_structure_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"struct",
+			true,
+			1,
+			1,
+			nsl_global_object_type_channel_mask
+		)
+	{
+	}
+	F_nsl_structure_object_type::~F_nsl_structure_object_type() {
+	}
+
+	TK<A_nsl_object> F_nsl_structure_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	) {
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_structure_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
 	A_nsl_shader_object::A_nsl_shader_object(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 		TKPA_valid<A_nsl_object_type> type_p,
@@ -2291,6 +2426,9 @@ namespace nrhi {
 		);
 		register_type(
 			TU<F_nsl_compute_shader_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_structure_object_type>()(shader_compiler_p_)
 		);
 	}
 	F_nsl_object_manager::~F_nsl_object_manager() {

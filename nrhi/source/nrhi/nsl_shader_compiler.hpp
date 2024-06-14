@@ -898,6 +898,63 @@ namespace nrhi {
 
 
 
+	class NRHI_API F_nsl_structure_object : public A_nsl_object {
+
+	private:
+		TG_vector<F_nsl_data_argument> data_arguments_;
+
+	public:
+		NCPP_FORCE_INLINE const TG_vector<F_nsl_data_argument>& data_arguments() const noexcept { return data_arguments_; }
+
+
+
+	public:
+		F_nsl_structure_object(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			TKPA_valid<A_nsl_object_type> type_p,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			const G_string& name = ""
+		);
+		virtual ~F_nsl_structure_object();
+
+	public:
+		NCPP_OBJECT(F_nsl_structure_object);
+
+	public:
+		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
+			F_nsl_context& context,
+			TK_valid<F_nsl_translation_unit> unit_p,
+			TG_vector<F_nsl_ast_tree>& trees,
+			sz index,
+			F_nsl_error_stack* error_stack_p
+		) override;
+
+	};
+
+
+
+	class NRHI_API F_nsl_structure_object_type : public A_nsl_object_type {
+
+	public:
+		F_nsl_structure_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_structure_object_type();
+
+	public:
+		NCPP_OBJECT(F_nsl_structure_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+
+	};
+
+
+
 	class NRHI_API A_nsl_shader_object : public A_nsl_object {
 
 	protected:
@@ -908,13 +965,15 @@ namespace nrhi {
 
 
 
-	public:
+	protected:
 		A_nsl_shader_object(
 			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 			TKPA_valid<A_nsl_object_type> type_p,
 			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 			const G_string& name = ""
 		);
+
+	public:
 		virtual ~A_nsl_shader_object();
 
 	public:
