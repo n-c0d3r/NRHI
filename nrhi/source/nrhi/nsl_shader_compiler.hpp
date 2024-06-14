@@ -138,7 +138,8 @@ namespace nrhi {
 	struct F_nsl_data_argument {
 
 		G_string name;
-		G_string type_name;
+		G_string type;
+		u32 count = 1;
 		F_nsl_data_argument_config_map config_map;
 
 	};
@@ -149,11 +150,20 @@ namespace nrhi {
 		b8 is_out = false;
 
 	};
+	struct F_nsl_data_argument_member {
+
+		F_nsl_data_argument argument;
+		u32 offset;
+
+	};
 
 	using F_nsl_structure_config_map = TG_unordered_map<G_string, F_nsl_object_implementation>;
 	struct F_nsl_structure_info {
 
-		TG_vector<F_nsl_data_argument> arguments;
+		TG_vector<F_nsl_data_argument_member> argument_members;
+
+		u32 alignment = 16;
+		u32 size = 0;
 
 		F_nsl_structure_config_map config_map;
 
@@ -1654,6 +1664,7 @@ namespace nrhi {
 
 	protected:
 		TG_unordered_map<G_string, sz> name_to_size_map_;
+		TG_unordered_map<G_string, u32> name_to_alignment_map_;
 		TG_unordered_map<G_string, F_nsl_semantic_info> name_to_semantic_info_map_;
 		TG_unordered_map<G_string, F_nsl_structure_info> name_to_structure_info_map_;
 
@@ -1661,6 +1672,7 @@ namespace nrhi {
 		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
 
 		NCPP_FORCE_INLINE const TG_unordered_map<G_string, sz>& name_to_size_map() const noexcept { return name_to_size_map_; }
+		NCPP_FORCE_INLINE const TG_unordered_map<G_string, u32>& name_to_alignment_map() const noexcept { return name_to_alignment_map_; }
 		NCPP_FORCE_INLINE const TG_unordered_map<G_string, F_nsl_semantic_info>& name_to_semantic_info_map() const noexcept { return name_to_semantic_info_map_; }
 		NCPP_FORCE_INLINE const TG_unordered_map<G_string, F_nsl_structure_info>& name_to_structure_info_map() const noexcept { return name_to_structure_info_map_; }
 
@@ -1703,6 +1715,35 @@ namespace nrhi {
 		}
 
 	public:
+		NCPP_FORCE_INLINE b8 is_name_has_alignment(const G_string& name) const {
+
+			auto it = name_to_alignment_map_.find(name);
+
+			return (it != name_to_alignment_map_.end());
+		}
+		NCPP_FORCE_INLINE u32 alignment(const G_string& name) const {
+
+			auto it = name_to_alignment_map_.find(name);
+
+			NCPP_ASSERT(it != name_to_alignment_map_.end()) << "can't find " << T_cout_value(name);
+
+			return it->second;
+		}
+		NCPP_FORCE_INLINE void register_alignment(const G_string& name, u32 alignment) {
+
+			NCPP_ASSERT(name_to_alignment_map_.find(name) == name_to_alignment_map_.end()) << T_cout_value(name) << " already exists";
+
+			name_to_alignment_map_[name] = alignment;
+		}
+		NCPP_FORCE_INLINE void deregister_alignment(const G_string& name) {
+
+			NCPP_ASSERT(name_to_alignment_map_.find(name) != name_to_alignment_map_.end()) << T_cout_value(name) << " is not exists";
+
+			auto it = name_to_alignment_map_.find(name);
+			name_to_alignment_map_.erase(it);
+		}
+
+	public:
 		NCPP_FORCE_INLINE b8 is_name_has_semantic_info(const G_string& name) const {
 
 			auto it = name_to_semantic_info_map_.find(name);
@@ -1721,7 +1762,7 @@ namespace nrhi {
 
 			NCPP_ASSERT(name_to_semantic_info_map_.find(name) == name_to_semantic_info_map_.end()) << T_cout_value(name) << " already exists";
 
-			name_to_semantic_info_map_[name] = semantic_info;
+			name_to_semantic_info_map_[name] = process_semantic_info(name, semantic_info);
 		}
 		NCPP_FORCE_INLINE void deregister_semantic(const G_string& name) {
 
@@ -1750,7 +1791,7 @@ namespace nrhi {
 
 			NCPP_ASSERT(name_to_structure_info_map_.find(name) == name_to_structure_info_map_.end()) << T_cout_value(name) << " already exists";
 
-			name_to_structure_info_map_[name] = structure_info;
+			name_to_structure_info_map_[name] = process_structure_info(name, structure_info);
 		}
 		NCPP_FORCE_INLINE void deregister_structure(const G_string& name) {
 
@@ -1759,6 +1800,10 @@ namespace nrhi {
 			auto it = name_to_structure_info_map_.find(name);
 			name_to_structure_info_map_.erase(it);
 		}
+
+	private:
+		F_nsl_semantic_info process_semantic_info(const G_string& name, const F_nsl_semantic_info& semantic_info);
+		F_nsl_structure_info process_structure_info(const G_string& name, const F_nsl_structure_info& structure_info);
 
 	};
 

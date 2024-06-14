@@ -1838,7 +1838,7 @@ namespace nrhi {
 		data_type_manager_p->register_semantic(
 			tree.object_implementation.name,
 			F_nsl_semantic_info {
-				.target_type = target_type,
+				.target_type = name_manager_p->target(target_type),
 				.input_class = input_class
 			}
 		);
@@ -1954,7 +1954,7 @@ namespace nrhi {
 				continue;
 			}
 
-			if(argument_child_info_tree.childs.size() != 1) {
+			if(argument_child_info_tree.childs.size() == 0) {
 
 				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 					&(unit_p->error_group_p()->stack()),
@@ -1964,13 +1964,47 @@ namespace nrhi {
 				return eastl::nullopt;
 			}
 
+			// check for count
+			u32 count = 1;
+			if(argument_child_info_tree.childs.size() >= 2) {
+
+				const auto& info_tree = argument_child_info_tree.childs[1];
+
+				G_string value_str = H_nsl_utilities::clear_space_head_tail(info_tree.name);
+
+				try{
+					count = std::stoi(value_str.c_str());
+				}
+				catch(std::invalid_argument) {
+
+					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+						&(unit_p->error_group_p()->stack()),
+						info_tree.childs[0].begin_location,
+						"invalid argument element count \"" + value_str + "\""
+					);
+					return eastl::nullopt;
+				}
+				catch(std::out_of_range) {
+
+					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+						&(unit_p->error_group_p()->stack()),
+						info_tree.childs[0].begin_location,
+						"invalid argument element count \"" + value_str + "\""
+					);
+					return eastl::nullopt;
+				}
+			}
+
 			const auto& type_tree = argument_child_info_tree.childs[0];
 
-			structure_info.arguments.push_back(
-				F_nsl_data_argument{
-					.name = argument_child_info_tree.name,
-					.type_name = type_tree.name,
-					.config_map = std::move(data_argument_config_map)
+			structure_info.argument_members.push_back(
+				F_nsl_data_argument_member {
+					.argument = F_nsl_data_argument {
+						.name = argument_child_info_tree.name,
+						.type = name_manager_p->target(type_tree.name),
+						.count = count,
+						.config_map = std::move(data_argument_config_map)
+					}
 				}
 			);
 
@@ -1980,6 +2014,51 @@ namespace nrhi {
 				.begin_location = argument_child_info_tree.begin_location,
 				.end_location = argument_child_info_tree.end_location
 			};
+		}
+
+		// check for alignment annotation
+		{
+			auto it = context.current_object_config.find("alignment");
+			if(it != context.current_object_config.end()) {
+
+				const auto& annotation_object_implementation_tree = it->second;
+
+				if(annotation_object_implementation_tree.bodies.size() != 1) {
+
+					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+						&(unit_p->error_group_p()->stack()),
+						annotation_object_implementation_tree.end_location,
+						"@alignment annotation requires value"
+					);
+					return eastl::nullopt;
+				}
+
+				const auto& annotation_object_implementation_tree_first_body = annotation_object_implementation_tree.bodies[0];
+
+				G_string value_str = H_nsl_utilities::clear_space_head_tail(annotation_object_implementation_tree_first_body.content);
+
+				try{
+					structure_info.alignment = std::stoi(value_str.c_str());
+				}
+				catch(std::invalid_argument) {
+
+					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+						&(unit_p->error_group_p()->stack()),
+						annotation_object_implementation_tree_first_body.begin_location,
+						"@alignment annotation, invalid value \"" + value_str + "\""
+					);
+					return eastl::nullopt;
+				}
+				catch(std::out_of_range) {
+
+					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+						&(unit_p->error_group_p()->stack()),
+						annotation_object_implementation_tree_first_body.begin_location,
+						"@alignment annotation, invalid value \"" + value_str + "\""
+					);
+					return eastl::nullopt;
+				}
+			}
 		}
 
 		// register semantic
@@ -2147,7 +2226,7 @@ namespace nrhi {
 					F_nsl_data_param {
 						.argument = F_nsl_data_argument{
 							.name = param_child_info_tree.name,
-							.type_name = type_tree.name,
+							.type = type_tree.name,
 							.config_map = std::move(data_argument_config_map)
 						},
 						.is_in = is_prev_in_keyword || !(is_prev_in_keyword || is_prev_out_keyword),
@@ -2919,6 +2998,68 @@ namespace nrhi {
 	F_nsl_data_type_manager::~F_nsl_data_type_manager() {
 	}
 
+	F_nsl_semantic_info F_nsl_data_type_manager::process_semantic_info(const G_string& name, const F_nsl_semantic_info& semantic_info) {
+
+		F_nsl_semantic_info result = semantic_info;
+
+		auto name_manager_p = shader_compiler_p_->name_manager_p();
+
+		register_size(
+			name,
+			size(semantic_info.target_type)
+		);
+		register_alignment(
+			name,
+			alignment(semantic_info.target_type)
+		);
+
+		return std::move(result);
+	}
+	F_nsl_structure_info F_nsl_data_type_manager::process_structure_info(const G_string& name, const F_nsl_structure_info& structure_info) {
+
+		F_nsl_structure_info result = structure_info;
+
+		constexpr u32 min_pack_alignment = 16;
+
+		u32 offset = 0;
+
+		for(u32 i = 0; i < result.argument_members.size(); ++i) {
+
+			auto& argument_member = result.argument_members[i];
+			auto& argument = argument_member.argument;
+
+			u32 member_alignment = alignment(argument.type);
+			u32 member_element_count = argument.count;
+
+			u32 member_single_element_size = size(argument.type);
+			u32 aligned_member_single_element_size = align_size(member_single_element_size, member_alignment);
+
+			u32 member_size = (
+				(member_element_count - 1) * eastl::max<u32>(aligned_member_single_element_size, min_pack_alignment)
+				+ member_single_element_size
+			);
+
+			offset = align_size(offset, member_alignment);
+
+			argument_member.offset = offset;
+
+			offset += member_size;
+		}
+
+		result.size = align_size(offset, structure_info.alignment);
+
+		register_size(
+			name,
+			result.size
+		);
+		register_alignment(
+			name,
+			structure_info.alignment
+		);
+
+		return std::move(result);
+	}
+
 
 
 	A_nsl_output_language::A_nsl_output_language(
@@ -2972,6 +3113,13 @@ namespace nrhi {
 		data_type_manager_p->register_size("float", 4);
 		data_type_manager_p->register_size("double", 8);
 
+		data_type_manager_p->register_alignment("bool", 1);
+		data_type_manager_p->register_alignment("int", 4);
+		data_type_manager_p->register_alignment("uint", 4);
+		data_type_manager_p->register_alignment("half", 2);
+		data_type_manager_p->register_alignment("float", 4);
+		data_type_manager_p->register_alignment("double", 8);
+
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("bool2");
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("int2");
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("uint2");
@@ -2992,6 +3140,13 @@ namespace nrhi {
 		data_type_manager_p->register_size("half2", 2 * 2);
 		data_type_manager_p->register_size("float2", 4 * 2);
 		data_type_manager_p->register_size("double2", 8 * 2);
+
+		data_type_manager_p->register_alignment("bool2", 1 * 2);
+		data_type_manager_p->register_alignment("int2", 4 * 2);
+		data_type_manager_p->register_alignment("uint2", 4 * 2);
+		data_type_manager_p->register_alignment("half2", 2 * 2);
+		data_type_manager_p->register_alignment("float2", 4 * 2);
+		data_type_manager_p->register_alignment("double2", 8 * 2);
 
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("bool3");
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("int3");
@@ -3014,6 +3169,13 @@ namespace nrhi {
 		data_type_manager_p->register_size("float3", 4 * 3);
 		data_type_manager_p->register_size("double3", 8 * 3);
 
+		data_type_manager_p->register_alignment("bool3", 1 * 4);
+		data_type_manager_p->register_alignment("int3", 4 * 4);
+		data_type_manager_p->register_alignment("uint3", 4 * 4);
+		data_type_manager_p->register_alignment("half3", 2 * 4);
+		data_type_manager_p->register_alignment("float3", 4 * 4);
+		data_type_manager_p->register_alignment("double3", 8 * 4);
+
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("bool4");
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("int4");
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("uint4");
@@ -3034,6 +3196,13 @@ namespace nrhi {
 		data_type_manager_p->register_size("half4", 2 * 4);
 		data_type_manager_p->register_size("float4", 4 * 4);
 		data_type_manager_p->register_size("double4", 8 * 4);
+
+		data_type_manager_p->register_alignment("bool4", 1 * 4);
+		data_type_manager_p->register_alignment("int4", 4 * 4);
+		data_type_manager_p->register_alignment("uint4", 4 * 4);
+		data_type_manager_p->register_alignment("half4", 2 * 4);
+		data_type_manager_p->register_alignment("float4", 4 * 4);
+		data_type_manager_p->register_alignment("double4", 8 * 4);
 
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("bool2x2");
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("int2x2");
@@ -3056,6 +3225,13 @@ namespace nrhi {
 		data_type_manager_p->register_size("float2x2", 4 * 2 * 2);
 		data_type_manager_p->register_size("double2x2", 8 * 2 * 2);
 
+		data_type_manager_p->register_alignment("bool2x2", 1 * 2 * 2);
+		data_type_manager_p->register_alignment("int2x2", 4 * 2 * 2);
+		data_type_manager_p->register_alignment("uint2x2", 4 * 2 * 2);
+		data_type_manager_p->register_alignment("half2x2", 2 * 2 * 2);
+		data_type_manager_p->register_alignment("float2x2", 4 * 2 * 2);
+		data_type_manager_p->register_alignment("double2x2", 8 * 2 * 2);
+
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("bool3x3");
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("int3x3");
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("uint3x3");
@@ -3077,6 +3253,13 @@ namespace nrhi {
 		data_type_manager_p->register_size("float3x3", 4 * 3 * 3);
 		data_type_manager_p->register_size("double3x3", 8 * 3 * 3);
 
+		data_type_manager_p->register_alignment("bool3x3", 1 * 4 * 4);
+		data_type_manager_p->register_alignment("int3x3", 4 * 4 * 4);
+		data_type_manager_p->register_alignment("uint3x3", 4 * 4 * 4);
+		data_type_manager_p->register_alignment("half3x3", 2 * 4 * 4);
+		data_type_manager_p->register_alignment("float3x3", 4 * 4 * 4);
+		data_type_manager_p->register_alignment("double3x3", 8 * 4 * 4);
+
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("bool4x4");
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("int4x4");
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("uint4x4");
@@ -3097,6 +3280,13 @@ namespace nrhi {
 		data_type_manager_p->register_size("half4x4", 2 * 4 * 4);
 		data_type_manager_p->register_size("float4x4", 4 * 4 * 4);
 		data_type_manager_p->register_size("double4x4", 8 * 4 * 4);
+
+		data_type_manager_p->register_alignment("bool4x4", 1 * 4 * 4);
+		data_type_manager_p->register_alignment("int4x4", 4 * 4 * 4);
+		data_type_manager_p->register_alignment("uint4x4", 4 * 4 * 4);
+		data_type_manager_p->register_alignment("half4x4", 2 * 4 * 4);
+		data_type_manager_p->register_alignment("float4x4", 4 * 4 * 4);
+		data_type_manager_p->register_alignment("double4x4", 8 * 4 * 4);
 
 		name_manager_p->register_name("F_vector2", "F_vector2_f32");
 		name_manager_p->register_name("F_vector3", "F_vector3_f32");
