@@ -3553,23 +3553,23 @@ namespace nrhi {
 	{
 	}
 	F_nsl_shader_compiler::F_nsl_shader_compiler(
-		TU<F_nsl_shader_module_manager>&& module_manager_p,
-		TU<F_nsl_translation_unit_manager>&& translation_unit_manager_p,
-		TU<F_nsl_translation_unit_compiler>&& translation_unit_compiler_p,
-		TU<F_nsl_error_storage>&& error_storage_p,
-		TU<F_nsl_object_manager>&& object_manager_p,
-		TU<F_nsl_name_manager>&& name_manager_p,
-		TU<F_nsl_data_type_manager>&& data_type_manager_p,
-		TU<F_nsl_resource_manager>&& resource_manager_p
+		TF_nsl_shader_compiler_subsystem_creator<F_nsl_shader_module_manager> module_manager_creator,
+		TF_nsl_shader_compiler_subsystem_creator<F_nsl_translation_unit_manager> translation_unit_manager_creator,
+		TF_nsl_shader_compiler_subsystem_creator<F_nsl_translation_unit_compiler> translation_unit_compiler_creator,
+		TF_nsl_shader_compiler_subsystem_creator<F_nsl_error_storage> error_storage_creator,
+		TF_nsl_shader_compiler_subsystem_creator<F_nsl_object_manager> object_manager_creator,
+		TF_nsl_shader_compiler_subsystem_creator<F_nsl_name_manager> name_manager_creator,
+		TF_nsl_shader_compiler_subsystem_creator<F_nsl_data_type_manager> data_type_manager_creator,
+		TF_nsl_shader_compiler_subsystem_creator<F_nsl_resource_manager> resource_manager_creator
 	) :
-		module_manager_p_(std::move(module_manager_p)),
-		translation_unit_manager_p_(std::move(translation_unit_manager_p)),
-		translation_unit_compiler_p_(std::move(translation_unit_compiler_p)),
-		error_storage_p_(std::move(error_storage_p)),
-		object_manager_p_(std::move(object_manager_p)),
-		name_manager_p_(std::move(name_manager_p)),
-		data_type_manager_p_(std::move(data_type_manager_p)),
-		resource_manager_p_(std::move(resource_manager_p))
+		module_manager_p_(module_manager_creator(NCPP_KTHIS())),
+		translation_unit_manager_p_(translation_unit_manager_creator(NCPP_KTHIS())),
+		translation_unit_compiler_p_(translation_unit_compiler_creator(NCPP_KTHIS())),
+		error_storage_p_(error_storage_creator(NCPP_KTHIS())),
+		object_manager_p_(object_manager_creator(NCPP_KTHIS())),
+		name_manager_p_(name_manager_creator(NCPP_KTHIS())),
+		data_type_manager_p_(data_type_manager_creator(NCPP_KTHIS())),
+		resource_manager_p_(resource_manager_creator(NCPP_KTHIS()))
 	{
 	}
 	F_nsl_shader_compiler::~F_nsl_shader_compiler() {

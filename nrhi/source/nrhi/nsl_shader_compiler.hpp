@@ -1974,6 +1974,11 @@ namespace nrhi {
 
 
 
+	template<typename F__>
+	using TF_nsl_shader_compiler_subsystem_creator = eastl::function<
+	    TU<F__>(TKPA_valid<F_nsl_shader_compiler>)
+	>;
+
 	class NRHI_API F_nsl_shader_compiler {
 
 	private:
@@ -2005,14 +2010,14 @@ namespace nrhi {
 	public:
 		F_nsl_shader_compiler();
 		F_nsl_shader_compiler(
-			TU<F_nsl_shader_module_manager>&& module_manager_p,
-			TU<F_nsl_translation_unit_manager>&& translation_unit_manager_p,
-			TU<F_nsl_translation_unit_compiler>&& translation_unit_compiler_p,
-			TU<F_nsl_error_storage>&& error_storage_p,
-			TU<F_nsl_object_manager>&& object_manager_p,
-			TU<F_nsl_name_manager>&& name_manager_p,
-			TU<F_nsl_data_type_manager>&& data_type_manager_p,
-			TU<F_nsl_resource_manager>&& resource_manager_p
+			TF_nsl_shader_compiler_subsystem_creator<F_nsl_shader_module_manager> module_manager_creator,
+			TF_nsl_shader_compiler_subsystem_creator<F_nsl_translation_unit_manager> translation_unit_manager_creator,
+			TF_nsl_shader_compiler_subsystem_creator<F_nsl_translation_unit_compiler> translation_unit_compiler_creator,
+			TF_nsl_shader_compiler_subsystem_creator<F_nsl_error_storage> error_storage_creator,
+			TF_nsl_shader_compiler_subsystem_creator<F_nsl_object_manager> object_manager_creator,
+			TF_nsl_shader_compiler_subsystem_creator<F_nsl_name_manager> name_manager_creator,
+			TF_nsl_shader_compiler_subsystem_creator<F_nsl_data_type_manager> data_type_manager_creator,
+			TF_nsl_shader_compiler_subsystem_creator<F_nsl_resource_manager> resource_manager_creator
 		);
 		virtual ~F_nsl_shader_compiler();
 
