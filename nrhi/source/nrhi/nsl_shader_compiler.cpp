@@ -1921,7 +1921,7 @@ namespace nrhi {
 
 		b8 is_prev_in_keyword = false;
 		b8 is_prev_out_keyword = false;
-		F_nsl_data_param_config_map data_param_config_map;
+		F_nsl_data_argument_config_map data_argument_config_map;
 
 		// parse params
 		auto param_child_info_trees_opt = H_nsl_utilities::build_info_trees(
@@ -1965,7 +1965,7 @@ namespace nrhi {
 					return eastl::nullopt;
 				}
 
-				data_param_config_map[
+				data_argument_config_map[
 					param_child_info_tree.name.substr(1, param_child_info_tree.name.length() - 1)
 				] = param_child_info_tree;
 				continue;
@@ -1996,27 +1996,16 @@ namespace nrhi {
 				}
 
 				const auto& type_tree = param_child_info_tree.childs[0];
-				const auto& type_name = type_tree.name;
 
-				F_nsl_data_type_desc type_desc;
-
-				if(!(data_type_manager_p->search_data_type(type_name, type_desc))) {
-
-					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-						&(unit_p->error_group_p()->stack()),
-						type_tree.begin_name_location,
-						"not found param type " + type_name
-					);
-					return eastl::nullopt;
-				}
-
-				data_param_descs_.push_back(
-					F_nsl_data_param_desc {
-						.name = param_child_info_tree.name,
-						.type_desc = type_desc,
+				data_params_.push_back(
+					F_nsl_data_param {
+						.argument = F_nsl_data_argument{
+							.name = param_child_info_tree.name,
+							.type_name = type_tree.name,
+							.config_map = std::move(data_argument_config_map)
+						},
 						.is_in = is_prev_in_keyword || !(is_prev_in_keyword || is_prev_out_keyword),
-						.is_out = is_prev_out_keyword,
-						.config_map = std::move(data_param_config_map)
+						.is_out = is_prev_out_keyword
 					}
 				);
 
@@ -2121,154 +2110,6 @@ namespace nrhi {
 			index,
 			error_stack_p
 		);
-
-		u32 data_param_count = data_param_descs_.size();
-
-		additional_vertex_data_param_descs_.resize(data_param_count);
-
-		for(u32 i = 0; i < data_param_count; ++i) {
-
-			const auto& data_param_desc = data_param_descs_[i];
-
-			u32 buffer = 0;
-			u32 offset = -1;
-			u32 count = 1;
-
-			// check for buffer annotation
-			{
-				auto it = data_param_desc.config_map.find("buffer");
-				if(it != data_param_desc.config_map.end()) {
-
-					const auto& info_tree = it->second;
-
-					if(info_tree.childs.size() == 0) {
-
-						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-							&(unit_p->error_group_p()->stack()),
-							info_tree.end_location,
-							"@body annotation requires value"
-						);
-						return eastl::nullopt;
-					}
-
-					G_string value_str = H_nsl_utilities::clear_space_head_tail(info_tree.childs[0].name);
-
-					try{
-						buffer = std::stoi(value_str.c_str());
-					}
-					catch(std::invalid_argument) {
-
-						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-							&(unit_p->error_group_p()->stack()),
-							info_tree.childs[0].begin_location,
-							"@buffer annotation, invalid value \"" + value_str + "\""
-						);
-						return eastl::nullopt;
-					}
-					catch(std::out_of_range) {
-
-						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-							&(unit_p->error_group_p()->stack()),
-							info_tree.childs[0].begin_location,
-							"@buffer annotation, invalid value \"" + value_str + "\""
-						);
-						return eastl::nullopt;
-					}
-				}
-			}
-
-			// check for offset annotation
-			{
-				auto it = data_param_desc.config_map.find("offset");
-				if(it != data_param_desc.config_map.end()) {
-
-					const auto& info_tree = it->second;
-
-					if(info_tree.childs.size() == 0) {
-
-						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-							&(unit_p->error_group_p()->stack()),
-							info_tree.end_location,
-							"@offset annotation requires value"
-						);
-						return eastl::nullopt;
-					}
-
-					G_string value_str = H_nsl_utilities::clear_space_head_tail(info_tree.childs[0].name);
-
-					try{
-						offset = std::stoi(value_str.c_str());
-					}
-					catch(std::invalid_argument) {
-
-						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-							&(unit_p->error_group_p()->stack()),
-							info_tree.childs[0].begin_location,
-							"@offset annotation, invalid value \"" + value_str + "\""
-						);
-						return eastl::nullopt;
-					}
-					catch(std::out_of_range) {
-
-						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-							&(unit_p->error_group_p()->stack()),
-							info_tree.childs[0].begin_location,
-							"@offset annotation, invalid value \"" + value_str + "\""
-						);
-						return eastl::nullopt;
-					}
-				}
-			}
-
-			// check for count annotation
-			{
-				auto it = data_param_desc.config_map.find("count");
-				if(it != data_param_desc.config_map.end()) {
-
-					const auto& info_tree = it->second;
-
-					if(info_tree.childs.size() == 0) {
-
-						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-							&(unit_p->error_group_p()->stack()),
-							info_tree.end_location,
-							"@count annotation requires value"
-						);
-						return eastl::nullopt;
-					}
-
-					G_string value_str = H_nsl_utilities::clear_space_head_tail(info_tree.childs[0].name);
-
-					try{
-						count = std::stoi(value_str.c_str());
-					}
-					catch(std::invalid_argument) {
-
-						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-							&(unit_p->error_group_p()->stack()),
-							info_tree.childs[0].begin_location,
-							"@count annotation, invalid value \"" + value_str + "\""
-						);
-						return eastl::nullopt;
-					}
-					catch(std::out_of_range) {
-
-						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-							&(unit_p->error_group_p()->stack()),
-							info_tree.childs[0].begin_location,
-							"@count annotation, invalid value \"" + value_str + "\""
-						);
-						return eastl::nullopt;
-					}
-				}
-			}
-
-			additional_vertex_data_param_descs_[i] = F_nsl_additional_vertex_data_param_desc {
-				.buffer = buffer,
-				.offset = offset,
-				.count = count
-			};
-		}
 
 		return std::move(childs);
 	}

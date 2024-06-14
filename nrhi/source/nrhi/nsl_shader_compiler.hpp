@@ -35,6 +35,7 @@
 
 #include <nrhi/shader_compiler_base.hpp>
 #include <nrhi/shader_class_base.hpp>
+#include <nrhi/shader_blob_desc.hpp>
 
 #pragma endregion
 
@@ -133,23 +134,31 @@ namespace nrhi {
 
 	};
 
-	using F_nsl_data_param_config_map = TG_unordered_map<G_string, F_nsl_info_tree>;
-	struct F_nsl_data_param_desc {
+	using F_nsl_data_argument_config_map = TG_unordered_map<G_string, F_nsl_info_tree>;
+	struct F_nsl_data_argument {
 
 		G_string name;
-		F_nsl_data_type_desc type_desc;
+		G_string type_name;
+		F_nsl_data_argument_config_map config_map;
+
+	};
+	struct F_nsl_data_param {
+
+		F_nsl_data_argument argument;
 		b8 is_in = false;
 		b8 is_out = false;
-		F_nsl_data_param_config_map config_map;
 
 	};
-	struct F_nsl_additional_vertex_data_param_desc {
 
-		u32 buffer = 0;
-		u32 offset = 0;
-		u32 count = 0;
+	using F_nsl_structure_config_map = TG_unordered_map<G_string, F_nsl_info_tree>;
+	struct F_nsl_structure_info {
+
+		TG_vector<F_nsl_data_argument> arguments;
+
+		F_nsl_structure_config_map config_map;
 
 	};
+	using F_nsl_structure = eastl::pair<G_string, F_nsl_structure_info>;
 
 	struct NRHI_API F_nsl_str_state {
 
@@ -892,10 +901,10 @@ namespace nrhi {
 	class NRHI_API A_nsl_shader_object : public A_nsl_object {
 
 	protected:
-		TG_vector<F_nsl_data_param_desc> data_param_descs_;
+		TG_vector<F_nsl_data_param> data_params_;
 
 	public:
-		NCPP_FORCE_INLINE const auto& data_param_descs() const noexcept { return data_param_descs_; }
+		NCPP_FORCE_INLINE const auto& data_params() const noexcept { return data_params_; }
 
 
 
@@ -942,11 +951,11 @@ namespace nrhi {
 
 	class NRHI_API F_nsl_vertex_shader_object final : public A_nsl_shader_object {
 
-	protected:
-		TG_vector<F_nsl_additional_vertex_data_param_desc> additional_vertex_data_param_descs_;
+	private:
+		F_input_assembler_desc input_assempler_desc_;
 
 	public:
-		NCPP_FORCE_INLINE const auto& additional_vertex_data_param_descs() const noexcept { return additional_vertex_data_param_descs_; }
+		NCPP_FORCE_INLINE const F_input_assembler_desc& input_assempler_desc() const noexcept { return input_assempler_desc_; }
 
 
 
