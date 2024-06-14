@@ -1970,7 +1970,7 @@ namespace nrhi {
 
 				const auto& info_tree = argument_child_info_tree.childs[1];
 
-				G_string value_str = H_nsl_utilities::clear_space_head_tail(info_tree.name);
+				G_string value_str = info_tree.name;
 
 				try{
 					count = std::stoi(value_str.c_str());
@@ -2098,6 +2098,185 @@ namespace nrhi {
 
 		auto object_p = register_object(
 			TU<F_nsl_structure_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_enumeration_object::F_nsl_enumeration_object(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		TKPA_valid<A_nsl_object_type> type_p,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const G_string& name
+	) :
+		A_nsl_object(
+			shader_compiler_p,
+			type_p,
+			translation_unit_p,
+			name
+		)
+	{
+	}
+	F_nsl_enumeration_object::~F_nsl_enumeration_object() {
+	}
+
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_enumeration_object::recursive_build_ast_tree(
+		F_nsl_context& context,
+		TK_valid<F_nsl_translation_unit> unit_p,
+		TG_vector<F_nsl_ast_tree>& trees,
+		sz index,
+		F_nsl_error_stack* error_stack_p
+	) {
+		auto& tree = trees[index];
+		auto& object_implementation = tree.object_implementation;
+
+		context.parent_object_p = NCPP_KTHIS().no_requirements();
+
+		auto name_manager_p = shader_compiler_p()->name_manager_p();
+		auto translation_unit_compiler_p = shader_compiler_p()->translation_unit_compiler_p();
+		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
+
+		F_nsl_enumeration_info enumeration_info;
+		enumeration_info.config_map = context.current_object_config;
+
+		// parse arguments
+		auto value_child_info_trees_opt = H_nsl_utilities::build_info_trees(
+			object_implementation.bodies[0].content,
+			object_implementation.bodies[0].begin_location,
+			&(unit_p->error_group_p()->stack())
+		);
+		if(!value_child_info_trees_opt) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				&(unit_p->error_group_p()->stack()),
+				object_implementation.bodies[0].begin_location,
+				"can't not parse enum values"
+			);
+			return eastl::nullopt;
+		}
+		auto& value_child_info_trees = value_child_info_trees_opt.value();
+		TG_vector<F_nsl_ast_tree> value_childs(value_child_info_trees.size());
+		for(u32 i = 0; i < value_childs.size(); ++i) {
+
+			auto& value_child_info_tree = value_child_info_trees[i];
+
+			// check for value
+			u64 value = i;
+			if(value_child_info_tree.childs.size() > 0) {
+
+				const auto& info_tree = value_child_info_tree.childs[0];
+
+				G_string value_str = info_tree.name;
+
+				try{
+					value = std::stoull(value_str.c_str());
+				}
+				catch(std::invalid_argument) {
+
+					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+						&(unit_p->error_group_p()->stack()),
+						info_tree.childs[0].begin_location,
+						"invalid argument element count \"" + value_str + "\""
+					);
+					return eastl::nullopt;
+				}
+				catch(std::out_of_range) {
+
+					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+						&(unit_p->error_group_p()->stack()),
+						info_tree.childs[0].begin_location,
+						"invalid argument element count \"" + value_str + "\""
+					);
+					return eastl::nullopt;
+				}
+			}
+
+			enumeration_info.values.push_back(
+				{
+					value_child_info_tree.name,
+					value
+				}
+			);
+
+			value_childs[i] = F_nsl_ast_tree {
+				.type = E_nsl_ast_tree_type::INFO_TREE,
+				.info_tree = value_child_info_tree,
+				.begin_location = value_child_info_tree.begin_location,
+				.end_location = value_child_info_tree.end_location
+			};
+		}
+
+		// check for value_type annotation
+		{
+			auto it = context.current_object_config.find("value_type");
+			if(it != context.current_object_config.end()) {
+
+				const auto& annotation_object_implementation_tree = it->second;
+
+				if(annotation_object_implementation_tree.bodies.size() != 1) {
+
+					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+						&(unit_p->error_group_p()->stack()),
+						annotation_object_implementation_tree.end_location,
+						"@value_type annotation requires value"
+					);
+					return eastl::nullopt;
+				}
+
+				const auto& annotation_object_implementation_tree_first_body = annotation_object_implementation_tree.bodies[0];
+
+				enumeration_info.value_type = name_manager_p->target(
+					H_nsl_utilities::clear_space_head_tail(annotation_object_implementation_tree_first_body.content)
+				);
+			}
+		}
+
+		// register semantic
+		name_manager_p->template T_register_name<FE_nsl_name_types::STRUCTURE>(tree.object_implementation.name);
+		data_type_manager_p->register_enumeration(
+			tree.object_implementation.name,
+			enumeration_info
+		);
+
+		return std::move(value_childs);
+	}
+
+
+
+	F_nsl_enumeration_object_type::F_nsl_enumeration_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"enum",
+			true,
+			1,
+			1,
+			nsl_global_object_type_channel_mask
+		)
+	{
+	}
+	F_nsl_enumeration_object_type::~F_nsl_enumeration_object_type() {
+	}
+
+	TK<A_nsl_object> F_nsl_enumeration_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	) {
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_enumeration_object>()(
 				shader_compiler_p(),
 				NCPP_KTHIS(),
 				translation_unit_p,
@@ -2519,6 +2698,9 @@ namespace nrhi {
 		);
 		register_type(
 			TU<F_nsl_structure_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_enumeration_object_type>()(shader_compiler_p_)
 		);
 	}
 	F_nsl_object_manager::~F_nsl_object_manager() {
@@ -3055,6 +3237,23 @@ namespace nrhi {
 		register_alignment(
 			name,
 			structure_info.alignment
+		);
+
+		return std::move(result);
+	}
+	F_nsl_enumeration_info F_nsl_data_type_manager::process_enumeration_info(const G_string& name, const F_nsl_enumeration_info& enumeration_info) {
+
+		F_nsl_enumeration_info result = enumeration_info;
+
+		auto name_manager_p = shader_compiler_p_->name_manager_p();
+
+		register_size(
+			name,
+			size(enumeration_info.value_type)
+		);
+		register_alignment(
+			name,
+			alignment(enumeration_info.value_type)
 		);
 
 		return std::move(result);

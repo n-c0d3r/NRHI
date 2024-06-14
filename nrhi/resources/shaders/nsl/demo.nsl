@@ -10,8 +10,8 @@ struct F_cluster_header
 @type(u32)
 enum E_primitive_type
 (
-    POINT_LIST
-    TRIANGLE_LIST
+    E_PRIMITIVE_TYPE_POINT_LIST
+    E_PRIMITIVE_TYPE_TRIANGLE_LIST
 )
 
 semantic POSITION(f32x3)
