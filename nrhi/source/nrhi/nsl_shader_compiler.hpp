@@ -150,7 +150,7 @@ namespace nrhi {
 
 	};
 
-	using F_nsl_structure_config_map = TG_unordered_map<G_string, F_nsl_info_tree>;
+	using F_nsl_structure_config_map = TG_unordered_map<G_string, F_nsl_object_implementation>;
 	struct F_nsl_structure_info {
 
 		TG_vector<F_nsl_data_argument> arguments;
@@ -244,6 +244,7 @@ namespace nrhi {
 
 		struct DATA_TYPE {};
 		struct SEMANTIC {};
+		struct STRUCTURE {};
 		struct RESOURCE {};
 		struct SHADER {};
 
@@ -899,14 +900,6 @@ namespace nrhi {
 
 
 	class NRHI_API F_nsl_structure_object : public A_nsl_object {
-
-	private:
-		TG_vector<F_nsl_data_argument> data_arguments_;
-
-	public:
-		NCPP_FORCE_INLINE const TG_vector<F_nsl_data_argument>& data_arguments() const noexcept { return data_arguments_; }
-
-
 
 	public:
 		F_nsl_structure_object(
@@ -1662,12 +1655,14 @@ namespace nrhi {
 	protected:
 		TG_unordered_map<G_string, sz> name_to_size_map_;
 		TG_unordered_map<G_string, F_nsl_semantic_info> name_to_semantic_info_map_;
+		TG_unordered_map<G_string, F_nsl_structure_info> name_to_structure_info_map_;
 
 	public:
 		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
 
 		NCPP_FORCE_INLINE const TG_unordered_map<G_string, sz>& name_to_size_map() const noexcept { return name_to_size_map_; }
 		NCPP_FORCE_INLINE const TG_unordered_map<G_string, F_nsl_semantic_info>& name_to_semantic_info_map() const noexcept { return name_to_semantic_info_map_; }
+		NCPP_FORCE_INLINE const TG_unordered_map<G_string, F_nsl_structure_info>& name_to_structure_info_map() const noexcept { return name_to_structure_info_map_; }
 
 
 
@@ -1677,9 +1672,6 @@ namespace nrhi {
 
 	public:
 		NCPP_OBJECT(F_nsl_data_type_manager);
-
-	public:
-		b8 search_data_type(const G_string& name, F_nsl_data_type_desc& out_desc) const;
 
 	public:
 		NCPP_FORCE_INLINE b8 is_name_has_size(const G_string& name) const {
@@ -1737,6 +1729,35 @@ namespace nrhi {
 
 			auto it = name_to_semantic_info_map_.find(name);
 			name_to_semantic_info_map_.erase(it);
+		}
+
+	public:
+		NCPP_FORCE_INLINE b8 is_name_has_structure_info(const G_string& name) const {
+
+			auto it = name_to_structure_info_map_.find(name);
+
+			return (it != name_to_structure_info_map_.end());
+		}
+		NCPP_FORCE_INLINE const F_nsl_structure_info& structure_info(const G_string& name) const {
+
+			auto it = name_to_structure_info_map_.find(name);
+
+			NCPP_ASSERT(it != name_to_structure_info_map_.end()) << "can't find " << T_cout_value(name);
+
+			return it->second;
+		}
+		NCPP_FORCE_INLINE void register_structure(const G_string& name, const F_nsl_structure_info& structure_info) {
+
+			NCPP_ASSERT(name_to_structure_info_map_.find(name) == name_to_structure_info_map_.end()) << T_cout_value(name) << " already exists";
+
+			name_to_structure_info_map_[name] = structure_info;
+		}
+		NCPP_FORCE_INLINE void deregister_structure(const G_string& name) {
+
+			NCPP_ASSERT(name_to_structure_info_map_.find(name) != name_to_structure_info_map_.end()) << T_cout_value(name) << " is not exists";
+
+			auto it = name_to_structure_info_map_.find(name);
+			name_to_structure_info_map_.erase(it);
 		}
 
 	};

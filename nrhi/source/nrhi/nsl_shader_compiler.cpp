@@ -1916,8 +1916,12 @@ namespace nrhi {
 
 		context.parent_object_p = NCPP_KTHIS().no_requirements();
 
+		auto name_manager_p = shader_compiler_p()->name_manager_p();
 		auto translation_unit_compiler_p = shader_compiler_p()->translation_unit_compiler_p();
 		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
+
+		F_nsl_structure_info structure_info;
+		structure_info.config_map = context.current_object_config;
 
 		F_nsl_data_argument_config_map data_argument_config_map;
 
@@ -1962,7 +1966,7 @@ namespace nrhi {
 
 			const auto& type_tree = argument_child_info_tree.childs[0];
 
-			data_arguments_.push_back(
+			structure_info.arguments.push_back(
 				F_nsl_data_argument{
 					.name = argument_child_info_tree.name,
 					.type_name = type_tree.name,
@@ -1977,6 +1981,13 @@ namespace nrhi {
 				.end_location = argument_child_info_tree.end_location
 			};
 		}
+
+		// register semantic
+		name_manager_p->template T_register_name<FE_nsl_name_types::STRUCTURE>(tree.object_implementation.name);
+		data_type_manager_p->register_structure(
+			tree.object_implementation.name,
+			structure_info
+		);
 
 		return std::move(argument_childs);
 	}
@@ -2906,33 +2917,6 @@ namespace nrhi {
 	{
 	}
 	F_nsl_data_type_manager::~F_nsl_data_type_manager() {
-	}
-
-	b8 F_nsl_data_type_manager::search_data_type(const G_string& name, F_nsl_data_type_desc& out_desc) const {
-
-		auto name_manager_p = shader_compiler_p_->name_manager_p();
-
-		if(!(name_manager_p->is_name_registered(name)))
-			return false;
-
-		G_string target = name_manager_p->target(name);
-
-		G_string target_name = target;
-		G_string semantic;
-
-		if(is_name_has_semantic_info(target)) {
-
-			target_name = this->semantic_info(target).target_type;
-			semantic = target;
-		}
-
-		out_desc = F_nsl_data_type_desc {
-			.name = target_name,
-			.semantic = std::move(semantic),
-			.size = size(target_name)
-		};
-
-		return true;
 	}
 
 
