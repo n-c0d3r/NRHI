@@ -133,12 +133,21 @@ namespace nrhi {
 
 	};
 
+	using F_nsl_data_param_config_map = TG_unordered_map<G_string, F_nsl_info_tree>;
 	struct F_nsl_data_param_desc {
 
 		G_string name;
 		F_nsl_data_type_desc type_desc;
 		b8 is_in = false;
 		b8 is_out = false;
+		F_nsl_data_param_config_map config_map;
+
+	};
+	struct F_nsl_additional_vertex_data_param_desc {
+
+		u32 buffer = 0;
+		u32 offset = 0;
+		u32 count = 0;
 
 	};
 
@@ -232,6 +241,20 @@ namespace nrhi {
 	};
 
 	using F_nsl_object_config = TG_unordered_map<G_string, F_nsl_object_implementation>;
+
+	enum class E_nsl_semantic_input_class {
+
+		PER_VERTEX,
+		PER_INSTANCE
+
+	};
+	struct F_nsl_semantic_info {
+
+		G_string target_type;
+		E_nsl_semantic_input_class input_class = E_nsl_semantic_input_class::PER_VERTEX;
+
+	};
+	using F_nsl_semantic = eastl::pair<G_string, F_nsl_semantic_info>;
 
 	struct F_nsl_context {
 
@@ -919,6 +942,14 @@ namespace nrhi {
 
 	class NRHI_API F_nsl_vertex_shader_object final : public A_nsl_shader_object {
 
+	protected:
+		TG_vector<F_nsl_additional_vertex_data_param_desc> additional_vertex_data_param_descs_;
+
+	public:
+		NCPP_FORCE_INLINE const auto& additional_vertex_data_param_descs() const noexcept { return additional_vertex_data_param_descs_; }
+
+
+
 	public:
 		F_nsl_vertex_shader_object(
 			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
@@ -930,6 +961,15 @@ namespace nrhi {
 
 	public:
 		NCPP_OBJECT(F_nsl_vertex_shader_object);
+
+	public:
+		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
+			F_nsl_context& context,
+			TK_valid<F_nsl_translation_unit> unit_p,
+			TG_vector<F_nsl_ast_tree>& trees,
+			sz index,
+			F_nsl_error_stack* error_stack_p
+		) override;
 
 	};
 
@@ -1553,13 +1593,13 @@ namespace nrhi {
 
 	protected:
 		TG_unordered_map<G_string, sz> name_to_size_map_;
-		TG_unordered_map<G_string, G_string> name_to_semantic_target_type_map_;
+		TG_unordered_map<G_string, F_nsl_semantic_info> name_to_semantic_info_map_;
 
 	public:
 		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
 
 		NCPP_FORCE_INLINE const TG_unordered_map<G_string, sz>& name_to_size_map() const noexcept { return name_to_size_map_; }
-		NCPP_FORCE_INLINE const TG_unordered_map<G_string, G_string>& name_to_semantic_target_type_map() const noexcept { return name_to_semantic_target_type_map_; }
+		NCPP_FORCE_INLINE const TG_unordered_map<G_string, F_nsl_semantic_info>& name_to_semantic_info_map() const noexcept { return name_to_semantic_info_map_; }
 
 
 
@@ -1603,32 +1643,32 @@ namespace nrhi {
 		}
 
 	public:
-		NCPP_FORCE_INLINE b8 is_name_has_semantic_target_type(const G_string& name) const {
+		NCPP_FORCE_INLINE b8 is_name_has_semantic_info(const G_string& name) const {
 
-			auto it = name_to_semantic_target_type_map_.find(name);
+			auto it = name_to_semantic_info_map_.find(name);
 
-			return (it != name_to_semantic_target_type_map_.end());
+			return (it != name_to_semantic_info_map_.end());
 		}
-		NCPP_FORCE_INLINE G_string semantic_target_type(const G_string& name) const {
+		NCPP_FORCE_INLINE const F_nsl_semantic_info& semantic_info(const G_string& name) const {
 
-			auto it = name_to_semantic_target_type_map_.find(name);
+			auto it = name_to_semantic_info_map_.find(name);
 
-			NCPP_ASSERT(it != name_to_semantic_target_type_map_.end()) << "can't find " << T_cout_value(name);
+			NCPP_ASSERT(it != name_to_semantic_info_map_.end()) << "can't find " << T_cout_value(name);
 
 			return it->second;
 		}
-		NCPP_FORCE_INLINE void register_semantic(const G_string& name, const G_string& semantic_target_type) {
+		NCPP_FORCE_INLINE void register_semantic(const G_string& name, const F_nsl_semantic_info& semantic_info) {
 
-			NCPP_ASSERT(name_to_semantic_target_type_map_.find(name) == name_to_semantic_target_type_map_.end()) << T_cout_value(name) << " already exists";
+			NCPP_ASSERT(name_to_semantic_info_map_.find(name) == name_to_semantic_info_map_.end()) << T_cout_value(name) << " already exists";
 
-			name_to_semantic_target_type_map_[name] = semantic_target_type;
+			name_to_semantic_info_map_[name] = semantic_info;
 		}
 		NCPP_FORCE_INLINE void deregister_semantic(const G_string& name) {
 
-			NCPP_ASSERT(name_to_semantic_target_type_map_.find(name) != name_to_semantic_target_type_map_.end()) << T_cout_value(name) << " is not exists";
+			NCPP_ASSERT(name_to_semantic_info_map_.find(name) != name_to_semantic_info_map_.end()) << T_cout_value(name) << " is not exists";
 
-			auto it = name_to_semantic_target_type_map_.find(name);
-			name_to_semantic_target_type_map_.erase(it);
+			auto it = name_to_semantic_info_map_.find(name);
+			name_to_semantic_info_map_.erase(it);
 		}
 
 	};

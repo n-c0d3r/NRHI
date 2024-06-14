@@ -1785,10 +1785,10 @@ namespace nrhi {
 				tree.object_implementation.begin_name_location,
 				tree.object_implementation.name + " is already registered"
 			);
-
 			return eastl::nullopt;
 		}
 
+		// get target type
 		target_type = H_nsl_utilities::clear_space_head_tail(
 			tree.object_implementation.bodies[0].content
 		);
@@ -1799,12 +1799,49 @@ namespace nrhi {
 				tree.object_implementation.bodies[0].begin_location,
 				"invalid target type " + target_type
 			);
-
 			return eastl::nullopt;
 		}
 
+		// apply object config
+		E_nsl_semantic_input_class input_class = E_nsl_semantic_input_class::PER_VERTEX;
+		{
+			auto input_class_it = context.current_object_config.find("input_class");
+			if(input_class_it != context.current_object_config.end()) {
+
+				const auto& bodies = input_class_it->second.bodies;
+
+				if(bodies.size() == 0) {
+
+					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+						&(unit_p->error_group_p()->stack()),
+						input_class_it->second.end_location,
+						"input class annotation requires value"
+					);
+					return eastl::nullopt;
+				}
+
+				G_string value_str = H_nsl_utilities::clear_space_head_tail(bodies[0].content);
+
+				if(value_str == "PER_VERTEX") {
+
+					input_class = E_nsl_semantic_input_class::PER_VERTEX;
+				}
+				else if(value_str == "PER_INSTANCE") {
+
+					input_class = E_nsl_semantic_input_class::PER_INSTANCE;
+				}
+			}
+		}
+
+		// register semantic
 		name_manager_p->template T_register_name<FE_nsl_name_types::SEMANTIC>(tree.object_implementation.name);
-		data_type_manager_p->register_semantic(tree.object_implementation.name, target_type);
+		data_type_manager_p->register_semantic(
+			tree.object_implementation.name,
+			F_nsl_semantic_info {
+				.target_type = target_type,
+				.input_class = input_class
+			}
+		);
 
 		return TG_vector<F_nsl_ast_tree>();
 	}
@@ -1882,8 +1919,9 @@ namespace nrhi {
 		auto translation_unit_compiler_p = shader_compiler_p()->translation_unit_compiler_p();
 		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
 
-		b8 is_in = true;
-		b8 is_out = false;
+		b8 is_prev_in_keyword = false;
+		b8 is_prev_out_keyword = false;
+		F_nsl_data_param_config_map data_param_config_map;
 
 		// parse params
 		auto param_child_info_trees_opt = H_nsl_utilities::build_info_trees(
@@ -1906,20 +1944,45 @@ namespace nrhi {
 
 			auto& param_child_info_tree = param_child_info_trees[i];
 
+			if(param_child_info_tree.name[0] == '@') {
+
+				if(is_prev_in_keyword) {
+
+					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+						&(unit_p->error_group_p()->stack()),
+						param_child_info_tree.begin_location,
+						"annotation after \"in\" keyword is not allowed"
+					);
+					return eastl::nullopt;
+				}
+				if(is_prev_out_keyword) {
+
+					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+						&(unit_p->error_group_p()->stack()),
+						param_child_info_tree.begin_location,
+						"annotation after \"out\" keyword is not allowed"
+					);
+					return eastl::nullopt;
+				}
+
+				data_param_config_map[
+					param_child_info_tree.name.substr(1, param_child_info_tree.name.length() - 1)
+				] = param_child_info_tree;
+				continue;
+			}
+
 			if(param_child_info_tree.name == "out") {
 
-				is_in = false;
-				is_out = true;
+				is_prev_out_keyword = true;
 			}
 			else if(param_child_info_tree.name == "in") {
 
-				is_in = true;
-				is_out = false;
+				is_prev_in_keyword = true;
 			}
 			else if(param_child_info_tree.name == "inout") {
 
-				is_in = true;
-				is_out = true;
+				is_prev_in_keyword = true;
+				is_prev_out_keyword = true;
 			}
 			else {
 				if(param_child_info_tree.childs.size() != 1) {
@@ -1951,13 +2014,14 @@ namespace nrhi {
 					F_nsl_data_param_desc {
 						.name = param_child_info_tree.name,
 						.type_desc = type_desc,
-						.is_in = is_in,
-						.is_out = is_out
+						.is_in = is_prev_in_keyword || !(is_prev_in_keyword || is_prev_out_keyword),
+						.is_out = is_prev_out_keyword,
+						.config_map = std::move(data_param_config_map)
 					}
 				);
 
-				is_in = true;
-				is_out = false;
+				is_prev_in_keyword = false;
+				is_prev_out_keyword = false;
 			}
 
 			param_childs[i] = F_nsl_ast_tree {
@@ -2041,6 +2105,172 @@ namespace nrhi {
 	{
 	}
 	F_nsl_vertex_shader_object::~F_nsl_vertex_shader_object() {
+	}
+
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_vertex_shader_object::recursive_build_ast_tree(
+		F_nsl_context& context,
+		TK_valid<F_nsl_translation_unit> unit_p,
+		TG_vector<F_nsl_ast_tree>& trees,
+		sz index,
+		F_nsl_error_stack* error_stack_p
+	) {
+		auto childs = A_nsl_shader_object::recursive_build_ast_tree(
+			context,
+			unit_p,
+			trees,
+			index,
+			error_stack_p
+		);
+
+		u32 data_param_count = data_param_descs_.size();
+
+		additional_vertex_data_param_descs_.resize(data_param_count);
+
+		for(u32 i = 0; i < data_param_count; ++i) {
+
+			const auto& data_param_desc = data_param_descs_[i];
+
+			u32 buffer = 0;
+			u32 offset = -1;
+			u32 count = 1;
+
+			// check for buffer annotation
+			{
+				auto it = data_param_desc.config_map.find("buffer");
+				if(it != data_param_desc.config_map.end()) {
+
+					const auto& info_tree = it->second;
+
+					if(info_tree.childs.size() == 0) {
+
+						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+							&(unit_p->error_group_p()->stack()),
+							info_tree.end_location,
+							"@body annotation requires value"
+						);
+						return eastl::nullopt;
+					}
+
+					G_string value_str = H_nsl_utilities::clear_space_head_tail(info_tree.childs[0].name);
+
+					try{
+						buffer = std::stoi(value_str.c_str());
+					}
+					catch(std::invalid_argument) {
+
+						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+							&(unit_p->error_group_p()->stack()),
+							info_tree.childs[0].begin_location,
+							"@buffer annotation, invalid value \"" + value_str + "\""
+						);
+						return eastl::nullopt;
+					}
+					catch(std::out_of_range) {
+
+						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+							&(unit_p->error_group_p()->stack()),
+							info_tree.childs[0].begin_location,
+							"@buffer annotation, invalid value \"" + value_str + "\""
+						);
+						return eastl::nullopt;
+					}
+				}
+			}
+
+			// check for offset annotation
+			{
+				auto it = data_param_desc.config_map.find("offset");
+				if(it != data_param_desc.config_map.end()) {
+
+					const auto& info_tree = it->second;
+
+					if(info_tree.childs.size() == 0) {
+
+						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+							&(unit_p->error_group_p()->stack()),
+							info_tree.end_location,
+							"@offset annotation requires value"
+						);
+						return eastl::nullopt;
+					}
+
+					G_string value_str = H_nsl_utilities::clear_space_head_tail(info_tree.childs[0].name);
+
+					try{
+						offset = std::stoi(value_str.c_str());
+					}
+					catch(std::invalid_argument) {
+
+						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+							&(unit_p->error_group_p()->stack()),
+							info_tree.childs[0].begin_location,
+							"@offset annotation, invalid value \"" + value_str + "\""
+						);
+						return eastl::nullopt;
+					}
+					catch(std::out_of_range) {
+
+						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+							&(unit_p->error_group_p()->stack()),
+							info_tree.childs[0].begin_location,
+							"@offset annotation, invalid value \"" + value_str + "\""
+						);
+						return eastl::nullopt;
+					}
+				}
+			}
+
+			// check for count annotation
+			{
+				auto it = data_param_desc.config_map.find("count");
+				if(it != data_param_desc.config_map.end()) {
+
+					const auto& info_tree = it->second;
+
+					if(info_tree.childs.size() == 0) {
+
+						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+							&(unit_p->error_group_p()->stack()),
+							info_tree.end_location,
+							"@count annotation requires value"
+						);
+						return eastl::nullopt;
+					}
+
+					G_string value_str = H_nsl_utilities::clear_space_head_tail(info_tree.childs[0].name);
+
+					try{
+						count = std::stoi(value_str.c_str());
+					}
+					catch(std::invalid_argument) {
+
+						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+							&(unit_p->error_group_p()->stack()),
+							info_tree.childs[0].begin_location,
+							"@count annotation, invalid value \"" + value_str + "\""
+						);
+						return eastl::nullopt;
+					}
+					catch(std::out_of_range) {
+
+						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+							&(unit_p->error_group_p()->stack()),
+							info_tree.childs[0].begin_location,
+							"@count annotation, invalid value \"" + value_str + "\""
+						);
+						return eastl::nullopt;
+					}
+				}
+			}
+
+			additional_vertex_data_param_descs_[i] = F_nsl_additional_vertex_data_param_desc {
+				.buffer = buffer,
+				.offset = offset,
+				.count = count
+			};
+		}
+
+		return std::move(childs);
 	}
 
 
@@ -2711,9 +2941,9 @@ namespace nrhi {
 		G_string target_name = target;
 		G_string semantic;
 
-		if(is_name_has_semantic_target_type(target)) {
+		if(is_name_has_semantic_info(target)) {
 
-			target_name = this->semantic_target_type(target);
+			target_name = this->semantic_info(target).target_type;
 			semantic = target;
 		}
 
@@ -2918,8 +3148,18 @@ namespace nrhi {
 		name_manager_p->register_name("SV_POSITION", "SV_Position");
 		name_manager_p->register_name("SV_TARGET", "SV_Target");
 
-		data_type_manager_p->register_semantic("SV_Position", "float4");
-		data_type_manager_p->register_semantic("SV_Target", "float4");
+		data_type_manager_p->register_semantic(
+			"SV_Position",
+			F_nsl_semantic_info {
+				"float4"
+			}
+		);
+		data_type_manager_p->register_semantic(
+			"SV_Target",
+			F_nsl_semantic_info {
+				"float4"
+			}
+		);
 	}
 
 
