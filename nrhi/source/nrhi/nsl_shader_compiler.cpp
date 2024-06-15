@@ -2291,6 +2291,186 @@ namespace nrhi {
 
 
 
+	F_nsl_resource_object::F_nsl_resource_object(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		TKPA_valid<A_nsl_object_type> type_p,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const G_string& name
+	) :
+		A_nsl_object(
+			shader_compiler_p,
+			type_p,
+			translation_unit_p,
+			name
+		)
+	{
+	}
+	F_nsl_resource_object::~F_nsl_resource_object() {
+	}
+
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_resource_object::recursive_build_ast_tree(
+		F_nsl_context& context,
+		TK_valid<F_nsl_translation_unit> unit_p,
+		TG_vector<F_nsl_ast_tree>& trees,
+		sz index,
+		F_nsl_error_stack* error_stack_p
+	) {
+		auto& tree = trees[index];
+		auto& object_implementation = tree.object_implementation;
+
+		context.parent_object_p = NCPP_KTHIS().no_requirements();
+
+		auto name_manager_p = shader_compiler_p()->name_manager_p();
+		auto translation_unit_compiler_p = shader_compiler_p()->translation_unit_compiler_p();
+		auto resource_manager_p = shader_compiler_p()->resource_manager_p();
+
+		F_nsl_resource_info resource_info;
+		resource_info.config_map = context.current_object_config;
+
+		// parse child info trees
+		auto child_info_trees_opt = H_nsl_utilities::build_info_trees(
+			object_implementation.bodies[0].content,
+			object_implementation.bodies[0].begin_location,
+			&(unit_p->error_group_p()->stack())
+		);
+		if(!child_info_trees_opt) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				&(unit_p->error_group_p()->stack()),
+				object_implementation.bodies[0].begin_location,
+				"can't not parse resource type"
+			);
+			return eastl::nullopt;
+		}
+
+		auto& child_info_trees = child_info_trees_opt.value();
+
+		if(child_info_trees.size() == 0) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				&(unit_p->error_group_p()->stack()),
+				object_implementation.bodies[0].begin_location,
+				"require resource type"
+			);
+			return eastl::nullopt;
+		}
+
+		auto& type_child_info_tree = child_info_trees[0];
+
+		TG_vector<F_nsl_ast_tree> child_trees(1);
+		child_trees[0] = F_nsl_ast_tree {
+			.type = E_nsl_ast_tree_type::INFO_TREE,
+			.info_tree = type_child_info_tree,
+			.begin_location = type_child_info_tree.begin_location,
+			.end_location = type_child_info_tree.end_location
+		};
+
+		TG_vector<G_string> type_args(type_child_info_tree.childs.size());
+		for(u32 i = 0; i < type_args.size(); ++i) {
+
+			type_args[i] = type_child_info_tree.childs[i].name;
+		}
+
+		resource_info.type = type_child_info_tree.name;
+		resource_info.type_args = type_args;
+
+		// check for shaders annotation
+		{
+			auto it = context.current_object_config.find("shaders");
+			if(it != context.current_object_config.end()) {
+
+				const auto& annotation_object_implementation_tree = it->second;
+
+				if(annotation_object_implementation_tree.bodies.size() != 1) {
+
+					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+						&(unit_p->error_group_p()->stack()),
+						annotation_object_implementation_tree.end_location,
+						"@shaders annotation requires 1 body for values"
+					);
+					return eastl::nullopt;
+				}
+
+				const auto& annotation_object_implementation_tree_first_body = annotation_object_implementation_tree.bodies[0];
+
+				auto shaders_info_trees_opt = H_nsl_utilities::build_info_trees(
+					annotation_object_implementation_tree_first_body.content,
+					annotation_object_implementation_tree_first_body.begin_location,
+					&(unit_p->error_group_p()->stack())
+				);
+
+				if(!shaders_info_trees_opt) {
+
+					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+						&(unit_p->error_group_p()->stack()),
+						annotation_object_implementation_tree_first_body.begin_location,
+						"can't parse @shaders annotation values"
+					);
+					return eastl::nullopt;
+				}
+
+				auto shader_info_trees = shaders_info_trees_opt.value();
+
+				resource_info.shader_filters = {};
+
+				for(auto& shader_info_tree : shader_info_trees) {
+
+					resource_info.shader_filters.insert(shader_info_tree.name);
+				}
+			}
+		}
+
+		// register resource
+		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE>(tree.object_implementation.name);
+		resource_manager_p->register_resource(
+			tree.object_implementation.name,
+			resource_info
+		);
+
+		return std::move(child_trees);
+	}
+
+
+
+	F_nsl_resource_object_type::F_nsl_resource_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"resource",
+			true,
+			1,
+			1,
+			nsl_global_object_type_channel_mask
+		)
+	{
+	}
+	F_nsl_resource_object_type::~F_nsl_resource_object_type() {
+	}
+
+	TK<A_nsl_object> F_nsl_resource_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	) {
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_resource_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
 	A_nsl_shader_object::A_nsl_shader_object(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 		TKPA_valid<A_nsl_object_type> type_p,
@@ -2701,6 +2881,9 @@ namespace nrhi {
 		);
 		register_type(
 			TU<F_nsl_enumeration_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_resource_object_type>()(shader_compiler_p_)
 		);
 	}
 	F_nsl_object_manager::~F_nsl_object_manager() {
@@ -3523,6 +3706,12 @@ namespace nrhi {
 	F_nsl_resource_manager::~F_nsl_resource_manager() {
 	}
 
+	F_nsl_resource_info F_nsl_resource_manager::process_resource_info(const G_string& name, const F_nsl_resource_info& resource_info) {
+		
+		F_nsl_resource_info result = resource_info;
+
+		return std::move(result);
+	}
 
 
 	F_nsl_shader_compiler::F_nsl_shader_compiler() :

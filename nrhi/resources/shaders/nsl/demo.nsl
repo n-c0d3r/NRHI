@@ -21,22 +21,26 @@ semantic NORMAL(f32x3)
 sampler demo_sampler
 
 @slot(0)
-shader_resource_view demo_texture_2d(
+resource demo_texture_2d(
     Texture2D(f32x4)
 )
 
-shader_resource_view demo_structured_buffer
+resource demo_structured_buffer
 (
     StructuredBuffer(F_cluster_header)
 )
 
-unordered_access_view demo_structured_buffer_rw
+resource demo_structured_buffer_rw
 (
-    StructuredBuffer(F_cluster_header)
+    RWStructuredBuffer(F_cluster_header)
 )
 
-uniform_buffer per_view_cb
-uniform_buffer per_object_cb
+resource per_view_cb(
+    UniformBuffer
+)
+resource per_object_cb(
+    UniformBuffer
+)
 
 @buffer(per_view_cb)
 uniform proj_matrix(f32x4x4)

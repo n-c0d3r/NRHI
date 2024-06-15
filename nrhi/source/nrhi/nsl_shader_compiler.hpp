@@ -181,6 +181,19 @@ namespace nrhi {
 	};
 	using F_nsl_enumeration = eastl::pair<G_string, F_nsl_enumeration_info>;
 
+	using F_nsl_resource_config_map = TG_unordered_map<G_string, F_nsl_object_implementation>;
+	struct F_nsl_resource_info {
+
+		G_string type;
+		TG_vector<G_string> type_args;
+
+		TG_unordered_set<G_string> shader_filters = { "*" };
+
+		F_nsl_resource_config_map config_map;
+
+	};
+	using F_nsl_resource = eastl::pair<G_string, F_nsl_resource_info>;
+
 	struct NRHI_API F_nsl_str_state {
 
 		b8 value = false;
@@ -1006,6 +1019,55 @@ namespace nrhi {
 
 	public:
 		NCPP_OBJECT(F_nsl_enumeration_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+
+	};
+
+
+
+	class NRHI_API F_nsl_resource_object : public A_nsl_object {
+
+	public:
+		F_nsl_resource_object(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			TKPA_valid<A_nsl_object_type> type_p,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			const G_string& name = ""
+		);
+		virtual ~F_nsl_resource_object();
+
+	public:
+		NCPP_OBJECT(F_nsl_resource_object);
+
+	public:
+		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
+			F_nsl_context& context,
+			TK_valid<F_nsl_translation_unit> unit_p,
+			TG_vector<F_nsl_ast_tree>& trees,
+			sz index,
+			F_nsl_error_stack* error_stack_p
+		) override;
+
+	};
+
+
+
+	class NRHI_API F_nsl_resource_object_type : public A_nsl_object_type {
+
+	public:
+		F_nsl_resource_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_resource_object_type();
+
+	public:
+		NCPP_OBJECT(F_nsl_resource_object_type);
 
 	public:
 		virtual TK<A_nsl_object> create_object(
@@ -1958,8 +2020,13 @@ namespace nrhi {
 	private:
 		TK_valid<F_nsl_shader_compiler> shader_compiler_p_;
 
+	protected:
+		TG_unordered_map<G_string, F_nsl_resource_info> name_to_resource_info_map_;
+
 	public:
 		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
+
+		NCPP_FORCE_INLINE const TG_unordered_map<G_string, F_nsl_resource_info>& name_to_resource_info_map() const noexcept { return name_to_resource_info_map_; }
 
 
 
@@ -1969,6 +2036,38 @@ namespace nrhi {
 
 	public:
 		NCPP_OBJECT(F_nsl_resource_manager);
+
+	public:
+		NCPP_FORCE_INLINE b8 is_name_has_resource_info(const G_string& name) const {
+
+			auto it = name_to_resource_info_map_.find(name);
+
+			return (it != name_to_resource_info_map_.end());
+		}
+		NCPP_FORCE_INLINE const F_nsl_resource_info& resource_info(const G_string& name) const {
+
+			auto it = name_to_resource_info_map_.find(name);
+
+			NCPP_ASSERT(it != name_to_resource_info_map_.end()) << "can't find " << T_cout_value(name);
+
+			return it->second;
+		}
+		NCPP_FORCE_INLINE void register_resource(const G_string& name, const F_nsl_resource_info& resource_info) {
+
+			NCPP_ASSERT(name_to_resource_info_map_.find(name) == name_to_resource_info_map_.end()) << T_cout_value(name) << " already exists";
+
+			name_to_resource_info_map_[name] = process_resource_info(name, resource_info);
+		}
+		NCPP_FORCE_INLINE void deregister_resource(const G_string& name) {
+
+			NCPP_ASSERT(name_to_resource_info_map_.find(name) != name_to_resource_info_map_.end()) << T_cout_value(name) << " is not exists";
+
+			auto it = name_to_resource_info_map_.find(name);
+			name_to_resource_info_map_.erase(it);
+		}
+
+	private:
+		F_nsl_resource_info process_resource_info(const G_string& name, const F_nsl_resource_info& resource_info);
 
 	};
 
