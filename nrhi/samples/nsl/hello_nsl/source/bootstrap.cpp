@@ -81,7 +81,12 @@ int main() {
 "@rasterizer(\n"
 "	cull_mode(BACK)\n"
 ")\n"
-"pipeline_state graphics_pso_main(vs_main ps_main)\n"
+"@primitive_topology(LINE_LIST)\n"
+"pipeline_state graphics_pso_main\n"
+"(\n"
+"	vs_main\n"
+"	ps_main\n"
+")\n"
 "\n",
 		E_nsl_output_language::HLSL
 	);

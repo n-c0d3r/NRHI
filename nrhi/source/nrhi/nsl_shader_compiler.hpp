@@ -41,6 +41,8 @@
 #include <nrhi/fill_mode.hpp>
 #include <nrhi/format.hpp>
 #include <nrhi/depth_comparison_func.hpp>
+#include <nrhi/primitive_topology.hpp>
+#include <nrhi/pipeline_state_desc.hpp>
 
 #pragma endregion
 
@@ -185,6 +187,7 @@ namespace nrhi {
 		static TG_map<G_string, E_fill_mode> fill_mode_str_to_value_map_;
 		static TG_map<G_string, E_format> format_str_to_value_map_;
 		static TG_map<G_string, E_depth_comparison_func> depth_comparison_func_str_to_value_map_;
+		static TG_map<G_string, E_primitive_topology> primitive_topology_str_to_value_map_;
 
 	public:
 		NCPP_FORCE_INLINE const auto& info_trees() const noexcept { return info_trees_; }
@@ -234,6 +237,7 @@ namespace nrhi {
 		eastl::optional<E_fill_mode> read_fill_mode(u32 index) const;
 		eastl::optional<E_format> read_format(u32 index) const;
 		eastl::optional<E_depth_comparison_func> read_depth_comparison_func(u32 index) const;
+		eastl::optional<E_primitive_topology> read_primitive_topology(u32 index) const;
 
 	};
 
@@ -332,6 +336,18 @@ namespace nrhi {
 	};
 	using F_nsl_sampler_state = eastl::pair<G_string, F_nsl_sampler_state_info>;
 
+	using F_nsl_pipeline_state_config_map = TG_unordered_map<G_string, F_nsl_info_tree_reader>;
+	struct F_nsl_pipeline_state_info {
+
+		TG_vector<G_string> shaders;
+
+		F_pipeline_state_desc desc;
+
+		F_nsl_pipeline_state_config_map config_map;
+
+	};
+	using F_nsl_pipeline_state = eastl::pair<G_string, F_nsl_pipeline_state_info>;
+
 	struct NRHI_API F_nsl_str_state {
 
 		b8 value = false;
@@ -419,6 +435,8 @@ namespace nrhi {
 		struct STRUCTURE {};
 		struct RESOURCE {};
 		struct UNIFORM {};
+		struct SAMPLER_STATE {};
+		struct PIPELINE_STATE {};
 		struct SHADER {};
 
 	};
@@ -1351,6 +1369,55 @@ namespace nrhi {
 
 	public:
 		NCPP_OBJECT(F_nsl_sampler_state_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+
+	};
+
+
+
+	class NRHI_API F_nsl_pipeline_state_object : public A_nsl_object {
+
+	public:
+		F_nsl_pipeline_state_object(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			TKPA_valid<A_nsl_object_type> type_p,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			const G_string& name = ""
+		);
+		virtual ~F_nsl_pipeline_state_object();
+
+	public:
+		NCPP_OBJECT(F_nsl_pipeline_state_object);
+
+	public:
+		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
+			F_nsl_context& context,
+			TK_valid<F_nsl_translation_unit> unit_p,
+			TG_vector<F_nsl_ast_tree>& trees,
+			sz index,
+			F_nsl_error_stack* error_stack_p
+		) override;
+
+	};
+
+
+
+	class NRHI_API F_nsl_pipeline_state_object_type : public A_nsl_object_type {
+
+	public:
+		F_nsl_pipeline_state_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_pipeline_state_object_type();
+
+	public:
+		NCPP_OBJECT(F_nsl_pipeline_state_object_type);
 
 	public:
 		virtual TK<A_nsl_object> create_object(
@@ -2503,6 +2570,64 @@ namespace nrhi {
 
 
 
+	class NRHI_API F_nsl_pipeline_state_manager {
+
+	private:
+		TK_valid<F_nsl_shader_compiler> shader_compiler_p_;
+
+	protected:
+		TG_unordered_map<G_string, F_nsl_pipeline_state_info> name_to_pipeline_state_info_map_;
+
+	public:
+		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
+
+		NCPP_FORCE_INLINE const TG_unordered_map<G_string, F_nsl_pipeline_state_info>& name_to_pipeline_state_info_map() const noexcept { return name_to_pipeline_state_info_map_; }
+
+
+
+	public:
+		F_nsl_pipeline_state_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p);
+		virtual ~F_nsl_pipeline_state_manager();
+
+	public:
+		NCPP_OBJECT(F_nsl_pipeline_state_manager);
+
+	public:
+		NCPP_FORCE_INLINE b8 is_name_has_pipeline_state_info(const G_string& name) const {
+
+			auto it = name_to_pipeline_state_info_map_.find(name);
+
+			return (it != name_to_pipeline_state_info_map_.end());
+		}
+		NCPP_FORCE_INLINE const F_nsl_pipeline_state_info& pipeline_state_info(const G_string& name) const {
+
+			auto it = name_to_pipeline_state_info_map_.find(name);
+
+			NCPP_ASSERT(it != name_to_pipeline_state_info_map_.end()) << "can't find " << T_cout_value(name);
+
+			return it->second;
+		}
+		NCPP_FORCE_INLINE void register_pipeline_state(const G_string& name, const F_nsl_pipeline_state_info& pipeline_state_info) {
+
+			NCPP_ASSERT(name_to_pipeline_state_info_map_.find(name) == name_to_pipeline_state_info_map_.end()) << T_cout_value(name) << " already exists";
+
+			name_to_pipeline_state_info_map_[name] = process_pipeline_state_info(name, pipeline_state_info);
+		}
+		NCPP_FORCE_INLINE void deregister_pipeline_state(const G_string& name) {
+
+			NCPP_ASSERT(name_to_pipeline_state_info_map_.find(name) != name_to_pipeline_state_info_map_.end()) << T_cout_value(name) << " is not exists";
+
+			auto it = name_to_pipeline_state_info_map_.find(name);
+			name_to_pipeline_state_info_map_.erase(it);
+		}
+
+	private:
+		F_nsl_pipeline_state_info process_pipeline_state_info(const G_string& name, const F_nsl_pipeline_state_info& pipeline_state_info);
+
+	};
+
+
+
 	template<typename F__>
 	using TF_nsl_shader_compiler_subsystem_creator = eastl::function<
 	    TU<F__>(TKPA_valid<F_nsl_shader_compiler>)
@@ -2521,6 +2646,7 @@ namespace nrhi {
 		TU<F_nsl_resource_manager> resource_manager_p_;
 		TU<F_nsl_uniform_manager> uniform_manager_p_;
 		TU<F_nsl_sampler_state_manager> sampler_state_manager_p_;
+		TU<F_nsl_pipeline_state_manager> pipeline_state_manager_p_;
 
 		TU<A_nsl_output_language> output_language_p_;
 
@@ -2535,6 +2661,7 @@ namespace nrhi {
 		NCPP_FORCE_INLINE TK_valid<F_nsl_resource_manager> resource_manager_p() const noexcept { return NCPP_FOH_VALID(resource_manager_p_); }
 		NCPP_FORCE_INLINE TK_valid<F_nsl_uniform_manager> uniform_manager_p() const noexcept { return NCPP_FOH_VALID(uniform_manager_p_); }
 		NCPP_FORCE_INLINE TK_valid<F_nsl_sampler_state_manager> sampler_state_manager_p() const noexcept { return NCPP_FOH_VALID(sampler_state_manager_p_); }
+		NCPP_FORCE_INLINE TK_valid<F_nsl_pipeline_state_manager> pipeline_state_manager_p() const noexcept { return NCPP_FOH_VALID(pipeline_state_manager_p_); }
 
 		NCPP_FORCE_INLINE TK<A_nsl_output_language> output_language_p() const noexcept { return output_language_p_; }
 
@@ -2552,7 +2679,8 @@ namespace nrhi {
 			TF_nsl_shader_compiler_subsystem_creator<F_nsl_data_type_manager> data_type_manager_creator,
 			TF_nsl_shader_compiler_subsystem_creator<F_nsl_resource_manager> resource_manager_creator,
 			TF_nsl_shader_compiler_subsystem_creator<F_nsl_uniform_manager> uniform_manager_creator,
-			TF_nsl_shader_compiler_subsystem_creator<F_nsl_sampler_state_manager> sampler_state_manager_creator
+			TF_nsl_shader_compiler_subsystem_creator<F_nsl_sampler_state_manager> sampler_state_manager_creator,
+			TF_nsl_shader_compiler_subsystem_creator<F_nsl_pipeline_state_manager> pipeline_state_manager_creator
 		);
 		virtual ~F_nsl_shader_compiler();
 

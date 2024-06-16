@@ -1004,6 +1004,7 @@ namespace nrhi {
 	TG_map<G_string, E_fill_mode> F_nsl_info_tree_reader::fill_mode_str_to_value_map_;
 	TG_map<G_string, E_format> F_nsl_info_tree_reader::format_str_to_value_map_;
 	TG_map<G_string, E_depth_comparison_func> F_nsl_info_tree_reader::depth_comparison_func_str_to_value_map_;
+	TG_map<G_string, E_primitive_topology> F_nsl_info_tree_reader::primitive_topology_str_to_value_map_;
 
 	F_nsl_info_tree_reader::F_nsl_info_tree_reader(
 		const TG_vector<F_nsl_info_tree>& info_trees,
@@ -1187,6 +1188,11 @@ namespace nrhi {
 			depth_comparison_func_str_to_value_map_["NOT_EQUAL"] = E_depth_comparison_func::NOT_EQUAL;
 			depth_comparison_func_str_to_value_map_["GREATER_EQUAL"] = E_depth_comparison_func::GREATER_EQUAL;
 			depth_comparison_func_str_to_value_map_["ALWAYS"] = E_depth_comparison_func::ALWAYS;
+
+			// setup primitive_topology_str_to_value_map_
+			primitive_topology_str_to_value_map_["NONE"] = E_primitive_topology::NONE;
+			primitive_topology_str_to_value_map_["LINE_LIST"] = E_primitive_topology::LINE_LIST;
+			primitive_topology_str_to_value_map_["TRIANGLE_LIST"] = E_primitive_topology::TRIANGLE_LIST;
 		}
 	}
 	F_nsl_info_tree_reader::~F_nsl_info_tree_reader() {
@@ -1842,6 +1848,29 @@ namespace nrhi {
 		auto it = depth_comparison_func_str_to_value_map_.find(value_str);
 
 		if (it == depth_comparison_func_str_to_value_map_.end()) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				error_stack_p_,
+				info_trees_[index].begin_location,
+				"invalid value \"" + value_str + "\""
+			);
+			return eastl::nullopt;
+		}
+
+		return it->second;
+	}
+	eastl::optional<E_primitive_topology> F_nsl_info_tree_reader::read_primitive_topology(u32 index) const {
+
+		if(!guarantee_index(index)) {
+
+			return eastl::nullopt;
+		}
+
+		G_string value_str = H_nsl_utilities::clear_space_head_tail(info_trees_[index].name);
+
+		auto it = primitive_topology_str_to_value_map_.find(value_str);
+
+		if (it == primitive_topology_str_to_value_map_.end()) {
 
 			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 				error_stack_p_,
@@ -3659,7 +3688,7 @@ namespace nrhi {
 		}
 
 		// register sampler_state
-		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE>(tree.object_implementation.name);
+		name_manager_p->template T_register_name<FE_nsl_name_types::SAMPLER_STATE>(tree.object_implementation.name);
 		sampler_state_manager_p->register_sampler_state(
 			tree.object_implementation.name,
 			sampler_state_info
@@ -3695,6 +3724,156 @@ namespace nrhi {
 
 		auto object_p = register_object(
 			TU<F_nsl_sampler_state_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_pipeline_state_object::F_nsl_pipeline_state_object(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		TKPA_valid<A_nsl_object_type> type_p,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const G_string& name
+	) :
+		A_nsl_object(
+			shader_compiler_p,
+			type_p,
+			translation_unit_p,
+			name
+		)
+	{
+	}
+	F_nsl_pipeline_state_object::~F_nsl_pipeline_state_object() {
+	}
+
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_pipeline_state_object::recursive_build_ast_tree(
+		F_nsl_context& context,
+		TK_valid<F_nsl_translation_unit> unit_p,
+		TG_vector<F_nsl_ast_tree>& trees,
+		sz index,
+		F_nsl_error_stack* error_stack_p
+	) {
+		auto& tree = trees[index];
+		auto& object_implementation = tree.object_implementation;
+
+		context.parent_object_p = NCPP_KTHIS().no_requirements();
+
+		auto name_manager_p = shader_compiler_p()->name_manager_p();
+		auto translation_unit_compiler_p = shader_compiler_p()->translation_unit_compiler_p();
+		auto pipeline_state_manager_p = shader_compiler_p()->pipeline_state_manager_p();
+
+		F_nsl_pipeline_state_info pipeline_state_info;
+		pipeline_state_info.config_map = context.current_object_config;
+
+		// parse child info trees
+		auto child_info_trees_opt = H_nsl_utilities::build_info_trees(
+			object_implementation.bodies[0].content,
+			object_implementation.bodies[0].begin_location,
+			&(unit_p->error_group_p()->stack())
+		);
+		if(!child_info_trees_opt) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				&(unit_p->error_group_p()->stack()),
+				object_implementation.bodies[0].begin_location,
+				"can't not parse pipeline_state shaders"
+			);
+			return eastl::nullopt;
+		}
+
+		auto& child_info_trees = child_info_trees_opt.value();
+
+		if(child_info_trees.size() == 0) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				&(unit_p->error_group_p()->stack()),
+				object_implementation.bodies[0].begin_location,
+				"require pipeline_state shaders"
+			);
+			return eastl::nullopt;
+		}
+
+		u32 shader_count = child_info_trees.size();
+
+		pipeline_state_info.shaders.resize(shader_count);
+
+		TG_vector<F_nsl_ast_tree> child_trees(shader_count);
+		for(u32 i = 0; i < shader_count; ++i) {
+
+			auto& child_info_tree = child_info_trees[i];
+
+			pipeline_state_info.shaders[i] = name_manager_p->target(child_info_tree.name);
+
+			child_trees[i] = F_nsl_ast_tree {
+				.type = E_nsl_ast_tree_type::INFO_TREE,
+				.info_tree = child_info_tree,
+				.begin_location = child_info_tree.begin_location,
+				.end_location = child_info_tree.end_location
+			};
+		}
+
+		// check for primitive_topology annotation
+		{
+			auto it = context.current_object_config.find("primitive_topology");
+			if(it != context.current_object_config.end()) {
+
+				const auto& info_tree_reader = it->second;
+
+				auto value_opt = info_tree_reader.read_primitive_topology(0);
+
+				if(!value_opt)
+					return eastl::nullopt;
+
+				pipeline_state_info.desc.primitive_topology = value_opt.value();
+			}
+		}
+
+		// register pipeline_state
+		name_manager_p->template T_register_name<FE_nsl_name_types::PIPELINE_STATE>(tree.object_implementation.name);
+		pipeline_state_manager_p->register_pipeline_state(
+			tree.object_implementation.name,
+			pipeline_state_info
+		);
+
+		return std::move(child_trees);
+	}
+
+
+
+	F_nsl_pipeline_state_object_type::F_nsl_pipeline_state_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"pipeline_state",
+			true,
+			1,
+			1,
+			nsl_global_object_type_channel_mask
+		)
+	{
+	}
+	F_nsl_pipeline_state_object_type::~F_nsl_pipeline_state_object_type() {
+	}
+
+	TK<A_nsl_object> F_nsl_pipeline_state_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	) {
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_pipeline_state_object>()(
 				shader_compiler_p(),
 				NCPP_KTHIS(),
 				translation_unit_p,
@@ -4135,6 +4314,9 @@ namespace nrhi {
 		);
 		register_type(
 			TU<F_nsl_sampler_state_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_pipeline_state_object_type>()(shader_compiler_p_)
 		);
 	}
 	F_nsl_object_manager::~F_nsl_object_manager() {
@@ -5051,6 +5233,22 @@ namespace nrhi {
 
 
 
+	F_nsl_pipeline_state_manager::F_nsl_pipeline_state_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
+		shader_compiler_p_(shader_compiler_p)
+	{
+	}
+	F_nsl_pipeline_state_manager::~F_nsl_pipeline_state_manager() {
+	}
+
+	F_nsl_pipeline_state_info F_nsl_pipeline_state_manager::process_pipeline_state_info(const G_string& name, const F_nsl_pipeline_state_info& pipeline_state_info) {
+		
+		F_nsl_pipeline_state_info result = pipeline_state_info;
+
+		return std::move(result);
+	}
+
+
+
 	F_nsl_shader_compiler::F_nsl_shader_compiler() :
 		module_manager_p_(
 			TU<F_nsl_shader_module_manager>()(NCPP_KTHIS())
@@ -5081,6 +5279,9 @@ namespace nrhi {
 		),
 		sampler_state_manager_p_(
 			TU<F_nsl_sampler_state_manager>()(NCPP_KTHIS())
+		),
+		pipeline_state_manager_p_(
+			TU<F_nsl_pipeline_state_manager>()(NCPP_KTHIS())
 		)
 	{
 	}
@@ -5094,7 +5295,8 @@ namespace nrhi {
 		TF_nsl_shader_compiler_subsystem_creator<F_nsl_data_type_manager> data_type_manager_creator,
 		TF_nsl_shader_compiler_subsystem_creator<F_nsl_resource_manager> resource_manager_creator,
 		TF_nsl_shader_compiler_subsystem_creator<F_nsl_uniform_manager> uniform_manager_creator,
-		TF_nsl_shader_compiler_subsystem_creator<F_nsl_sampler_state_manager> sampler_state_manager_creator
+		TF_nsl_shader_compiler_subsystem_creator<F_nsl_sampler_state_manager> sampler_state_manager_creator,
+		TF_nsl_shader_compiler_subsystem_creator<F_nsl_pipeline_state_manager> pipeline_state_manager_creator
 	) :
 		module_manager_p_(module_manager_creator(NCPP_KTHIS())),
 		translation_unit_manager_p_(translation_unit_manager_creator(NCPP_KTHIS())),
@@ -5105,7 +5307,8 @@ namespace nrhi {
 		data_type_manager_p_(data_type_manager_creator(NCPP_KTHIS())),
 		resource_manager_p_(resource_manager_creator(NCPP_KTHIS())),
 		uniform_manager_p_(uniform_manager_creator(NCPP_KTHIS())),
-		sampler_state_manager_p_(sampler_state_manager_creator(NCPP_KTHIS()))
+		sampler_state_manager_p_(sampler_state_manager_creator(NCPP_KTHIS())),
+		pipeline_state_manager_p_(pipeline_state_manager_creator(NCPP_KTHIS()))
 	{
 	}
 	F_nsl_shader_compiler::~F_nsl_shader_compiler() {
