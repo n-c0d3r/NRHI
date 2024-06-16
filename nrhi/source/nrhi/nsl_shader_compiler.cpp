@@ -3057,6 +3057,22 @@ namespace nrhi {
 		resource_info.type = type_child_info_tree.name;
 		resource_info.type_args = type_args;
 
+		// check for slot annotation
+		{
+			auto it = context.current_object_config.find("slot");
+			if(it != context.current_object_config.end()) {
+
+				const auto& info_tree_reader = it->second;
+
+				auto value_opt = info_tree_reader.read_u32(0);
+
+				if(!value_opt)
+					return eastl::nullopt;
+
+				resource_info.slot = value_opt.value();
+			}
+		}
+
 		// check for shaders annotation
 		{
 			auto it = context.current_object_config.find("shaders");
@@ -3162,6 +3178,22 @@ namespace nrhi {
 
 		F_nsl_sampler_state_info sampler_state_info;
 		sampler_state_info.config_map = context.current_object_config;
+
+		// check for slot annotation
+		{
+			auto it = context.current_object_config.find("slot");
+			if(it != context.current_object_config.end()) {
+
+				const auto& info_tree_reader = it->second;
+
+				auto value_opt = info_tree_reader.read_u32(0);
+
+				if(!value_opt)
+					return eastl::nullopt;
+
+				sampler_state_info.slot = value_opt.value();
+			}
+		}
 
 		// check for shaders annotation
 		{

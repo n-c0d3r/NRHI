@@ -286,6 +286,8 @@ namespace nrhi {
 		G_string type;
 		TG_vector<G_string> type_args;
 
+		u32 slot = -1;
+
 		TG_unordered_set<G_string> shader_filters = { "*" };
 
 		F_nsl_resource_config_map config_map;
@@ -297,6 +299,8 @@ namespace nrhi {
 	struct F_nsl_sampler_state_info {
 
 		F_sampler_state_desc desc;
+
+		u32 slot = -1;
 
 		TG_unordered_set<G_string> shader_filters = { "*" };
 
