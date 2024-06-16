@@ -37,6 +37,10 @@
 #include <nrhi/shader_class_base.hpp>
 #include <nrhi/shader_blob_desc.hpp>
 #include <nrhi/sampler_state_desc.hpp>
+#include <nrhi/cull_mode.hpp>
+#include <nrhi/fill_mode.hpp>
+#include <nrhi/format.hpp>
+#include <nrhi/depth_comparison_func.hpp>
 
 #pragma endregion
 
@@ -177,6 +181,10 @@ namespace nrhi {
 		static TG_map<G_string, E_nsl_semantic_input_class> semantic_input_class_str_to_value_map_;
 		static TG_map<G_string, E_filter> filter_str_to_value_map_;
 		static TG_map<G_string, E_texcoord_address_mode> texcoord_address_mode_str_to_value_map_;
+		static TG_map<G_string, E_cull_mode> cull_mode_str_to_value_map_;
+		static TG_map<G_string, E_fill_mode> fill_mode_str_to_value_map_;
+		static TG_map<G_string, E_format> format_str_to_value_map_;
+		static TG_map<G_string, E_depth_comparison_func> depth_comparison_func_str_to_value_map_;
 
 	public:
 		NCPP_FORCE_INLINE const auto& info_trees() const noexcept { return info_trees_; }
@@ -222,6 +230,10 @@ namespace nrhi {
 		eastl::optional<E_nsl_semantic_input_class> read_semantic_input_class(u32 index) const;
 		eastl::optional<E_filter> read_filter(u32 index) const;
 		eastl::optional<E_texcoord_address_mode> read_texcoord_address_mode(u32 index) const;
+		eastl::optional<E_cull_mode> read_cull_mode(u32 index) const;
+		eastl::optional<E_fill_mode> read_fill_mode(u32 index) const;
+		eastl::optional<E_format> read_format(u32 index) const;
+		eastl::optional<E_depth_comparison_func> read_depth_comparison_func(u32 index) const;
 
 	};
 

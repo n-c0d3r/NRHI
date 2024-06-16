@@ -77,6 +77,11 @@ int main() {
 ")\n"
 "{\n"
 "}\n"
+"\n"
+"@rasterizer(\n"
+"	cull_mode(BACK)\n"
+")\n"
+"pipeline_state graphics_pso_main(vs_main ps_main)\n"
 "\n",
 		E_nsl_output_language::HLSL
 	);
