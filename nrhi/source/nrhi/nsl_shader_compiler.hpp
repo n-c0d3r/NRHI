@@ -36,6 +36,7 @@
 #include <nrhi/shader_compiler_base.hpp>
 #include <nrhi/shader_class_base.hpp>
 #include <nrhi/shader_blob_desc.hpp>
+#include <nrhi/sampler_state_desc.hpp>
 
 #pragma endregion
 
@@ -126,6 +127,43 @@ namespace nrhi {
 	static constexpr F_nsl_object_type_channel_mask nsl_global_object_type_channel_mask = 0x1;
 	static constexpr F_nsl_object_type_channel_mask nsl_function_body_object_type_channel_mask = 0x2;
 
+	enum class E_nsl_element_format {
+
+		FLOAT_64,
+		UINT_64,
+		SINT_64,
+		TYPELESS_64,
+
+		FLOAT_32,
+		FLOAT_16,
+
+		UNORM_16,
+		UNORM_8,
+
+		SNORM_16,
+		SNORM_8,
+
+		UINT_32,
+		UINT_16,
+		UINT_8,
+
+		SINT_32,
+		SINT_16,
+		SINT_8,
+
+		TYPELESS_32,
+		TYPELESS_16,
+		TYPELESS_8,
+
+	};
+
+	enum class E_nsl_semantic_input_class {
+
+		PER_VERTEX,
+		PER_INSTANCE
+
+	};
+
 	class NRHI_API F_nsl_info_tree_reader {
 
 	private:
@@ -133,7 +171,12 @@ namespace nrhi {
 		u32 location_offset_to_save_ = 0;
 		F_nsl_error_stack* error_stack_p_ = 0;
 
-		TG_unordered_map<G_string, b8> b8_str_to_value_map_;
+		static b8 is_maps_setup_;
+		static TG_map<G_string, b8> b8_str_to_value_map_;
+		static TG_map<G_string, E_nsl_element_format> element_format_str_to_value_map_;
+		static TG_map<G_string, E_nsl_semantic_input_class> semantic_input_class_str_to_value_map_;
+		static TG_map<G_string, E_filter> filter_str_to_value_map_;
+		static TG_map<G_string, E_texcoord_address_mode> texcoord_address_mode_str_to_value_map_;
 
 	public:
 		NCPP_FORCE_INLINE const auto& info_trees() const noexcept { return info_trees_; }
@@ -175,6 +218,10 @@ namespace nrhi {
 		eastl::optional<G_string> read_string(u32 index) const;
 		b8 guarantee_flag(const G_string& name) const;
 		eastl::optional<F_nsl_info_tree_reader> read_sub(const G_string& name) const;
+		eastl::optional<E_nsl_element_format> read_element_format(u32 index) const;
+		eastl::optional<E_nsl_semantic_input_class> read_semantic_input_class(u32 index) const;
+		eastl::optional<E_filter> read_filter(u32 index) const;
+		eastl::optional<E_texcoord_address_mode> read_texcoord_address_mode(u32 index) const;
 
 	};
 
@@ -246,15 +293,17 @@ namespace nrhi {
 	};
 	using F_nsl_resource = eastl::pair<G_string, F_nsl_resource_info>;
 
-	using F_nsl_sampler_config_map = TG_unordered_map<G_string, F_nsl_info_tree_reader>;
-	struct F_nsl_sampler_info {
+	using F_nsl_sampler_state_config_map = TG_unordered_map<G_string, F_nsl_info_tree_reader>;
+	struct F_nsl_sampler_state_info {
+
+		F_sampler_state_desc desc;
 
 		TG_unordered_set<G_string> shader_filters = { "*" };
 
-		F_nsl_sampler_config_map config_map;
+		F_nsl_sampler_state_config_map config_map;
 
 	};
-	using F_nsl_sampler = eastl::pair<G_string, F_nsl_sampler_info>;
+	using F_nsl_sampler_state = eastl::pair<G_string, F_nsl_sampler_state_info>;
 
 	struct NRHI_API F_nsl_str_state {
 
@@ -348,42 +397,6 @@ namespace nrhi {
 
 	using F_nsl_object_config = TG_unordered_map<G_string, F_nsl_info_tree_reader>;
 
-	enum class E_nsl_element_format {
-
-		FLOAT_64,
-		UINT_64,
-		SINT_64,
-		TYPELESS_64,
-
-		FLOAT_32,
-		FLOAT_16,
-
-		UNORM_16,
-		UNORM_8,
-
-		SNORM_16,
-		SNORM_8,
-
-		UINT_32,
-		UINT_16,
-		UINT_8,
-
-		SINT_32,
-		SINT_16,
-		SINT_8,
-
-		TYPELESS_32,
-		TYPELESS_16,
-		TYPELESS_8,
-
-	};
-
-	enum class E_nsl_semantic_input_class {
-
-		PER_VERTEX,
-		PER_INSTANCE
-
-	};
 	struct F_nsl_semantic_info {
 
 		G_string target_type;
@@ -1173,19 +1186,19 @@ namespace nrhi {
 
 
 
-	class NRHI_API F_nsl_sampler_object : public A_nsl_object {
+	class NRHI_API F_nsl_sampler_state_object : public A_nsl_object {
 
 	public:
-		F_nsl_sampler_object(
+		F_nsl_sampler_state_object(
 			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 			TKPA_valid<A_nsl_object_type> type_p,
 			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 			const G_string& name = ""
 		);
-		virtual ~F_nsl_sampler_object();
+		virtual ~F_nsl_sampler_state_object();
 
 	public:
-		NCPP_OBJECT(F_nsl_sampler_object);
+		NCPP_OBJECT(F_nsl_sampler_state_object);
 
 	public:
 		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
@@ -1200,16 +1213,16 @@ namespace nrhi {
 
 
 
-	class NRHI_API F_nsl_sampler_object_type : public A_nsl_object_type {
+	class NRHI_API F_nsl_sampler_state_object_type : public A_nsl_object_type {
 
 	public:
-		F_nsl_sampler_object_type(
+		F_nsl_sampler_state_object_type(
 			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
 		);
-		virtual ~F_nsl_sampler_object_type();
+		virtual ~F_nsl_sampler_state_object_type();
 
 	public:
-		NCPP_OBJECT(F_nsl_sampler_object_type);
+		NCPP_OBJECT(F_nsl_sampler_state_object_type);
 
 	public:
 		virtual TK<A_nsl_object> create_object(
@@ -2246,59 +2259,59 @@ namespace nrhi {
 
 
 
-	class NRHI_API F_nsl_sampler_manager {
+	class NRHI_API F_nsl_sampler_state_manager {
 
 	private:
 		TK_valid<F_nsl_shader_compiler> shader_compiler_p_;
 
 	protected:
-		TG_unordered_map<G_string, F_nsl_sampler_info> name_to_sampler_info_map_;
+		TG_unordered_map<G_string, F_nsl_sampler_state_info> name_to_sampler_state_info_map_;
 
 	public:
 		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
 
-		NCPP_FORCE_INLINE const TG_unordered_map<G_string, F_nsl_sampler_info>& name_to_sampler_info_map() const noexcept { return name_to_sampler_info_map_; }
+		NCPP_FORCE_INLINE const TG_unordered_map<G_string, F_nsl_sampler_state_info>& name_to_sampler_state_info_map() const noexcept { return name_to_sampler_state_info_map_; }
 
 
 
 	public:
-		F_nsl_sampler_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p);
-		virtual ~F_nsl_sampler_manager();
+		F_nsl_sampler_state_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p);
+		virtual ~F_nsl_sampler_state_manager();
 
 	public:
-		NCPP_OBJECT(F_nsl_sampler_manager);
+		NCPP_OBJECT(F_nsl_sampler_state_manager);
 
 	public:
-		NCPP_FORCE_INLINE b8 is_name_has_sampler_info(const G_string& name) const {
+		NCPP_FORCE_INLINE b8 is_name_has_sampler_state_info(const G_string& name) const {
 
-			auto it = name_to_sampler_info_map_.find(name);
+			auto it = name_to_sampler_state_info_map_.find(name);
 
-			return (it != name_to_sampler_info_map_.end());
+			return (it != name_to_sampler_state_info_map_.end());
 		}
-		NCPP_FORCE_INLINE const F_nsl_sampler_info& sampler_info(const G_string& name) const {
+		NCPP_FORCE_INLINE const F_nsl_sampler_state_info& sampler_state_info(const G_string& name) const {
 
-			auto it = name_to_sampler_info_map_.find(name);
+			auto it = name_to_sampler_state_info_map_.find(name);
 
-			NCPP_ASSERT(it != name_to_sampler_info_map_.end()) << "can't find " << T_cout_value(name);
+			NCPP_ASSERT(it != name_to_sampler_state_info_map_.end()) << "can't find " << T_cout_value(name);
 
 			return it->second;
 		}
-		NCPP_FORCE_INLINE void register_sampler(const G_string& name, const F_nsl_sampler_info& sampler_info) {
+		NCPP_FORCE_INLINE void register_sampler_state(const G_string& name, const F_nsl_sampler_state_info& sampler_state_info) {
 
-			NCPP_ASSERT(name_to_sampler_info_map_.find(name) == name_to_sampler_info_map_.end()) << T_cout_value(name) << " already exists";
+			NCPP_ASSERT(name_to_sampler_state_info_map_.find(name) == name_to_sampler_state_info_map_.end()) << T_cout_value(name) << " already exists";
 
-			name_to_sampler_info_map_[name] = process_sampler_info(name, sampler_info);
+			name_to_sampler_state_info_map_[name] = process_sampler_state_info(name, sampler_state_info);
 		}
-		NCPP_FORCE_INLINE void deregister_sampler(const G_string& name) {
+		NCPP_FORCE_INLINE void deregister_sampler_state(const G_string& name) {
 
-			NCPP_ASSERT(name_to_sampler_info_map_.find(name) != name_to_sampler_info_map_.end()) << T_cout_value(name) << " is not exists";
+			NCPP_ASSERT(name_to_sampler_state_info_map_.find(name) != name_to_sampler_state_info_map_.end()) << T_cout_value(name) << " is not exists";
 
-			auto it = name_to_sampler_info_map_.find(name);
-			name_to_sampler_info_map_.erase(it);
+			auto it = name_to_sampler_state_info_map_.find(name);
+			name_to_sampler_state_info_map_.erase(it);
 		}
 
 	private:
-		F_nsl_sampler_info process_sampler_info(const G_string& name, const F_nsl_sampler_info& sampler_info);
+		F_nsl_sampler_state_info process_sampler_state_info(const G_string& name, const F_nsl_sampler_state_info& sampler_state_info);
 
 	};
 
@@ -2320,7 +2333,7 @@ namespace nrhi {
 		TU<F_nsl_name_manager> name_manager_p_;
 		TU<F_nsl_data_type_manager> data_type_manager_p_;
 		TU<F_nsl_resource_manager> resource_manager_p_;
-		TU<F_nsl_sampler_manager> sampler_manager_p_;
+		TU<F_nsl_sampler_state_manager> sampler_state_manager_p_;
 
 		TU<A_nsl_output_language> output_language_p_;
 
@@ -2333,7 +2346,7 @@ namespace nrhi {
 		NCPP_FORCE_INLINE TK_valid<F_nsl_name_manager> name_manager_p() const noexcept { return NCPP_FOH_VALID(name_manager_p_); }
 		NCPP_FORCE_INLINE TK_valid<F_nsl_data_type_manager> data_type_manager_p() const noexcept { return NCPP_FOH_VALID(data_type_manager_p_); }
 		NCPP_FORCE_INLINE TK_valid<F_nsl_resource_manager> resource_manager_p() const noexcept { return NCPP_FOH_VALID(resource_manager_p_); }
-		NCPP_FORCE_INLINE TK_valid<F_nsl_sampler_manager> sampler_manager_p() const noexcept { return NCPP_FOH_VALID(sampler_manager_p_); }
+		NCPP_FORCE_INLINE TK_valid<F_nsl_sampler_state_manager> sampler_state_manager_p() const noexcept { return NCPP_FOH_VALID(sampler_state_manager_p_); }
 
 		NCPP_FORCE_INLINE TK<A_nsl_output_language> output_language_p() const noexcept { return output_language_p_; }
 
@@ -2350,7 +2363,7 @@ namespace nrhi {
 			TF_nsl_shader_compiler_subsystem_creator<F_nsl_name_manager> name_manager_creator,
 			TF_nsl_shader_compiler_subsystem_creator<F_nsl_data_type_manager> data_type_manager_creator,
 			TF_nsl_shader_compiler_subsystem_creator<F_nsl_resource_manager> resource_manager_creator,
-			TF_nsl_shader_compiler_subsystem_creator<F_nsl_sampler_manager> sampler_manager_creator
+			TF_nsl_shader_compiler_subsystem_creator<F_nsl_sampler_state_manager> sampler_state_manager_creator
 		);
 		virtual ~F_nsl_shader_compiler();
 

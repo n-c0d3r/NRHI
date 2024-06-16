@@ -994,6 +994,13 @@ namespace nrhi {
 
 
 
+	b8 F_nsl_info_tree_reader::is_maps_setup_ = false;
+	TG_map<G_string, b8> F_nsl_info_tree_reader::b8_str_to_value_map_;
+	TG_map<G_string, E_nsl_element_format> F_nsl_info_tree_reader::element_format_str_to_value_map_;
+	TG_map<G_string, E_nsl_semantic_input_class> F_nsl_info_tree_reader::semantic_input_class_str_to_value_map_;
+	TG_map<G_string, E_filter> F_nsl_info_tree_reader::filter_str_to_value_map_;
+	TG_map<G_string, E_texcoord_address_mode> F_nsl_info_tree_reader::texcoord_address_mode_str_to_value_map_;
+
 	F_nsl_info_tree_reader::F_nsl_info_tree_reader(
 		const TG_vector<F_nsl_info_tree>& info_trees,
 		u32 location_offset_to_save,
@@ -1003,19 +1010,104 @@ namespace nrhi {
 		location_offset_to_save_(location_offset_to_save),
 		error_stack_p_(error_stack_p)
 	{
-		// setup b8_str_to_value_map_
-		b8_str_to_value_map_["true"] = true;
-		b8_str_to_value_map_["TRUE"] = true;
-		b8_str_to_value_map_["on"] = true;
-		b8_str_to_value_map_["ON"] = true;
-		b8_str_to_value_map_["yes"] = true;
-		b8_str_to_value_map_["YES"] = true;
-		b8_str_to_value_map_["false"] = false;
-		b8_str_to_value_map_["FALSE"] = false;
-		b8_str_to_value_map_["off"] = false;
-		b8_str_to_value_map_["OFF"] = false;
-		b8_str_to_value_map_["no"] = false;
-		b8_str_to_value_map_["NO"] = false;
+		if(!is_maps_setup_)
+		{
+			is_maps_setup_ = true;
+
+			// setup b8_str_to_value_map_
+			b8_str_to_value_map_["true"] = true;
+			b8_str_to_value_map_["TRUE"] = true;
+			b8_str_to_value_map_["on"] = true;
+			b8_str_to_value_map_["ON"] = true;
+			b8_str_to_value_map_["yes"] = true;
+			b8_str_to_value_map_["YES"] = true;
+			b8_str_to_value_map_["false"] = false;
+			b8_str_to_value_map_["FALSE"] = false;
+			b8_str_to_value_map_["off"] = false;
+			b8_str_to_value_map_["OFF"] = false;
+			b8_str_to_value_map_["no"] = false;
+			b8_str_to_value_map_["NO"] = false;
+
+			// setup element_format_str_to_value_map_
+			element_format_str_to_value_map_["FLOAT_64"] = E_nsl_element_format::FLOAT_64;
+			element_format_str_to_value_map_["UINT_64"] = E_nsl_element_format::UINT_64;
+			element_format_str_to_value_map_["SINT_64"] = E_nsl_element_format::SINT_64;
+			element_format_str_to_value_map_["TYPELESS_64"] = E_nsl_element_format::TYPELESS_64;
+			element_format_str_to_value_map_["FLOAT_32"] = E_nsl_element_format::FLOAT_32;
+			element_format_str_to_value_map_["FLOAT_16"] = E_nsl_element_format::FLOAT_16;
+			element_format_str_to_value_map_["UNORM_16"] = E_nsl_element_format::UNORM_16;
+			element_format_str_to_value_map_["UNORM_8"] = E_nsl_element_format::UNORM_8;
+			element_format_str_to_value_map_["SNORM_16"] = E_nsl_element_format::SNORM_16;
+			element_format_str_to_value_map_["SNORM_8"] = E_nsl_element_format::SNORM_8;
+			element_format_str_to_value_map_["UINT_32"] = E_nsl_element_format::UINT_32;
+			element_format_str_to_value_map_["UINT_16"] = E_nsl_element_format::UINT_16;
+			element_format_str_to_value_map_["UINT_8"] = E_nsl_element_format::UINT_8;
+			element_format_str_to_value_map_["SINT_32"] = E_nsl_element_format::SINT_32;
+			element_format_str_to_value_map_["SINT_16"] = E_nsl_element_format::SINT_16;
+			element_format_str_to_value_map_["SINT_8"] = E_nsl_element_format::SINT_8;
+			element_format_str_to_value_map_["TYPELESS_32"] = E_nsl_element_format::TYPELESS_32;
+			element_format_str_to_value_map_["TYPELESS_16"] = E_nsl_element_format::TYPELESS_16;
+			element_format_str_to_value_map_["TYPELESS_8"] = E_nsl_element_format::TYPELESS_8;
+
+			// setup semantic_input_class_str_to_value_map_
+			semantic_input_class_str_to_value_map_["PER_VERTEX"] = E_nsl_semantic_input_class::PER_VERTEX;
+			semantic_input_class_str_to_value_map_["PER_INSTANCE"] = E_nsl_semantic_input_class::PER_INSTANCE;
+
+			// setup filter_str_to_value_map_
+			filter_str_to_value_map_["MIN_MAG_MIP_POINT"] = E_filter::MIN_MAG_MIP_POINT;
+			filter_str_to_value_map_["MIN_MAG_POINT_MIP_LINEAR"] = E_filter::MIN_MAG_POINT_MIP_LINEAR;
+			filter_str_to_value_map_["MIN_POINT_MAG_LINEAR_MIP_POINT"] = E_filter::MIN_POINT_MAG_LINEAR_MIP_POINT;
+			filter_str_to_value_map_["MIN_POINT_MAG_MIP_LINEAR"] = E_filter::MIN_POINT_MAG_MIP_LINEAR;
+			filter_str_to_value_map_["MIN_LINEAR_MAG_MIP_POINT"] = E_filter::MIN_LINEAR_MAG_MIP_POINT;
+			filter_str_to_value_map_["MIN_LINEAR_MAG_POINT_MIP_LINEAR"] = E_filter::MIN_LINEAR_MAG_POINT_MIP_LINEAR;
+			filter_str_to_value_map_["MIN_MAG_LINEAR_MIP_POINT"] = E_filter::MIN_MAG_LINEAR_MIP_POINT;
+			filter_str_to_value_map_["MIN_MAG_MIP_LINEAR"] = E_filter::MIN_MAG_MIP_LINEAR;
+			filter_str_to_value_map_["ANISOTROPIC"] = E_filter::ANISOTROPIC;
+			filter_str_to_value_map_["COMPARISON_MIN_MAG_MIP_POINT"] = E_filter::COMPARISON_MIN_MAG_MIP_POINT;
+			filter_str_to_value_map_["COMPARISON_MIN_MAG_POINT_MIP_LINEAR"] =
+				E_filter::COMPARISON_MIN_MAG_POINT_MIP_LINEAR;
+			filter_str_to_value_map_["COMPARISON_MIN_POINT_MAG_LINEAR_MIP_POINT"] =
+				E_filter::COMPARISON_MIN_POINT_MAG_LINEAR_MIP_POINT;
+			filter_str_to_value_map_["COMPARISON_MIN_POINT_MAG_MIP_LINEAR"] =
+				E_filter::COMPARISON_MIN_POINT_MAG_MIP_LINEAR;
+			filter_str_to_value_map_["COMPARISON_MIN_LINEAR_MAG_MIP_POINT"] =
+				E_filter::COMPARISON_MIN_LINEAR_MAG_MIP_POINT;
+			filter_str_to_value_map_["COMPARISON_MIN_LINEAR_MAG_POINT_MIP_LINEAR"] =
+				E_filter::COMPARISON_MIN_LINEAR_MAG_POINT_MIP_LINEAR;
+			filter_str_to_value_map_["COMPARISON_MIN_MAG_LINEAR_MIP_POINT"] =
+				E_filter::COMPARISON_MIN_MAG_LINEAR_MIP_POINT;
+			filter_str_to_value_map_["COMPARISON_MIN_MAG_MIP_LINEAR"] = E_filter::COMPARISON_MIN_MAG_MIP_LINEAR;
+			filter_str_to_value_map_["COMPARISON_ANISOTROPIC"] = E_filter::COMPARISON_ANISOTROPIC;
+			filter_str_to_value_map_["MINIMUM_MIN_MAG_MIP_POINT"] = E_filter::MINIMUM_MIN_MAG_MIP_POINT;
+			filter_str_to_value_map_["MINIMUM_MIN_MAG_POINT_MIP_LINEAR"] = E_filter::MINIMUM_MIN_MAG_POINT_MIP_LINEAR;
+			filter_str_to_value_map_["MINIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT"] =
+				E_filter::MINIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT;
+			filter_str_to_value_map_["MINIMUM_MIN_POINT_MAG_MIP_LINEAR"] = E_filter::MINIMUM_MIN_POINT_MAG_MIP_LINEAR;
+			filter_str_to_value_map_["MINIMUM_MIN_LINEAR_MAG_MIP_POINT"] = E_filter::MINIMUM_MIN_LINEAR_MAG_MIP_POINT;
+			filter_str_to_value_map_["MINIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR"] =
+				E_filter::MINIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR;
+			filter_str_to_value_map_["MINIMUM_MIN_MAG_LINEAR_MIP_POINT"] = E_filter::MINIMUM_MIN_MAG_LINEAR_MIP_POINT;
+			filter_str_to_value_map_["MINIMUM_MIN_MAG_MIP_LINEAR"] = E_filter::MINIMUM_MIN_MAG_MIP_LINEAR;
+			filter_str_to_value_map_["MINIMUM_ANISOTROPIC"] = E_filter::MINIMUM_ANISOTROPIC;
+			filter_str_to_value_map_["MAXIMUM_MIN_MAG_MIP_POINT"] = E_filter::MAXIMUM_MIN_MAG_MIP_POINT;
+			filter_str_to_value_map_["MAXIMUM_MIN_MAG_POINT_MIP_LINEAR"] = E_filter::MAXIMUM_MIN_MAG_POINT_MIP_LINEAR;
+			filter_str_to_value_map_["MAXIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT"] =
+				E_filter::MAXIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT;
+			filter_str_to_value_map_["MAXIMUM_MIN_POINT_MAG_MIP_LINEAR"] = E_filter::MAXIMUM_MIN_POINT_MAG_MIP_LINEAR;
+			filter_str_to_value_map_["MAXIMUM_MIN_LINEAR_MAG_MIP_POINT"] = E_filter::MAXIMUM_MIN_LINEAR_MAG_MIP_POINT;
+			filter_str_to_value_map_["MAXIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR"] =
+				E_filter::MAXIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR;
+			filter_str_to_value_map_["MAXIMUM_MIN_MAG_LINEAR_MIP_POINT"] = E_filter::MAXIMUM_MIN_MAG_LINEAR_MIP_POINT;
+			filter_str_to_value_map_["MAXIMUM_MIN_MAG_MIP_LINEAR"] = E_filter::MAXIMUM_MIN_MAG_MIP_LINEAR;
+			filter_str_to_value_map_["MAXIMUM_ANISOTROPIC"] = E_filter::MAXIMUM_ANISOTROPIC;
+
+			// setup texcoord_address_mode_str_to_value_map_
+			texcoord_address_mode_str_to_value_map_["CLAMP"] = E_texcoord_address_mode::CLAMP;
+			texcoord_address_mode_str_to_value_map_["WRAP"] = E_texcoord_address_mode::WRAP;
+			texcoord_address_mode_str_to_value_map_["BORDER"] = E_texcoord_address_mode::BORDER;
+			texcoord_address_mode_str_to_value_map_["MIRROR"] = E_texcoord_address_mode::MIRROR;
+			texcoord_address_mode_str_to_value_map_["MIRROR_ONCE"] = E_texcoord_address_mode::MIRROR_ONCE;
+		}
 	}
 	F_nsl_info_tree_reader::~F_nsl_info_tree_reader() {
 	}
@@ -1023,8 +1115,7 @@ namespace nrhi {
 	F_nsl_info_tree_reader::F_nsl_info_tree_reader(const F_nsl_info_tree_reader& x) :
 		info_trees_(x.info_trees_),
 		location_offset_to_save_(x.location_offset_to_save_),
-		error_stack_p_(x.error_stack_p_),
-		b8_str_to_value_map_(x.b8_str_to_value_map_)
+		error_stack_p_(x.error_stack_p_)
 	{
 	}
 	F_nsl_info_tree_reader& F_nsl_info_tree_reader::operator = (const F_nsl_info_tree_reader& x) {
@@ -1032,15 +1123,13 @@ namespace nrhi {
 		info_trees_ = x.info_trees_;
 		location_offset_to_save_ = x.location_offset_to_save_;
 		error_stack_p_ = x.error_stack_p_;
-		b8_str_to_value_map_ = x.b8_str_to_value_map_;
 
 		return *this;
 	}
 	F_nsl_info_tree_reader::F_nsl_info_tree_reader(F_nsl_info_tree_reader&& x) :
 		info_trees_(std::move(x.info_trees_)),
 		location_offset_to_save_(x.location_offset_to_save_),
-		error_stack_p_(x.error_stack_p_),
-		b8_str_to_value_map_(std::move(x.b8_str_to_value_map_))
+		error_stack_p_(x.error_stack_p_)
 	{
 	}
 	F_nsl_info_tree_reader& F_nsl_info_tree_reader::operator = (F_nsl_info_tree_reader&& x) {
@@ -1048,7 +1137,6 @@ namespace nrhi {
 		info_trees_ = std::move(x.info_trees_);
 		location_offset_to_save_ = x.location_offset_to_save_;
 		error_stack_p_ = x.error_stack_p_;
-		b8_str_to_value_map_ = std::move(x.b8_str_to_value_map_);
 
 		return *this;
 	}
@@ -1500,6 +1588,98 @@ namespace nrhi {
 			"not found sub info tree \"" + name + "\""
 		);
 		return eastl::nullopt;
+	}
+	eastl::optional<E_nsl_element_format> F_nsl_info_tree_reader::read_element_format(u32 index) const {
+
+		if(!guarantee_index(index)) {
+
+			return eastl::nullopt;
+		}
+
+		G_string value_str = H_nsl_utilities::clear_space_head_tail(info_trees_[index].name);
+
+		auto it = element_format_str_to_value_map_.find(value_str);
+
+		if (it == element_format_str_to_value_map_.end()) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				error_stack_p_,
+				info_trees_[index].begin_location,
+				"invalid value \"" + value_str + "\""
+			);
+			return eastl::nullopt;
+		}
+
+		return it->second;
+	}
+	eastl::optional<E_nsl_semantic_input_class> F_nsl_info_tree_reader::read_semantic_input_class(u32 index) const {
+
+		if(!guarantee_index(index)) {
+
+			return eastl::nullopt;
+		}
+
+		G_string value_str = H_nsl_utilities::clear_space_head_tail(info_trees_[index].name);
+
+		auto it = semantic_input_class_str_to_value_map_.find(value_str);
+
+		if (it == semantic_input_class_str_to_value_map_.end()) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				error_stack_p_,
+				info_trees_[index].begin_location,
+				"invalid value \"" + value_str + "\""
+			);
+			return eastl::nullopt;
+		}
+
+		return it->second;
+	}
+	eastl::optional<E_filter> F_nsl_info_tree_reader::read_filter(u32 index) const {
+
+		if(!guarantee_index(index)) {
+
+			return eastl::nullopt;
+		}
+
+		G_string value_str = H_nsl_utilities::clear_space_head_tail(info_trees_[index].name);
+
+		auto it = filter_str_to_value_map_.find(value_str);
+
+		if (it == filter_str_to_value_map_.end()) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				error_stack_p_,
+				info_trees_[index].begin_location,
+				"invalid value \"" + value_str + "\""
+			);
+			return eastl::nullopt;
+		}
+
+		return it->second;
+	}
+	eastl::optional<E_texcoord_address_mode> F_nsl_info_tree_reader::read_texcoord_address_mode(u32 index) const {
+
+		if(!guarantee_index(index)) {
+
+			return eastl::nullopt;
+		}
+
+		G_string value_str = H_nsl_utilities::clear_space_head_tail(info_trees_[index].name);
+
+		auto it = texcoord_address_mode_str_to_value_map_.find(value_str);
+
+		if (it == texcoord_address_mode_str_to_value_map_.end()) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				error_stack_p_,
+				info_trees_[index].begin_location,
+				"invalid value \"" + value_str + "\""
+			);
+			return eastl::nullopt;
+		}
+
+		return it->second;
 	}
 
 
@@ -2344,24 +2524,15 @@ namespace nrhi {
 		// apply object config
 		E_nsl_semantic_input_class input_class = E_nsl_semantic_input_class::PER_VERTEX;
 		{
-			auto input_class_it = context.current_object_config.find("input_class");
-			if(input_class_it != context.current_object_config.end()) {
+			auto it = context.current_object_config.find("input_class");
+			if(it != context.current_object_config.end()) {
 
-				auto value_str_opt = input_class_it->second.read_string(0);
+				auto value_opt = it->second.read_semantic_input_class(0);
 
-				if(!value_str_opt)
+				if(!value_opt)
 					return eastl::nullopt;
 
-				G_string value_str = value_str_opt.value();
-
-				if(value_str == "PER_VERTEX") {
-
-					input_class = E_nsl_semantic_input_class::PER_VERTEX;
-				}
-				else if(value_str == "PER_INSTANCE") {
-
-					input_class = E_nsl_semantic_input_class::PER_INSTANCE;
-				}
+				input_class = value_opt.value();
 			}
 		}
 		E_nsl_element_format element_format = data_type_manager_p->element_format(target_type);
@@ -2369,89 +2540,12 @@ namespace nrhi {
 			auto it = context.current_object_config.find("element_format");
 			if(it != context.current_object_config.end()) {
 
-				auto value_str_opt = it->second.read_string(0);
+				auto value_opt = it->second.read_element_format(0);
 
-				if(!value_str_opt)
+				if(!value_opt)
 					return eastl::nullopt;
 
-				G_string value_str = value_str_opt.value();
-
-				if(value_str == "FLOAT_64") {
-
-					element_format = E_nsl_element_format::FLOAT_64;
-				}
-				else if(value_str == "UINT_64") {
-
-					element_format = E_nsl_element_format::UINT_64;
-				}
-				else if(value_str == "SINT_64") {
-
-					element_format = E_nsl_element_format::SINT_64;
-				}
-				else if(value_str == "TYPELESS_64") {
-
-					element_format = E_nsl_element_format::TYPELESS_64;
-				}
-				else if(value_str == "FLOAT_32") {
-
-					element_format = E_nsl_element_format::FLOAT_32;
-				}
-				else if(value_str == "FLOAT_16") {
-
-					element_format = E_nsl_element_format::FLOAT_16;
-				}
-				else if(value_str == "UNORM_16") {
-
-					element_format = E_nsl_element_format::UNORM_16;
-				}
-				else if(value_str == "UNORM_8") {
-
-					element_format = E_nsl_element_format::UNORM_8;
-				}
-				else if(value_str == "SNORM_16") {
-
-					element_format = E_nsl_element_format::SNORM_16;
-				}
-				else if(value_str == "SNORM_8") {
-
-					element_format = E_nsl_element_format::SNORM_8;
-				}
-				else if(value_str == "UINT_32") {
-
-					element_format = E_nsl_element_format::UINT_32;
-				}
-				else if(value_str == "UINT_16") {
-
-					element_format = E_nsl_element_format::UINT_16;
-				}
-				else if(value_str == "UINT_8") {
-
-					element_format = E_nsl_element_format::UINT_8;
-				}
-				else if(value_str == "SINT_32") {
-
-					element_format = E_nsl_element_format::SINT_32;
-				}
-				else if(value_str == "SINT_16") {
-
-					element_format = E_nsl_element_format::SINT_16;
-				}
-				else if(value_str == "SINT_8") {
-
-					element_format = E_nsl_element_format::SINT_8;
-				}
-				else if(value_str == "TYPELESS_32") {
-
-					element_format = E_nsl_element_format::TYPELESS_32;
-				}
-				else if(value_str == "TYPELESS_16") {
-
-					element_format = E_nsl_element_format::TYPELESS_16;
-				}
-				else if(value_str == "TYPELESS_8") {
-
-					element_format = E_nsl_element_format::TYPELESS_8;
-				}
+				element_format = value_opt.value();
 			}
 		}
 
@@ -3033,7 +3127,7 @@ namespace nrhi {
 
 
 
-	F_nsl_sampler_object::F_nsl_sampler_object(
+	F_nsl_sampler_state_object::F_nsl_sampler_state_object(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 		TKPA_valid<A_nsl_object_type> type_p,
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
@@ -3047,10 +3141,10 @@ namespace nrhi {
 		)
 	{
 	}
-	F_nsl_sampler_object::~F_nsl_sampler_object() {
+	F_nsl_sampler_state_object::~F_nsl_sampler_state_object() {
 	}
 
-	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_sampler_object::recursive_build_ast_tree(
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_sampler_state_object::recursive_build_ast_tree(
 		F_nsl_context& context,
 		TK_valid<F_nsl_translation_unit> unit_p,
 		TG_vector<F_nsl_ast_tree>& trees,
@@ -3064,10 +3158,10 @@ namespace nrhi {
 
 		auto name_manager_p = shader_compiler_p()->name_manager_p();
 		auto translation_unit_compiler_p = shader_compiler_p()->translation_unit_compiler_p();
-		auto sampler_manager_p = shader_compiler_p()->sampler_manager_p();
+		auto sampler_state_manager_p = shader_compiler_p()->sampler_state_manager_p();
 
-		F_nsl_sampler_info sampler_info;
-		sampler_info.config_map = context.current_object_config;
+		F_nsl_sampler_state_info sampler_state_info;
+		sampler_state_info.config_map = context.current_object_config;
 
 		// check for shaders annotation
 		{
@@ -3079,20 +3173,103 @@ namespace nrhi {
 				if(!shaders_info_tree_reader.guarantee_not_empty())
 					return eastl::nullopt;
 
-				sampler_info.shader_filters = {};
+				sampler_state_info.shader_filters = {};
 
 				for(auto& shader_info_tree : shaders_info_tree_reader.info_trees()) {
 
-					sampler_info.shader_filters.insert(shader_info_tree.name);
+					sampler_state_info.shader_filters.insert(shader_info_tree.name);
 				}
 			}
 		}
 
-		// register sampler
+		// check for filter annotation
+		{
+			auto it = context.current_object_config.find("filter");
+			if(it != context.current_object_config.end()) {
+
+				const auto& info_tree_reader = it->second;
+
+				auto value_opt = info_tree_reader.read_filter(0);
+
+				if(!value_opt)
+					return eastl::nullopt;
+
+				sampler_state_info.desc.filter = value_opt.value();
+			}
+		}
+
+		// check for texcoord_address_modes annotation
+		{
+			auto it = context.current_object_config.find("texcoord_address_modes");
+			if(it != context.current_object_config.end()) {
+
+				const auto& info_tree_reader = it->second;
+
+				for(u32 i = 0; i < eastl::min<u32>(info_tree_reader.info_trees().size(), 3); ++i) {
+
+					auto value_opt = info_tree_reader.read_texcoord_address_mode(i);
+
+					if(!value_opt)
+						return eastl::nullopt;
+
+					sampler_state_info.desc.texcoord_address_modes[i] = value_opt.value();
+				}
+			}
+		}
+
+		// check for lod_offset annotation
+		{
+			auto it = context.current_object_config.find("lod_offset");
+			if(it != context.current_object_config.end()) {
+
+				const auto& info_tree_reader = it->second;
+
+				auto value_opt = info_tree_reader.read_f32(0);
+
+				if(!value_opt)
+					return eastl::nullopt;
+
+				sampler_state_info.desc.lod_offset = value_opt.value();
+			}
+		}
+
+		// check for min_lod annotation
+		{
+			auto it = context.current_object_config.find("min_lod");
+			if(it != context.current_object_config.end()) {
+
+				const auto& info_tree_reader = it->second;
+
+				auto value_opt = info_tree_reader.read_f32(0);
+
+				if(!value_opt)
+					return eastl::nullopt;
+
+				sampler_state_info.desc.min_lod = value_opt.value();
+			}
+		}
+
+		// check for max_lod annotation
+		{
+			auto it = context.current_object_config.find("max_lod");
+			if(it != context.current_object_config.end()) {
+
+				const auto& info_tree_reader = it->second;
+
+				auto value_opt = info_tree_reader.read_f32(0);
+
+				if(!value_opt)
+					return eastl::nullopt;
+
+				sampler_state_info.desc.max_lod = value_opt.value();
+			}
+		}
+
+		// register sampler_state
 		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE>(tree.object_implementation.name);
-		sampler_manager_p->register_sampler(
+		sampler_state_manager_p->register_sampler_state(
 			tree.object_implementation.name,
-			sampler_info
+			sampler_state_info
 		);
 
 		return TG_vector<F_nsl_ast_tree>();
@@ -3100,12 +3277,12 @@ namespace nrhi {
 
 
 
-	F_nsl_sampler_object_type::F_nsl_sampler_object_type(
+	F_nsl_sampler_state_object_type::F_nsl_sampler_state_object_type(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
 	) :
 		A_nsl_object_type(
 			shader_compiler_p,
-			"sampler",
+			"sampler_state",
 			true,
 			0,
 			0,
@@ -3113,10 +3290,10 @@ namespace nrhi {
 		)
 	{
 	}
-	F_nsl_sampler_object_type::~F_nsl_sampler_object_type() {
+	F_nsl_sampler_state_object_type::~F_nsl_sampler_state_object_type() {
 	}
 
-	TK<A_nsl_object> F_nsl_sampler_object_type::create_object(
+	TK<A_nsl_object> F_nsl_sampler_state_object_type::create_object(
 		F_nsl_ast_tree& tree,
 		F_nsl_context& context,
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p
@@ -3124,7 +3301,7 @@ namespace nrhi {
 		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
 
 		auto object_p = register_object(
-			TU<F_nsl_sampler_object>()(
+			TU<F_nsl_sampler_state_object>()(
 				shader_compiler_p(),
 				NCPP_KTHIS(),
 				translation_unit_p,
@@ -3558,7 +3735,7 @@ namespace nrhi {
 			TU<F_nsl_resource_object_type>()(shader_compiler_p_)
 		);
 		register_type(
-			TU<F_nsl_sampler_object_type>()(shader_compiler_p_)
+			TU<F_nsl_sampler_state_object_type>()(shader_compiler_p_)
 		);
 	}
 	F_nsl_object_manager::~F_nsl_object_manager() {
@@ -4443,16 +4620,16 @@ namespace nrhi {
 
 
 
-	F_nsl_sampler_manager::F_nsl_sampler_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
+	F_nsl_sampler_state_manager::F_nsl_sampler_state_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
 		shader_compiler_p_(shader_compiler_p)
 	{
 	}
-	F_nsl_sampler_manager::~F_nsl_sampler_manager() {
+	F_nsl_sampler_state_manager::~F_nsl_sampler_state_manager() {
 	}
 
-	F_nsl_sampler_info F_nsl_sampler_manager::process_sampler_info(const G_string& name, const F_nsl_sampler_info& sampler_info) {
+	F_nsl_sampler_state_info F_nsl_sampler_state_manager::process_sampler_state_info(const G_string& name, const F_nsl_sampler_state_info& sampler_state_info) {
 		
-		F_nsl_sampler_info result = sampler_info;
+		F_nsl_sampler_state_info result = sampler_state_info;
 
 		return std::move(result);
 	}
@@ -4484,8 +4661,8 @@ namespace nrhi {
 		resource_manager_p_(
 			TU<F_nsl_resource_manager>()(NCPP_KTHIS())
 		),
-		sampler_manager_p_(
-			TU<F_nsl_sampler_manager>()(NCPP_KTHIS())
+		sampler_state_manager_p_(
+			TU<F_nsl_sampler_state_manager>()(NCPP_KTHIS())
 		)
 	{
 	}
@@ -4498,7 +4675,7 @@ namespace nrhi {
 		TF_nsl_shader_compiler_subsystem_creator<F_nsl_name_manager> name_manager_creator,
 		TF_nsl_shader_compiler_subsystem_creator<F_nsl_data_type_manager> data_type_manager_creator,
 		TF_nsl_shader_compiler_subsystem_creator<F_nsl_resource_manager> resource_manager_creator,
-		TF_nsl_shader_compiler_subsystem_creator<F_nsl_sampler_manager> sampler_manager_creator
+		TF_nsl_shader_compiler_subsystem_creator<F_nsl_sampler_state_manager> sampler_state_manager_creator
 	) :
 		module_manager_p_(module_manager_creator(NCPP_KTHIS())),
 		translation_unit_manager_p_(translation_unit_manager_creator(NCPP_KTHIS())),
@@ -4508,7 +4685,7 @@ namespace nrhi {
 		name_manager_p_(name_manager_creator(NCPP_KTHIS())),
 		data_type_manager_p_(data_type_manager_creator(NCPP_KTHIS())),
 		resource_manager_p_(resource_manager_creator(NCPP_KTHIS())),
-		sampler_manager_p_(sampler_manager_creator(NCPP_KTHIS()))
+		sampler_state_manager_p_(sampler_state_manager_creator(NCPP_KTHIS()))
 	{
 	}
 	F_nsl_shader_compiler::~F_nsl_shader_compiler() {
