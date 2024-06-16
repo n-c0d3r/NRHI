@@ -3179,8 +3179,10 @@ namespace nrhi {
 		F_nsl_uniform_info uniform_info;
 		uniform_info.config_map = context.current_object_config;
 
-		uniform_info.type = H_nsl_utilities::clear_space_head_tail(
-			object_implementation.bodies[0].content
+		uniform_info.type = name_manager_p->target(
+			H_nsl_utilities::clear_space_head_tail(
+				object_implementation.bodies[0].content
+			)
 		);
 
 		// check for buffer annotation
@@ -3196,7 +3198,7 @@ namespace nrhi {
 				if(!value_opt)
 					return eastl::nullopt;
 
-				uniform_info.buffer = value_opt.value();
+				uniform_info.buffer = name_manager_p->target(value_opt.value());
 			}
 		}
 
@@ -3280,8 +3282,10 @@ namespace nrhi {
 
 		context.parent_object_p = NCPP_KTHIS().no_requirements();
 
-		context.default_uniform_buffer = H_nsl_utilities::clear_space_head_tail(
-			object_implementation.bodies[0].content
+		context.default_uniform_buffer = shader_compiler_p()->name_manager_p()->target(
+			H_nsl_utilities::clear_space_head_tail(
+				object_implementation.bodies[0].content
+			)
 		);
 
 		return TG_vector<F_nsl_ast_tree>();
