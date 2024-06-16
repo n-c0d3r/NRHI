@@ -994,6 +994,516 @@ namespace nrhi {
 
 
 
+	F_nsl_info_tree_reader::F_nsl_info_tree_reader(
+		const TG_vector<F_nsl_info_tree>& info_trees,
+		u32 location_offset_to_save,
+		F_nsl_error_stack* error_stack_p
+	) :
+		info_trees_(info_trees),
+		location_offset_to_save_(location_offset_to_save),
+		error_stack_p_(error_stack_p)
+	{
+		// setup b8_str_to_value_map_
+		b8_str_to_value_map_["true"] = true;
+		b8_str_to_value_map_["TRUE"] = true;
+		b8_str_to_value_map_["on"] = true;
+		b8_str_to_value_map_["ON"] = true;
+		b8_str_to_value_map_["yes"] = true;
+		b8_str_to_value_map_["YES"] = true;
+		b8_str_to_value_map_["false"] = false;
+		b8_str_to_value_map_["FALSE"] = false;
+		b8_str_to_value_map_["off"] = false;
+		b8_str_to_value_map_["OFF"] = false;
+		b8_str_to_value_map_["no"] = false;
+		b8_str_to_value_map_["NO"] = false;
+	}
+	F_nsl_info_tree_reader::~F_nsl_info_tree_reader() {
+	}
+
+	F_nsl_info_tree_reader::F_nsl_info_tree_reader(const F_nsl_info_tree_reader& x) :
+		info_trees_(x.info_trees_),
+		location_offset_to_save_(x.location_offset_to_save_),
+		error_stack_p_(x.error_stack_p_),
+		b8_str_to_value_map_(x.b8_str_to_value_map_)
+	{
+	}
+	F_nsl_info_tree_reader& F_nsl_info_tree_reader::operator = (const F_nsl_info_tree_reader& x) {
+
+		info_trees_ = x.info_trees_;
+		location_offset_to_save_ = x.location_offset_to_save_;
+		error_stack_p_ = x.error_stack_p_;
+		b8_str_to_value_map_ = x.b8_str_to_value_map_;
+
+		return *this;
+	}
+	F_nsl_info_tree_reader::F_nsl_info_tree_reader(F_nsl_info_tree_reader&& x) :
+		info_trees_(std::move(x.info_trees_)),
+		location_offset_to_save_(x.location_offset_to_save_),
+		error_stack_p_(x.error_stack_p_),
+		b8_str_to_value_map_(std::move(x.b8_str_to_value_map_))
+	{
+	}
+	F_nsl_info_tree_reader& F_nsl_info_tree_reader::operator = (F_nsl_info_tree_reader&& x) {
+
+		info_trees_ = std::move(x.info_trees_);
+		location_offset_to_save_ = x.location_offset_to_save_;
+		error_stack_p_ = x.error_stack_p_;
+		b8_str_to_value_map_ = std::move(x.b8_str_to_value_map_);
+
+		return *this;
+	}
+
+
+	b8 F_nsl_info_tree_reader::guarantee_not_empty() const {
+
+		if(info_trees_.size() == 0) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				error_stack_p_,
+				location_offset_to_save_,
+				"no info provided"
+			);
+			return false;
+		}
+
+		return true;
+	}
+	b8 F_nsl_info_tree_reader::guarantee_index(u32 index) const {
+
+		if(info_trees_.size() <= index) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				error_stack_p_,
+				location_offset_to_save_,
+				"not found argument at index \"" + G_to_string(index) + "\""
+			);
+			return false;
+		}
+
+		return true;
+	}
+
+	eastl::optional<b8> F_nsl_info_tree_reader::read_b8(u32 index) const {
+
+		if(!guarantee_index(index)) {
+
+			return eastl::nullopt;
+		}
+
+		G_string value_str = H_nsl_utilities::clear_space_head_tail(info_trees_[index].name);
+
+		auto it = b8_str_to_value_map_.find(value_str);
+
+		if (it == b8_str_to_value_map_.end()) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				error_stack_p_,
+				info_trees_[index].begin_location,
+				"invalid value \"" + value_str + "\""
+			);
+			return eastl::nullopt;
+		}
+
+		return it->second;
+	}
+	eastl::optional<u8> F_nsl_info_tree_reader::read_u8(u32 index) const {
+
+		if(!guarantee_index(index)) {
+
+			return eastl::nullopt;
+		}
+
+		G_string value_str = H_nsl_utilities::clear_space_head_tail(info_trees_[index].name);
+
+		u8 value = 0;
+
+		try{
+			value = std::stoull(value_str.c_str());
+		}
+		catch(std::invalid_argument) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				error_stack_p_,
+				info_trees_[index].begin_location,
+				"invalid value \"" + value_str + "\""
+			);
+			return eastl::nullopt;
+		}
+		catch(std::out_of_range) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				error_stack_p_,
+				info_trees_[index].begin_location,
+				"invalid value \"" + value_str + "\""
+			);
+			return eastl::nullopt;
+		}
+
+		return value;
+	}
+	eastl::optional<u16> F_nsl_info_tree_reader::read_u16(u32 index) const {
+
+		if(!guarantee_index(index)) {
+
+			return eastl::nullopt;
+		}
+
+		G_string value_str = H_nsl_utilities::clear_space_head_tail(info_trees_[index].name);
+
+		u16 value = 0;
+
+		try{
+			value = std::stoull(value_str.c_str());
+		}
+		catch(std::invalid_argument) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				error_stack_p_,
+				info_trees_[index].begin_location,
+				"invalid value \"" + value_str + "\""
+			);
+			return eastl::nullopt;
+		}
+		catch(std::out_of_range) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				error_stack_p_,
+				info_trees_[index].begin_location,
+				"invalid value \"" + value_str + "\""
+			);
+			return eastl::nullopt;
+		}
+
+		return value;
+	}
+	eastl::optional<u32> F_nsl_info_tree_reader::read_u32(u32 index) const {
+
+		if(!guarantee_index(index)) {
+
+			return eastl::nullopt;
+		}
+
+		G_string value_str = H_nsl_utilities::clear_space_head_tail(info_trees_[index].name);
+
+		u32 value = 0;
+
+		try{
+			value = std::stoull(value_str.c_str());
+		}
+		catch(std::invalid_argument) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				error_stack_p_,
+				info_trees_[index].begin_location,
+				"invalid value \"" + value_str + "\""
+			);
+			return eastl::nullopt;
+		}
+		catch(std::out_of_range) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				error_stack_p_,
+				info_trees_[index].begin_location,
+				"invalid value \"" + value_str + "\""
+			);
+			return eastl::nullopt;
+		}
+
+		return value;
+	}
+	eastl::optional<u64> F_nsl_info_tree_reader::read_u64(u32 index) const {
+
+		if(!guarantee_index(index)) {
+
+			return eastl::nullopt;
+		}
+
+		G_string value_str = H_nsl_utilities::clear_space_head_tail(info_trees_[index].name);
+
+		u64 value = 0;
+
+		try{
+			value = std::stoull(value_str.c_str());
+		}
+		catch(std::invalid_argument) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				error_stack_p_,
+				info_trees_[index].begin_location,
+				"invalid value \"" + value_str + "\""
+			);
+			return eastl::nullopt;
+		}
+		catch(std::out_of_range) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				error_stack_p_,
+				info_trees_[index].begin_location,
+				"invalid value \"" + value_str + "\""
+			);
+			return eastl::nullopt;
+		}
+
+		return value;
+	}
+	eastl::optional<i8> F_nsl_info_tree_reader::read_i8(u32 index) const {
+
+		if(!guarantee_index(index)) {
+
+			return eastl::nullopt;
+		}
+
+		G_string value_str = H_nsl_utilities::clear_space_head_tail(info_trees_[index].name);
+
+		i8 value = 0;
+
+		try{
+			value = std::stoll(value_str.c_str());
+		}
+		catch(std::invalid_argument) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				error_stack_p_,
+				info_trees_[index].begin_location,
+				"invalid value \"" + value_str + "\""
+			);
+			return eastl::nullopt;
+		}
+		catch(std::out_of_range) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				error_stack_p_,
+				info_trees_[index].begin_location,
+				"invalid value \"" + value_str + "\""
+			);
+			return eastl::nullopt;
+		}
+
+		return value;
+	}
+	eastl::optional<i16> F_nsl_info_tree_reader::read_i16(u32 index) const {
+
+		if(!guarantee_index(index)) {
+
+			return eastl::nullopt;
+		}
+
+		G_string value_str = H_nsl_utilities::clear_space_head_tail(info_trees_[index].name);
+
+		i8 value = 0;
+
+		try{
+			value = std::stoll(value_str.c_str());
+		}
+		catch(std::invalid_argument) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				error_stack_p_,
+				info_trees_[index].begin_location,
+				"invalid value \"" + value_str + "\""
+			);
+			return eastl::nullopt;
+		}
+		catch(std::out_of_range) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				error_stack_p_,
+				info_trees_[index].begin_location,
+				"invalid value \"" + value_str + "\""
+			);
+			return eastl::nullopt;
+		}
+
+		return value;
+	}
+	eastl::optional<i32> F_nsl_info_tree_reader::read_i32(u32 index) const {
+
+		if(!guarantee_index(index)) {
+
+			return eastl::nullopt;
+		}
+
+		G_string value_str = H_nsl_utilities::clear_space_head_tail(info_trees_[index].name);
+
+		i8 value = 0;
+
+		try{
+			value = std::stoll(value_str.c_str());
+		}
+		catch(std::invalid_argument) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				error_stack_p_,
+				info_trees_[index].begin_location,
+				"invalid value \"" + value_str + "\""
+			);
+			return eastl::nullopt;
+		}
+		catch(std::out_of_range) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				error_stack_p_,
+				info_trees_[index].begin_location,
+				"invalid value \"" + value_str + "\""
+			);
+			return eastl::nullopt;
+		}
+
+		return value;
+	}
+	eastl::optional<i64> F_nsl_info_tree_reader::read_i64(u32 index) const {
+
+		if(!guarantee_index(index)) {
+
+			return eastl::nullopt;
+		}
+
+		G_string value_str = H_nsl_utilities::clear_space_head_tail(info_trees_[index].name);
+
+		i8 value = 0;
+
+		try{
+			value = std::stoll(value_str.c_str());
+		}
+		catch(std::invalid_argument) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				error_stack_p_,
+				info_trees_[index].begin_location,
+				"invalid value \"" + value_str + "\""
+			);
+			return eastl::nullopt;
+		}
+		catch(std::out_of_range) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				error_stack_p_,
+				info_trees_[index].begin_location,
+				"invalid value \"" + value_str + "\""
+			);
+			return eastl::nullopt;
+		}
+
+		return value;
+	}
+	eastl::optional<f32> F_nsl_info_tree_reader::read_f32(u32 index) const {
+
+		if(!guarantee_index(index)) {
+
+			return eastl::nullopt;
+		}
+
+		G_string value_str = H_nsl_utilities::clear_space_head_tail(info_trees_[index].name);
+
+		f32 value = 0.0f;
+
+		try{
+			value = std::stof(value_str.c_str());
+		}
+		catch(std::invalid_argument) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				error_stack_p_,
+				info_trees_[index].begin_location,
+				"invalid value \"" + value_str + "\""
+			);
+			return eastl::nullopt;
+		}
+		catch(std::out_of_range) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				error_stack_p_,
+				info_trees_[index].begin_location,
+				"invalid value \"" + value_str + "\""
+			);
+			return eastl::nullopt;
+		}
+
+		return value;
+	}
+	eastl::optional<f64> F_nsl_info_tree_reader::read_f64(u32 index) const {
+
+		if(!guarantee_index(index)) {
+
+			return eastl::nullopt;
+		}
+
+		G_string value_str = H_nsl_utilities::clear_space_head_tail(info_trees_[index].name);
+
+		f64 value = 0.0f;
+
+		try{
+			value = std::stod(value_str.c_str());
+		}
+		catch(std::invalid_argument) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				error_stack_p_,
+				info_trees_[index].begin_location,
+				"invalid value \"" + value_str + "\""
+			);
+			return eastl::nullopt;
+		}
+		catch(std::out_of_range) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				error_stack_p_,
+				info_trees_[index].begin_location,
+				"invalid value \"" + value_str + "\""
+			);
+			return eastl::nullopt;
+		}
+
+		return value;
+	}
+	eastl::optional<G_string> F_nsl_info_tree_reader::read_string(u32 index) const {
+
+		if(!guarantee_index(index)) {
+
+			return eastl::nullopt;
+		}
+
+		return info_trees_[index].name;
+	}
+	b8 F_nsl_info_tree_reader::guarantee_flag(const G_string& name) const {
+
+		for(const auto& info_tree : info_trees_) {
+
+			if(info_tree.name == name)
+				return true;
+		}
+
+		NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+			error_stack_p_,
+			location_offset_to_save_,
+			"not found flag \"" + name + "\""
+		);
+		return false;
+	}
+	eastl::optional<F_nsl_info_tree_reader> F_nsl_info_tree_reader::read_sub(const G_string& name) const {
+
+		for(const auto& info_tree : info_trees_) {
+
+			if(info_tree.name == name) {
+
+				return F_nsl_info_tree_reader(
+					info_tree.childs,
+					info_tree.begin_location,
+					error_stack_p_
+				);
+			}
+		}
+
+		NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+			error_stack_p_,
+			location_offset_to_save_,
+			"not found sub info tree \"" + name + "\""
+		);
+		return eastl::nullopt;
+	}
+
+
+
 	F_nsl_shader_module_manager::F_nsl_shader_module_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
 		shader_compiler_p_(shader_compiler_p)
 	{
@@ -1704,7 +2214,34 @@ namespace nrhi {
 		auto& tree = trees[index];
 		auto& object_implementation = tree.object_implementation;
 
-		context.temp_object_config[object_implementation.name] = object_implementation;
+		if(object_implementation.bodies.size() != 0) {
+
+			auto info_trees_opt = H_nsl_utilities::build_info_trees(
+				object_implementation.bodies[0].content,
+				object_implementation.bodies[0].begin_location,
+				&(unit_p->error_group_p()->stack())
+			);
+
+			if(!info_trees_opt) {
+
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					&(unit_p->error_group_p()->stack()),
+					object_implementation.bodies[0].begin_location,
+					"can't not parse annotation info trees"
+				);
+				return eastl::nullopt;
+			}
+
+			context.temp_object_config[object_implementation.name] = F_nsl_info_tree_reader(
+				info_trees_opt.value(),
+				object_implementation.bodies[0].begin_location,
+				&(unit_p->error_group_p()->stack())
+			);
+
+			return TG_vector<F_nsl_ast_tree>();
+		}
+
+		context.temp_object_config[object_implementation.name] = F_nsl_info_tree_reader();
 
 		return TG_vector<F_nsl_ast_tree>();
 	}
@@ -1808,19 +2345,12 @@ namespace nrhi {
 			auto input_class_it = context.current_object_config.find("input_class");
 			if(input_class_it != context.current_object_config.end()) {
 
-				const auto& bodies = input_class_it->second.bodies;
+				auto value_str_opt = input_class_it->second.read_string(0);
 
-				if(bodies.size() == 0) {
-
-					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-						&(unit_p->error_group_p()->stack()),
-						input_class_it->second.end_location,
-						"input class annotation requires value"
-					);
+				if(!value_str_opt)
 					return eastl::nullopt;
-				}
 
-				G_string value_str = H_nsl_utilities::clear_space_head_tail(bodies[0].content);
+				G_string value_str = value_str_opt.value();
 
 				if(value_str == "PER_VERTEX") {
 
@@ -1950,7 +2480,11 @@ namespace nrhi {
 
 				data_argument_config_map[
 					argument_child_info_tree.name.substr(1, argument_child_info_tree.name.length() - 1)
-				] = argument_child_info_tree;
+				] = F_nsl_info_tree_reader(
+					argument_child_info_tree.childs,
+					argument_child_info_tree.begin_childs_location,
+					&(unit_p->error_group_p()->stack())
+				);
 				continue;
 			}
 
@@ -2021,43 +2555,14 @@ namespace nrhi {
 			auto it = context.current_object_config.find("alignment");
 			if(it != context.current_object_config.end()) {
 
-				const auto& annotation_object_implementation_tree = it->second;
+				const auto& alignment_info_tree_reader = it->second;
 
-				if(annotation_object_implementation_tree.bodies.size() != 1) {
+				auto value_opt = alignment_info_tree_reader.read_u32(0);
 
-					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-						&(unit_p->error_group_p()->stack()),
-						annotation_object_implementation_tree.end_location,
-						"@alignment annotation requires value"
-					);
+				if(!value_opt)
 					return eastl::nullopt;
-				}
 
-				const auto& annotation_object_implementation_tree_first_body = annotation_object_implementation_tree.bodies[0];
-
-				G_string value_str = H_nsl_utilities::clear_space_head_tail(annotation_object_implementation_tree_first_body.content);
-
-				try{
-					structure_info.alignment = std::stoi(value_str.c_str());
-				}
-				catch(std::invalid_argument) {
-
-					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-						&(unit_p->error_group_p()->stack()),
-						annotation_object_implementation_tree_first_body.begin_location,
-						"@alignment annotation, invalid value \"" + value_str + "\""
-					);
-					return eastl::nullopt;
-				}
-				catch(std::out_of_range) {
-
-					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-						&(unit_p->error_group_p()->stack()),
-						annotation_object_implementation_tree_first_body.begin_location,
-						"@alignment annotation, invalid value \"" + value_str + "\""
-					);
-					return eastl::nullopt;
-				}
+				structure_info.alignment = value_opt.value();
 			}
 		}
 
@@ -2220,23 +2725,14 @@ namespace nrhi {
 			auto it = context.current_object_config.find("value_type");
 			if(it != context.current_object_config.end()) {
 
-				const auto& annotation_object_implementation_tree = it->second;
+				const auto& value_type_info_tree_reader = it->second;
 
-				if(annotation_object_implementation_tree.bodies.size() != 1) {
+				auto value_opt = value_type_info_tree_reader.read_string(0);
 
-					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-						&(unit_p->error_group_p()->stack()),
-						annotation_object_implementation_tree.end_location,
-						"@value_type annotation requires value"
-					);
+				if(!value_opt)
 					return eastl::nullopt;
-				}
 
-				const auto& annotation_object_implementation_tree_first_body = annotation_object_implementation_tree.bodies[0];
-
-				enumeration_info.value_type = name_manager_p->target(
-					H_nsl_utilities::clear_space_head_tail(annotation_object_implementation_tree_first_body.content)
-				);
+				enumeration_info.value_type = name_manager_p->target(value_opt.value());
 			}
 		}
 
@@ -2379,41 +2875,14 @@ namespace nrhi {
 			auto it = context.current_object_config.find("shaders");
 			if(it != context.current_object_config.end()) {
 
-				const auto& annotation_object_implementation_tree = it->second;
+				const auto& shaders_info_tree_reader = it->second;
 
-				if(annotation_object_implementation_tree.bodies.size() != 1) {
-
-					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-						&(unit_p->error_group_p()->stack()),
-						annotation_object_implementation_tree.end_location,
-						"@shaders annotation requires 1 body for values"
-					);
+				if(!shaders_info_tree_reader.guarantee_not_empty())
 					return eastl::nullopt;
-				}
-
-				const auto& annotation_object_implementation_tree_first_body = annotation_object_implementation_tree.bodies[0];
-
-				auto shaders_info_trees_opt = H_nsl_utilities::build_info_trees(
-					annotation_object_implementation_tree_first_body.content,
-					annotation_object_implementation_tree_first_body.begin_location,
-					&(unit_p->error_group_p()->stack())
-				);
-
-				if(!shaders_info_trees_opt) {
-
-					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-						&(unit_p->error_group_p()->stack()),
-						annotation_object_implementation_tree_first_body.begin_location,
-						"can't parse @shaders annotation values"
-					);
-					return eastl::nullopt;
-				}
-
-				auto shader_info_trees = shaders_info_trees_opt.value();
 
 				resource_info.shader_filters = {};
 
-				for(auto& shader_info_tree : shader_info_trees) {
+				for(const auto& shader_info_tree : shaders_info_tree_reader.info_trees()) {
 
 					resource_info.shader_filters.insert(shader_info_tree.name);
 				}
@@ -2457,6 +2926,112 @@ namespace nrhi {
 
 		auto object_p = register_object(
 			TU<F_nsl_resource_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_sampler_object::F_nsl_sampler_object(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		TKPA_valid<A_nsl_object_type> type_p,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const G_string& name
+	) :
+		A_nsl_object(
+			shader_compiler_p,
+			type_p,
+			translation_unit_p,
+			name
+		)
+	{
+	}
+	F_nsl_sampler_object::~F_nsl_sampler_object() {
+	}
+
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_sampler_object::recursive_build_ast_tree(
+		F_nsl_context& context,
+		TK_valid<F_nsl_translation_unit> unit_p,
+		TG_vector<F_nsl_ast_tree>& trees,
+		sz index,
+		F_nsl_error_stack* error_stack_p
+	) {
+		auto& tree = trees[index];
+		auto& object_implementation = tree.object_implementation;
+
+		context.parent_object_p = NCPP_KTHIS().no_requirements();
+
+		auto name_manager_p = shader_compiler_p()->name_manager_p();
+		auto translation_unit_compiler_p = shader_compiler_p()->translation_unit_compiler_p();
+		auto sampler_manager_p = shader_compiler_p()->sampler_manager_p();
+
+		F_nsl_sampler_info sampler_info;
+		sampler_info.config_map = context.current_object_config;
+
+		// check for shaders annotation
+		{
+			auto it = context.current_object_config.find("shaders");
+			if(it != context.current_object_config.end()) {
+
+				const auto& shaders_info_tree_reader = it->second;
+
+				if(!shaders_info_tree_reader.guarantee_not_empty())
+					return eastl::nullopt;
+
+				sampler_info.shader_filters = {};
+
+				for(auto& shader_info_tree : shaders_info_tree_reader.info_trees()) {
+
+					sampler_info.shader_filters.insert(shader_info_tree.name);
+				}
+			}
+		}
+
+		// register sampler
+		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE>(tree.object_implementation.name);
+		sampler_manager_p->register_sampler(
+			tree.object_implementation.name,
+			sampler_info
+		);
+
+		return TG_vector<F_nsl_ast_tree>();
+	}
+
+
+
+	F_nsl_sampler_object_type::F_nsl_sampler_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"sampler",
+			true,
+			0,
+			0,
+			nsl_global_object_type_channel_mask
+		)
+	{
+	}
+	F_nsl_sampler_object_type::~F_nsl_sampler_object_type() {
+	}
+
+	TK<A_nsl_object> F_nsl_sampler_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	) {
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_sampler_object>()(
 				shader_compiler_p(),
 				NCPP_KTHIS(),
 				translation_unit_p,
@@ -2551,7 +3126,11 @@ namespace nrhi {
 
 				data_argument_config_map[
 					param_child_info_tree.name.substr(1, param_child_info_tree.name.length() - 1)
-				] = param_child_info_tree;
+				] = F_nsl_info_tree_reader(
+					param_child_info_tree.childs,
+					param_child_info_tree.begin_childs_location,
+					&(unit_p->error_group_p()->stack())
+				);
 				continue;
 			}
 
@@ -2884,6 +3463,9 @@ namespace nrhi {
 		);
 		register_type(
 			TU<F_nsl_resource_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_sampler_object_type>()(shader_compiler_p_)
 		);
 	}
 	F_nsl_object_manager::~F_nsl_object_manager() {
@@ -3714,6 +4296,23 @@ namespace nrhi {
 	}
 
 
+
+	F_nsl_sampler_manager::F_nsl_sampler_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
+		shader_compiler_p_(shader_compiler_p)
+	{
+	}
+	F_nsl_sampler_manager::~F_nsl_sampler_manager() {
+	}
+
+	F_nsl_sampler_info F_nsl_sampler_manager::process_sampler_info(const G_string& name, const F_nsl_sampler_info& sampler_info) {
+		
+		F_nsl_sampler_info result = sampler_info;
+
+		return std::move(result);
+	}
+
+
+
 	F_nsl_shader_compiler::F_nsl_shader_compiler() :
 		module_manager_p_(
 			TU<F_nsl_shader_module_manager>()(NCPP_KTHIS())
@@ -3738,6 +4337,9 @@ namespace nrhi {
 		),
 		resource_manager_p_(
 			TU<F_nsl_resource_manager>()(NCPP_KTHIS())
+		),
+		sampler_manager_p_(
+			TU<F_nsl_sampler_manager>()(NCPP_KTHIS())
 		)
 	{
 	}
@@ -3749,7 +4351,8 @@ namespace nrhi {
 		TF_nsl_shader_compiler_subsystem_creator<F_nsl_object_manager> object_manager_creator,
 		TF_nsl_shader_compiler_subsystem_creator<F_nsl_name_manager> name_manager_creator,
 		TF_nsl_shader_compiler_subsystem_creator<F_nsl_data_type_manager> data_type_manager_creator,
-		TF_nsl_shader_compiler_subsystem_creator<F_nsl_resource_manager> resource_manager_creator
+		TF_nsl_shader_compiler_subsystem_creator<F_nsl_resource_manager> resource_manager_creator,
+		TF_nsl_shader_compiler_subsystem_creator<F_nsl_sampler_manager> sampler_manager_creator
 	) :
 		module_manager_p_(module_manager_creator(NCPP_KTHIS())),
 		translation_unit_manager_p_(translation_unit_manager_creator(NCPP_KTHIS())),
@@ -3758,7 +4361,8 @@ namespace nrhi {
 		object_manager_p_(object_manager_creator(NCPP_KTHIS())),
 		name_manager_p_(name_manager_creator(NCPP_KTHIS())),
 		data_type_manager_p_(data_type_manager_creator(NCPP_KTHIS())),
-		resource_manager_p_(resource_manager_creator(NCPP_KTHIS()))
+		resource_manager_p_(resource_manager_creator(NCPP_KTHIS())),
+		sampler_manager_p_(sampler_manager_creator(NCPP_KTHIS()))
 	{
 	}
 	F_nsl_shader_compiler::~F_nsl_shader_compiler() {
