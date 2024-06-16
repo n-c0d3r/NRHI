@@ -348,6 +348,36 @@ namespace nrhi {
 
 	using F_nsl_object_config = TG_unordered_map<G_string, F_nsl_info_tree_reader>;
 
+	enum class E_nsl_element_format {
+
+		FLOAT_64,
+		UINT_64,
+		SINT_64,
+		TYPELESS_64,
+
+		FLOAT_32,
+		FLOAT_16,
+
+		UNORM_16,
+		UNORM_8,
+
+		SNORM_16,
+		SNORM_8,
+
+		UINT_32,
+		UINT_16,
+		UINT_8,
+
+		SINT_32,
+		SINT_16,
+		SINT_8,
+
+		TYPELESS_32,
+		TYPELESS_16,
+		TYPELESS_8,
+
+	};
+
 	enum class E_nsl_semantic_input_class {
 
 		PER_VERTEX,
@@ -357,6 +387,7 @@ namespace nrhi {
 	struct F_nsl_semantic_info {
 
 		G_string target_type;
+		E_nsl_element_format element_format;
 		E_nsl_semantic_input_class input_class = E_nsl_semantic_input_class::PER_VERTEX;
 
 	};
@@ -1902,6 +1933,7 @@ namespace nrhi {
 	protected:
 		TG_unordered_map<G_string, sz> name_to_size_map_;
 		TG_unordered_map<G_string, u32> name_to_alignment_map_;
+		TG_unordered_map<G_string, E_nsl_element_format> name_to_element_format_map_;
 		TG_unordered_map<G_string, F_nsl_semantic_info> name_to_semantic_info_map_;
 		TG_unordered_map<G_string, F_nsl_structure_info> name_to_structure_info_map_;
 		TG_unordered_map<G_string, F_nsl_enumeration_info> name_to_enumeration_info_map_;
@@ -1911,6 +1943,7 @@ namespace nrhi {
 
 		NCPP_FORCE_INLINE const TG_unordered_map<G_string, sz>& name_to_size_map() const noexcept { return name_to_size_map_; }
 		NCPP_FORCE_INLINE const TG_unordered_map<G_string, u32>& name_to_alignment_map() const noexcept { return name_to_alignment_map_; }
+		NCPP_FORCE_INLINE const TG_unordered_map<G_string, E_nsl_element_format>& name_to_element_format_map() const noexcept { return name_to_element_format_map_; }
 		NCPP_FORCE_INLINE const TG_unordered_map<G_string, F_nsl_semantic_info>& name_to_semantic_info_map() const noexcept { return name_to_semantic_info_map_; }
 		NCPP_FORCE_INLINE const TG_unordered_map<G_string, F_nsl_structure_info>& name_to_structure_info_map() const noexcept { return name_to_structure_info_map_; }
 		NCPP_FORCE_INLINE const TG_unordered_map<G_string, F_nsl_enumeration_info>& name_to_enumeration_info_map() const noexcept { return name_to_enumeration_info_map_; }
@@ -1980,6 +2013,35 @@ namespace nrhi {
 
 			auto it = name_to_alignment_map_.find(name);
 			name_to_alignment_map_.erase(it);
+		}
+
+	public:
+		NCPP_FORCE_INLINE b8 is_name_has_element_format(const G_string& name) const {
+
+			auto it = name_to_element_format_map_.find(name);
+
+			return (it != name_to_element_format_map_.end());
+		}
+		NCPP_FORCE_INLINE E_nsl_element_format element_format(const G_string& name) const {
+
+			auto it = name_to_element_format_map_.find(name);
+
+			NCPP_ASSERT(it != name_to_element_format_map_.end()) << "can't find " << T_cout_value(name);
+
+			return it->second;
+		}
+		NCPP_FORCE_INLINE void register_element_format(const G_string& name, E_nsl_element_format element_format) {
+
+			NCPP_ASSERT(name_to_element_format_map_.find(name) == name_to_element_format_map_.end()) << T_cout_value(name) << " already exists";
+
+			name_to_element_format_map_[name] = element_format;
+		}
+		NCPP_FORCE_INLINE void deregister_element_format(const G_string& name) {
+
+			NCPP_ASSERT(name_to_element_format_map_.find(name) != name_to_element_format_map_.end()) << T_cout_value(name) << " is not exists";
+
+			auto it = name_to_element_format_map_.find(name);
+			name_to_element_format_map_.erase(it);
 		}
 
 	public:

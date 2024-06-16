@@ -2326,8 +2326,10 @@ namespace nrhi {
 		}
 
 		// get target type
-		target_type = H_nsl_utilities::clear_space_head_tail(
-			tree.object_implementation.bodies[0].content
+		target_type = name_manager_p->target(
+			H_nsl_utilities::clear_space_head_tail(
+				tree.object_implementation.bodies[0].content
+			)
 		);
 		if(!H_nsl_utilities::is_variable_name(target_type)) {
 
@@ -2362,13 +2364,104 @@ namespace nrhi {
 				}
 			}
 		}
+		E_nsl_element_format element_format = data_type_manager_p->element_format(target_type);
+		{
+			auto it = context.current_object_config.find("element_format");
+			if(it != context.current_object_config.end()) {
+
+				auto value_str_opt = it->second.read_string(0);
+
+				if(!value_str_opt)
+					return eastl::nullopt;
+
+				G_string value_str = value_str_opt.value();
+
+				if(value_str == "FLOAT_64") {
+
+					element_format = E_nsl_element_format::FLOAT_64;
+				}
+				else if(value_str == "UINT_64") {
+
+					element_format = E_nsl_element_format::UINT_64;
+				}
+				else if(value_str == "SINT_64") {
+
+					element_format = E_nsl_element_format::SINT_64;
+				}
+				else if(value_str == "TYPELESS_64") {
+
+					element_format = E_nsl_element_format::TYPELESS_64;
+				}
+				else if(value_str == "FLOAT_32") {
+
+					element_format = E_nsl_element_format::FLOAT_32;
+				}
+				else if(value_str == "FLOAT_16") {
+
+					element_format = E_nsl_element_format::FLOAT_16;
+				}
+				else if(value_str == "UNORM_16") {
+
+					element_format = E_nsl_element_format::UNORM_16;
+				}
+				else if(value_str == "UNORM_8") {
+
+					element_format = E_nsl_element_format::UNORM_8;
+				}
+				else if(value_str == "SNORM_16") {
+
+					element_format = E_nsl_element_format::SNORM_16;
+				}
+				else if(value_str == "SNORM_8") {
+
+					element_format = E_nsl_element_format::SNORM_8;
+				}
+				else if(value_str == "UINT_32") {
+
+					element_format = E_nsl_element_format::UINT_32;
+				}
+				else if(value_str == "UINT_16") {
+
+					element_format = E_nsl_element_format::UINT_16;
+				}
+				else if(value_str == "UINT_8") {
+
+					element_format = E_nsl_element_format::UINT_8;
+				}
+				else if(value_str == "SINT_32") {
+
+					element_format = E_nsl_element_format::SINT_32;
+				}
+				else if(value_str == "SINT_16") {
+
+					element_format = E_nsl_element_format::SINT_16;
+				}
+				else if(value_str == "SINT_8") {
+
+					element_format = E_nsl_element_format::SINT_8;
+				}
+				else if(value_str == "TYPELESS_32") {
+
+					element_format = E_nsl_element_format::TYPELESS_32;
+				}
+				else if(value_str == "TYPELESS_16") {
+
+					element_format = E_nsl_element_format::TYPELESS_16;
+				}
+				else if(value_str == "TYPELESS_8") {
+
+					element_format = E_nsl_element_format::TYPELESS_8;
+				}
+			}
+		}
 
 		// register semantic
 		name_manager_p->template T_register_name<FE_nsl_name_types::SEMANTIC>(tree.object_implementation.name);
 		data_type_manager_p->register_semantic(
 			tree.object_implementation.name,
 			F_nsl_semantic_info {
-				.target_type = name_manager_p->target(target_type),
+				.target_type = target_type,
+				.element_format = element_format,
 				.input_class = input_class
 			}
 		);
@@ -3959,6 +4052,10 @@ namespace nrhi {
 			name,
 			alignment(semantic_info.target_type)
 		);
+		register_element_format(
+			name,
+			semantic_info.element_format
+		);
 
 		return std::move(result);
 	}
@@ -4084,6 +4181,13 @@ namespace nrhi {
 		data_type_manager_p->register_alignment("float", 4);
 		data_type_manager_p->register_alignment("double", 8);
 
+		data_type_manager_p->register_element_format("bool", E_nsl_element_format::UINT_8);
+		data_type_manager_p->register_element_format("int", E_nsl_element_format::SINT_32);
+		data_type_manager_p->register_element_format("uint", E_nsl_element_format::UINT_32);
+		data_type_manager_p->register_element_format("half", E_nsl_element_format::FLOAT_16);
+		data_type_manager_p->register_element_format("float", E_nsl_element_format::FLOAT_32);
+		data_type_manager_p->register_element_format("double", E_nsl_element_format::FLOAT_64);
+
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("bool2");
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("int2");
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("uint2");
@@ -4111,6 +4215,13 @@ namespace nrhi {
 		data_type_manager_p->register_alignment("half2", 2 * 2);
 		data_type_manager_p->register_alignment("float2", 4 * 2);
 		data_type_manager_p->register_alignment("double2", 8 * 2);
+
+		data_type_manager_p->register_element_format("bool2", E_nsl_element_format::UINT_8);
+		data_type_manager_p->register_element_format("int2", E_nsl_element_format::SINT_32);
+		data_type_manager_p->register_element_format("uint2", E_nsl_element_format::UINT_32);
+		data_type_manager_p->register_element_format("half2", E_nsl_element_format::FLOAT_16);
+		data_type_manager_p->register_element_format("float2", E_nsl_element_format::FLOAT_32);
+		data_type_manager_p->register_element_format("double2", E_nsl_element_format::FLOAT_64);
 
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("bool3");
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("int3");
@@ -4140,6 +4251,13 @@ namespace nrhi {
 		data_type_manager_p->register_alignment("float3", 4 * 4);
 		data_type_manager_p->register_alignment("double3", 8 * 4);
 
+		data_type_manager_p->register_element_format("bool3", E_nsl_element_format::UINT_8);
+		data_type_manager_p->register_element_format("int3", E_nsl_element_format::SINT_32);
+		data_type_manager_p->register_element_format("uint3", E_nsl_element_format::UINT_32);
+		data_type_manager_p->register_element_format("half3", E_nsl_element_format::FLOAT_16);
+		data_type_manager_p->register_element_format("float3", E_nsl_element_format::FLOAT_32);
+		data_type_manager_p->register_element_format("double3", E_nsl_element_format::FLOAT_64);
+
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("bool4");
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("int4");
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("uint4");
@@ -4167,6 +4285,13 @@ namespace nrhi {
 		data_type_manager_p->register_alignment("half4", 2 * 4);
 		data_type_manager_p->register_alignment("float4", 4 * 4);
 		data_type_manager_p->register_alignment("double4", 8 * 4);
+
+		data_type_manager_p->register_element_format("bool4", E_nsl_element_format::UINT_8);
+		data_type_manager_p->register_element_format("int4", E_nsl_element_format::SINT_32);
+		data_type_manager_p->register_element_format("uint4", E_nsl_element_format::UINT_32);
+		data_type_manager_p->register_element_format("half4", E_nsl_element_format::FLOAT_16);
+		data_type_manager_p->register_element_format("float4", E_nsl_element_format::FLOAT_32);
+		data_type_manager_p->register_element_format("double4", E_nsl_element_format::FLOAT_64);
 
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("bool2x2");
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("int2x2");
@@ -4196,6 +4321,13 @@ namespace nrhi {
 		data_type_manager_p->register_alignment("float2x2", 4 * 2 * 2);
 		data_type_manager_p->register_alignment("double2x2", 8 * 2 * 2);
 
+		data_type_manager_p->register_element_format("bool2x2", E_nsl_element_format::UINT_8);
+		data_type_manager_p->register_element_format("int2x2", E_nsl_element_format::SINT_32);
+		data_type_manager_p->register_element_format("uint2x2", E_nsl_element_format::UINT_32);
+		data_type_manager_p->register_element_format("half2x2", E_nsl_element_format::FLOAT_16);
+		data_type_manager_p->register_element_format("float2x2", E_nsl_element_format::FLOAT_32);
+		data_type_manager_p->register_element_format("double2x2", E_nsl_element_format::FLOAT_64);
+
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("bool3x3");
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("int3x3");
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("uint3x3");
@@ -4224,6 +4356,13 @@ namespace nrhi {
 		data_type_manager_p->register_alignment("float3x3", 4 * 4 * 4);
 		data_type_manager_p->register_alignment("double3x3", 8 * 4 * 4);
 
+		data_type_manager_p->register_element_format("bool3x3", E_nsl_element_format::UINT_8);
+		data_type_manager_p->register_element_format("int3x3", E_nsl_element_format::SINT_32);
+		data_type_manager_p->register_element_format("uint3x3", E_nsl_element_format::UINT_32);
+		data_type_manager_p->register_element_format("half3x3", E_nsl_element_format::FLOAT_16);
+		data_type_manager_p->register_element_format("float3x3", E_nsl_element_format::FLOAT_32);
+		data_type_manager_p->register_element_format("double3x3", E_nsl_element_format::FLOAT_64);
+
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("bool4x4");
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("int4x4");
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("uint4x4");
@@ -4251,6 +4390,13 @@ namespace nrhi {
 		data_type_manager_p->register_alignment("half4x4", 2 * 4 * 4);
 		data_type_manager_p->register_alignment("float4x4", 4 * 4 * 4);
 		data_type_manager_p->register_alignment("double4x4", 8 * 4 * 4);
+
+		data_type_manager_p->register_element_format("bool4x4", E_nsl_element_format::UINT_8);
+		data_type_manager_p->register_element_format("int4x4", E_nsl_element_format::SINT_32);
+		data_type_manager_p->register_element_format("uint4x4", E_nsl_element_format::UINT_32);
+		data_type_manager_p->register_element_format("half4x4", E_nsl_element_format::FLOAT_16);
+		data_type_manager_p->register_element_format("float4x4", E_nsl_element_format::FLOAT_32);
+		data_type_manager_p->register_element_format("double4x4", E_nsl_element_format::FLOAT_64);
 
 		name_manager_p->register_name("F_vector2", "F_vector2_f32");
 		name_manager_p->register_name("F_vector3", "F_vector3_f32");
