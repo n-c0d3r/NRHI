@@ -87,6 +87,6 @@ compute_shader cs_main()
     vs_main 
     ps_main
 )
-graphics_pso graphics_pso_main
+pipeline_state graphics_pso_main
 
-compute_pso compute_pso_main
+pipeline_state compute_pso_main
