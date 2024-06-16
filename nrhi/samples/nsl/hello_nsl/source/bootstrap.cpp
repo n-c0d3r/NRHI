@@ -20,7 +20,7 @@ int main() {
 "@texcoord_address_modes(WRAP)\n"
 "@lod_offset(0)\n"
 "@min_lod(0.0)\n"
-"@max_lod(INFINITY)\n"
+"@max_lod(1.0e+30f)\n"
 "sampler demo_sampler\n"
 "\n"
 "@value_type(u32)\n"
