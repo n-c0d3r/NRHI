@@ -3143,6 +3143,191 @@ namespace nrhi {
 
 
 
+	F_nsl_uniform_object::F_nsl_uniform_object(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		TKPA_valid<A_nsl_object_type> type_p,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const G_string& name
+	) :
+		A_nsl_object(
+			shader_compiler_p,
+			type_p,
+			translation_unit_p,
+			name
+		)
+	{
+	}
+	F_nsl_uniform_object::~F_nsl_uniform_object() {
+	}
+
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_uniform_object::recursive_build_ast_tree(
+		F_nsl_context& context,
+		TK_valid<F_nsl_translation_unit> unit_p,
+		TG_vector<F_nsl_ast_tree>& trees,
+		sz index,
+		F_nsl_error_stack* error_stack_p
+	) {
+		auto& tree = trees[index];
+		auto& object_implementation = tree.object_implementation;
+
+		context.parent_object_p = NCPP_KTHIS().no_requirements();
+
+		auto name_manager_p = shader_compiler_p()->name_manager_p();
+		auto translation_unit_compiler_p = shader_compiler_p()->translation_unit_compiler_p();
+		auto uniform_manager_p = shader_compiler_p()->uniform_manager_p();
+
+		F_nsl_uniform_info uniform_info;
+		uniform_info.config_map = context.current_object_config;
+
+		uniform_info.type = H_nsl_utilities::clear_space_head_tail(
+			object_implementation.bodies[0].content
+		);
+
+		// check for buffer annotation
+		uniform_info.buffer = context.default_uniform_buffer;
+		{
+			auto it = context.current_object_config.find("buffer");
+			if(it != context.current_object_config.end()) {
+
+				const auto& info_tree_reader = it->second;
+
+				auto value_opt = info_tree_reader.read_string(0);
+
+				if(!value_opt)
+					return eastl::nullopt;
+
+				uniform_info.buffer = value_opt.value();
+			}
+		}
+
+		// register uniform
+		name_manager_p->template T_register_name<FE_nsl_name_types::UNIFORM>(tree.object_implementation.name);
+		uniform_manager_p->register_uniform(
+			tree.object_implementation.name,
+			uniform_info
+		);
+
+		return TG_vector<F_nsl_ast_tree>();
+	}
+
+
+
+	F_nsl_uniform_object_type::F_nsl_uniform_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"uniform",
+			true,
+			1,
+			1,
+			nsl_global_object_type_channel_mask
+		)
+	{
+	}
+	F_nsl_uniform_object_type::~F_nsl_uniform_object_type() {
+	}
+
+	TK<A_nsl_object> F_nsl_uniform_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	) {
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_uniform_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_default_uniform_buffer_object::F_nsl_default_uniform_buffer_object(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		TKPA_valid<A_nsl_object_type> type_p,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const G_string& name
+	) :
+		A_nsl_object(
+			shader_compiler_p,
+			type_p,
+			translation_unit_p,
+			name
+		)
+	{
+	}
+	F_nsl_default_uniform_buffer_object::~F_nsl_default_uniform_buffer_object() {
+	}
+
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_default_uniform_buffer_object::recursive_build_ast_tree(
+		F_nsl_context& context,
+		TK_valid<F_nsl_translation_unit> unit_p,
+		TG_vector<F_nsl_ast_tree>& trees,
+		sz index,
+		F_nsl_error_stack* error_stack_p
+	) {
+		auto& tree = trees[index];
+		auto& object_implementation = tree.object_implementation;
+
+		context.parent_object_p = NCPP_KTHIS().no_requirements();
+
+		context.default_uniform_buffer = H_nsl_utilities::clear_space_head_tail(
+			object_implementation.bodies[0].content
+		);
+
+		return TG_vector<F_nsl_ast_tree>();
+	}
+
+
+
+	F_nsl_default_uniform_buffer_object_type::F_nsl_default_uniform_buffer_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"default_uniform_buffer",
+			false,
+			1,
+			1,
+			nsl_global_object_type_channel_mask
+		)
+	{
+	}
+	F_nsl_default_uniform_buffer_object_type::~F_nsl_default_uniform_buffer_object_type() {
+	}
+
+	TK<A_nsl_object> F_nsl_default_uniform_buffer_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	) {
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_default_uniform_buffer_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
 	F_nsl_sampler_state_object::F_nsl_sampler_state_object(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 		TKPA_valid<A_nsl_object_type> type_p,
@@ -3765,6 +3950,12 @@ namespace nrhi {
 		);
 		register_type(
 			TU<F_nsl_resource_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_uniform_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_default_uniform_buffer_object_type>()(shader_compiler_p_)
 		);
 		register_type(
 			TU<F_nsl_sampler_state_object_type>()(shader_compiler_p_)
@@ -4652,6 +4843,22 @@ namespace nrhi {
 
 
 
+	F_nsl_uniform_manager::F_nsl_uniform_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
+		shader_compiler_p_(shader_compiler_p)
+	{
+	}
+	F_nsl_uniform_manager::~F_nsl_uniform_manager() {
+	}
+
+	F_nsl_uniform_info F_nsl_uniform_manager::process_uniform_info(const G_string& name, const F_nsl_uniform_info& uniform_info) {
+
+		F_nsl_uniform_info result = uniform_info;
+
+		return std::move(result);
+	}
+
+
+
 	F_nsl_sampler_state_manager::F_nsl_sampler_state_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
 		shader_compiler_p_(shader_compiler_p)
 	{
@@ -4693,6 +4900,9 @@ namespace nrhi {
 		resource_manager_p_(
 			TU<F_nsl_resource_manager>()(NCPP_KTHIS())
 		),
+		uniform_manager_p_(
+			TU<F_nsl_uniform_manager>()(NCPP_KTHIS())
+		),
 		sampler_state_manager_p_(
 			TU<F_nsl_sampler_state_manager>()(NCPP_KTHIS())
 		)
@@ -4707,6 +4917,7 @@ namespace nrhi {
 		TF_nsl_shader_compiler_subsystem_creator<F_nsl_name_manager> name_manager_creator,
 		TF_nsl_shader_compiler_subsystem_creator<F_nsl_data_type_manager> data_type_manager_creator,
 		TF_nsl_shader_compiler_subsystem_creator<F_nsl_resource_manager> resource_manager_creator,
+		TF_nsl_shader_compiler_subsystem_creator<F_nsl_uniform_manager> uniform_manager_creator,
 		TF_nsl_shader_compiler_subsystem_creator<F_nsl_sampler_state_manager> sampler_state_manager_creator
 	) :
 		module_manager_p_(module_manager_creator(NCPP_KTHIS())),
@@ -4717,6 +4928,7 @@ namespace nrhi {
 		name_manager_p_(name_manager_creator(NCPP_KTHIS())),
 		data_type_manager_p_(data_type_manager_creator(NCPP_KTHIS())),
 		resource_manager_p_(resource_manager_creator(NCPP_KTHIS())),
+		uniform_manager_p_(uniform_manager_creator(NCPP_KTHIS())),
 		sampler_state_manager_p_(sampler_state_manager_creator(NCPP_KTHIS()))
 	{
 	}
