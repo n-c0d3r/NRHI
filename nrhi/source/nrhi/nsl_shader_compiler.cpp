@@ -3888,6 +3888,136 @@ namespace nrhi {
 
 
 
+	F_nsl_vertex_layout_object::F_nsl_vertex_layout_object(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		TKPA_valid<A_nsl_object_type> type_p,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const G_string& name
+	) :
+		A_nsl_object(
+			shader_compiler_p,
+			type_p,
+			translation_unit_p,
+			name
+		)
+	{
+	}
+	F_nsl_vertex_layout_object::~F_nsl_vertex_layout_object() {
+	}
+
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_vertex_layout_object::recursive_build_ast_tree(
+		F_nsl_context& context,
+		TK_valid<F_nsl_translation_unit> unit_p,
+		TG_vector<F_nsl_ast_tree>& trees,
+		sz index,
+		F_nsl_error_stack* error_stack_p
+	) {
+		auto& tree = trees[index];
+		auto& object_implementation = tree.object_implementation;
+
+		context.parent_object_p = NCPP_KTHIS().no_requirements();
+
+		auto name_manager_p = shader_compiler_p()->name_manager_p();
+		auto translation_unit_compiler_p = shader_compiler_p()->translation_unit_compiler_p();
+		auto vertex_layout_manager_p = shader_compiler_p()->vertex_layout_manager_p();
+
+		F_nsl_vertex_layout_info vertex_layout_info;
+		vertex_layout_info.config_map = context.current_object_config;
+
+		// parse child info trees
+		auto child_info_trees_opt = H_nsl_utilities::build_info_trees(
+			object_implementation.bodies[0].content,
+			object_implementation.bodies[0].begin_location,
+			&(unit_p->error_group_p()->stack())
+		);
+		if(!child_info_trees_opt) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				&(unit_p->error_group_p()->stack()),
+				object_implementation.bodies[0].begin_location,
+				"can't not parse vertex_layout shaders"
+			);
+			return eastl::nullopt;
+		}
+
+		auto& child_info_trees = child_info_trees_opt.value();
+
+		if(child_info_trees.size() == 0) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				&(unit_p->error_group_p()->stack()),
+				object_implementation.bodies[0].begin_location,
+				"require vertex_layout shaders"
+			);
+			return eastl::nullopt;
+		}
+
+		u32 shader_count = child_info_trees.size();
+
+		TG_vector<F_nsl_ast_tree> child_trees(shader_count);
+		for(u32 i = 0; i < shader_count; ++i) {
+
+			auto& child_info_tree = child_info_trees[i];
+
+			child_trees[i] = F_nsl_ast_tree {
+				.type = E_nsl_ast_tree_type::INFO_TREE,
+				.info_tree = child_info_tree,
+				.begin_location = child_info_tree.begin_location,
+				.end_location = child_info_tree.end_location
+			};
+		}
+
+		// register vertex_layout
+		name_manager_p->template T_register_name<FE_nsl_name_types::PIPELINE_STATE>(tree.object_implementation.name);
+		vertex_layout_manager_p->register_vertex_layout(
+			tree.object_implementation.name,
+			vertex_layout_info
+		);
+
+		return std::move(child_trees);
+	}
+
+
+
+	F_nsl_vertex_layout_object_type::F_nsl_vertex_layout_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"vertex_layout",
+			true,
+			1,
+			1,
+			nsl_global_object_type_channel_mask
+		)
+	{
+	}
+	F_nsl_vertex_layout_object_type::~F_nsl_vertex_layout_object_type() {
+	}
+
+	TK<A_nsl_object> F_nsl_vertex_layout_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	) {
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_vertex_layout_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
 	A_nsl_shader_object::A_nsl_shader_object(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 		TKPA_valid<A_nsl_object_type> type_p,
@@ -4317,6 +4447,9 @@ namespace nrhi {
 		);
 		register_type(
 			TU<F_nsl_pipeline_state_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_vertex_layout_object_type>()(shader_compiler_p_)
 		);
 	}
 	F_nsl_object_manager::~F_nsl_object_manager() {
@@ -5249,6 +5382,22 @@ namespace nrhi {
 
 
 
+	F_nsl_vertex_layout_manager::F_nsl_vertex_layout_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
+		shader_compiler_p_(shader_compiler_p)
+	{
+	}
+	F_nsl_vertex_layout_manager::~F_nsl_vertex_layout_manager() {
+	}
+
+	F_nsl_vertex_layout_info F_nsl_vertex_layout_manager::process_vertex_layout_info(const G_string& name, const F_nsl_vertex_layout_info& vertex_layout_info) {
+
+		F_nsl_vertex_layout_info result = vertex_layout_info;
+
+		return std::move(result);
+	}
+
+
+
 	F_nsl_shader_compiler::F_nsl_shader_compiler() :
 		module_manager_p_(
 			TU<F_nsl_shader_module_manager>()(NCPP_KTHIS())
@@ -5282,6 +5431,9 @@ namespace nrhi {
 		),
 		pipeline_state_manager_p_(
 			TU<F_nsl_pipeline_state_manager>()(NCPP_KTHIS())
+		),
+		vertex_layout_manager_p_(
+			TU<F_nsl_vertex_layout_manager>()(NCPP_KTHIS())
 		)
 	{
 	}
@@ -5298,33 +5450,8 @@ namespace nrhi {
 		resource_manager_p_(customizer.resource_manager_creator(NCPP_KTHIS())),
 		uniform_manager_p_(customizer.uniform_manager_creator(NCPP_KTHIS())),
 		sampler_state_manager_p_(customizer.sampler_state_manager_creator(NCPP_KTHIS())),
-		pipeline_state_manager_p_(customizer.pipeline_state_manager_creator(NCPP_KTHIS()))
-	{
-	}
-	F_nsl_shader_compiler::F_nsl_shader_compiler(
-		TF_nsl_shader_compiler_subsystem_creator<F_nsl_shader_module_manager> module_manager_creator,
-		TF_nsl_shader_compiler_subsystem_creator<F_nsl_translation_unit_manager> translation_unit_manager_creator,
-		TF_nsl_shader_compiler_subsystem_creator<F_nsl_translation_unit_compiler> translation_unit_compiler_creator,
-		TF_nsl_shader_compiler_subsystem_creator<F_nsl_error_storage> error_storage_creator,
-		TF_nsl_shader_compiler_subsystem_creator<F_nsl_object_manager> object_manager_creator,
-		TF_nsl_shader_compiler_subsystem_creator<F_nsl_name_manager> name_manager_creator,
-		TF_nsl_shader_compiler_subsystem_creator<F_nsl_data_type_manager> data_type_manager_creator,
-		TF_nsl_shader_compiler_subsystem_creator<F_nsl_resource_manager> resource_manager_creator,
-		TF_nsl_shader_compiler_subsystem_creator<F_nsl_uniform_manager> uniform_manager_creator,
-		TF_nsl_shader_compiler_subsystem_creator<F_nsl_sampler_state_manager> sampler_state_manager_creator,
-		TF_nsl_shader_compiler_subsystem_creator<F_nsl_pipeline_state_manager> pipeline_state_manager_creator
-	) :
-		module_manager_p_(module_manager_creator(NCPP_KTHIS())),
-		translation_unit_manager_p_(translation_unit_manager_creator(NCPP_KTHIS())),
-		translation_unit_compiler_p_(translation_unit_compiler_creator(NCPP_KTHIS())),
-		error_storage_p_(error_storage_creator(NCPP_KTHIS())),
-		object_manager_p_(object_manager_creator(NCPP_KTHIS())),
-		name_manager_p_(name_manager_creator(NCPP_KTHIS())),
-		data_type_manager_p_(data_type_manager_creator(NCPP_KTHIS())),
-		resource_manager_p_(resource_manager_creator(NCPP_KTHIS())),
-		uniform_manager_p_(uniform_manager_creator(NCPP_KTHIS())),
-		sampler_state_manager_p_(sampler_state_manager_creator(NCPP_KTHIS())),
-		pipeline_state_manager_p_(pipeline_state_manager_creator(NCPP_KTHIS()))
+		pipeline_state_manager_p_(customizer.pipeline_state_manager_creator(NCPP_KTHIS())),
+		vertex_layout_manager_p_(customizer.vertex_layout_manager_creator(NCPP_KTHIS()))
 	{
 	}
 	F_nsl_shader_compiler::~F_nsl_shader_compiler() {
