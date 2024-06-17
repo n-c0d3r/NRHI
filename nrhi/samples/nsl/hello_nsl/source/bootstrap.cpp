@@ -10,6 +10,8 @@ int main() {
 	auto compiler_p = TU<F_nsl_shader_compiler>()();
 	compiler_p->compile(
 "\n"
+"import(nrhi)\n"
+"\n"
 "semantic POSITION(float3)\n"
 "semantic NORMAL(float3)\n"
 "\n"

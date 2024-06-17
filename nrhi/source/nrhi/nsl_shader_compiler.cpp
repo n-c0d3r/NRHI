@@ -1922,8 +1922,24 @@ namespace nrhi {
 	F_nsl_shader_module_manager::F_nsl_shader_module_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
 		shader_compiler_p_(shader_compiler_p)
 	{
+		register_system_source(
+			"nrhi",
+"\n"
+"define NRHI_VERSION(" + G_to_string(NRHI_VERSION_NUMBER) + ")\n"
+"\n"
+		);
 	}
 	F_nsl_shader_module_manager::~F_nsl_shader_module_manager() {
+	}
+
+	void F_nsl_shader_module_manager::register_system_source(const G_string& path, const G_string src_content) {
+
+		NCPP_ASSERT(!is_has_system_source(path))
+			<< "system source of path "
+			<< T_cout_value(path)
+			<< " already registered";
+
+		system_source_map_[path] = src_content;
 	}
 
 	eastl::optional<F_nsl_shader_module_manager::F_load_src_content_result> F_nsl_shader_module_manager::load_src_content(
@@ -1933,7 +1949,18 @@ namespace nrhi {
 		G_string& out_src_content
 	)
 	{
-		return eastl::nullopt;
+		auto it = system_source_map_.find(path);
+
+		if(it == system_source_map_.end())
+			return eastl::nullopt;
+		else
+		{
+			out_src_content = it->second;
+
+			return F_load_src_content_result{
+				.abs_path = path
+			};
+		}
 	}
 	TK<F_nsl_translation_unit> F_nsl_shader_module_manager::load(
 		TKPA_valid<F_nsl_translation_unit> from_unit_p,
@@ -1942,32 +1969,42 @@ namespace nrhi {
 	)
 	{
 		G_string src_content;
-		auto load_result_opt = load_src_content(
-			from_unit_p,
-			path,
-			tree,
-			src_content
-		);
 
-		if(load_result_opt) {
+		auto it = abs_path_to_translation_unit_p_.find(path);
 
-			const auto& load_result = std::move(load_result_opt.value());
-			const auto& abs_path = load_result.abs_path;
+		if(it == abs_path_to_translation_unit_p_.end())
+		{
+			auto load_result_opt = load_src_content(
+				from_unit_p,
+				path,
+				tree,
+				src_content
+			);
 
-			auto it = abs_path_to_translation_unit_p_.find(abs_path);
+			if (load_result_opt)
+			{
+				const auto& load_result = std::move(load_result_opt.value());
+				const auto& abs_path = load_result.abs_path;
 
-			if(it == abs_path_to_translation_unit_p_.end()) {
+				it = abs_path_to_translation_unit_p_.find(abs_path);
 
-				return shader_compiler_p_->translation_unit_manager_p()->create_unit(
-					src_content,
-					abs_path
-				).no_requirements();
-			}
-			else {
-				return it->second;
+				if (it == abs_path_to_translation_unit_p_.end())
+				{
+					return shader_compiler_p_->translation_unit_manager_p()->create_unit(
+						src_content,
+						abs_path
+					).no_requirements();
+				}
+				else return it->second;
 			}
 		}
+		else return it->second;
 
+		NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+			&(from_unit_p->error_group_p()->stack()),
+			tree.begin_location,
+			"can't not load shader module at path \"" + path + "\""
+		);
 		return null;
 	}
 
@@ -2068,6 +2105,39 @@ namespace nrhi {
 		sz index,
 		F_nsl_error_stack* error_stack_p
 	) {
+		auto& tree = trees[index];
+
+		auto& object_implementation = tree.object_implementation;
+
+		G_string path = H_nsl_utilities::clear_space_head_tail(object_implementation.bodies[0].content);
+
+		auto shader_module_manager_p = shader_compiler_p()->shader_module_manager_p();
+		auto translation_unit_compiler_p = shader_compiler_p()->translation_unit_compiler_p();
+
+		imported_unit_p_ = shader_module_manager_p->load(
+			unit_p,
+			path,
+			tree
+		);
+
+		if(!imported_unit_p_)
+			return eastl::nullopt;
+
+		if(
+			!(
+				translation_unit_compiler_p->prepare_unit(
+					NCPP_FOH_VALID(imported_unit_p_),
+					context
+				)
+			)
+		) {
+			return eastl::nullopt;
+		}
+
+		unit_p->add_dependency(
+			NCPP_FOH_VALID(imported_unit_p_)
+		);
+
 		return TG_vector<F_nsl_ast_tree>();
 	}
 
@@ -2079,7 +2149,7 @@ namespace nrhi {
 		A_nsl_object_type(
 			shader_compiler_p,
 			"import",
-			true,
+			false,
 			1,
 			1
 		)
@@ -2266,7 +2336,6 @@ namespace nrhi {
 				tree.object_implementation.begin_name_location,
 				tree.object_implementation.name + " is already registered"
 			);
-
 			return eastl::nullopt;
 		}
 
@@ -4992,9 +5061,7 @@ namespace nrhi {
 		return true;
 	}
 
-	b8 F_nsl_translation_unit_compiler::prepare_unit(TK_valid<F_nsl_translation_unit> unit_p) {
-
-		F_nsl_context context;
+	b8 F_nsl_translation_unit_compiler::prepare_unit(TK_valid<F_nsl_translation_unit> unit_p, F_nsl_context& context) {
 
 		auto ast_trees_opt = parse(
 			unit_p,
@@ -5016,6 +5083,8 @@ namespace nrhi {
 		const G_string& raw_src_content,
 		const G_string& abs_path
 	) {
+		F_nsl_context context;
+
 		main_unit_p_ = shader_compiler_p_->translation_unit_manager_p()->create_unit(
 			raw_src_content,
 			abs_path
@@ -5024,7 +5093,7 @@ namespace nrhi {
 		if(!main_unit_p_)
 			return false;
 
-		if(!prepare_unit(NCPP_FOH_VALID(main_unit_p_)))
+		if(!prepare_unit(NCPP_FOH_VALID(main_unit_p_), context))
 			return false;
 
 		return true;
@@ -5720,7 +5789,7 @@ namespace nrhi {
 
 
 	F_nsl_shader_compiler::F_nsl_shader_compiler() :
-		module_manager_p_(
+		shader_module_manager_p_(
 			TU<F_nsl_shader_module_manager>()(NCPP_KTHIS())
 		),
 		translation_unit_manager_p_(
@@ -5764,7 +5833,7 @@ namespace nrhi {
 	F_nsl_shader_compiler::F_nsl_shader_compiler(
 		const F_nsl_shader_compiler_customizer& customizer
 	) :
-		module_manager_p_(customizer.module_manager_creator(NCPP_KTHIS())),
+		shader_module_manager_p_(customizer.shader_module_manager_creator(NCPP_KTHIS())),
 		translation_unit_manager_p_(customizer.translation_unit_manager_creator(NCPP_KTHIS())),
 		translation_unit_compiler_p_(customizer.translation_unit_compiler_creator(NCPP_KTHIS())),
 		error_storage_p_(customizer.error_storage_creator(NCPP_KTHIS())),
@@ -5804,9 +5873,25 @@ namespace nrhi {
 				)
 			)
 		)
+		{
+			is_compiled_ = true;
+			is_compile_success_ = false;
 			return eastl::nullopt;
+		}
 
-		return translation_unit_compiler_p_->compile();
+		auto compile_result_opt = translation_unit_compiler_p_->compile();
+
+		is_compiled_ = true;
+		is_compile_success_ = static_cast<b8>(compile_result_opt);
+
+		return compile_result_opt;
+	}
+	F_nsl_reflection F_nsl_shader_compiler::reflect() {
+
+		NCPP_ASSERT(is_compiled_ && is_compile_success_)
+			<< "shader program is not compiled or not compiled successfully";
+
+		return {};
 	}
 
 }
