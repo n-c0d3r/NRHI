@@ -4097,6 +4097,7 @@ namespace nrhi {
 
 		auto translation_unit_compiler_p = shader_compiler_p()->translation_unit_compiler_p();
 		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
+		auto shader_manager_p = shader_compiler_p()->shader_manager_p();
 
 		b8 is_prev_in_keyword = false;
 		b8 is_prev_out_keyword = false;
@@ -4237,6 +4238,10 @@ namespace nrhi {
 		auto name_manager_p = shader_compiler_p()->name_manager_p();
 
 		name_manager_p->template T_register_name<FE_nsl_name_types::SHADER>(tree.object_implementation.name);
+		shader_manager_p->register_shader(
+			tree.object_implementation.name,
+			NCPP_KTHIS()
+		);
 
 		return std::move(childs);
 	}
@@ -4293,6 +4298,22 @@ namespace nrhi {
 			index,
 			error_stack_p
 		);
+
+		auto name_manager_p = shader_compiler_p()->name_manager_p();
+
+		// @vertex_layout annotation
+		{
+			auto it = context.current_object_config.find("vertex_layout");
+			if(it != context.current_object_config.end()) {
+
+				auto value_opt = it->second.read_string(0);
+
+				if(!value_opt)
+					return eastl::nullopt;
+
+				vertex_layout_name_ = name_manager_p->target(value_opt.value());
+			}
+		}
 
 		return std::move(childs);
 	}
@@ -5366,6 +5387,15 @@ namespace nrhi {
 
 
 
+	F_nsl_shader_manager::F_nsl_shader_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
+		shader_compiler_p_(shader_compiler_p)
+	{
+	}
+	F_nsl_shader_manager::~F_nsl_shader_manager() {
+	}
+
+
+
 	F_nsl_resource_manager::F_nsl_resource_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
 		shader_compiler_p_(shader_compiler_p)
 	{
@@ -5468,6 +5498,9 @@ namespace nrhi {
 		data_type_manager_p_(
 			TU<F_nsl_data_type_manager>()(NCPP_KTHIS())
 		),
+		shader_manager_p_(
+			TU<F_nsl_shader_manager>()(NCPP_KTHIS())
+		),
 		resource_manager_p_(
 			TU<F_nsl_resource_manager>()(NCPP_KTHIS())
 		),
@@ -5495,6 +5528,7 @@ namespace nrhi {
 		object_manager_p_(customizer.object_manager_creator(NCPP_KTHIS())),
 		name_manager_p_(customizer.name_manager_creator(NCPP_KTHIS())),
 		data_type_manager_p_(customizer.data_type_manager_creator(NCPP_KTHIS())),
+		shader_manager_p_(customizer.shader_manager_creator(NCPP_KTHIS())),
 		resource_manager_p_(customizer.resource_manager_creator(NCPP_KTHIS())),
 		uniform_manager_p_(customizer.uniform_manager_creator(NCPP_KTHIS())),
 		sampler_state_manager_p_(customizer.sampler_state_manager_creator(NCPP_KTHIS())),

@@ -1554,9 +1554,11 @@ namespace nrhi {
 
 	private:
 		F_input_assembler_desc input_assempler_desc_;
+		G_string vertex_layout_name_;
 
 	public:
 		NCPP_FORCE_INLINE const F_input_assembler_desc& input_assempler_desc() const noexcept { return input_assempler_desc_; }
+		NCPP_FORCE_INLINE const G_string& vertex_layout_name() const noexcept { return vertex_layout_name_; }
 
 
 
@@ -2463,6 +2465,61 @@ namespace nrhi {
 
 
 
+	class NRHI_API F_nsl_shader_manager {
+
+	private:
+		TK_valid<F_nsl_shader_compiler> shader_compiler_p_;
+
+	protected:
+		TG_unordered_map<G_string, TK<A_nsl_shader_object>> name_to_shader_object_p_map_;
+
+	public:
+		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
+
+		NCPP_FORCE_INLINE const TG_unordered_map<G_string, TK<A_nsl_shader_object>>& name_to_shader_object_p_map() const noexcept { return name_to_shader_object_p_map_; }
+
+
+
+	public:
+		F_nsl_shader_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p);
+		virtual ~F_nsl_shader_manager();
+
+	public:
+		NCPP_OBJECT(F_nsl_shader_manager);
+
+	public:
+		NCPP_FORCE_INLINE b8 is_name_has_shader_object_p(const G_string& name) const {
+
+			auto it = name_to_shader_object_p_map_.find(name);
+
+			return (it != name_to_shader_object_p_map_.end());
+		}
+		NCPP_FORCE_INLINE TK_valid<A_nsl_shader_object> shader_object_p(const G_string& name) const {
+
+			auto it = name_to_shader_object_p_map_.find(name);
+
+			NCPP_ASSERT(it != name_to_shader_object_p_map_.end()) << "can't find " << T_cout_value(name);
+
+			return NCPP_FOH_VALID(it->second);
+		}
+		NCPP_FORCE_INLINE void register_shader(const G_string& name, TKPA_valid<A_nsl_shader_object> shader_object_p) {
+
+			NCPP_ASSERT(name_to_shader_object_p_map_.find(name) == name_to_shader_object_p_map_.end()) << T_cout_value(name) << " already exists";
+
+			name_to_shader_object_p_map_[name] = shader_object_p.no_requirements();
+		}
+		NCPP_FORCE_INLINE void deregister_shader(const G_string& name) {
+
+			NCPP_ASSERT(name_to_shader_object_p_map_.find(name) != name_to_shader_object_p_map_.end()) << T_cout_value(name) << " is not exists";
+
+			auto it = name_to_shader_object_p_map_.find(name);
+			name_to_shader_object_p_map_.erase(it);
+		}
+
+	};
+
+
+
 	class NRHI_API F_nsl_resource_manager {
 
 	private:
@@ -2801,6 +2858,10 @@ namespace nrhi {
 			data_type_manager_creator
 		);
 		NRHI_NSL_DEFINE_SUBSYSTEM_CREATOR_AS_CUSTOMIZATION_MEMBER(
+			F_nsl_shader_manager,
+			shader_manager_creator
+		);
+		NRHI_NSL_DEFINE_SUBSYSTEM_CREATOR_AS_CUSTOMIZATION_MEMBER(
 			F_nsl_resource_manager,
 			resource_manager_creator
 		);
@@ -2833,6 +2894,7 @@ namespace nrhi {
 		TU<F_nsl_object_manager> object_manager_p_;
 		TU<F_nsl_name_manager> name_manager_p_;
 		TU<F_nsl_data_type_manager> data_type_manager_p_;
+		TU<F_nsl_shader_manager> shader_manager_p_;
 		TU<F_nsl_resource_manager> resource_manager_p_;
 		TU<F_nsl_uniform_manager> uniform_manager_p_;
 		TU<F_nsl_sampler_state_manager> sampler_state_manager_p_;
@@ -2849,6 +2911,7 @@ namespace nrhi {
 		NCPP_FORCE_INLINE TK_valid<F_nsl_object_manager> object_manager_p() const noexcept { return NCPP_FOH_VALID(object_manager_p_); }
 		NCPP_FORCE_INLINE TK_valid<F_nsl_name_manager> name_manager_p() const noexcept { return NCPP_FOH_VALID(name_manager_p_); }
 		NCPP_FORCE_INLINE TK_valid<F_nsl_data_type_manager> data_type_manager_p() const noexcept { return NCPP_FOH_VALID(data_type_manager_p_); }
+		NCPP_FORCE_INLINE TK_valid<F_nsl_shader_manager> shader_manager_p() const noexcept { return NCPP_FOH_VALID(shader_manager_p_); }
 		NCPP_FORCE_INLINE TK_valid<F_nsl_resource_manager> resource_manager_p() const noexcept { return NCPP_FOH_VALID(resource_manager_p_); }
 		NCPP_FORCE_INLINE TK_valid<F_nsl_uniform_manager> uniform_manager_p() const noexcept { return NCPP_FOH_VALID(uniform_manager_p_); }
 		NCPP_FORCE_INLINE TK_valid<F_nsl_sampler_state_manager> sampler_state_manager_p() const noexcept { return NCPP_FOH_VALID(sampler_state_manager_p_); }
