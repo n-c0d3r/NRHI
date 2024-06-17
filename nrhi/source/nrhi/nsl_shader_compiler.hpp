@@ -353,9 +353,10 @@ namespace nrhi {
 
 		G_string semantic;
 		u32 buffer = 0;
-		u32 offset = -1;
+		u32 offset = NCPP_U32_MAX;
 
 	};
+	using F_nsl_vertex_attribute_config_map = TG_unordered_map<G_string, F_nsl_info_tree_reader>;
 	struct F_nsl_vertex_layout_info {
 
 		TG_vector<F_nsl_vertex_attribute> attributes;

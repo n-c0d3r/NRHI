@@ -3940,6 +3940,8 @@ namespace nrhi {
 			return eastl::nullopt;
 		}
 
+		F_nsl_vertex_attribute_config_map attribute_config_map;
+
 		auto& child_info_trees = child_info_trees_opt.value();
 
 		if(child_info_trees.size() == 0) {
@@ -3958,6 +3960,52 @@ namespace nrhi {
 		for(u32 i = 0; i < shader_count; ++i) {
 
 			auto& child_info_tree = child_info_trees[i];
+
+			if(child_info_tree.name[0] == '@') {
+
+				attribute_config_map[
+					child_info_tree.name.substr(1, child_info_tree.name.length() - 1)
+				] = F_nsl_info_tree_reader(
+					child_info_tree.childs,
+					child_info_tree.begin_childs_location,
+					&(unit_p->error_group_p()->stack())
+				);
+				continue;
+			}
+
+			F_nsl_vertex_attribute attribute = {
+				.semantic = name_manager_p->target(child_info_tree.name)
+			};
+
+			// @buffer annotation
+			{
+				auto it = attribute_config_map.find("buffer");
+				if(it != attribute_config_map.end()) {
+
+					auto value_opt = it->second.read_u32(0);
+
+					if(!value_opt)
+						return eastl::nullopt;
+
+					attribute.buffer = value_opt.value();
+				}
+ 			}
+
+			// @offset annotation
+			{
+				auto it = attribute_config_map.find("offset");
+				if(it != attribute_config_map.end()) {
+
+					auto value_opt = it->second.read_i32(0);
+
+					if(!value_opt)
+						return eastl::nullopt;
+
+					attribute.offset = value_opt.value();
+				}
+			}
+
+			vertex_layout_info.attributes.push_back(attribute);
 
 			child_trees[i] = F_nsl_ast_tree {
 				.type = E_nsl_ast_tree_type::INFO_TREE,
