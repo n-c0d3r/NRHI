@@ -1651,6 +1651,14 @@ namespace nrhi {
 
 	class NRHI_API F_nsl_compute_shader_object final : public A_nsl_shader_object {
 
+	private:
+		F_vector3_u thread_group_size_ = F_vector3_u::zero();
+
+	public:
+		NCPP_FORCE_INLINE const F_vector3_u& thread_group_size() const noexcept { return thread_group_size_; }
+
+
+
 	public:
 		F_nsl_compute_shader_object(
 			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
@@ -1662,6 +1670,15 @@ namespace nrhi {
 
 	public:
 		NCPP_OBJECT(F_nsl_compute_shader_object);
+
+	public:
+		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
+			F_nsl_context& context,
+			TK_valid<F_nsl_translation_unit> unit_p,
+			TG_vector<F_nsl_ast_tree>& trees,
+			sz index,
+			F_nsl_error_stack* error_stack_p
+		) override;
 
 	};
 

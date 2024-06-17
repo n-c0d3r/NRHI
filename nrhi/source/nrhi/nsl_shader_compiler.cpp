@@ -4619,6 +4619,56 @@ namespace nrhi {
 	F_nsl_compute_shader_object::~F_nsl_compute_shader_object() {
 	}
 
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_compute_shader_object::recursive_build_ast_tree(
+		F_nsl_context& context,
+		TK_valid<F_nsl_translation_unit> unit_p,
+		TG_vector<F_nsl_ast_tree>& trees,
+		sz index,
+		F_nsl_error_stack* error_stack_p
+	) {
+		auto childs = A_nsl_shader_object::recursive_build_ast_tree(
+			context,
+			unit_p,
+			trees,
+			index,
+			error_stack_p
+		);
+
+		// @thread_group_size annotation
+		{
+			auto it = context.current_object_config.find("thread_group_size");
+			if(it != context.current_object_config.end()) {
+
+				{
+					auto value_opt = it->second.read_u32(0);
+
+					if(!value_opt)
+						return eastl::nullopt;
+
+					thread_group_size_.x = value_opt.value();
+				}
+				{
+					auto value_opt = it->second.read_u32(1);
+
+					if(!value_opt)
+						return eastl::nullopt;
+
+					thread_group_size_.y = value_opt.value();
+				}
+				{
+					auto value_opt = it->second.read_u32(2);
+
+					if(!value_opt)
+						return eastl::nullopt;
+
+					thread_group_size_.z = value_opt.value();
+				}
+			}
+		}
+
+		return std::move(childs);
+	}
+
 
 
 	F_nsl_compute_shader_object_type::F_nsl_compute_shader_object_type(
