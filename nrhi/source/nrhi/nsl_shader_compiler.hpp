@@ -211,33 +211,33 @@ namespace nrhi {
 		F_nsl_info_tree_reader& operator = (F_nsl_info_tree_reader&&);
 
 	public:
-		b8 guarantee_not_empty() const;
-		b8 guarantee_index(u32 index) const;
+		b8 guarantee_not_empty(b8 is_required = true) const;
+		b8 guarantee_index(u32 index, b8 is_required = true) const;
 
 	public:
-		eastl::optional<b8> read_b8(u32 index) const;
-		eastl::optional<u8> read_u8(u32 index) const;
-		eastl::optional<u16> read_u16(u32 index) const;
-		eastl::optional<u32> read_u32(u32 index) const;
-		eastl::optional<u64> read_u64(u32 index) const;
-		eastl::optional<i8> read_i8(u32 index) const;
-		eastl::optional<i16> read_i16(u32 index) const;
-		eastl::optional<i32> read_i32(u32 index) const;
-		eastl::optional<i64> read_i64(u32 index) const;
-		eastl::optional<f32> read_f32(u32 index) const;
-		eastl::optional<f64> read_f64(u32 index) const;
-		eastl::optional<G_string> read_string(u32 index) const;
-		b8 guarantee_flag(const G_string& name) const;
-		eastl::optional<F_nsl_info_tree_reader> read_sub(const G_string& name) const;
-		eastl::optional<E_nsl_element_format> read_element_format(u32 index) const;
-		eastl::optional<E_nsl_semantic_input_class> read_semantic_input_class(u32 index) const;
-		eastl::optional<E_filter> read_filter(u32 index) const;
-		eastl::optional<E_texcoord_address_mode> read_texcoord_address_mode(u32 index) const;
-		eastl::optional<E_cull_mode> read_cull_mode(u32 index) const;
-		eastl::optional<E_fill_mode> read_fill_mode(u32 index) const;
-		eastl::optional<E_format> read_format(u32 index) const;
-		eastl::optional<E_depth_comparison_func> read_depth_comparison_func(u32 index) const;
-		eastl::optional<E_primitive_topology> read_primitive_topology(u32 index) const;
+		eastl::optional<b8> read_b8(u32 index, b8 is_required = true) const;
+		eastl::optional<u8> read_u8(u32 index, b8 is_required = true) const;
+		eastl::optional<u16> read_u16(u32 index, b8 is_required = true) const;
+		eastl::optional<u32> read_u32(u32 index, b8 is_required = true) const;
+		eastl::optional<u64> read_u64(u32 index, b8 is_required = true) const;
+		eastl::optional<i8> read_i8(u32 index, b8 is_required = true) const;
+		eastl::optional<i16> read_i16(u32 index, b8 is_required = true) const;
+		eastl::optional<i32> read_i32(u32 index, b8 is_required = true) const;
+		eastl::optional<i64> read_i64(u32 index, b8 is_required = true) const;
+		eastl::optional<f32> read_f32(u32 index, b8 is_required = true) const;
+		eastl::optional<f64> read_f64(u32 index, b8 is_required = true) const;
+		eastl::optional<G_string> read_string(u32 index, b8 is_required = true) const;
+		b8 guarantee_flag(const G_string& name, b8 is_required = true) const;
+		eastl::optional<F_nsl_info_tree_reader> read_sub(const G_string& name, b8 is_required = true) const;
+		eastl::optional<E_nsl_element_format> read_element_format(u32 index, b8 is_required = true) const;
+		eastl::optional<E_nsl_semantic_input_class> read_semantic_input_class(u32 index, b8 is_required = true) const;
+		eastl::optional<E_filter> read_filter(u32 index, b8 is_required = true) const;
+		eastl::optional<E_texcoord_address_mode> read_texcoord_address_mode(u32 index, b8 is_required = true) const;
+		eastl::optional<E_cull_mode> read_cull_mode(u32 index, b8 is_required = true) const;
+		eastl::optional<E_fill_mode> read_fill_mode(u32 index, b8 is_required = true) const;
+		eastl::optional<E_format> read_format(u32 index, b8 is_required = true) const;
+		eastl::optional<E_depth_comparison_func> read_depth_comparison_func(u32 index, b8 is_required = true) const;
+		eastl::optional<E_primitive_topology> read_primitive_topology(u32 index, b8 is_required = true) const;
 
 	};
 

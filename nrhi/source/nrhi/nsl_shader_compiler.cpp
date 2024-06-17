@@ -1228,36 +1228,38 @@ namespace nrhi {
 	}
 
 
-	b8 F_nsl_info_tree_reader::guarantee_not_empty() const {
+	b8 F_nsl_info_tree_reader::guarantee_not_empty(b8 is_required) const {
 
 		if(info_trees_.size() == 0) {
 
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				error_stack_p_,
-				location_offset_to_save_,
-				"no info provided"
-			);
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					location_offset_to_save_,
+					"no info provided"
+				);
 			return false;
 		}
 
 		return true;
 	}
-	b8 F_nsl_info_tree_reader::guarantee_index(u32 index) const {
+	b8 F_nsl_info_tree_reader::guarantee_index(u32 index, b8 is_required) const {
 
 		if(info_trees_.size() <= index) {
 
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				error_stack_p_,
-				location_offset_to_save_,
-				"not found argument at index \"" + G_to_string(index) + "\""
-			);
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					location_offset_to_save_,
+					"not found argument at index \"" + G_to_string(index) + "\""
+				);
 			return false;
 		}
 
 		return true;
 	}
 
-	eastl::optional<b8> F_nsl_info_tree_reader::read_b8(u32 index) const {
+	eastl::optional<b8> F_nsl_info_tree_reader::read_b8(u32 index, b8 is_required) const {
 
 		if(!guarantee_index(index)) {
 
@@ -1270,17 +1272,18 @@ namespace nrhi {
 
 		if (it == b8_str_to_value_map_.end()) {
 
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				error_stack_p_,
-				info_trees_[index].begin_location,
-				"invalid value \"" + value_str + "\""
-			);
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
 			return eastl::nullopt;
 		}
 
 		return it->second;
 	}
-	eastl::optional<u8> F_nsl_info_tree_reader::read_u8(u32 index) const {
+	eastl::optional<u8> F_nsl_info_tree_reader::read_u8(u32 index, b8 is_required) const {
 
 		if(!guarantee_index(index)) {
 
@@ -1296,26 +1299,28 @@ namespace nrhi {
 		}
 		catch(std::invalid_argument) {
 
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				error_stack_p_,
-				info_trees_[index].begin_location,
-				"invalid value \"" + value_str + "\""
-			);
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
 			return eastl::nullopt;
 		}
 		catch(std::out_of_range) {
 
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				error_stack_p_,
-				info_trees_[index].begin_location,
-				"invalid value \"" + value_str + "\""
-			);
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
 			return eastl::nullopt;
 		}
 
 		return value;
 	}
-	eastl::optional<u16> F_nsl_info_tree_reader::read_u16(u32 index) const {
+	eastl::optional<u16> F_nsl_info_tree_reader::read_u16(u32 index, b8 is_required) const {
 
 		if(!guarantee_index(index)) {
 
@@ -1331,26 +1336,28 @@ namespace nrhi {
 		}
 		catch(std::invalid_argument) {
 
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				error_stack_p_,
-				info_trees_[index].begin_location,
-				"invalid value \"" + value_str + "\""
-			);
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
 			return eastl::nullopt;
 		}
 		catch(std::out_of_range) {
 
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				error_stack_p_,
-				info_trees_[index].begin_location,
-				"invalid value \"" + value_str + "\""
-			);
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
 			return eastl::nullopt;
 		}
 
 		return value;
 	}
-	eastl::optional<u32> F_nsl_info_tree_reader::read_u32(u32 index) const {
+	eastl::optional<u32> F_nsl_info_tree_reader::read_u32(u32 index, b8 is_required) const {
 
 		if(!guarantee_index(index)) {
 
@@ -1366,26 +1373,28 @@ namespace nrhi {
 		}
 		catch(std::invalid_argument) {
 
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				error_stack_p_,
-				info_trees_[index].begin_location,
-				"invalid value \"" + value_str + "\""
-			);
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
 			return eastl::nullopt;
 		}
 		catch(std::out_of_range) {
 
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				error_stack_p_,
-				info_trees_[index].begin_location,
-				"invalid value \"" + value_str + "\""
-			);
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
 			return eastl::nullopt;
 		}
 
 		return value;
 	}
-	eastl::optional<u64> F_nsl_info_tree_reader::read_u64(u32 index) const {
+	eastl::optional<u64> F_nsl_info_tree_reader::read_u64(u32 index, b8 is_required) const {
 
 		if(!guarantee_index(index)) {
 
@@ -1401,26 +1410,28 @@ namespace nrhi {
 		}
 		catch(std::invalid_argument) {
 
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				error_stack_p_,
-				info_trees_[index].begin_location,
-				"invalid value \"" + value_str + "\""
-			);
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
 			return eastl::nullopt;
 		}
 		catch(std::out_of_range) {
 
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				error_stack_p_,
-				info_trees_[index].begin_location,
-				"invalid value \"" + value_str + "\""
-			);
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
 			return eastl::nullopt;
 		}
 
 		return value;
 	}
-	eastl::optional<i8> F_nsl_info_tree_reader::read_i8(u32 index) const {
+	eastl::optional<i8> F_nsl_info_tree_reader::read_i8(u32 index, b8 is_required) const {
 
 		if(!guarantee_index(index)) {
 
@@ -1436,26 +1447,28 @@ namespace nrhi {
 		}
 		catch(std::invalid_argument) {
 
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				error_stack_p_,
-				info_trees_[index].begin_location,
-				"invalid value \"" + value_str + "\""
-			);
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
 			return eastl::nullopt;
 		}
 		catch(std::out_of_range) {
 
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				error_stack_p_,
-				info_trees_[index].begin_location,
-				"invalid value \"" + value_str + "\""
-			);
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
 			return eastl::nullopt;
 		}
 
 		return value;
 	}
-	eastl::optional<i16> F_nsl_info_tree_reader::read_i16(u32 index) const {
+	eastl::optional<i16> F_nsl_info_tree_reader::read_i16(u32 index, b8 is_required) const {
 
 		if(!guarantee_index(index)) {
 
@@ -1471,26 +1484,28 @@ namespace nrhi {
 		}
 		catch(std::invalid_argument) {
 
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				error_stack_p_,
-				info_trees_[index].begin_location,
-				"invalid value \"" + value_str + "\""
-			);
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
 			return eastl::nullopt;
 		}
 		catch(std::out_of_range) {
 
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				error_stack_p_,
-				info_trees_[index].begin_location,
-				"invalid value \"" + value_str + "\""
-			);
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
 			return eastl::nullopt;
 		}
 
 		return value;
 	}
-	eastl::optional<i32> F_nsl_info_tree_reader::read_i32(u32 index) const {
+	eastl::optional<i32> F_nsl_info_tree_reader::read_i32(u32 index, b8 is_required) const {
 
 		if(!guarantee_index(index)) {
 
@@ -1506,26 +1521,28 @@ namespace nrhi {
 		}
 		catch(std::invalid_argument) {
 
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				error_stack_p_,
-				info_trees_[index].begin_location,
-				"invalid value \"" + value_str + "\""
-			);
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
 			return eastl::nullopt;
 		}
 		catch(std::out_of_range) {
 
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				error_stack_p_,
-				info_trees_[index].begin_location,
-				"invalid value \"" + value_str + "\""
-			);
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
 			return eastl::nullopt;
 		}
 
 		return value;
 	}
-	eastl::optional<i64> F_nsl_info_tree_reader::read_i64(u32 index) const {
+	eastl::optional<i64> F_nsl_info_tree_reader::read_i64(u32 index, b8 is_required) const {
 
 		if(!guarantee_index(index)) {
 
@@ -1541,26 +1558,28 @@ namespace nrhi {
 		}
 		catch(std::invalid_argument) {
 
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				error_stack_p_,
-				info_trees_[index].begin_location,
-				"invalid value \"" + value_str + "\""
-			);
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
 			return eastl::nullopt;
 		}
 		catch(std::out_of_range) {
 
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				error_stack_p_,
-				info_trees_[index].begin_location,
-				"invalid value \"" + value_str + "\""
-			);
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
 			return eastl::nullopt;
 		}
 
 		return value;
 	}
-	eastl::optional<f32> F_nsl_info_tree_reader::read_f32(u32 index) const {
+	eastl::optional<f32> F_nsl_info_tree_reader::read_f32(u32 index, b8 is_required) const {
 
 		if(!guarantee_index(index)) {
 
@@ -1576,26 +1595,28 @@ namespace nrhi {
 		}
 		catch(std::invalid_argument) {
 
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				error_stack_p_,
-				info_trees_[index].begin_location,
-				"invalid value \"" + value_str + "\""
-			);
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
 			return eastl::nullopt;
 		}
 		catch(std::out_of_range) {
 
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				error_stack_p_,
-				info_trees_[index].begin_location,
-				"invalid value \"" + value_str + "\""
-			);
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
 			return eastl::nullopt;
 		}
 
 		return value;
 	}
-	eastl::optional<f64> F_nsl_info_tree_reader::read_f64(u32 index) const {
+	eastl::optional<f64> F_nsl_info_tree_reader::read_f64(u32 index, b8 is_required) const {
 
 		if(!guarantee_index(index)) {
 
@@ -1611,26 +1632,28 @@ namespace nrhi {
 		}
 		catch(std::invalid_argument) {
 
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				error_stack_p_,
-				info_trees_[index].begin_location,
-				"invalid value \"" + value_str + "\""
-			);
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
 			return eastl::nullopt;
 		}
 		catch(std::out_of_range) {
 
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				error_stack_p_,
-				info_trees_[index].begin_location,
-				"invalid value \"" + value_str + "\""
-			);
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
 			return eastl::nullopt;
 		}
 
 		return value;
 	}
-	eastl::optional<G_string> F_nsl_info_tree_reader::read_string(u32 index) const {
+	eastl::optional<G_string> F_nsl_info_tree_reader::read_string(u32 index, b8 is_required) const {
 
 		if(!guarantee_index(index)) {
 
@@ -1639,7 +1662,7 @@ namespace nrhi {
 
 		return info_trees_[index].name;
 	}
-	b8 F_nsl_info_tree_reader::guarantee_flag(const G_string& name) const {
+	b8 F_nsl_info_tree_reader::guarantee_flag(const G_string& name, b8 is_required) const {
 
 		for(const auto& info_tree : info_trees_) {
 
@@ -1647,14 +1670,15 @@ namespace nrhi {
 				return true;
 		}
 
-		NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-			error_stack_p_,
-			location_offset_to_save_,
-			"not found flag \"" + name + "\""
-		);
+		if(is_required)
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				error_stack_p_,
+				location_offset_to_save_,
+				"not found flag \"" + name + "\""
+			);
 		return false;
 	}
-	eastl::optional<F_nsl_info_tree_reader> F_nsl_info_tree_reader::read_sub(const G_string& name) const {
+	eastl::optional<F_nsl_info_tree_reader> F_nsl_info_tree_reader::read_sub(const G_string& name, b8 is_required) const {
 
 		for(const auto& info_tree : info_trees_) {
 
@@ -1668,14 +1692,15 @@ namespace nrhi {
 			}
 		}
 
-		NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-			error_stack_p_,
-			location_offset_to_save_,
-			"not found sub info tree \"" + name + "\""
-		);
+		if(is_required)
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				error_stack_p_,
+				location_offset_to_save_,
+				"not found sub info tree \"" + name + "\""
+			);
 		return eastl::nullopt;
 	}
-	eastl::optional<E_nsl_element_format> F_nsl_info_tree_reader::read_element_format(u32 index) const {
+	eastl::optional<E_nsl_element_format> F_nsl_info_tree_reader::read_element_format(u32 index, b8 is_required) const {
 
 		if(!guarantee_index(index)) {
 
@@ -1688,17 +1713,18 @@ namespace nrhi {
 
 		if (it == element_format_str_to_value_map_.end()) {
 
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				error_stack_p_,
-				info_trees_[index].begin_location,
-				"invalid value \"" + value_str + "\""
-			);
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
 			return eastl::nullopt;
 		}
 
 		return it->second;
 	}
-	eastl::optional<E_nsl_semantic_input_class> F_nsl_info_tree_reader::read_semantic_input_class(u32 index) const {
+	eastl::optional<E_nsl_semantic_input_class> F_nsl_info_tree_reader::read_semantic_input_class(u32 index, b8 is_required) const {
 
 		if(!guarantee_index(index)) {
 
@@ -1711,17 +1737,18 @@ namespace nrhi {
 
 		if (it == semantic_input_class_str_to_value_map_.end()) {
 
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				error_stack_p_,
-				info_trees_[index].begin_location,
-				"invalid value \"" + value_str + "\""
-			);
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
 			return eastl::nullopt;
 		}
 
 		return it->second;
 	}
-	eastl::optional<E_filter> F_nsl_info_tree_reader::read_filter(u32 index) const {
+	eastl::optional<E_filter> F_nsl_info_tree_reader::read_filter(u32 index, b8 is_required) const {
 
 		if(!guarantee_index(index)) {
 
@@ -1734,17 +1761,18 @@ namespace nrhi {
 
 		if (it == filter_str_to_value_map_.end()) {
 
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				error_stack_p_,
-				info_trees_[index].begin_location,
-				"invalid value \"" + value_str + "\""
-			);
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
 			return eastl::nullopt;
 		}
 
 		return it->second;
 	}
-	eastl::optional<E_texcoord_address_mode> F_nsl_info_tree_reader::read_texcoord_address_mode(u32 index) const {
+	eastl::optional<E_texcoord_address_mode> F_nsl_info_tree_reader::read_texcoord_address_mode(u32 index, b8 is_required) const {
 
 		if(!guarantee_index(index)) {
 
@@ -1757,17 +1785,18 @@ namespace nrhi {
 
 		if (it == texcoord_address_mode_str_to_value_map_.end()) {
 
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				error_stack_p_,
-				info_trees_[index].begin_location,
-				"invalid value \"" + value_str + "\""
-			);
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
 			return eastl::nullopt;
 		}
 
 		return it->second;
 	}
-	eastl::optional<E_cull_mode> F_nsl_info_tree_reader::read_cull_mode(u32 index) const {
+	eastl::optional<E_cull_mode> F_nsl_info_tree_reader::read_cull_mode(u32 index, b8 is_required) const {
 
 		if(!guarantee_index(index)) {
 
@@ -1780,17 +1809,18 @@ namespace nrhi {
 
 		if (it == cull_mode_str_to_value_map_.end()) {
 
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				error_stack_p_,
-				info_trees_[index].begin_location,
-				"invalid value \"" + value_str + "\""
-			);
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
 			return eastl::nullopt;
 		}
 
 		return it->second;
 	}
-	eastl::optional<E_fill_mode> F_nsl_info_tree_reader::read_fill_mode(u32 index) const {
+	eastl::optional<E_fill_mode> F_nsl_info_tree_reader::read_fill_mode(u32 index, b8 is_required) const {
 
 		if(!guarantee_index(index)) {
 
@@ -1803,17 +1833,18 @@ namespace nrhi {
 
 		if (it == fill_mode_str_to_value_map_.end()) {
 
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				error_stack_p_,
-				info_trees_[index].begin_location,
-				"invalid value \"" + value_str + "\""
-			);
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
 			return eastl::nullopt;
 		}
 
 		return it->second;
 	}
-	eastl::optional<E_format> F_nsl_info_tree_reader::read_format(u32 index) const {
+	eastl::optional<E_format> F_nsl_info_tree_reader::read_format(u32 index, b8 is_required) const {
 
 		if(!guarantee_index(index)) {
 
@@ -1826,17 +1857,18 @@ namespace nrhi {
 
 		if (it == format_str_to_value_map_.end()) {
 
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				error_stack_p_,
-				info_trees_[index].begin_location,
-				"invalid value \"" + value_str + "\""
-			);
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
 			return eastl::nullopt;
 		}
 
 		return it->second;
 	}
-	eastl::optional<E_depth_comparison_func> F_nsl_info_tree_reader::read_depth_comparison_func(u32 index) const {
+	eastl::optional<E_depth_comparison_func> F_nsl_info_tree_reader::read_depth_comparison_func(u32 index, b8 is_required) const {
 
 		if(!guarantee_index(index)) {
 
@@ -1849,17 +1881,18 @@ namespace nrhi {
 
 		if (it == depth_comparison_func_str_to_value_map_.end()) {
 
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				error_stack_p_,
-				info_trees_[index].begin_location,
-				"invalid value \"" + value_str + "\""
-			);
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
 			return eastl::nullopt;
 		}
 
 		return it->second;
 	}
-	eastl::optional<E_primitive_topology> F_nsl_info_tree_reader::read_primitive_topology(u32 index) const {
+	eastl::optional<E_primitive_topology> F_nsl_info_tree_reader::read_primitive_topology(u32 index, b8 is_required) const {
 
 		if(!guarantee_index(index)) {
 
@@ -1872,11 +1905,12 @@ namespace nrhi {
 
 		if (it == primitive_topology_str_to_value_map_.end()) {
 
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				error_stack_p_,
-				info_trees_[index].begin_location,
-				"invalid value \"" + value_str + "\""
-			);
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
 			return eastl::nullopt;
 		}
 
@@ -3819,6 +3853,165 @@ namespace nrhi {
 				.begin_location = child_info_tree.begin_location,
 				.end_location = child_info_tree.end_location
 			};
+		}
+
+		// check for color_formats annotation
+		{
+			auto it = context.current_object_config.find("color_formats");
+			if(it != context.current_object_config.end()) {
+
+				const auto& info_tree_reader = it->second;
+
+				u32 color_format_count = info_tree_reader.info_trees().size();
+
+				for(u32 i = 0; i < color_format_count; ++i) {
+
+					auto value_opt = info_tree_reader.read_format(i);
+
+					if(!value_opt)
+						return eastl::nullopt;
+
+					pipeline_state_info.desc.color_formats[i] = value_opt.value();
+				}
+			}
+		}
+
+		// check for depth_stencil annotation
+		{
+			auto it = context.current_object_config.find("depth_stencil");
+			if(it != context.current_object_config.end()) {
+
+				const auto& info_tree_reader = it->second;
+
+				// enable_depth_test attribute
+				{
+					auto sub_info_tree_reader_opt = info_tree_reader.read_sub("enable_depth_test", false);
+
+					if(sub_info_tree_reader_opt) {
+
+						const auto& sub_info_tree_reader = sub_info_tree_reader_opt.value();
+
+						auto value_opt = sub_info_tree_reader.read_b8(0);
+
+						if(!value_opt)
+							return eastl::nullopt;
+
+						pipeline_state_info.desc.depth_stencil_desc.
+						enable_depth_test = value_opt.value();
+					}
+				}
+
+				// fill_mode attribute
+				{
+					auto sub_info_tree_reader_opt = info_tree_reader.read_sub("format", false);
+
+					if(sub_info_tree_reader_opt) {
+
+						const auto& sub_info_tree_reader = sub_info_tree_reader_opt.value();
+
+						auto value_opt = sub_info_tree_reader.read_format(0);
+
+						if(!value_opt)
+							return eastl::nullopt;
+
+						pipeline_state_info.desc.depth_stencil_desc.format = value_opt.value();
+					}
+				}
+
+				// depth_comparison_func attribute
+				{
+					auto sub_info_tree_reader_opt = info_tree_reader.read_sub("depth_comparison_func", false);
+
+					if(sub_info_tree_reader_opt) {
+
+						const auto& sub_info_tree_reader = sub_info_tree_reader_opt.value();
+
+						auto value_opt = sub_info_tree_reader.read_depth_comparison_func(0);
+
+						if(!value_opt)
+							return eastl::nullopt;
+
+						pipeline_state_info.desc.depth_stencil_desc.depth_comparison_func = value_opt.value();
+					}
+				}
+
+				// depth_buffer_write attribute
+				{
+					auto sub_info_tree_reader_opt = info_tree_reader.read_sub("depth_buffer_write", false);
+
+					if(sub_info_tree_reader_opt) {
+
+						const auto& sub_info_tree_reader = sub_info_tree_reader_opt.value();
+
+						auto value_opt = sub_info_tree_reader.read_b8(0);
+
+						if(!value_opt)
+							return eastl::nullopt;
+
+						pipeline_state_info.desc.depth_stencil_desc.depth_buffer_write = value_opt.value();
+					}
+				}
+			}
+		}
+
+		// check for rasterizer annotation
+		{
+			auto it = context.current_object_config.find("rasterizer");
+			if(it != context.current_object_config.end()) {
+
+				const auto& info_tree_reader = it->second;
+
+				// cull_mode attribute
+				{
+					auto sub_info_tree_reader_opt = info_tree_reader.read_sub("cull_mode", false);
+
+					if(sub_info_tree_reader_opt) {
+
+						const auto& sub_info_tree_reader = sub_info_tree_reader_opt.value();
+
+						auto value_opt = sub_info_tree_reader.read_cull_mode(0);
+
+						if(!value_opt)
+							return eastl::nullopt;
+
+						pipeline_state_info.desc.rasterizer_desc.cull_mode = value_opt.value();
+					}
+				}
+
+				// fill_mode attribute
+				{
+					auto sub_info_tree_reader_opt = info_tree_reader.read_sub("fill_mode", false);
+
+					if(sub_info_tree_reader_opt) {
+
+						const auto& sub_info_tree_reader = sub_info_tree_reader_opt.value();
+
+						auto value_opt = sub_info_tree_reader.read_fill_mode(0);
+
+						if(!value_opt)
+							return eastl::nullopt;
+
+						pipeline_state_info.desc.rasterizer_desc.fill_mode = value_opt.value();
+					}
+				}
+
+				// font_counter_clock_wise attribute
+				{
+					auto sub_info_tree_reader_opt = info_tree_reader.read_sub("font_counter_clock_wise", false);
+
+					if(sub_info_tree_reader_opt) {
+
+						const auto& sub_info_tree_reader = sub_info_tree_reader_opt.value();
+
+						auto value_opt = sub_info_tree_reader.read_b8(0);
+
+						if(!value_opt)
+							return eastl::nullopt;
+
+						pipeline_state_info.desc.rasterizer_desc.font_counter_clock_wise = value_opt.value();
+					}
+				}
+			}
 		}
 
 		// check for primitive_topology annotation
