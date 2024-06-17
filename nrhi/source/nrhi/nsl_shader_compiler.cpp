@@ -5286,6 +5286,22 @@ namespace nrhi {
 	{
 	}
 	F_nsl_shader_compiler::F_nsl_shader_compiler(
+		const F_nsl_shader_compiler_customizer& customizer
+	) :
+		module_manager_p_(customizer.module_manager_creator(NCPP_KTHIS())),
+		translation_unit_manager_p_(customizer.translation_unit_manager_creator(NCPP_KTHIS())),
+		translation_unit_compiler_p_(customizer.translation_unit_compiler_creator(NCPP_KTHIS())),
+		error_storage_p_(customizer.error_storage_creator(NCPP_KTHIS())),
+		object_manager_p_(customizer.object_manager_creator(NCPP_KTHIS())),
+		name_manager_p_(customizer.name_manager_creator(NCPP_KTHIS())),
+		data_type_manager_p_(customizer.data_type_manager_creator(NCPP_KTHIS())),
+		resource_manager_p_(customizer.resource_manager_creator(NCPP_KTHIS())),
+		uniform_manager_p_(customizer.uniform_manager_creator(NCPP_KTHIS())),
+		sampler_state_manager_p_(customizer.sampler_state_manager_creator(NCPP_KTHIS())),
+		pipeline_state_manager_p_(customizer.pipeline_state_manager_creator(NCPP_KTHIS()))
+	{
+	}
+	F_nsl_shader_compiler::F_nsl_shader_compiler(
 		TF_nsl_shader_compiler_subsystem_creator<F_nsl_shader_module_manager> module_manager_creator,
 		TF_nsl_shader_compiler_subsystem_creator<F_nsl_translation_unit_manager> translation_unit_manager_creator,
 		TF_nsl_shader_compiler_subsystem_creator<F_nsl_translation_unit_compiler> translation_unit_compiler_creator,

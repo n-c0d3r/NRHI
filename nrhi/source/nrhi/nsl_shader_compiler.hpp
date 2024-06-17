@@ -2630,8 +2630,69 @@ namespace nrhi {
 
 	template<typename F__>
 	using TF_nsl_shader_compiler_subsystem_creator = eastl::function<
-	    TU<F__>(TKPA_valid<F_nsl_shader_compiler>)
+		TU<F__>(TKPA_valid<F_nsl_shader_compiler>)
 	>;
+
+#define NRHI_NSL_DEFINE_SUBSYSTEM_CREATOR_AS_CUSTOMIZATION_MEMBER(Type, Name) \
+			TF_nsl_shader_compiler_subsystem_creator<Type> Name = (\
+				[](TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) -> TU<Type> {\
+			\
+					return TU<Type>()(shader_compiler_p);\
+				}\
+			)
+
+	struct F_nsl_shader_compiler_customizer {
+
+		NRHI_NSL_DEFINE_SUBSYSTEM_CREATOR_AS_CUSTOMIZATION_MEMBER(
+			F_nsl_shader_module_manager,
+			module_manager_creator
+		);
+		NRHI_NSL_DEFINE_SUBSYSTEM_CREATOR_AS_CUSTOMIZATION_MEMBER(
+			F_nsl_shader_module_manager,
+			shader_module_manager_creator
+		);
+		NRHI_NSL_DEFINE_SUBSYSTEM_CREATOR_AS_CUSTOMIZATION_MEMBER(
+			F_nsl_translation_unit_manager,
+			translation_unit_manager_creator
+		);
+		NRHI_NSL_DEFINE_SUBSYSTEM_CREATOR_AS_CUSTOMIZATION_MEMBER(
+			F_nsl_translation_unit_compiler,
+			translation_unit_compiler_creator
+		);
+		NRHI_NSL_DEFINE_SUBSYSTEM_CREATOR_AS_CUSTOMIZATION_MEMBER(
+			F_nsl_error_storage,
+			error_storage_creator
+		);
+		NRHI_NSL_DEFINE_SUBSYSTEM_CREATOR_AS_CUSTOMIZATION_MEMBER(
+			F_nsl_object_manager,
+			object_manager_creator
+		);
+		NRHI_NSL_DEFINE_SUBSYSTEM_CREATOR_AS_CUSTOMIZATION_MEMBER(
+			F_nsl_name_manager,
+			name_manager_creator
+		);
+		NRHI_NSL_DEFINE_SUBSYSTEM_CREATOR_AS_CUSTOMIZATION_MEMBER(
+			F_nsl_data_type_manager,
+			data_type_manager_creator
+		);
+		NRHI_NSL_DEFINE_SUBSYSTEM_CREATOR_AS_CUSTOMIZATION_MEMBER(
+			F_nsl_resource_manager,
+			resource_manager_creator
+		);
+		NRHI_NSL_DEFINE_SUBSYSTEM_CREATOR_AS_CUSTOMIZATION_MEMBER(
+			F_nsl_uniform_manager,
+			uniform_manager_creator
+		);
+		NRHI_NSL_DEFINE_SUBSYSTEM_CREATOR_AS_CUSTOMIZATION_MEMBER(
+			F_nsl_sampler_state_manager,
+			sampler_state_manager_creator
+		);
+		NRHI_NSL_DEFINE_SUBSYSTEM_CREATOR_AS_CUSTOMIZATION_MEMBER(
+			F_nsl_pipeline_state_manager,
+			pipeline_state_manager_creator
+		);
+
+	};
 
 	class NRHI_API F_nsl_shader_compiler {
 
@@ -2669,6 +2730,9 @@ namespace nrhi {
 
 	public:
 		F_nsl_shader_compiler();
+		F_nsl_shader_compiler(
+			const F_nsl_shader_compiler_customizer& customizer
+		);
 		F_nsl_shader_compiler(
 			TF_nsl_shader_compiler_subsystem_creator<F_nsl_shader_module_manager> module_manager_creator,
 			TF_nsl_shader_compiler_subsystem_creator<F_nsl_translation_unit_manager> translation_unit_manager_creator,
