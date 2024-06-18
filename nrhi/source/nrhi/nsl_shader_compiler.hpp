@@ -173,6 +173,8 @@ namespace nrhi {
 	class NRHI_API F_nsl_info_tree_reader {
 
 	private:
+		TK<F_nsl_shader_compiler> shader_compiler_p_;
+
 		TG_vector<F_nsl_info_tree> info_trees_;
 		u32 location_offset_to_save_ = 0;
 		F_nsl_error_stack* error_stack_p_ = 0;
@@ -190,6 +192,8 @@ namespace nrhi {
 		static TG_map<G_string, E_primitive_topology> primitive_topology_str_to_value_map_;
 
 	public:
+		NCPP_FORCE_INLINE TKPA<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
+
 		NCPP_FORCE_INLINE const auto& info_trees() const noexcept { return info_trees_; }
 		NCPP_FORCE_INLINE u32 location_offset_to_save() const noexcept { return location_offset_to_save_; }
 		NCPP_FORCE_INLINE F_nsl_error_stack* error_stack_p() noexcept { return error_stack_p_; }
@@ -199,6 +203,7 @@ namespace nrhi {
 	public:
 		F_nsl_info_tree_reader() = default;
 		F_nsl_info_tree_reader(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 			const TG_vector<F_nsl_info_tree>& info_trees,
 			u32 location_offset_to_save = 0,
 			F_nsl_error_stack* error_stack_p = 0
@@ -209,6 +214,9 @@ namespace nrhi {
 		F_nsl_info_tree_reader& operator = (const F_nsl_info_tree_reader&);
 		F_nsl_info_tree_reader(F_nsl_info_tree_reader&&);
 		F_nsl_info_tree_reader& operator = (F_nsl_info_tree_reader&&);
+
+	private:
+		G_string parse_value_str(const G_string& value_str) const;
 
 	public:
 		b8 guarantee_not_empty(b8 is_required = true) const;
