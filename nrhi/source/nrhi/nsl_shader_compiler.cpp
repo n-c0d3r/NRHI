@@ -2370,7 +2370,13 @@ namespace nrhi {
 	eastl::optional<G_string> F_nsl_define_object::apply(
 		const F_nsl_ast_tree& tree
 	) {
-		return "#define " + name() + " " + target;
+		auto output_language_p = shader_compiler_p()->output_language_p();
+
+		return output_language_p->define_to_string(
+			translation_unit_p(),
+			name(),
+			target
+		);
 	}
 
 
@@ -2472,7 +2478,12 @@ namespace nrhi {
 	eastl::optional<G_string> F_nsl_undef_object::apply(
 		const F_nsl_ast_tree& tree
 	) {
-		return "#undef " + name();
+		auto output_language_p = shader_compiler_p()->output_language_p();
+
+		return output_language_p->undef_to_string(
+			translation_unit_p(),
+			name()
+		);
 	}
 
 
@@ -3025,35 +3036,25 @@ namespace nrhi {
 				return eastl::nullopt;
 			}
 
+			F_nsl_info_tree_reader argument_child_info_tree_reader(
+				shader_compiler_p(),
+				argument_child_info_tree.childs,
+				argument_child_info_tree.begin_childs_location,
+				&(unit_p->error_group_p()->stack())
+			);
+
 			// check for count
 			u32 count = 1;
+			b8 is_array = false;
 			if(argument_child_info_tree.childs.size() >= 2) {
 
-				const auto& info_tree = argument_child_info_tree.childs[1];
+				auto value_opt = argument_child_info_tree_reader.read_u32(1);
 
-				G_string value_str = info_tree.name;
-
-				try{
-					count = std::stoi(value_str.c_str());
-				}
-				catch(std::invalid_argument) {
-
-					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-						&(unit_p->error_group_p()->stack()),
-						info_tree.childs[0].begin_location,
-						"invalid argument element count \"" + value_str + "\""
-					);
+				if(!value_opt)
 					return eastl::nullopt;
-				}
-				catch(std::out_of_range) {
 
-					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-						&(unit_p->error_group_p()->stack()),
-						info_tree.childs[0].begin_location,
-						"invalid argument element count \"" + value_str + "\""
-					);
-					return eastl::nullopt;
-				}
+				count = value_opt.value();
+				is_array = true;
 			}
 
 			const auto& type_tree = argument_child_info_tree.childs[0];
@@ -3064,6 +3065,7 @@ namespace nrhi {
 						.name = argument_child_info_tree.name,
 						.type = name_manager_p->target(type_tree.name),
 						.count = count,
+						.is_array = is_array,
 						.config_map = std::move(data_argument_config_map)
 					}
 				}
@@ -3101,6 +3103,23 @@ namespace nrhi {
 		);
 
 		return std::move(argument_childs);
+	}
+	eastl::optional<G_string> F_nsl_structure_object::apply(
+		const F_nsl_ast_tree& tree
+	) {
+		auto output_language_p = shader_compiler_p()->output_language_p();
+
+		const auto& structure_info = shader_compiler_p()->data_type_manager_p()->structure_info(
+			name()
+		);
+
+		return output_language_p->structure_to_string(
+			translation_unit_p(),
+			{
+				name(),
+				structure_info
+			}
+		);
 	}
 
 
@@ -3205,31 +3224,19 @@ namespace nrhi {
 			u64 value = i;
 			if(value_child_info_tree.childs.size() > 0) {
 
-				const auto& info_tree = value_child_info_tree.childs[0];
+				F_nsl_info_tree_reader info_tree_reader(
+					shader_compiler_p(),
+					value_child_info_tree.childs,
+					value_child_info_tree.begin_childs_location,
+					&(unit_p->error_group_p()->stack())
+				);
 
-				G_string value_str = info_tree.name;
+				auto value_opt = info_tree_reader.read_u64(0);
 
-				try{
-					value = std::stoull(value_str.c_str());
-				}
-				catch(std::invalid_argument) {
-
-					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-						&(unit_p->error_group_p()->stack()),
-						info_tree.childs[0].begin_location,
-						"invalid argument element count \"" + value_str + "\""
-					);
+				if(!value_opt)
 					return eastl::nullopt;
-				}
-				catch(std::out_of_range) {
 
-					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-						&(unit_p->error_group_p()->stack()),
-						info_tree.childs[0].begin_location,
-						"invalid argument element count \"" + value_str + "\""
-					);
-					return eastl::nullopt;
-				}
+				value = value_opt.value();
 			}
 
 			enumeration_info.values.push_back(
@@ -3271,6 +3278,23 @@ namespace nrhi {
 		);
 
 		return std::move(value_childs);
+	}
+	eastl::optional<G_string> F_nsl_enumeration_object::apply(
+		const F_nsl_ast_tree& tree
+	) {
+		auto output_language_p = shader_compiler_p()->output_language_p();
+
+		const auto& enumeration_info = shader_compiler_p()->data_type_manager_p()->enumeration_info(
+			name()
+		);
+
+		return output_language_p->enumeration_to_string(
+			translation_unit_p(),
+			{
+				name(),
+				enumeration_info
+			}
+		);
 	}
 
 
@@ -3391,10 +3415,14 @@ namespace nrhi {
 		TG_vector<G_string> type_args(type_child_info_tree.childs.size());
 		for(u32 i = 0; i < type_args.size(); ++i) {
 
-			type_args[i] = type_child_info_tree.childs[i].name;
+			const auto& type_arg = type_child_info_tree.childs[i].name;
+
+			if(name_manager_p->is_name_has_target(type_arg))
+				type_args[i] = name_manager_p->target(type_arg);
+			else type_args[i] = type_arg;
 		}
 
-		resource_info.type = type_child_info_tree.name;
+		resource_info.type = name_manager_p->target(type_child_info_tree.name);
 		resource_info.type_args = type_args;
 
 		// check for slot annotation
@@ -3447,6 +3475,23 @@ namespace nrhi {
 		);
 
 		return std::move(child_trees);
+	}
+	eastl::optional<G_string> F_nsl_resource_object::apply(
+		const F_nsl_ast_tree& tree
+	) {
+		auto output_language_p = shader_compiler_p()->output_language_p();
+
+		const auto& resource_info = shader_compiler_p()->resource_manager_p()->resource_info(
+			name()
+		);
+
+		return output_language_p->resource_to_string(
+			translation_unit_p(),
+			{
+				name(),
+				resource_info
+			}
+		);
 	}
 
 
@@ -3845,7 +3890,19 @@ namespace nrhi {
 	eastl::optional<G_string> F_nsl_sampler_state_object::apply(
 		const F_nsl_ast_tree& tree
 	) {
-		return "SamplerState " + name() + ";";
+		auto output_language_p = shader_compiler_p()->output_language_p();
+
+		const auto& sampler_state_info = shader_compiler_p()->sampler_state_manager_p()->sampler_state_info(
+			name()
+		);
+
+		return output_language_p->sampler_state_to_string(
+			translation_unit_p(),
+			{
+			  	name(),
+			  	sampler_state_info
+			}
+		);
 	}
 
 
@@ -5542,6 +5599,27 @@ namespace nrhi {
 		A_nsl_output_language(shader_compiler_p, E_nsl_output_language::HLSL)
 	{
 		register_data_types_internal();
+
+		// setup name_to_register_type_
+		name_to_register_type_["ConstantBuffer"] = 'b';
+		name_to_register_type_["Buffer"] = 't';
+		name_to_register_type_["ByteAddressBuffer"] = 't';
+		name_to_register_type_["StructuredBuffer"] = 't';
+		name_to_register_type_["Texture1D"] = 't';
+		name_to_register_type_["Texture1DArray"] = 't';
+		name_to_register_type_["Texture2D"] = 't';
+		name_to_register_type_["Texture2DArray"] = 't';
+		name_to_register_type_["Texture3D"] = 't';
+		name_to_register_type_["TextureCube"] = 't';
+		name_to_register_type_["TextureCubeArray"] = 't';
+		name_to_register_type_["RWBuffer"] = 'u';
+		name_to_register_type_["RWByteAddressBuffer"] = 'u';
+		name_to_register_type_["RWStructuredBuffer"] = 'u';
+		name_to_register_type_["RWTexture1D"] = 'u';
+		name_to_register_type_["RWTexture1DArray"] = 'u';
+		name_to_register_type_["RWTexture2D"] = 'u';
+		name_to_register_type_["RWTexture2DArray"] = 'u';
+		name_to_register_type_["RWTexture3D"] = 'u';
 	}
 	F_nsl_output_hlsl::~F_nsl_output_hlsl() {
 	}
@@ -5552,6 +5630,26 @@ namespace nrhi {
 		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
 
 		name_manager_p->register_name("NSL_OUTPUT_HLSL");
+
+		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("ConstantBuffer");
+		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("Buffer");
+		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("ByteAddressBuffer");
+		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("StructuredBuffer");
+		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("Texture1D");
+		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("Texture1DArray");
+		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("Texture2D");
+		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("Texture2DArray");
+		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("Texture3D");
+		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("TextureCube");
+		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("TextureCubeArray");
+		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("RWBuffer");
+		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("RWByteAddressBuffer");
+		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("RWStructuredBuffer");
+		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("RWTexture1D");
+		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("RWTexture1DArray");
+		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("RWTexture2D");
+		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("RWTexture2DArray");
+		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("RWTexture3D");
 
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("bool");
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("int");
@@ -5822,6 +5920,173 @@ namespace nrhi {
 			F_nsl_semantic_info {
 				"float4"
 			}
+		);
+	}
+
+	eastl::optional<G_string> F_nsl_output_hlsl::define_to_string(
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const G_string& name,
+		const G_string& target
+	) {
+		return "#define " + name + " " + G_replace_all(target, "\n", "\\\n") + "\n";
+	}
+	eastl::optional<G_string> F_nsl_output_hlsl::undef_to_string(
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const G_string& name
+	) {
+		return "#undef " + name;
+	}
+	eastl::optional<G_string> F_nsl_output_hlsl::sampler_state_to_string(
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const F_nsl_sampler_state& sampler_state
+	) {
+		return "SamplerState " + sampler_state.first + " : register(s" + G_to_string(sampler_state.second.actual_slot) + ");";
+	}
+	eastl::optional<G_string> F_nsl_output_hlsl::resource_to_string(
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const F_nsl_resource& resource
+	) {
+		auto name_to_register_type_it = name_to_register_type_.find(resource.second.type);
+
+		if(name_to_register_type_it == name_to_register_type_.end()) {
+
+			return eastl::nullopt;
+		}
+
+		G_string parsed_type = resource.second.type;
+
+		// if type has template args
+		{
+			u32 type_arg_count = resource.second.type_args.size();
+
+			if (type_arg_count)
+				parsed_type += "<";
+
+			for (u32 i = 0; i < type_arg_count; ++i)
+			{
+				if(i != 0)
+					parsed_type += ",";
+
+				parsed_type += resource.second.type_args[i];
+			}
+
+			if (type_arg_count)
+				parsed_type += ">";
+		}
+
+		if(resource.second.type != "ConstantBuffer")
+			return (
+				// resource type
+				parsed_type
+				+ " "
+
+				// resource name
+				+ resource.first
+
+				// register
+				+ " : register("
+				+ G_string(1, name_to_register_type_it->second) // register type
+				+ G_to_string(resource.second.actual_slot) // actual slot
+				+ ");"
+			);
+		else {
+			G_string uniform_declarations;
+
+			auto uniform_manager_p = shader_compiler_p()->uniform_manager_p();
+
+			for(const auto& uniform : resource.second.uniforms) {
+
+				const auto& uniform_info = uniform_manager_p->uniform_info(uniform);
+
+				uniform_declarations += uniform_info.type + " " + uniform + ";\n";
+			}
+
+			return (
+				"cbuffer "
+
+				// resource name
+				+ resource.first
+
+				// register
+				+ " : register("
+				+ G_string(1, name_to_register_type_it->second) // register type
+				+ G_to_string(resource.second.actual_slot) // actual slot
+				+ "){\n"
+				+ uniform_declarations
+				+ "\n};"
+			);
+		}
+	}
+	eastl::optional<G_string> F_nsl_output_hlsl::structure_to_string(
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const F_nsl_structure& structure
+	) {
+		G_string argument_member_declarations;
+
+		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
+
+		for(const auto& argument_member : structure.second.argument_members) {
+
+			G_string argument_type = argument_member.argument.type;
+
+			b8 is_semantic = data_type_manager_p->is_name_has_semantic_info(argument_member.argument.type);
+
+			G_string semantic_option;
+
+			if(is_semantic) {
+
+				const auto& semantic_info = data_type_manager_p->semantic_info(argument_type);
+
+				semantic_option = ": " + argument_type;
+
+				argument_type = semantic_info.target_type;
+			}
+
+			argument_member_declarations += (
+				argument_type
+				+ " "
+				+ argument_member.argument.name
+				+ semantic_option
+				+ ";\n"
+			);
+		}
+
+		return (
+			"struct "
+			+ structure.first
+			+ " {\n"
+			+ argument_member_declarations
+			+ "\n};\n"
+		);
+	}
+	eastl::optional<G_string> F_nsl_output_hlsl::enumeration_to_string(
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const F_nsl_enumeration& enumeration
+	) {
+		G_string value_declarations;
+
+		u32 value_count = enumeration.second.values.size();
+
+		for(u32 i = 0; i < value_count; ++i) {
+
+			const auto& value = enumeration.second.values[i];
+
+			if(i != 0)
+				value_declarations += ",\n";
+
+			value_declarations += (
+				"#define "
+				+ value.first()
+				+ " "
+				+ G_to_string(value.second())
+			);
+		}
+
+		return (
+			"#define " + enumeration.first + " " + enumeration.second.value_type
+			+ "\n"
+			+ value_declarations
+			+ "\n"
 		);
 	}
 

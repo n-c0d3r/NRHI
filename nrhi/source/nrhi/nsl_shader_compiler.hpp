@@ -263,6 +263,7 @@ namespace nrhi {
 		G_string name;
 		G_string type;
 		u32 count = 1;
+		b8 is_array = false;
 		F_nsl_data_argument_config_map config_map;
 
 	};
@@ -311,6 +312,9 @@ namespace nrhi {
 		TG_vector<G_string> type_args;
 
 		u32 slot = -1;
+		u32 actual_slot = -1;
+
+		TG_vector<G_string> uniforms;
 
 		TG_unordered_set<G_string> shader_filters = { "*" };
 
@@ -336,6 +340,7 @@ namespace nrhi {
 		F_sampler_state_desc desc;
 
 		u32 slot = -1;
+		u32 actual_slot = -1;
 
 		TG_unordered_set<G_string> shader_filters = { "*" };
 
@@ -462,6 +467,7 @@ namespace nrhi {
 		struct SEMANTIC {};
 		struct STRUCTURE {};
 		struct RESOURCE {};
+		struct RESOURCE_TYPE {};
 		struct UNIFORM {};
 		struct SAMPLER_STATE {};
 		struct PIPELINE_STATE {};
@@ -1171,6 +1177,9 @@ namespace nrhi {
 			sz index,
 			F_nsl_error_stack* error_stack_p
 		) override;
+		virtual eastl::optional<G_string> apply(
+			const F_nsl_ast_tree& tree
+		);
 
 	};
 
@@ -1220,6 +1229,9 @@ namespace nrhi {
 			sz index,
 			F_nsl_error_stack* error_stack_p
 		) override;
+		virtual eastl::optional<G_string> apply(
+			const F_nsl_ast_tree& tree
+		);
 
 	};
 
@@ -1268,6 +1280,9 @@ namespace nrhi {
 			TG_vector<F_nsl_ast_tree>& trees,
 			sz index,
 			F_nsl_error_stack* error_stack_p
+		) override;
+		virtual eastl::optional<G_string> apply(
+			const F_nsl_ast_tree& tree
 		) override;
 
 	};
@@ -2533,11 +2548,43 @@ namespace nrhi {
 	public:
 		NCPP_OBJECT(A_nsl_output_language);
 
+	public:
+		virtual eastl::optional<G_string> define_to_string(
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			const G_string& name,
+			const G_string& target
+		) = 0;
+		virtual eastl::optional<G_string> undef_to_string(
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			const G_string& name
+		) = 0;
+		virtual eastl::optional<G_string> sampler_state_to_string(
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			const F_nsl_sampler_state& sampler_state
+		) = 0;
+		virtual eastl::optional<G_string> resource_to_string(
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			const F_nsl_resource& resource
+		) = 0;
+		virtual eastl::optional<G_string> structure_to_string(
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			const F_nsl_structure& structure
+		) = 0;
+		virtual eastl::optional<G_string> enumeration_to_string(
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			const F_nsl_enumeration& enumeration
+		) = 0;
+
 	};
 
 
 
 	class NRHI_API F_nsl_output_hlsl : public A_nsl_output_language {
+
+	private:
+		TG_unordered_map<G_string, char> name_to_register_type_;
+
+
 
 	public:
 		F_nsl_output_hlsl(
@@ -2550,6 +2597,33 @@ namespace nrhi {
 
 	private:
 		void register_data_types_internal();
+
+	public:
+		virtual eastl::optional<G_string> define_to_string(
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			const G_string& name,
+			const G_string& target
+		) override;
+		virtual eastl::optional<G_string> undef_to_string(
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			const G_string& name
+		) override;
+		virtual eastl::optional<G_string> sampler_state_to_string(
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			const F_nsl_sampler_state& sampler_state
+		) override;
+		virtual eastl::optional<G_string> resource_to_string(
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			const F_nsl_resource& resource
+		) override;
+		virtual eastl::optional<G_string> structure_to_string(
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			const F_nsl_structure& structure
+		) override;
+		virtual eastl::optional<G_string> enumeration_to_string(
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			const F_nsl_enumeration& enumeration
+		) override;
 
 	};
 

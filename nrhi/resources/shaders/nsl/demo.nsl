@@ -34,7 +34,7 @@ resource demo_texture_2d_rw
 
 resource demo_cb
 (
-	UniformBuffer
+	ConstantBuffer
 )
 
 default_uniform_buffer(demo_cb)
