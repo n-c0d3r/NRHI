@@ -2067,6 +2067,11 @@ namespace nrhi {
 	) {
 		return TG_vector<F_nsl_ast_tree>();
 	}
+	eastl::optional<G_string> A_nsl_object::apply(
+		const F_nsl_ast_tree& tree
+	) {
+		return G_string();
+	}
 
 
 
@@ -5042,7 +5047,65 @@ namespace nrhi {
 	F_nsl_translation_unit_compiler::~F_nsl_translation_unit_compiler() {
 	}
 
-	b8 F_nsl_translation_unit_compiler::sort_internal() {
+	b8 F_nsl_translation_unit_compiler::sort_units_internal() {
+
+		auto translation_unit_manager_p = shader_compiler_p_->translation_unit_manager_p();
+
+		sorted_unit_p_vector_.resize(0);
+		sorted_unit_p_vector_.reserve(
+			translation_unit_manager_p->translation_unit_p_vector().size()
+		);
+
+		// BFS traversal to build up sorted_unit_p_vector_
+		{
+			TG_queue<TK<F_nsl_translation_unit>> unit_p_queue;
+			TG_unordered_set<F_nsl_translation_unit*> processed_unit_p_set;
+
+			// root node: main_unit_p_
+			unit_p_queue.push(main_unit_p_);
+
+			// traversal loop
+			while (unit_p_queue.size())
+			{
+				// cache unit_p_queue and then release it
+				TG_queue<TK<F_nsl_translation_unit>> temp_unit_p_queue = std::move(unit_p_queue);
+
+				// iterate temp_unit_p_queue to process enqueued units
+				while (temp_unit_p_queue.size())
+				{
+					TK <F_nsl_translation_unit> unit_p = temp_unit_p_queue.back();
+
+					processed_unit_p_set.insert(unit_p.object_p());
+					sorted_unit_p_vector_.push_back(unit_p);
+
+					temp_unit_p_queue.pop();
+
+					// enqueue dependencies
+					for (auto dependency_p : unit_p->dependency_p_vector())
+					{
+						if (processed_unit_p_set.find(dependency_p.object_p()) == processed_unit_p_set.end())
+							unit_p_queue.push(dependency_p.no_requirements());
+					}
+				}
+			}
+		}
+
+		// Reverse sorted_unit_p_vector_
+		{
+			ptrd low_index = 0;
+			ptrd height_index = ptrd(sorted_unit_p_vector_.size()) - 1;
+			while(
+				height_index
+				> low_index
+			) {
+				eastl::swap(
+					sorted_unit_p_vector_[low_index],
+					sorted_unit_p_vector_[height_index]
+				);
+				++low_index;
+				--height_index;
+			}
+		}
 
 		return true;
 	}
@@ -5052,40 +5115,61 @@ namespace nrhi {
 	}
 	b8 F_nsl_translation_unit_compiler::apply_internal() {
 
-		return true;
-	}
-	b8 F_nsl_translation_unit_compiler::apply_macro_definitions_internal() {
+		auto apply_ast_tree = [](const TG_vector<F_nsl_ast_tree>& ast_trees) -> eastl::optional<G_string> {
 
-		return true;
-	}
-	b8 F_nsl_translation_unit_compiler::apply_types_internal() {
+		  	G_string compiled_result;
 
-		return true;
-	}
-	b8 F_nsl_translation_unit_compiler::apply_resources_internal() {
+		  	for(const F_nsl_ast_tree& ast_tree : ast_trees) {
 
-		return true;
-	}
-	b8 F_nsl_translation_unit_compiler::apply_shader_entry_points_internal() {
+			  	switch (ast_tree.type)
+			  	{
+			  	case E_nsl_ast_tree_type::PLAIN_TEXT:
+				  	compiled_result += ast_tree.plain_text.content;
+				  	break;
+			  	case E_nsl_ast_tree_type::INFO_TREE:
+				  	break;
+			  	case E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION:
+			  	{
+				  	const auto& object_implementation = ast_tree.object_implementation;
+
+				 	auto ast_tree_compiled_result_opt = object_implementation.attached_object_p->apply(
+					  	ast_tree
+				  	);
+
+				  	if(!ast_tree_compiled_result_opt)
+					  	return eastl::nullopt;
+
+				  	compiled_result += ast_tree_compiled_result_opt.value();
+			  	}
+				  	break;
+			 	};
+		  	}
+
+		  	return compiled_result;
+		};
+
+		for(auto& unit_p : sorted_unit_p_vector_) {
+
+			auto compiled_result_opt_from_ast_tree = apply_ast_tree(
+				unit_p->ast_trees()
+			);
+
+			if(!compiled_result_opt_from_ast_tree)
+				return false;
+
+			compiled_result_ += compiled_result_opt_from_ast_tree.value();
+		}
 
 		return true;
 	}
 
 	b8 F_nsl_translation_unit_compiler::compile_minimal() {
 
-		if(!sort_internal())
+		if(!sort_units_internal())
 			return false;
 		if(!read_internal())
 			return false;
 		if(!apply_internal())
-			return false;
-		if(!apply_macro_definitions_internal())
-			return false;
-		if(!apply_types_internal())
-			return false;
-		if(!apply_resources_internal())
-			return false;
-		if(!apply_shader_entry_points_internal())
 			return false;
 
 		return true;
@@ -5133,7 +5217,7 @@ namespace nrhi {
 		if(!compile_minimal())
 			return eastl::nullopt;
 
-		return G_string();
+		return compiled_result_;
 	}
 
 	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_translation_unit_compiler::parse(
@@ -5881,19 +5965,25 @@ namespace nrhi {
 	F_nsl_shader_compiler::~F_nsl_shader_compiler() {
 	}
 
-	TU<A_nsl_output_language> F_nsl_shader_compiler::create_output_language() {
+	TU<A_nsl_output_language> F_nsl_shader_compiler::create_output_language(E_nsl_output_language output_language_enum) {
 
-		return TU<F_nsl_output_hlsl>()(
-			NCPP_KTHIS()
-		);
+		switch (output_language_enum)
+		{
+		case E_nsl_output_language::HLSL:
+			return TU<F_nsl_output_hlsl>()(
+				NCPP_KTHIS()
+			);
+		default:
+			return null;
+		}
 	}
 
 	eastl::optional<G_string> F_nsl_shader_compiler::compile(
 		const G_string& raw_src_content,
-		E_nsl_output_language output_language,
+		E_nsl_output_language output_language_enum,
 		const G_string& abs_path
 	) {
-		output_language_p_ = create_output_language();
+		output_language_p_ = create_output_language(output_language_enum);
 
 		if(
 			!(

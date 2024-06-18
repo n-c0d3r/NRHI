@@ -369,6 +369,8 @@ namespace nrhi {
 
 		TG_vector<F_nsl_vertex_attribute> attributes;
 
+		F_input_assembler_desc input_assempler_desc;
+
 		F_nsl_vertex_layout_config_map config_map;
 
 	};
@@ -701,6 +703,9 @@ namespace nrhi {
 			TG_vector<F_nsl_ast_tree>& trees,
 			sz index,
 			F_nsl_error_stack* error_stack_p
+		);
+		virtual eastl::optional<G_string> apply(
+			const F_nsl_ast_tree& tree
 		);
 
 	};
@@ -1586,11 +1591,9 @@ namespace nrhi {
 	class NRHI_API F_nsl_vertex_shader_object final : public A_nsl_shader_object {
 
 	private:
-		F_input_assembler_desc input_assempler_desc_;
 		G_string vertex_layout_name_;
 
 	public:
-		NCPP_FORCE_INLINE const F_input_assembler_desc& input_assempler_desc() const noexcept { return input_assempler_desc_; }
 		NCPP_FORCE_INLINE const G_string& vertex_layout_name() const noexcept { return vertex_layout_name_; }
 
 
@@ -1959,10 +1962,17 @@ namespace nrhi {
 	protected:
 		TK<F_nsl_translation_unit> main_unit_p_;
 
+		TG_vector<TK<F_nsl_translation_unit>> sorted_unit_p_vector_;
+
+		G_string compiled_result_;
+
 	public:
 		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
 
 		NCPP_FORCE_INLINE TKPA<F_nsl_translation_unit> main_unit_p() const noexcept { return main_unit_p_; }
+		NCPP_FORCE_INLINE const auto& sorted_unit_p_vector() const noexcept { return sorted_unit_p_vector_; }
+
+		NCPP_FORCE_INLINE const auto& compiled_result() const noexcept { return compiled_result_; }
 
 
 
@@ -1974,13 +1984,9 @@ namespace nrhi {
 		NCPP_OBJECT(F_nsl_translation_unit_compiler);
 
 	private:
-		b8 sort_internal();
+		b8 sort_units_internal();
 		b8 read_internal();
 		b8 apply_internal();
-		b8 apply_macro_definitions_internal();
-		b8 apply_types_internal();
-		b8 apply_resources_internal();
-		b8 apply_shader_entry_points_internal();
 
 	protected:
 		b8 compile_minimal();
@@ -2376,6 +2382,14 @@ namespace nrhi {
 
 			return (it != name_to_semantic_info_map_.end());
 		}
+		NCPP_FORCE_INLINE F_nsl_semantic_info& semantic_info(const G_string& name) {
+
+			auto it = name_to_semantic_info_map_.find(name);
+
+			NCPP_ASSERT(it != name_to_semantic_info_map_.end()) << "can't find " << T_cout_value(name);
+
+			return it->second;
+		}
 		NCPP_FORCE_INLINE const F_nsl_semantic_info& semantic_info(const G_string& name) const {
 
 			auto it = name_to_semantic_info_map_.find(name);
@@ -2405,6 +2419,14 @@ namespace nrhi {
 
 			return (it != name_to_structure_info_map_.end());
 		}
+		NCPP_FORCE_INLINE F_nsl_structure_info& structure_info(const G_string& name) {
+
+			auto it = name_to_structure_info_map_.find(name);
+
+			NCPP_ASSERT(it != name_to_structure_info_map_.end()) << "can't find " << T_cout_value(name);
+
+			return it->second;
+		}
 		NCPP_FORCE_INLINE const F_nsl_structure_info& structure_info(const G_string& name) const {
 
 			auto it = name_to_structure_info_map_.find(name);
@@ -2433,6 +2455,14 @@ namespace nrhi {
 			auto it = name_to_enumeration_info_map_.find(name);
 
 			return (it != name_to_enumeration_info_map_.end());
+		}
+		NCPP_FORCE_INLINE F_nsl_enumeration_info& enumeration_info(const G_string& name) {
+
+			auto it = name_to_enumeration_info_map_.find(name);
+
+			NCPP_ASSERT(it != name_to_enumeration_info_map_.end()) << "can't find " << T_cout_value(name);
+
+			return it->second;
 		}
 		NCPP_FORCE_INLINE const F_nsl_enumeration_info& enumeration_info(const G_string& name) const {
 
@@ -2597,6 +2627,14 @@ namespace nrhi {
 
 			return (it != name_to_resource_info_map_.end());
 		}
+		NCPP_FORCE_INLINE F_nsl_resource_info& resource_info(const G_string& name) {
+
+			auto it = name_to_resource_info_map_.find(name);
+
+			NCPP_ASSERT(it != name_to_resource_info_map_.end()) << "can't find " << T_cout_value(name);
+
+			return it->second;
+		}
 		NCPP_FORCE_INLINE const F_nsl_resource_info& resource_info(const G_string& name) const {
 
 			auto it = name_to_resource_info_map_.find(name);
@@ -2654,6 +2692,14 @@ namespace nrhi {
 			auto it = name_to_uniform_info_map_.find(name);
 
 			return (it != name_to_uniform_info_map_.end());
+		}
+		NCPP_FORCE_INLINE F_nsl_uniform_info& uniform_info(const G_string& name) {
+
+			auto it = name_to_uniform_info_map_.find(name);
+
+			NCPP_ASSERT(it != name_to_uniform_info_map_.end()) << "can't find " << T_cout_value(name);
+
+			return it->second;
 		}
 		NCPP_FORCE_INLINE const F_nsl_uniform_info& uniform_info(const G_string& name) const {
 
@@ -2713,6 +2759,14 @@ namespace nrhi {
 
 			return (it != name_to_sampler_state_info_map_.end());
 		}
+		NCPP_FORCE_INLINE F_nsl_sampler_state_info& sampler_state_info(const G_string& name) {
+
+			auto it = name_to_sampler_state_info_map_.find(name);
+
+			NCPP_ASSERT(it != name_to_sampler_state_info_map_.end()) << "can't find " << T_cout_value(name);
+
+			return it->second;
+		}
 		NCPP_FORCE_INLINE const F_nsl_sampler_state_info& sampler_state_info(const G_string& name) const {
 
 			auto it = name_to_sampler_state_info_map_.find(name);
@@ -2771,6 +2825,14 @@ namespace nrhi {
 
 			return (it != name_to_pipeline_state_info_map_.end());
 		}
+		NCPP_FORCE_INLINE F_nsl_pipeline_state_info& pipeline_state_info(const G_string& name) {
+
+			auto it = name_to_pipeline_state_info_map_.find(name);
+
+			NCPP_ASSERT(it != name_to_pipeline_state_info_map_.end()) << "can't find " << T_cout_value(name);
+
+			return it->second;
+		}
 		NCPP_FORCE_INLINE const F_nsl_pipeline_state_info& pipeline_state_info(const G_string& name) const {
 
 			auto it = name_to_pipeline_state_info_map_.find(name);
@@ -2828,6 +2890,14 @@ namespace nrhi {
 			auto it = name_to_vertex_layout_info_map_.find(name);
 
 			return (it != name_to_vertex_layout_info_map_.end());
+		}
+		NCPP_FORCE_INLINE F_nsl_vertex_layout_info& vertex_layout_info(const G_string& name) {
+
+			auto it = name_to_vertex_layout_info_map_.find(name);
+
+			NCPP_ASSERT(it != name_to_vertex_layout_info_map_.end()) << "can't find " << T_cout_value(name);
+
+			return it->second;
 		}
 		NCPP_FORCE_INLINE const F_nsl_vertex_layout_info& vertex_layout_info(const G_string& name) const {
 
@@ -2983,12 +3053,12 @@ namespace nrhi {
 		NCPP_OBJECT(F_nsl_shader_compiler);
 
 	protected:
-		virtual TU<A_nsl_output_language> create_output_language();
+		virtual TU<A_nsl_output_language> create_output_language(E_nsl_output_language output_language_enum);
 
 	public:
 		eastl::optional<G_string> compile(
 			const G_string& raw_src_content,
-			E_nsl_output_language output_language,
+			E_nsl_output_language output_language_enum,
 			const G_string& abs_path = ""
 		);
 		F_nsl_reflection reflect();
