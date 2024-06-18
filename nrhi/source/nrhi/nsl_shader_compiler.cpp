@@ -2367,6 +2367,11 @@ namespace nrhi {
 
 		return TG_vector<F_nsl_ast_tree>();
 	}
+	eastl::optional<G_string> F_nsl_define_object::apply(
+		const F_nsl_ast_tree& tree
+	) {
+		return "#define " + name() + " " + target;
+	}
 
 
 
@@ -2463,6 +2468,11 @@ namespace nrhi {
 		name_manager_p->deregister_name(tree.object_implementation.name);
 
 		return TG_vector<F_nsl_ast_tree>();
+	}
+	eastl::optional<G_string> F_nsl_undef_object::apply(
+		const F_nsl_ast_tree& tree
+	) {
+		return "#undef " + name();
 	}
 
 
@@ -3832,6 +3842,11 @@ namespace nrhi {
 
 		return TG_vector<F_nsl_ast_tree>();
 	}
+	eastl::optional<G_string> F_nsl_sampler_state_object::apply(
+		const F_nsl_ast_tree& tree
+	) {
+		return "SamplerState " + name() + ";";
+	}
 
 
 
@@ -5115,42 +5130,9 @@ namespace nrhi {
 	}
 	b8 F_nsl_translation_unit_compiler::apply_internal() {
 
-		auto apply_ast_tree = [](const TG_vector<F_nsl_ast_tree>& ast_trees) -> eastl::optional<G_string> {
-
-		  	G_string compiled_result;
-
-		  	for(const F_nsl_ast_tree& ast_tree : ast_trees) {
-
-			  	switch (ast_tree.type)
-			  	{
-			  	case E_nsl_ast_tree_type::PLAIN_TEXT:
-				  	compiled_result += ast_tree.plain_text.content;
-				  	break;
-			  	case E_nsl_ast_tree_type::INFO_TREE:
-				  	break;
-			  	case E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION:
-			  	{
-				  	const auto& object_implementation = ast_tree.object_implementation;
-
-				 	auto ast_tree_compiled_result_opt = object_implementation.attached_object_p->apply(
-					  	ast_tree
-				  	);
-
-				  	if(!ast_tree_compiled_result_opt)
-					  	return eastl::nullopt;
-
-				  	compiled_result += ast_tree_compiled_result_opt.value();
-			  	}
-				  	break;
-			 	};
-		  	}
-
-		  	return compiled_result;
-		};
-
 		for(auto& unit_p : sorted_unit_p_vector_) {
 
-			auto compiled_result_opt_from_ast_tree = apply_ast_tree(
+			auto compiled_result_opt_from_ast_tree = ast_trees_to_string(
 				unit_p->ast_trees()
 			);
 
@@ -5338,6 +5320,38 @@ namespace nrhi {
 		}
 
 		return std::move(result);
+	}
+	eastl::optional<G_string> F_nsl_translation_unit_compiler::ast_trees_to_string(const TG_vector<F_nsl_ast_tree>& ast_trees) {
+
+		G_string compiled_result;
+
+		for(const F_nsl_ast_tree& ast_tree : ast_trees) {
+
+			switch (ast_tree.type)
+			{
+			case E_nsl_ast_tree_type::PLAIN_TEXT:
+				compiled_result += ast_tree.plain_text.content;
+				break;
+			case E_nsl_ast_tree_type::INFO_TREE:
+				break;
+			case E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION:
+			{
+				const auto& object_implementation = ast_tree.object_implementation;
+
+				auto ast_tree_compiled_result_opt = object_implementation.attached_object_p->apply(
+					ast_tree
+				);
+
+				if(!ast_tree_compiled_result_opt)
+					return eastl::nullopt;
+
+				compiled_result += ast_tree_compiled_result_opt.value();
+			}
+				break;
+			};
+		}
+
+		return compiled_result;
 	}
 
 

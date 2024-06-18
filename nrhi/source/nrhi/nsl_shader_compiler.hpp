@@ -850,6 +850,9 @@ namespace nrhi {
 			sz index,
 			F_nsl_error_stack* error_stack_p
 		) override;
+		virtual eastl::optional<G_string> apply(
+			const F_nsl_ast_tree& tree
+		) override;
 
 	};
 
@@ -898,6 +901,9 @@ namespace nrhi {
 			TG_vector<F_nsl_ast_tree>& trees,
 			sz index,
 			F_nsl_error_stack* error_stack_p
+		) override;
+		virtual eastl::optional<G_string> apply(
+			const F_nsl_ast_tree& tree
 		) override;
 
 	};
@@ -1409,6 +1415,9 @@ namespace nrhi {
 			TG_vector<F_nsl_ast_tree>& trees,
 			sz index,
 			F_nsl_error_stack* error_stack_p
+		) override;
+		virtual eastl::optional<G_string> apply(
+			const F_nsl_ast_tree& tree
 		) override;
 
 	};
@@ -2014,6 +2023,9 @@ namespace nrhi {
 			sz index,
 			F_nsl_error_stack* error_stack_p
 		);
+
+	public:
+		eastl::optional<G_string> ast_trees_to_string(const TG_vector<F_nsl_ast_tree>& ast_trees);
 
 	};
 
