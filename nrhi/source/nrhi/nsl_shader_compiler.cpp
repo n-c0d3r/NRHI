@@ -1238,8 +1238,12 @@ namespace nrhi {
 		auto name_manager_p = shader_compiler_p_->name_manager_p();
 
 		if(name_manager_p->is_name_has_target(value_str))
-			return name_manager_p->target(value_str);
-		else return value_str;
+			return H_nsl_utilities::clear_space_head_tail(
+				name_manager_p->target(value_str)
+			);
+		else return H_nsl_utilities::clear_space_head_tail(
+				value_str
+			);
 	}
 
 	b8 F_nsl_info_tree_reader::guarantee_not_empty(b8 is_required) const {
