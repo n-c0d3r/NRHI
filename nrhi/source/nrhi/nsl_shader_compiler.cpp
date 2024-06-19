@@ -5294,6 +5294,8 @@ namespace nrhi {
 			++index;
 		}
 
+		compiled_result_.shader_count = name_to_shader_object_p_map.size();
+
 		return true;
 	}
 	b8 F_nsl_translation_unit_compiler::setup_sampler_state_actual_slots() {
@@ -5838,7 +5840,7 @@ namespace nrhi {
 			if(!compiled_result_opt_from_ast_tree)
 				return false;
 
-			compiled_result_ += compiled_result_opt_from_ast_tree.value();
+			compiled_result_.src_content += compiled_result_opt_from_ast_tree.value();
 		}
 
 		return true;
@@ -5897,6 +5899,8 @@ namespace nrhi {
 			abs_path
 		);
 
+		compiled_result_.output_language_enum = shader_compiler_p_->output_language_p()->as_enum();
+
 		if(!main_unit_p_)
 			return false;
 
@@ -5905,7 +5909,7 @@ namespace nrhi {
 
 		return true;
 	}
-	eastl::optional<G_string> F_nsl_translation_unit_compiler::compile() {
+	eastl::optional<F_nsl_compiled_result> F_nsl_translation_unit_compiler::compile() {
 
 		if(!compile_minimal())
 			return eastl::nullopt;
@@ -6034,14 +6038,14 @@ namespace nrhi {
 	}
 	eastl::optional<G_string> F_nsl_translation_unit_compiler::ast_trees_to_string(const TG_vector<F_nsl_ast_tree>& ast_trees) {
 
-		G_string compiled_result;
+		G_string compiled_result_str;
 
 		for(const F_nsl_ast_tree& ast_tree : ast_trees) {
 
 			switch (ast_tree.type)
 			{
 			case E_nsl_ast_tree_type::PLAIN_TEXT:
-				compiled_result += ast_tree.plain_text.content;
+				compiled_result_str += ast_tree.plain_text.content;
 				break;
 			case E_nsl_ast_tree_type::INFO_TREE:
 				break;
@@ -6049,20 +6053,20 @@ namespace nrhi {
 			{
 				const auto& object_implementation = ast_tree.object_implementation;
 
-				auto ast_tree_compiled_result_opt = object_implementation.attached_object_p->apply(
+				auto ast_tree_compiled_result_str_opt = object_implementation.attached_object_p->apply(
 					ast_tree
 				);
 
-				if(!ast_tree_compiled_result_opt)
+				if(!ast_tree_compiled_result_str_opt)
 					return eastl::nullopt;
 
-				compiled_result += ast_tree_compiled_result_opt.value();
+				compiled_result_str += ast_tree_compiled_result_str_opt.value();
 			}
 				break;
 			};
 		}
 
-		return compiled_result;
+		return compiled_result_str;
 	}
 
 
@@ -7026,7 +7030,7 @@ namespace nrhi {
 		}
 	}
 
-	eastl::optional<G_string> F_nsl_shader_compiler::compile(
+	eastl::optional<F_nsl_compiled_result> F_nsl_shader_compiler::compile(
 		const G_string& raw_src_content,
 		E_nsl_output_language output_language_enum,
 		const G_string& abs_path

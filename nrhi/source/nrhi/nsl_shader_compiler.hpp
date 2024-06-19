@@ -66,7 +66,17 @@ namespace nrhi {
 
 	enum class E_nsl_output_language {
 
+		NONE = 0,
 		HLSL = 0x1
+
+	};
+
+	struct F_nsl_compiled_result {
+
+		G_string src_content;
+		E_nsl_output_language output_language_enum = E_nsl_output_language::NONE;
+
+		u32 shader_count = 0;
 
 	};
 
@@ -2036,7 +2046,7 @@ namespace nrhi {
 
 		TG_vector<TK<F_nsl_translation_unit>> sorted_unit_p_vector_;
 
-		G_string compiled_result_;
+		F_nsl_compiled_result compiled_result_;
 
 	public:
 		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
@@ -2075,7 +2085,7 @@ namespace nrhi {
 			const G_string& raw_src_content,
 			const G_string& abs_path
 		);
-		eastl::optional<G_string> compile();
+		eastl::optional<F_nsl_compiled_result> compile();
 
 	public:
 		eastl::optional<TG_vector<F_nsl_ast_tree>> parse(
@@ -3211,7 +3221,7 @@ namespace nrhi {
 		virtual TU<A_nsl_output_language> create_output_language(E_nsl_output_language output_language_enum);
 
 	public:
-		eastl::optional<G_string> compile(
+		eastl::optional<F_nsl_compiled_result> compile(
 			const G_string& raw_src_content,
 			E_nsl_output_language output_language_enum,
 			const G_string& abs_path = ""

@@ -8,7 +8,7 @@ using namespace nrhi;
 int main() {
 
 	auto compiler_p = TU<F_nsl_shader_compiler>()();
-	compiler_p->compile(
+	auto compiled_result_opt = compiler_p->compile(
 "\n"
 "import(nrhi)\n"
 "\n"
@@ -135,6 +135,11 @@ int main() {
 "\n",
 		E_nsl_output_language::HLSL
 	);
+
+	if(compiled_result_opt) {
+
+		auto compiled_result = compiled_result_opt.value();
+	}
 
 	return 0;
 }
