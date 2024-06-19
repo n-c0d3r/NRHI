@@ -6589,6 +6589,11 @@ namespace nrhi {
 			break;
 		case E_nsl_resource_type_class::NONE:
 		default:
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				&(resource.second.translation_unit_p->error_group_p()->stack()),
+				resource.second.begin_location,
+				"invalid resource type \"" + resource.second.type + "\""
+			);
 			return eastl::nullopt;
 			break;
 		}
