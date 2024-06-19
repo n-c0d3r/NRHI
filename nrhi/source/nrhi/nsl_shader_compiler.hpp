@@ -71,12 +71,15 @@ namespace nrhi {
 
 	};
 
-	struct F_nsl_compiled_result {
+	struct NRHI_API F_nsl_compiled_result {
 
 		G_string src_content;
 		E_nsl_output_language output_language_enum = E_nsl_output_language::NONE;
 
 		u32 shader_count = 0;
+
+	public:
+		G_string src_content_for_shader_at(u32 shader_index) const;
 
 	};
 
@@ -323,6 +326,28 @@ namespace nrhi {
 	};
 	using F_nsl_enumeration = eastl::pair<G_string, F_nsl_enumeration_info>;
 
+	enum class E_nsl_resource_type {
+		NONE,
+		ConstantBuffer,
+		Buffer,
+		ByteAddressBuffer,
+		StructuredBuffer,
+		Texture1D,
+		Texture1DArray,
+		Texture2D,
+		Texture2DArray,
+		Texture3D,
+		TextureCube,
+		TextureCubeArray,
+		RWBuffer,
+		RWByteAddressBuffer,
+		RWStructuredBuffer,
+		RWTexture1D,
+		RWTexture1DArray,
+		RWTexture2D,
+		RWTexture2DArray,
+		RWTexture3D
+	};
 	enum class E_nsl_resource_type_class {
 		NONE,
 		SRV,
@@ -333,6 +358,7 @@ namespace nrhi {
 	struct F_nsl_resource_info {
 
 		G_string type;
+		E_nsl_resource_type type_as_enum = E_nsl_resource_type::NONE;
 		TG_vector<G_string> type_args;
 
 		E_nsl_resource_type_class type_class = E_nsl_resource_type_class::NONE;
@@ -527,6 +553,69 @@ namespace nrhi {
 
 	};
 
+	enum class E_nsl_primitive_data_type {
+
+		NONE,
+
+		B8,
+		I32,
+		U32,
+		F16,
+		F32,
+		F64,
+
+		B8X2,
+		I32X2,
+		U32X2,
+		F16X2,
+		F32X2,
+		F64X2,
+
+		B8X3,
+		I32X3,
+		U32X3,
+		F16X3,
+		F32X3,
+		F64X3,
+
+		B8X4,
+		I32X4,
+		U32X4,
+		F16X4,
+		F32X4,
+		F64X4,
+
+		B8X2X2,
+		I32X2X2,
+		U32X2X2,
+		F16X2X2,
+		F32X2X2,
+		F64X2X2,
+
+		B8X3X3,
+		I32X3X3,
+		U32X3X3,
+		F16X3X3,
+		F32X3X3,
+		F64X3X3,
+
+		B8X4X4,
+		I32X4X4,
+		U32X4X4,
+		F16X4X4,
+		F32X4X4,
+		F64X4X4
+
+	};
+
+	enum class E_nsl_type_class {
+
+		NONE,
+		PRIMITIVE,
+		STRUCTURE
+
+	};
+
 	using F_nsl_object_config = TG_unordered_map<G_string, F_nsl_info_tree_reader>;
 
 	struct F_nsl_semantic_info {
@@ -628,9 +717,83 @@ namespace nrhi {
 
 	};
 
+	struct F_nsl_shader_reflection {
+
+		G_string name;
+
+		E_shader_type type;
+
+	};
+	struct F_nsl_pipeline_state_reflection {
+
+		G_string name;
+
+		E_pipeline_state_type type;
+
+		F_pipeline_state_desc desc;
+
+		TG_vector<u32> shader_indices;
+
+	};
+	struct F_nsl_sampler_state_reflection {
+
+		G_string name;
+
+		F_sampler_state_desc desc;
+
+		u32 actual_slot = -1;
+
+	};
+	struct F_nsl_data_argument_reflection {
+
+		G_string name;
+
+		u32 type_index = -1;
+
+		u32 count = 1;
+		b8 is_array = false;
+
+		i32 offset = 0;
+
+	};
+	struct F_nsl_resource_reflection {
+
+		G_string name;
+
+		E_nsl_resource_type type = E_nsl_resource_type::NONE;
+		E_nsl_resource_type_class type_class = E_nsl_resource_type_class::NONE;
+		TG_vector<G_string> type_args;
+
+		u32 actual_slot = 0;
+
+		TG_vector<F_nsl_data_argument_reflection> data_arguments;
+
+	};
+	struct F_nsl_structure_reflection {
+
+		TG_vector<F_nsl_data_argument_reflection> data_arguments;
+
+	};
+	struct F_nsl_type_reflection {
+
+		G_string name;
+
+		E_nsl_type_class type_class = E_nsl_type_class::NONE;
+
+		E_nsl_primitive_data_type primitive_data_type = E_nsl_primitive_data_type::NONE;
+		F_nsl_structure_reflection structure;
+
+		u32 size = 0;
+		u32 alignment = 0;
+
+	};
 	struct F_nsl_reflection
 	{
-
+		TG_vector<F_nsl_shader_reflection> shaders;
+		TG_vector<F_nsl_pipeline_state_reflection> pipeline_states;
+		TG_vector<F_nsl_sampler_state_reflection> sampler_states;
+		TG_vector<F_nsl_resource_reflection> resources;
+		TG_vector<F_nsl_type_reflection> types;
 	};
 
 #define NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(error_stack_p, location, ...) if(error_stack_p) (error_stack_p)->push({__VA_ARGS__, location})
@@ -688,34 +851,6 @@ namespace nrhi {
 			const G_string& path,
 			const F_nsl_ast_tree& tree
 		);
-
-	};
-
-
-
-	class NRHI_API A_nsl_reflection_item {
-
-	private:
-		TK_valid<F_nsl_shader_compiler> shader_compiler_p_;
-		G_string name_;
-
-	public:
-		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
-		NCPP_FORCE_INLINE const G_string& name() const noexcept { return name_; }
-
-
-
-	protected:
-		A_nsl_reflection_item(
-			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
-			const G_string& name = ""
-		);
-
-	public:
-		virtual ~A_nsl_reflection_item();
-
-	public:
-		NCPP_OBJECT(A_nsl_reflection_item);
 
 	};
 
@@ -2355,6 +2490,8 @@ namespace nrhi {
 	protected:
 		TG_unordered_map<G_string, sz> name_to_size_map_;
 		TG_unordered_map<G_string, u32> name_to_alignment_map_;
+		TG_unordered_map<G_string, E_nsl_primitive_data_type> name_to_primitive_data_type_map_;
+		TG_unordered_map<G_string, E_nsl_type_class> name_to_type_class_map_;
 		TG_unordered_map<G_string, E_nsl_element_format> name_to_element_format_map_;
 		TG_unordered_map<G_string, F_nsl_semantic_info> name_to_semantic_info_map_;
 		TG_unordered_map<G_string, F_nsl_structure_info> name_to_structure_info_map_;
@@ -2365,12 +2502,16 @@ namespace nrhi {
 
 		NCPP_FORCE_INLINE TG_unordered_map<G_string, sz>& name_to_size_map() noexcept { return name_to_size_map_; }
 		NCPP_FORCE_INLINE TG_unordered_map<G_string, u32>& name_to_alignment_map() noexcept { return name_to_alignment_map_; }
+		NCPP_FORCE_INLINE TG_unordered_map<G_string, E_nsl_primitive_data_type>& name_to_primitive_data_type_map() noexcept { return name_to_primitive_data_type_map_; }
+		NCPP_FORCE_INLINE TG_unordered_map<G_string, E_nsl_type_class>& name_to_type_class_map() noexcept { return name_to_type_class_map_; }
 		NCPP_FORCE_INLINE TG_unordered_map<G_string, E_nsl_element_format>& name_to_element_format_map() noexcept { return name_to_element_format_map_; }
 		NCPP_FORCE_INLINE TG_unordered_map<G_string, F_nsl_semantic_info>& name_to_semantic_info_map() noexcept { return name_to_semantic_info_map_; }
 		NCPP_FORCE_INLINE TG_unordered_map<G_string, F_nsl_structure_info>& name_to_structure_info_map() noexcept { return name_to_structure_info_map_; }
 		NCPP_FORCE_INLINE TG_unordered_map<G_string, F_nsl_enumeration_info>& name_to_enumeration_info_map() noexcept { return name_to_enumeration_info_map_; }
 		NCPP_FORCE_INLINE const TG_unordered_map<G_string, sz>& name_to_size_map() const noexcept { return name_to_size_map_; }
 		NCPP_FORCE_INLINE const TG_unordered_map<G_string, u32>& name_to_alignment_map() const noexcept { return name_to_alignment_map_; }
+		NCPP_FORCE_INLINE const TG_unordered_map<G_string, E_nsl_primitive_data_type>& name_to_primitive_data_type_map() const noexcept { return name_to_primitive_data_type_map_; }
+		NCPP_FORCE_INLINE const TG_unordered_map<G_string, E_nsl_type_class>& name_to_type_class_map() const noexcept { return name_to_type_class_map_; }
 		NCPP_FORCE_INLINE const TG_unordered_map<G_string, E_nsl_element_format>& name_to_element_format_map() const noexcept { return name_to_element_format_map_; }
 		NCPP_FORCE_INLINE const TG_unordered_map<G_string, F_nsl_semantic_info>& name_to_semantic_info_map() const noexcept { return name_to_semantic_info_map_; }
 		NCPP_FORCE_INLINE const TG_unordered_map<G_string, F_nsl_structure_info>& name_to_structure_info_map() const noexcept { return name_to_structure_info_map_; }
@@ -2441,6 +2582,64 @@ namespace nrhi {
 
 			auto it = name_to_alignment_map_.find(name);
 			name_to_alignment_map_.erase(it);
+		}
+
+	public:
+		NCPP_FORCE_INLINE b8 is_name_has_primitive_data_type(const G_string& name) const {
+
+			auto it = name_to_primitive_data_type_map_.find(name);
+
+			return (it != name_to_primitive_data_type_map_.end());
+		}
+		NCPP_FORCE_INLINE E_nsl_primitive_data_type primitive_data_type(const G_string& name) const {
+
+			auto it = name_to_primitive_data_type_map_.find(name);
+
+			NCPP_ASSERT(it != name_to_primitive_data_type_map_.end()) << "can't find " << T_cout_value(name);
+
+			return it->second;
+		}
+		NCPP_FORCE_INLINE void register_primitive_data_type(const G_string& name, E_nsl_primitive_data_type primitive_data_type) {
+
+			NCPP_ASSERT(name_to_primitive_data_type_map_.find(name) == name_to_primitive_data_type_map_.end()) << T_cout_value(name) << " already exists";
+
+			name_to_primitive_data_type_map_[name] = primitive_data_type;
+		}
+		NCPP_FORCE_INLINE void deregister_primitive_data_type(const G_string& name) {
+
+			NCPP_ASSERT(name_to_primitive_data_type_map_.find(name) != name_to_primitive_data_type_map_.end()) << T_cout_value(name) << " is not exists";
+
+			auto it = name_to_primitive_data_type_map_.find(name);
+			name_to_primitive_data_type_map_.erase(it);
+		}
+
+	public:
+		NCPP_FORCE_INLINE b8 is_name_has_type_class(const G_string& name) const {
+
+			auto it = name_to_type_class_map_.find(name);
+
+			return (it != name_to_type_class_map_.end());
+		}
+		NCPP_FORCE_INLINE E_nsl_type_class type_class(const G_string& name) const {
+
+			auto it = name_to_type_class_map_.find(name);
+
+			NCPP_ASSERT(it != name_to_type_class_map_.end()) << "can't find " << T_cout_value(name);
+
+			return it->second;
+		}
+		NCPP_FORCE_INLINE void register_type_class(const G_string& name, E_nsl_type_class type_class) {
+
+			NCPP_ASSERT(name_to_type_class_map_.find(name) == name_to_type_class_map_.end()) << T_cout_value(name) << " already exists";
+
+			name_to_type_class_map_[name] = type_class;
+		}
+		NCPP_FORCE_INLINE void deregister_type_class(const G_string& name) {
+
+			NCPP_ASSERT(name_to_type_class_map_.find(name) != name_to_type_class_map_.end()) << T_cout_value(name) << " is not exists";
+
+			auto it = name_to_type_class_map_.find(name);
+			name_to_type_class_map_.erase(it);
 		}
 
 	public:
@@ -2766,6 +2965,7 @@ namespace nrhi {
 	protected:
 		TG_unordered_map<G_string, F_nsl_resource_info> name_to_resource_info_map_;
 		TG_unordered_map<G_string, E_nsl_resource_type_class> name_to_resource_type_class_map_;
+		TG_unordered_map<G_string, E_nsl_resource_type> name_to_resource_type_map_;
 
 	public:
 		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }

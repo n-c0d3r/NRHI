@@ -4,6 +4,16 @@
 
 namespace nrhi {
 
+	G_string F_nsl_compiled_result::src_content_for_shader_at(u32 shader_index) const {
+
+		return (
+			"#define NSL_SHADER_INDEX_" + G_to_string(shader_index) + "\n"
+			+ src_content
+		);
+	}
+
+
+
 	void F_nsl_str_state::begin_check(char c) {
 
 		if(!value) {
@@ -2025,20 +2035,6 @@ namespace nrhi {
 			"can't not load shader module at path \"" + path + "\""
 		);
 		return null;
-	}
-
-
-
-	A_nsl_reflection_item::A_nsl_reflection_item(
-		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
-		const G_string& name
-	) :
-		shader_compiler_p_(shader_compiler_p),
-		name_(name)
-	{
-	}
-	A_nsl_reflection_item::~A_nsl_reflection_item()
-	{
 	}
 
 
@@ -6215,6 +6211,10 @@ namespace nrhi {
 			name,
 			structure_info.alignment
 		);
+		register_type_class(
+			name,
+			E_nsl_type_class::STRUCTURE
+		);
 
 		return std::move(result);
 	}
@@ -6316,6 +6316,20 @@ namespace nrhi {
 		data_type_manager_p->register_alignment("float", 4);
 		data_type_manager_p->register_alignment("double", 8);
 
+		data_type_manager_p->register_primitive_data_type("bool", E_nsl_primitive_data_type::B8);
+		data_type_manager_p->register_primitive_data_type("int", E_nsl_primitive_data_type::I32);
+		data_type_manager_p->register_primitive_data_type("uint", E_nsl_primitive_data_type::U32);
+		data_type_manager_p->register_primitive_data_type("half", E_nsl_primitive_data_type::F16);
+		data_type_manager_p->register_primitive_data_type("float", E_nsl_primitive_data_type::F32);
+		data_type_manager_p->register_primitive_data_type("double", E_nsl_primitive_data_type::F64);
+
+		data_type_manager_p->register_type_class("bool", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("int", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("uint", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("half", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("float", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("double", E_nsl_type_class::PRIMITIVE);
+
 		data_type_manager_p->register_element_format("bool", E_nsl_element_format::UINT_8);
 		data_type_manager_p->register_element_format("int", E_nsl_element_format::SINT_32);
 		data_type_manager_p->register_element_format("uint", E_nsl_element_format::UINT_32);
@@ -6337,6 +6351,13 @@ namespace nrhi {
 		name_manager_p->register_name("F_vector2_f32", "float2");
 		name_manager_p->register_name("F_vector2_f64", "double2");
 
+		name_manager_p->register_name("b8x2", "bool2");
+		name_manager_p->register_name("i32x2", "int2");
+		name_manager_p->register_name("u32x2", "uint2");
+		name_manager_p->register_name("f16x2", "half2");
+		name_manager_p->register_name("f32x2", "float2");
+		name_manager_p->register_name("f64x2", "double2");
+
 		data_type_manager_p->register_size("bool2", 1 * 2);
 		data_type_manager_p->register_size("int2", 4 * 2);
 		data_type_manager_p->register_size("uint2", 4 * 2);
@@ -6350,6 +6371,20 @@ namespace nrhi {
 		data_type_manager_p->register_alignment("half2", 2 * 2);
 		data_type_manager_p->register_alignment("float2", 4 * 2);
 		data_type_manager_p->register_alignment("double2", 8 * 2);
+
+		data_type_manager_p->register_primitive_data_type("bool2", E_nsl_primitive_data_type::B8X2);
+		data_type_manager_p->register_primitive_data_type("int2", E_nsl_primitive_data_type::I32X2);
+		data_type_manager_p->register_primitive_data_type("uint2", E_nsl_primitive_data_type::U32X2);
+		data_type_manager_p->register_primitive_data_type("half2", E_nsl_primitive_data_type::F16X2);
+		data_type_manager_p->register_primitive_data_type("float2", E_nsl_primitive_data_type::F32X2);
+		data_type_manager_p->register_primitive_data_type("double2", E_nsl_primitive_data_type::F64X2);
+
+		data_type_manager_p->register_type_class("bool2", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("int2", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("uint2", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("half2", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("float2", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("double2", E_nsl_type_class::PRIMITIVE);
 
 		data_type_manager_p->register_element_format("bool2", E_nsl_element_format::UINT_8);
 		data_type_manager_p->register_element_format("int2", E_nsl_element_format::SINT_32);
@@ -6372,6 +6407,13 @@ namespace nrhi {
 		name_manager_p->register_name("F_vector3_f32", "float3");
 		name_manager_p->register_name("F_vector3_f64", "double3");
 
+		name_manager_p->register_name("b8x3", "bool3");
+		name_manager_p->register_name("i32x3", "int3");
+		name_manager_p->register_name("u32x3", "uint3");
+		name_manager_p->register_name("f16x3", "half3");
+		name_manager_p->register_name("f32x3", "float3");
+		name_manager_p->register_name("f64x3", "double3");
+
 		data_type_manager_p->register_size("bool3", 1 * 3);
 		data_type_manager_p->register_size("int3", 4 * 3);
 		data_type_manager_p->register_size("uint3", 4 * 3);
@@ -6385,6 +6427,20 @@ namespace nrhi {
 		data_type_manager_p->register_alignment("half3", 2 * 4);
 		data_type_manager_p->register_alignment("float3", 4 * 4);
 		data_type_manager_p->register_alignment("double3", 8 * 4);
+
+		data_type_manager_p->register_primitive_data_type("bool3", E_nsl_primitive_data_type::B8X3);
+		data_type_manager_p->register_primitive_data_type("int3", E_nsl_primitive_data_type::I32X3);
+		data_type_manager_p->register_primitive_data_type("uint3", E_nsl_primitive_data_type::U32X3);
+		data_type_manager_p->register_primitive_data_type("half3", E_nsl_primitive_data_type::F16X3);
+		data_type_manager_p->register_primitive_data_type("float3", E_nsl_primitive_data_type::F32X3);
+		data_type_manager_p->register_primitive_data_type("double3", E_nsl_primitive_data_type::F64X3);
+
+		data_type_manager_p->register_type_class("bool3", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("int3", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("uint3", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("half3", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("float3", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("double3", E_nsl_type_class::PRIMITIVE);
 
 		data_type_manager_p->register_element_format("bool3", E_nsl_element_format::UINT_8);
 		data_type_manager_p->register_element_format("int3", E_nsl_element_format::SINT_32);
@@ -6407,6 +6463,13 @@ namespace nrhi {
 		name_manager_p->register_name("F_vector4_f32", "float4");
 		name_manager_p->register_name("F_vector4_f64", "double4");
 
+		name_manager_p->register_name("b8x4", "bool4");
+		name_manager_p->register_name("i32x4", "int4");
+		name_manager_p->register_name("u32x4", "uint4");
+		name_manager_p->register_name("f16x4", "half4");
+		name_manager_p->register_name("f32x4", "float4");
+		name_manager_p->register_name("f64x4", "double4");
+
 		data_type_manager_p->register_size("bool4", 1 * 4);
 		data_type_manager_p->register_size("int4", 4 * 4);
 		data_type_manager_p->register_size("uint4", 4 * 4);
@@ -6420,6 +6483,20 @@ namespace nrhi {
 		data_type_manager_p->register_alignment("half4", 2 * 4);
 		data_type_manager_p->register_alignment("float4", 4 * 4);
 		data_type_manager_p->register_alignment("double4", 8 * 4);
+
+		data_type_manager_p->register_primitive_data_type("bool4", E_nsl_primitive_data_type::B8X4);
+		data_type_manager_p->register_primitive_data_type("int4", E_nsl_primitive_data_type::I32X4);
+		data_type_manager_p->register_primitive_data_type("uint4", E_nsl_primitive_data_type::U32X4);
+		data_type_manager_p->register_primitive_data_type("half4", E_nsl_primitive_data_type::F16X4);
+		data_type_manager_p->register_primitive_data_type("float4", E_nsl_primitive_data_type::F32X4);
+		data_type_manager_p->register_primitive_data_type("double4", E_nsl_primitive_data_type::F64X4);
+
+		data_type_manager_p->register_type_class("bool4", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("int4", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("uint4", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("half4", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("float4", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("double4", E_nsl_type_class::PRIMITIVE);
 
 		data_type_manager_p->register_element_format("bool4", E_nsl_element_format::UINT_8);
 		data_type_manager_p->register_element_format("int4", E_nsl_element_format::SINT_32);
@@ -6442,6 +6519,13 @@ namespace nrhi {
 		name_manager_p->register_name("F_matrix2x2_f32", "float2x2");
 		name_manager_p->register_name("F_matrix2x2_f64", "double2x2");
 
+		name_manager_p->register_name("b8x2x2", "bool2x2");
+		name_manager_p->register_name("i32x2x2", "int2x2");
+		name_manager_p->register_name("u32x2x2", "uint2x2");
+		name_manager_p->register_name("f16x2x2", "half2x2");
+		name_manager_p->register_name("f32x2x2", "float2x2");
+		name_manager_p->register_name("f64x2x2", "double2x2");
+
 		data_type_manager_p->register_size("bool2x2", 1 * 2 * 2);
 		data_type_manager_p->register_size("int2x2", 4 * 2 * 2);
 		data_type_manager_p->register_size("uint2x2", 4 * 2 * 2);
@@ -6455,6 +6539,20 @@ namespace nrhi {
 		data_type_manager_p->register_alignment("half2x2", 2 * 2 * 2);
 		data_type_manager_p->register_alignment("float2x2", 4 * 2 * 2);
 		data_type_manager_p->register_alignment("double2x2", 8 * 2 * 2);
+
+		data_type_manager_p->register_primitive_data_type("bool2x2", E_nsl_primitive_data_type::B8X2X2);
+		data_type_manager_p->register_primitive_data_type("int2x2", E_nsl_primitive_data_type::I32X2X2);
+		data_type_manager_p->register_primitive_data_type("uint2x2", E_nsl_primitive_data_type::U32X2X2);
+		data_type_manager_p->register_primitive_data_type("half2x2", E_nsl_primitive_data_type::F16X2X2);
+		data_type_manager_p->register_primitive_data_type("float2x2", E_nsl_primitive_data_type::F32X2X2);
+		data_type_manager_p->register_primitive_data_type("double2x2", E_nsl_primitive_data_type::F64X2X2);
+
+		data_type_manager_p->register_type_class("bool2x2", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("int2x2", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("uint2x2", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("half2x2", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("float2x2", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("double2x2", E_nsl_type_class::PRIMITIVE);
 
 		data_type_manager_p->register_element_format("bool2x2", E_nsl_element_format::UINT_8);
 		data_type_manager_p->register_element_format("int2x2", E_nsl_element_format::SINT_32);
@@ -6477,6 +6575,13 @@ namespace nrhi {
 		name_manager_p->register_name("F_matrix3x3_f32", "float3x3");
 		name_manager_p->register_name("F_matrix3x3_f64", "double3x3");
 
+		name_manager_p->register_name("b8x3x3", "bool3x3");
+		name_manager_p->register_name("i32x3x3", "int3x3");
+		name_manager_p->register_name("u32x3x3", "uint3x3");
+		name_manager_p->register_name("f16x3x3", "half3x3");
+		name_manager_p->register_name("f32x3x3", "float3x3");
+		name_manager_p->register_name("f64x3x3", "double3x3");
+
 		data_type_manager_p->register_size("bool3x3", 1 * 3 * 3);
 		data_type_manager_p->register_size("int3x3", 4 * 3 * 3);
 		data_type_manager_p->register_size("uint3x3", 4 * 3 * 3);
@@ -6490,6 +6595,20 @@ namespace nrhi {
 		data_type_manager_p->register_alignment("half3x3", 2 * 4 * 4);
 		data_type_manager_p->register_alignment("float3x3", 4 * 4 * 4);
 		data_type_manager_p->register_alignment("double3x3", 8 * 4 * 4);
+
+		data_type_manager_p->register_primitive_data_type("bool3x3", E_nsl_primitive_data_type::B8X3X3);
+		data_type_manager_p->register_primitive_data_type("int3x3", E_nsl_primitive_data_type::I32X3X3);
+		data_type_manager_p->register_primitive_data_type("uint3x3", E_nsl_primitive_data_type::U32X3X3);
+		data_type_manager_p->register_primitive_data_type("half3x3", E_nsl_primitive_data_type::F16X3X3);
+		data_type_manager_p->register_primitive_data_type("float3x3", E_nsl_primitive_data_type::F32X3X3);
+		data_type_manager_p->register_primitive_data_type("double3x3", E_nsl_primitive_data_type::F64X3X3);
+
+		data_type_manager_p->register_type_class("bool3x3", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("int3x3", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("uint3x3", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("half3x3", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("float3x3", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("double3x3", E_nsl_type_class::PRIMITIVE);
 
 		data_type_manager_p->register_element_format("bool3x3", E_nsl_element_format::UINT_8);
 		data_type_manager_p->register_element_format("int3x3", E_nsl_element_format::SINT_32);
@@ -6512,6 +6631,13 @@ namespace nrhi {
 		name_manager_p->register_name("F_matrix4x4_f32", "float4x4");
 		name_manager_p->register_name("F_matrix4x4_f64", "double4x4");
 
+		name_manager_p->register_name("b8x4x4", "bool4x4");
+		name_manager_p->register_name("i32x4x4", "int4x4");
+		name_manager_p->register_name("u32x4x4", "uint4x4");
+		name_manager_p->register_name("f16x4x4", "half4x4");
+		name_manager_p->register_name("f32x4x4", "float4x4");
+		name_manager_p->register_name("f64x4x4", "double4x4");
+
 		data_type_manager_p->register_size("bool4x4", 1 * 4 * 4);
 		data_type_manager_p->register_size("int4x4", 4 * 4 * 4);
 		data_type_manager_p->register_size("uint4x4", 4 * 4 * 4);
@@ -6525,6 +6651,20 @@ namespace nrhi {
 		data_type_manager_p->register_alignment("half4x4", 2 * 4 * 4);
 		data_type_manager_p->register_alignment("float4x4", 4 * 4 * 4);
 		data_type_manager_p->register_alignment("double4x4", 8 * 4 * 4);
+
+		data_type_manager_p->register_primitive_data_type("bool4x4", E_nsl_primitive_data_type::B8X4X4);
+		data_type_manager_p->register_primitive_data_type("int4x4", E_nsl_primitive_data_type::I32X4X4);
+		data_type_manager_p->register_primitive_data_type("uint4x4", E_nsl_primitive_data_type::U32X4X4);
+		data_type_manager_p->register_primitive_data_type("half4x4", E_nsl_primitive_data_type::F16X4X4);
+		data_type_manager_p->register_primitive_data_type("float4x4", E_nsl_primitive_data_type::F32X4X4);
+		data_type_manager_p->register_primitive_data_type("double4x4", E_nsl_primitive_data_type::F64X4X4);
+
+		data_type_manager_p->register_type_class("bool4x4", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("int4x4", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("uint4x4", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("half4x4", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("float4x4", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_type_class("double4x4", E_nsl_type_class::PRIMITIVE);
 
 		data_type_manager_p->register_element_format("bool4x4", E_nsl_element_format::UINT_8);
 		data_type_manager_p->register_element_format("int4x4", E_nsl_element_format::SINT_32);
@@ -6587,7 +6727,7 @@ namespace nrhi {
 
 			if(actual_slot != -1)
 				result += (
-					"\n#ifdef NRHI_SHADER_INDEX_" + G_to_string(i)
+					"\n#ifdef NSL_SHADER_INDEX_" + G_to_string(i)
 					+ "\nSamplerState "
 					+ sampler_state.first
 					+ " : register(s"
@@ -6666,7 +6806,7 @@ namespace nrhi {
 
 			if(actual_slot != -1)
 			{
-				result += "\n#ifdef NRHI_SHADER_INDEX_" + G_to_string(i) + "\n";
+				result += "\n#ifdef NSL_SHADER_INDEX_" + G_to_string(i) + "\n";
 
 				if(resource.second.type != "ConstantBuffer")
 					result += (
@@ -6824,7 +6964,7 @@ namespace nrhi {
 		}
 
 		return (
-			"#ifdef NRHI_SHADER_INDEX_" + G_to_string(shader_object_p->index) + "\n"
+			"#ifdef NSL_SHADER_INDEX_" + G_to_string(shader_object_p->index) + "\n"
 			+ "void main(\n"
 			+ data_param_declarations
 			+ "\n){\n"
@@ -6867,6 +7007,27 @@ namespace nrhi {
 		name_to_resource_type_class_map_["RWTexture2D"] = E_nsl_resource_type_class::UAV;
 		name_to_resource_type_class_map_["RWTexture2DArray"] = E_nsl_resource_type_class::UAV;
 		name_to_resource_type_class_map_["RWTexture3D"] = E_nsl_resource_type_class::UAV;
+
+		// setup name_to_resource_type_map_
+		name_to_resource_type_map_["ConstantBuffer"] = E_nsl_resource_type::ConstantBuffer;
+		name_to_resource_type_map_["Buffer"] = E_nsl_resource_type::Buffer;
+		name_to_resource_type_map_["ByteAddressBuffer"] = E_nsl_resource_type::ByteAddressBuffer;
+		name_to_resource_type_map_["StructuredBuffer"] = E_nsl_resource_type::StructuredBuffer;
+		name_to_resource_type_map_["Texture1D"] = E_nsl_resource_type::Texture1D;
+		name_to_resource_type_map_["Texture1DArray"] = E_nsl_resource_type::Texture1DArray;
+		name_to_resource_type_map_["Texture2D"] = E_nsl_resource_type::Texture2D;
+		name_to_resource_type_map_["Texture2DArray"] = E_nsl_resource_type::Texture2DArray;
+		name_to_resource_type_map_["Texture3D"] = E_nsl_resource_type::Texture3D;
+		name_to_resource_type_map_["TextureCube"] = E_nsl_resource_type::TextureCube;
+		name_to_resource_type_map_["TextureCubeArray"] = E_nsl_resource_type::TextureCubeArray;
+		name_to_resource_type_map_["RWBuffer"] = E_nsl_resource_type::RWBuffer;
+		name_to_resource_type_map_["RWByteAddressBuffer"] = E_nsl_resource_type::RWByteAddressBuffer;
+		name_to_resource_type_map_["RWStructuredBuffer"] = E_nsl_resource_type::RWStructuredBuffer;
+		name_to_resource_type_map_["RWTexture1D"] = E_nsl_resource_type::RWTexture1D;
+		name_to_resource_type_map_["RWTexture1DArray"] = E_nsl_resource_type::RWTexture1DArray;
+		name_to_resource_type_map_["RWTexture2D"] = E_nsl_resource_type::RWTexture2D;
+		name_to_resource_type_map_["RWTexture2DArray"] = E_nsl_resource_type::RWTexture2DArray;
+		name_to_resource_type_map_["RWTexture3D"] = E_nsl_resource_type::RWTexture3D;
 	}
 	F_nsl_resource_manager::~F_nsl_resource_manager() {
 	}
@@ -6883,6 +7044,11 @@ namespace nrhi {
 
 				result.type_class = it->second;
 			}
+		}
+
+		// bind type as enum
+		{
+			result.type_as_enum = name_to_resource_type_map_[result.type];
 		}
 
 		return std::move(result);
