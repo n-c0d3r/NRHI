@@ -13,7 +13,7 @@ NCoder's Learning Aimed C++ Render Hardware Interface Library.
   + DirectX 11
 + Shading languages:
   + HLSL
-  + NSL (`NCoder's shading language`) (`currently in development`)
+  + NSL (`NCoder's shading language`)
 
 ---
 ![alt text](./nrhi/resources/textures/screenshots/hello_nrhi.png)
