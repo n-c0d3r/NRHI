@@ -139,6 +139,8 @@ int main() {
 	if(compiled_result_opt) {
 
 		auto compiled_result = compiled_result_opt.value();
+
+		auto reflection = compiler_p->reflect();
 	}
 
 	return 0;

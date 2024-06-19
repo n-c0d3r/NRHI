@@ -4513,6 +4513,7 @@ namespace nrhi {
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 		TKPA_valid<A_nsl_object_type> type_p,
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		E_shader_type type,
 		const G_string& name
 	) :
 		A_nsl_object(
@@ -4520,7 +4521,8 @@ namespace nrhi {
 			type_p,
 			translation_unit_p,
 			name
-		)
+		),
+		type_(type)
 	{
 	}
 	A_nsl_shader_object::~A_nsl_shader_object() {
@@ -4742,6 +4744,7 @@ namespace nrhi {
 			shader_compiler_p,
 			type_p,
 			translation_unit_p,
+			E_shader_type::VERTEX,
 			name
 		)
 	{
@@ -4830,6 +4833,7 @@ namespace nrhi {
 			shader_compiler_p,
 			type_p,
 			translation_unit_p,
+			E_shader_type::PIXEL,
 			name
 		)
 	{
@@ -4884,6 +4888,7 @@ namespace nrhi {
 			shader_compiler_p,
 			type_p,
 			translation_unit_p,
+			E_shader_type::COMPUTE,
 			name
 		)
 	{
@@ -5818,7 +5823,7 @@ namespace nrhi {
 						offset += member_size;
 					}
 
-					resource.second.size = align_size(offset, buffer_alignment);
+					resource.second.constant_size = align_size(offset, buffer_alignment);
 				}
 			}
 		}
@@ -7099,6 +7104,36 @@ namespace nrhi {
 		
 		F_nsl_pipeline_state_info result = pipeline_state_info;
 
+		auto shader_manager_p = shader_compiler_p_->shader_manager_p();
+
+		u32 shader_count = result.shaders.size();
+
+		TG_vector<TK<A_nsl_shader_object>> shader_object_p_vector;
+		shader_object_p_vector.reserve(shader_count);
+
+		// setup shader object p vector
+		for(const G_string& shader_name : result.shaders) {
+
+			shader_object_p_vector.push_back(
+				shader_manager_p->name_to_shader_object_p_map().find(shader_name)->second
+			);
+		}
+
+		// check pipeline state type
+		for(const auto& shader_object_p : shader_object_p_vector) {
+
+			if(shader_object_p->type() == E_shader_type::COMPUTE) {
+
+				result.desc.type = E_pipeline_state_type::COMPUTE;
+				break;
+			}
+			if(shader_object_p->type() == E_shader_type::VERTEX) {
+
+				result.desc.type = E_pipeline_state_type::GRAPHICS;
+				break;
+			}
+		}
+
 		return std::move(result);
 	}
 
@@ -7116,6 +7151,296 @@ namespace nrhi {
 		F_nsl_vertex_layout_info result = vertex_layout_info;
 
 		return std::move(result);
+	}
+
+
+
+	F_nsl_reflector::F_nsl_reflector(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
+		shader_compiler_p_(shader_compiler_p)
+	{
+	}
+	F_nsl_reflector::~F_nsl_reflector() {
+	}
+
+	F_nsl_reflection F_nsl_reflector::reflect() {
+
+		F_nsl_reflection reflection;
+
+		auto shader_manager_p = shader_compiler_p_->shader_manager_p();
+		auto pipeline_state_manager_p = shader_compiler_p_->pipeline_state_manager_p();
+		auto data_type_manager_p = shader_compiler_p_->data_type_manager_p();
+		auto sampler_state_manager_p = shader_compiler_p_->sampler_state_manager_p();
+		auto resource_manager_p = shader_compiler_p_->resource_manager_p();
+		auto uniform_manager_p = shader_compiler_p_->uniform_manager_p();
+
+		auto& name_to_primitive_data_type_map = data_type_manager_p->name_to_primitive_data_type_map();
+		auto& name_to_structure_info_map = data_type_manager_p->name_to_structure_info_map();
+		auto& name_to_shader_object_p_map = shader_manager_p->name_to_shader_object_p_map();
+		auto& name_to_pipeline_state_info_map = pipeline_state_manager_p->name_to_pipeline_state_info_map();
+		auto& name_to_sampler_state_info_map = sampler_state_manager_p->name_to_sampler_state_info_map();
+		auto& name_to_resource_info_map = resource_manager_p->name_to_resource_info_map();
+
+		TG_unordered_map<G_string, u32> name_to_type_index_map;
+
+		// primitive data types
+		{
+			u32 primitive_data_type_count = name_to_primitive_data_type_map.size();
+
+			auto it = name_to_primitive_data_type_map.begin();
+
+			for(u32 i = 0; i < primitive_data_type_count; ++i) {
+
+				auto primitive_data_type = it->second;
+
+				name_to_type_index_map[it->first] = reflection.types.size();
+
+				reflection.types.push_back(
+					F_nsl_type_reflection {
+
+						.name = it->first,
+						.type_class = E_nsl_type_class::PRIMITIVE,
+						.primitive_data_type = primitive_data_type,
+
+						.size = data_type_manager_p->size(it->first),
+						.alignment = data_type_manager_p->alignment(it->first)
+
+					}
+				);
+
+				++it;
+			}
+		}
+
+		// structures
+		{
+			u32 structure_count = name_to_structure_info_map.size();
+
+			auto it = name_to_structure_info_map.begin();
+
+			// push structures
+			for(u32 i = 0; i < structure_count; ++i) {
+
+				auto& structure_info = it->second;
+
+				name_to_type_index_map[it->first] = reflection.types.size();
+
+				reflection.types.push_back(
+					F_nsl_type_reflection {
+
+						.name = it->first,
+						.type_class = E_nsl_type_class::STRUCTURE,
+
+						.size = data_type_manager_p->size(it->first),
+						.alignment = data_type_manager_p->alignment(it->first)
+
+					}
+				);
+
+				++it;
+			}
+		}
+
+		// structure data args
+		{
+			u32 structure_count = name_to_structure_info_map.size();
+
+			auto it = name_to_structure_info_map.begin();
+
+			for(u32 i = 0; i < structure_count; ++i) {
+
+				auto& structure_info = it->second;
+
+				u32 type_index = name_to_type_index_map[it->first];
+
+				auto& structure_type = reflection.types[type_index];
+				auto& structure = structure_type.structure;
+
+				u32 data_arg_count = structure_info.argument_members.size();
+				for(u32 j = 0; j < data_arg_count; ++j) {
+
+					auto& argument_member = structure_info.argument_members[j];
+					auto& argument = argument_member.argument;
+
+					G_string actual_type = argument.type;
+
+					if(data_type_manager_p->is_name_has_semantic_info(actual_type)) {
+
+						const auto& semantic_info = data_type_manager_p->semantic_info(actual_type);
+						actual_type = semantic_info.target_type;
+					}
+					if(data_type_manager_p->is_name_has_enumeration_info(actual_type)) {
+
+						const auto& enumeration_info = data_type_manager_p->enumeration_info(actual_type);
+						actual_type = enumeration_info.value_type;
+					}
+
+					structure.data_arguments.push_back(
+						F_nsl_data_argument_reflection {
+
+							.name = argument.name,
+							.type_index = name_to_type_index_map[
+								actual_type
+							],
+							.count = argument.count,
+							.is_array = argument.is_array,
+							.offset = argument_member.offset
+
+						}
+					);
+				}
+
+				++it;
+			}
+		}
+
+		// shaders
+		{
+			u32 shader_count = name_to_shader_object_p_map.size();
+
+			reflection.shaders.resize(shader_count);
+
+			auto it = name_to_shader_object_p_map.begin();
+
+			for(u32 i = 0; i < shader_count; ++i) {
+
+				auto& shader_object_p = it->second;
+
+				reflection.shaders[i] = F_nsl_shader_reflection {
+
+					.name = shader_object_p->name(),
+					.type = shader_object_p->type()
+
+				};
+
+				++it;
+			}
+		}
+
+		// pipeline states
+		{
+			u32 pipeline_state_count = name_to_pipeline_state_info_map.size();
+
+			reflection.pipeline_states.resize(pipeline_state_count);
+
+			auto it = name_to_pipeline_state_info_map.begin();
+
+			for(u32 i = 0; i < pipeline_state_count; ++i) {
+
+				auto& pipeline_state_info = it->second;
+
+				TG_vector<u32> shader_indices;
+				shader_indices.reserve(pipeline_state_info.shaders.size());
+				for(const auto& shader_name : pipeline_state_info.shaders) {
+
+					shader_indices.push_back(
+						name_to_shader_object_p_map[shader_name]->index
+					);
+				}
+
+				reflection.pipeline_states[i] = F_nsl_pipeline_state_reflection {
+
+					.name = it->first,
+					.desc = pipeline_state_info.desc,
+					.shader_indices = shader_indices
+
+				};
+
+				++it;
+			}
+		}
+
+		// sampler states
+		{
+			u32 sampler_state_count = name_to_sampler_state_info_map.size();
+
+			reflection.sampler_states.resize(sampler_state_count);
+
+			auto it = name_to_sampler_state_info_map.begin();
+
+			for(u32 i = 0; i < sampler_state_count; ++i) {
+
+				auto& sampler_state_info = it->second;
+
+				reflection.sampler_states[i] = F_nsl_sampler_state_reflection {
+
+					.name = it->first,
+					.desc = sampler_state_info.desc,
+					.actual_slots = sampler_state_info.actual_slots
+
+				};
+
+				++it;
+			}
+		}
+
+		// resources
+		{
+			u32 resource_count = name_to_resource_info_map.size();
+
+			reflection.resources.resize(resource_count);
+
+			auto it = name_to_resource_info_map.begin();
+
+			for(u32 i = 0; i < resource_count; ++i) {
+
+				auto& resource_info = it->second;
+
+				// build data args
+				u32 data_arg_count = resource_info.uniforms.size();
+				TG_vector<F_nsl_data_argument_reflection> data_arguments;
+				data_arguments.reserve(data_arg_count);
+				for(u32 j = 0; j < data_arg_count; ++j)
+				{
+					const G_string& uniform_name = resource_info.uniforms[j];
+
+					auto& uniform_info = uniform_manager_p->uniform_info(uniform_name);
+
+					G_string actual_type = uniform_info.type;
+
+					if (data_type_manager_p->is_name_has_semantic_info(actual_type))
+					{
+						const auto& semantic_info = data_type_manager_p->semantic_info(actual_type);
+						actual_type = semantic_info.target_type;
+					}
+					if (data_type_manager_p->is_name_has_enumeration_info(actual_type))
+					{
+						const auto& enumeration_info = data_type_manager_p->enumeration_info(actual_type);
+						actual_type = enumeration_info.value_type;
+					}
+
+					data_arguments.push_back(
+						F_nsl_data_argument_reflection{
+
+							.name = uniform_name,
+							.type_index = name_to_type_index_map[
+								actual_type
+							],
+							.count = uniform_info.count,
+							.is_array = uniform_info.is_array,
+							.offset = uniform_info.offset
+
+						}
+					);
+				}
+
+				// store resource
+				reflection.resources[i] = F_nsl_resource_reflection {
+
+					.name = it->first,
+					.type = resource_info.type_as_enum,
+					.type_class = resource_info.type_class,
+					.type_args = resource_info.type_args,
+					.actual_slots = resource_info.actual_slots,
+					.data_arguments = std::move(data_arguments),
+					.constant_size = resource_info.constant_size
+
+				};
+
+				++it;
+			}
+		}
+
+		return std::move(reflection);
 	}
 
 
@@ -7159,6 +7484,9 @@ namespace nrhi {
 		),
 		vertex_layout_manager_p_(
 			TU<F_nsl_vertex_layout_manager>()(NCPP_KTHIS())
+		),
+		reflector_p_(
+			TU<F_nsl_reflector>()(NCPP_KTHIS())
 		)
 	{
 	}
@@ -7177,7 +7505,8 @@ namespace nrhi {
 		uniform_manager_p_(customizer.uniform_manager_creator(NCPP_KTHIS())),
 		sampler_state_manager_p_(customizer.sampler_state_manager_creator(NCPP_KTHIS())),
 		pipeline_state_manager_p_(customizer.pipeline_state_manager_creator(NCPP_KTHIS())),
-		vertex_layout_manager_p_(customizer.vertex_layout_manager_creator(NCPP_KTHIS()))
+		vertex_layout_manager_p_(customizer.vertex_layout_manager_creator(NCPP_KTHIS())),
+		reflector_p_(customizer.reflector_creator(NCPP_KTHIS()))
 	{
 	}
 	F_nsl_shader_compiler::~F_nsl_shader_compiler() {
@@ -7229,7 +7558,7 @@ namespace nrhi {
 		NCPP_ASSERT(is_compiled_ && is_compile_success_)
 			<< "shader program is not compiled or not compiled successfully";
 
-		return {};
+		return reflector_p_->reflect();
 	}
 
 }

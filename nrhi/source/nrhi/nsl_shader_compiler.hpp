@@ -367,7 +367,7 @@ namespace nrhi {
 		TG_vector<u32> actual_slots;
 
 		TG_vector<G_string> uniforms;
-		u32 size = -1;
+		u32 constant_size = -1;
 
 		TG_unordered_set<G_string> shader_filters = { "*" };
 
@@ -423,6 +423,8 @@ namespace nrhi {
 	struct F_nsl_pipeline_state_info {
 
 		TG_vector<G_string> shaders;
+
+		E_pipeline_state_type type = E_pipeline_state_type::NONE;
 
 		F_pipeline_state_desc desc;
 
@@ -728,8 +730,6 @@ namespace nrhi {
 
 		G_string name;
 
-		E_pipeline_state_type type;
-
 		F_pipeline_state_desc desc;
 
 		TG_vector<u32> shader_indices;
@@ -741,7 +741,23 @@ namespace nrhi {
 
 		F_sampler_state_desc desc;
 
-		u32 actual_slot = -1;
+		TG_vector<u32> actual_slots;
+
+	public:
+		NCPP_FORCE_INLINE TG_vector<u32> shader_indices() const {
+
+			u32 slot_count = actual_slots.size();
+
+			TG_vector<u32> result;
+
+			for(u32 i = 0; i < slot_count; ++i) {
+
+				if(actual_slots[i] != -1)
+					result.push_back(i);
+			}
+
+			return std::move(result);
+		}
 
 	};
 	struct F_nsl_data_argument_reflection {
@@ -753,7 +769,7 @@ namespace nrhi {
 		u32 count = 1;
 		b8 is_array = false;
 
-		i32 offset = 0;
+		u32 offset = 0;
 
 	};
 	struct F_nsl_resource_reflection {
@@ -764,9 +780,27 @@ namespace nrhi {
 		E_nsl_resource_type_class type_class = E_nsl_resource_type_class::NONE;
 		TG_vector<G_string> type_args;
 
-		u32 actual_slot = 0;
+		TG_vector<u32> actual_slots;
 
 		TG_vector<F_nsl_data_argument_reflection> data_arguments;
+
+		sz constant_size = 0;
+
+	public:
+		NCPP_FORCE_INLINE TG_vector<u32> shader_indices() const {
+
+			u32 slot_count = actual_slots.size();
+
+			TG_vector<u32> result;
+
+			for(u32 i = 0; i < slot_count; ++i) {
+
+				if(actual_slots[i] != -1)
+					result.push_back(i);
+			}
+
+			return std::move(result);
+		}
 
 	};
 	struct F_nsl_structure_reflection {
@@ -783,7 +817,7 @@ namespace nrhi {
 		E_nsl_primitive_data_type primitive_data_type = E_nsl_primitive_data_type::NONE;
 		F_nsl_structure_reflection structure;
 
-		u32 size = 0;
+		sz size = 0;
 		u32 alignment = 0;
 
 	};
@@ -1748,6 +1782,9 @@ namespace nrhi {
 
 	class NRHI_API A_nsl_shader_object : public A_nsl_object {
 
+	private:
+		E_shader_type type_ = E_shader_type::NONE;
+
 	protected:
 		TG_vector<F_nsl_data_param> data_params_;
 
@@ -1756,6 +1793,7 @@ namespace nrhi {
 
 	public:
 		NCPP_FORCE_INLINE const auto& data_params() const noexcept { return data_params_; }
+		NCPP_FORCE_INLINE auto type() const noexcept { return type_; }
 
 
 
@@ -1764,6 +1802,7 @@ namespace nrhi {
 			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 			TKPA_valid<A_nsl_object_type> type_p,
 			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			E_shader_type type,
 			const G_string& name = ""
 		);
 
@@ -3293,6 +3332,30 @@ namespace nrhi {
 
 
 
+	class NRHI_API F_nsl_reflector {
+
+	private:
+		TK_valid<F_nsl_shader_compiler> shader_compiler_p_;
+
+	public:
+		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
+
+
+
+	public:
+		F_nsl_reflector(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p);
+		virtual ~F_nsl_reflector();
+
+	public:
+		NCPP_OBJECT(F_nsl_reflector);
+
+	public:
+		F_nsl_reflection reflect();
+
+	};
+
+
+
 	template<typename F__>
 	using TF_nsl_shader_compiler_subsystem_creator = eastl::function<
 		TU<F__>(TKPA_valid<F_nsl_shader_compiler>)
@@ -3360,6 +3423,10 @@ namespace nrhi {
 			F_nsl_vertex_layout_manager,
 			vertex_layout_manager_creator
 		);
+		NRHI_NSL_DEFINE_SUBSYSTEM_CREATOR_AS_CUSTOMIZATION_MEMBER(
+			F_nsl_reflector,
+			reflector_creator
+		);
 
 	};
 
@@ -3379,6 +3446,7 @@ namespace nrhi {
 		TU<F_nsl_sampler_state_manager> sampler_state_manager_p_;
 		TU<F_nsl_pipeline_state_manager> pipeline_state_manager_p_;
 		TU<F_nsl_vertex_layout_manager> vertex_layout_manager_p_;
+		TU<F_nsl_reflector> reflector_p_;
 
 		TU<A_nsl_output_language> output_language_p_;
 
@@ -3399,6 +3467,7 @@ namespace nrhi {
 		NCPP_FORCE_INLINE TK_valid<F_nsl_sampler_state_manager> sampler_state_manager_p() const noexcept { return NCPP_FOH_VALID(sampler_state_manager_p_); }
 		NCPP_FORCE_INLINE TK_valid<F_nsl_pipeline_state_manager> pipeline_state_manager_p() const noexcept { return NCPP_FOH_VALID(pipeline_state_manager_p_); }
 		NCPP_FORCE_INLINE TK_valid<F_nsl_vertex_layout_manager> vertex_layout_manager_p() const noexcept { return NCPP_FOH_VALID(vertex_layout_manager_p_); }
+		NCPP_FORCE_INLINE TK_valid<F_nsl_reflector> reflector_p() const noexcept { return NCPP_FOH_VALID(reflector_p_); }
 
 		NCPP_FORCE_INLINE TK<A_nsl_output_language> output_language_p() const noexcept { return output_language_p_; }
 
