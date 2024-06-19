@@ -291,6 +291,10 @@ namespace nrhi {
 
 		F_nsl_structure_config_map config_map;
 
+		u32 begin_location = 0;
+		u32 end_location = 0;
+		TK<F_nsl_translation_unit> translation_unit_p;
+
 	};
 	using F_nsl_structure = eastl::pair<G_string, F_nsl_structure_info>;
 
@@ -302,23 +306,40 @@ namespace nrhi {
 
 		F_nsl_enumeration_config_map config_map;
 
+		u32 begin_location = 0;
+		u32 end_location = 0;
+		TK<F_nsl_translation_unit> translation_unit_p;
+
 	};
 	using F_nsl_enumeration = eastl::pair<G_string, F_nsl_enumeration_info>;
 
+	enum class E_nsl_resource_type_class {
+		NONE,
+		SRV,
+		UAV,
+		CBV
+	};
 	using F_nsl_resource_config_map = TG_unordered_map<G_string, F_nsl_info_tree_reader>;
 	struct F_nsl_resource_info {
 
 		G_string type;
 		TG_vector<G_string> type_args;
 
+		E_nsl_resource_type_class type_class = E_nsl_resource_type_class::NONE;
+
 		u32 slot = -1;
-		u32 actual_slot = -1;
+		TG_vector<u32> actual_slots;
 
 		TG_vector<G_string> uniforms;
+		u32 size = -1;
 
 		TG_unordered_set<G_string> shader_filters = { "*" };
 
 		F_nsl_resource_config_map config_map;
+
+		u32 begin_location = 0;
+		u32 end_location = 0;
+		TK<F_nsl_translation_unit> translation_unit_p;
 
 	};
 	using F_nsl_resource = eastl::pair<G_string, F_nsl_resource_info>;
@@ -329,7 +350,16 @@ namespace nrhi {
 		G_string type;
 		G_string buffer;
 
+		u32 count = 1;
+		b8 is_array = false;
+
+		u32 offset = NCPP_U32_MAX;
+
 		F_nsl_uniform_config_map config_map;
+
+		u32 begin_location = 0;
+		u32 end_location = 0;
+		TK<F_nsl_translation_unit> translation_unit_p;
 
 	};
 	using F_nsl_uniform = eastl::pair<G_string, F_nsl_uniform_info>;
@@ -340,11 +370,15 @@ namespace nrhi {
 		F_sampler_state_desc desc;
 
 		u32 slot = -1;
-		u32 actual_slot = -1;
+		TG_vector<u32> actual_slots;
 
 		TG_unordered_set<G_string> shader_filters = { "*" };
 
 		F_nsl_sampler_state_config_map config_map;
+
+		u32 begin_location = 0;
+		u32 end_location = 0;
+		TK<F_nsl_translation_unit> translation_unit_p;
 
 	};
 	using F_nsl_sampler_state = eastl::pair<G_string, F_nsl_sampler_state_info>;
@@ -357,6 +391,10 @@ namespace nrhi {
 		F_pipeline_state_desc desc;
 
 		F_nsl_pipeline_state_config_map config_map;
+
+		u32 begin_location = 0;
+		u32 end_location = 0;
+		TK<F_nsl_translation_unit> translation_unit_p;
 
 	};
 	using F_nsl_pipeline_state = eastl::pair<G_string, F_nsl_pipeline_state_info>;
@@ -377,6 +415,10 @@ namespace nrhi {
 		F_input_assembler_desc input_assempler_desc;
 
 		F_nsl_vertex_layout_config_map config_map;
+
+		u32 begin_location = 0;
+		u32 end_location = 0;
+		TK<F_nsl_translation_unit> translation_unit_p;
 
 	};
 	using F_nsl_vertex_layout = eastl::pair<G_string, F_nsl_vertex_layout_info>;
@@ -1565,6 +1607,9 @@ namespace nrhi {
 		TG_vector<F_nsl_data_param> data_params_;
 
 	public:
+		u32 index = -1;
+
+	public:
 		NCPP_FORCE_INLINE const auto& data_params() const noexcept { return data_params_; }
 
 
@@ -2009,7 +2054,13 @@ namespace nrhi {
 
 	private:
 		b8 sort_units_internal();
-		b8 read_internal();
+		b8 setup_shaders();
+		b8 setup_sampler_state_actual_slots();
+		b8 setup_srv_resource_actual_slots();
+		b8 setup_uav_resource_actual_slots();
+		b8 setup_cbv_resource_actual_slots();
+		b8 bind_uniforms_to_constant_buffers_internal();
+		b8 setup_constant_buffers_internal();
 		b8 apply_internal();
 
 	protected:
@@ -2299,6 +2350,12 @@ namespace nrhi {
 	public:
 		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
 
+		NCPP_FORCE_INLINE TG_unordered_map<G_string, sz>& name_to_size_map() noexcept { return name_to_size_map_; }
+		NCPP_FORCE_INLINE TG_unordered_map<G_string, u32>& name_to_alignment_map() noexcept { return name_to_alignment_map_; }
+		NCPP_FORCE_INLINE TG_unordered_map<G_string, E_nsl_element_format>& name_to_element_format_map() noexcept { return name_to_element_format_map_; }
+		NCPP_FORCE_INLINE TG_unordered_map<G_string, F_nsl_semantic_info>& name_to_semantic_info_map() noexcept { return name_to_semantic_info_map_; }
+		NCPP_FORCE_INLINE TG_unordered_map<G_string, F_nsl_structure_info>& name_to_structure_info_map() noexcept { return name_to_structure_info_map_; }
+		NCPP_FORCE_INLINE TG_unordered_map<G_string, F_nsl_enumeration_info>& name_to_enumeration_info_map() noexcept { return name_to_enumeration_info_map_; }
 		NCPP_FORCE_INLINE const TG_unordered_map<G_string, sz>& name_to_size_map() const noexcept { return name_to_size_map_; }
 		NCPP_FORCE_INLINE const TG_unordered_map<G_string, u32>& name_to_alignment_map() const noexcept { return name_to_alignment_map_; }
 		NCPP_FORCE_INLINE const TG_unordered_map<G_string, E_nsl_element_format>& name_to_element_format_map() const noexcept { return name_to_element_format_map_; }
@@ -2581,11 +2638,6 @@ namespace nrhi {
 
 	class NRHI_API F_nsl_output_hlsl : public A_nsl_output_language {
 
-	private:
-		TG_unordered_map<G_string, char> name_to_register_type_;
-
-
-
 	public:
 		F_nsl_output_hlsl(
 			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
@@ -2640,6 +2692,7 @@ namespace nrhi {
 	public:
 		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
 
+		NCPP_FORCE_INLINE TG_unordered_map<G_string, TK<A_nsl_shader_object>>& name_to_shader_object_p_map() noexcept { return name_to_shader_object_p_map_; }
 		NCPP_FORCE_INLINE const TG_unordered_map<G_string, TK<A_nsl_shader_object>>& name_to_shader_object_p_map() const noexcept { return name_to_shader_object_p_map_; }
 
 
@@ -2691,10 +2744,12 @@ namespace nrhi {
 
 	protected:
 		TG_unordered_map<G_string, F_nsl_resource_info> name_to_resource_info_map_;
+		TG_unordered_map<G_string, E_nsl_resource_type_class> name_to_resource_type_class_map_;
 
 	public:
 		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
 
+		NCPP_FORCE_INLINE TG_unordered_map<G_string, F_nsl_resource_info>& name_to_resource_info_map() noexcept { return name_to_resource_info_map_; }
 		NCPP_FORCE_INLINE const TG_unordered_map<G_string, F_nsl_resource_info>& name_to_resource_info_map() const noexcept { return name_to_resource_info_map_; }
 
 
@@ -2761,6 +2816,7 @@ namespace nrhi {
 	public:
 		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
 
+		NCPP_FORCE_INLINE TG_unordered_map<G_string, F_nsl_uniform_info>& name_to_uniform_info_map() noexcept { return name_to_uniform_info_map_; }
 		NCPP_FORCE_INLINE const TG_unordered_map<G_string, F_nsl_uniform_info>& name_to_uniform_info_map() const noexcept { return name_to_uniform_info_map_; }
 
 
@@ -2827,6 +2883,7 @@ namespace nrhi {
 	public:
 		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
 
+		NCPP_FORCE_INLINE TG_unordered_map<G_string, F_nsl_sampler_state_info>& name_to_sampler_state_info_map() noexcept { return name_to_sampler_state_info_map_; }
 		NCPP_FORCE_INLINE const TG_unordered_map<G_string, F_nsl_sampler_state_info>& name_to_sampler_state_info_map() const noexcept { return name_to_sampler_state_info_map_; }
 
 
@@ -2893,6 +2950,7 @@ namespace nrhi {
 	public:
 		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
 
+		NCPP_FORCE_INLINE TG_unordered_map<G_string, F_nsl_pipeline_state_info>& name_to_pipeline_state_info_map() noexcept { return name_to_pipeline_state_info_map_; }
 		NCPP_FORCE_INLINE const TG_unordered_map<G_string, F_nsl_pipeline_state_info>& name_to_pipeline_state_info_map() const noexcept { return name_to_pipeline_state_info_map_; }
 
 

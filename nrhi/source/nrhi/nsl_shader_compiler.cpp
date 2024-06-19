@@ -2990,6 +2990,10 @@ namespace nrhi {
 		F_nsl_structure_info structure_info;
 		structure_info.config_map = context.current_object_config;
 
+		structure_info.begin_location = tree.begin_location;
+		structure_info.end_location = tree.end_location;
+		structure_info.translation_unit_p = unit_p.no_requirements();
+
 		F_nsl_data_argument_config_map data_argument_config_map;
 
 		// parse arguments
@@ -3199,6 +3203,10 @@ namespace nrhi {
 		F_nsl_enumeration_info enumeration_info;
 		enumeration_info.config_map = context.current_object_config;
 
+		enumeration_info.begin_location = tree.begin_location;
+		enumeration_info.end_location = tree.end_location;
+		enumeration_info.translation_unit_p = unit_p.no_requirements();
+
 		// parse arguments
 		auto value_child_info_trees_opt = H_nsl_utilities::build_info_trees(
 			object_implementation.bodies[0].content,
@@ -3373,6 +3381,10 @@ namespace nrhi {
 
 		F_nsl_resource_info resource_info;
 		resource_info.config_map = context.current_object_config;
+
+		resource_info.begin_location = tree.begin_location;
+		resource_info.end_location = tree.end_location;
+		resource_info.translation_unit_p = unit_p.no_requirements();
 
 		// parse child info trees
 		auto child_info_trees_opt = H_nsl_utilities::build_info_trees(
@@ -3571,11 +3583,56 @@ namespace nrhi {
 		F_nsl_uniform_info uniform_info;
 		uniform_info.config_map = context.current_object_config;
 
-		uniform_info.type = name_manager_p->target(
-			H_nsl_utilities::clear_space_head_tail(
-				object_implementation.bodies[0].content
-			)
+		uniform_info.begin_location = tree.begin_location;
+		uniform_info.end_location = tree.end_location;
+		uniform_info.translation_unit_p = unit_p.no_requirements();
+
+		auto info_trees_opt = H_nsl_utilities::build_info_trees(
+			object_implementation.bodies[0].content,
+			object_implementation.bodies[0].begin_location,
+			&(unit_p->error_group_p()->stack())
 		);
+
+		if(!info_trees_opt) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				&(unit_p->error_group_p()->stack()),
+				object_implementation.bodies[0].begin_location,
+				"can't not parse uniform type"
+			);
+			return eastl::nullopt;
+		}
+
+		F_nsl_info_tree_reader info_tree_reader(
+			shader_compiler_p(),
+			info_trees_opt.value(),
+			object_implementation.bodies[0].begin_location,
+			&(unit_p->error_group_p()->stack())
+		);
+
+		// read uniform type
+		{
+			auto value_opt = info_tree_reader.read_string(0);
+
+			if(!value_opt)
+				return eastl::nullopt;
+
+			uniform_info.type = value_opt.value();
+		}
+
+		// check for count
+		u32 count = 1;
+		b8 is_array = false;
+		if(info_tree_reader.info_trees().size() >= 2) {
+
+			auto value_opt = info_tree_reader.read_u32(1);
+
+			if(!value_opt)
+				return eastl::nullopt;
+
+			count = value_opt.value();
+			is_array = true;
+		}
 
 		// check for buffer annotation
 		uniform_info.buffer = context.default_uniform_buffer;
@@ -3760,6 +3817,10 @@ namespace nrhi {
 		F_nsl_sampler_state_info sampler_state_info;
 		sampler_state_info.config_map = context.current_object_config;
 
+		sampler_state_info.begin_location = tree.begin_location;
+		sampler_state_info.end_location = tree.end_location;
+		sampler_state_info.translation_unit_p = unit_p.no_requirements();
+
 		// check for slot annotation
 		{
 			auto it = context.current_object_config.find("slot");
@@ -3788,9 +3849,16 @@ namespace nrhi {
 
 				sampler_state_info.shader_filters = {};
 
-				for(auto& shader_info_tree : shaders_info_tree_reader.info_trees()) {
+				u32 shader_count = shaders_info_tree_reader.info_trees().size();
 
-					sampler_state_info.shader_filters.insert(shader_info_tree.name);
+				for(u32 i = 0; i < shader_count; ++i) {
+
+					auto value_opt = shaders_info_tree_reader.read_string(i);
+
+					if(!value_opt)
+						return eastl::nullopt;
+
+					sampler_state_info.shader_filters.insert(value_opt.value());
 				}
 			}
 		}
@@ -3981,6 +4049,10 @@ namespace nrhi {
 
 		F_nsl_pipeline_state_info pipeline_state_info;
 		pipeline_state_info.config_map = context.current_object_config;
+
+		pipeline_state_info.begin_location = tree.begin_location;
+		pipeline_state_info.end_location = tree.end_location;
+		pipeline_state_info.translation_unit_p = unit_p.no_requirements();
 
 		// parse child info trees
 		auto child_info_trees_opt = H_nsl_utilities::build_info_trees(
@@ -4290,6 +4362,10 @@ namespace nrhi {
 
 		F_nsl_vertex_layout_info vertex_layout_info;
 		vertex_layout_info.config_map = context.current_object_config;
+
+		vertex_layout_info.begin_location = tree.begin_location;
+		vertex_layout_info.end_location = tree.end_location;
+		vertex_layout_info.translation_unit_p = unit_p.no_requirements();
 
 		// parse child info trees
 		auto child_info_trees_opt = H_nsl_utilities::build_info_trees(
@@ -5181,7 +5257,549 @@ namespace nrhi {
 
 		return true;
 	}
-	b8 F_nsl_translation_unit_compiler::read_internal() {
+	b8 F_nsl_translation_unit_compiler::setup_shaders() {
+
+		auto shader_manager_p = shader_compiler_p_->shader_manager_p();
+
+		auto& name_to_shader_object_p_map = shader_manager_p->name_to_shader_object_p_map();
+
+		u32 index = 0;
+		for(auto& [_, shader_object_p] : name_to_shader_object_p_map) {
+
+			shader_object_p->index = index;
+			++index;
+		}
+
+		return true;
+	}
+	b8 F_nsl_translation_unit_compiler::setup_sampler_state_actual_slots() {
+
+		auto shader_manager_p = shader_compiler_p_->shader_manager_p();
+		auto sampler_state_manager_p = shader_compiler_p_->sampler_state_manager_p();
+
+		auto& name_to_shader_object_p_map = shader_manager_p->name_to_shader_object_p_map();
+		auto& name_to_sampler_state_info_map = sampler_state_manager_p->name_to_sampler_state_info_map();
+
+		u32 shader_count = name_to_shader_object_p_map.size();
+
+		for(auto& sampler_state : name_to_sampler_state_info_map) {
+
+			sampler_state.second.actual_slots.resize(shader_count);
+			for(auto& actual_slot : sampler_state.second.actual_slots)
+				actual_slot = -1;
+		}
+
+		using F_sampler_state_iterator = std::remove_reference_t<decltype(name_to_sampler_state_info_map)>::iterator;
+		TG_unordered_map<G_string, TG_vector<F_sampler_state_iterator>> shader_name_to_sampler_state_iterators_map;
+
+		// bind sampler states to shaders
+		for(auto& [shader_name, shader_object_p] : name_to_shader_object_p_map) {
+
+			shader_name_to_sampler_state_iterators_map[shader_name] = TG_vector<F_sampler_state_iterator>();
+		}
+		for(auto it = name_to_sampler_state_info_map.begin(); it != name_to_sampler_state_info_map.end(); ++it) {
+
+			auto& sampler_state = *it;
+
+			b8 is_all_shader = (sampler_state.second.shader_filters.find("*") != sampler_state.second.shader_filters.end());
+
+			if(is_all_shader) {
+
+				for(auto& [shader_name, sampler_state_iterators] : shader_name_to_sampler_state_iterators_map) {
+
+					sampler_state_iterators.push_back(it);
+				}
+			}
+			else {
+				for(const auto& shader_name : sampler_state.second.shader_filters) {
+
+					shader_name_to_sampler_state_iterators_map[shader_name].push_back(it);
+				}
+			}
+		}
+
+		// bind actual slots in shaders
+		for(auto& [shader_name, sampler_state_iterators] : shader_name_to_sampler_state_iterators_map) {
+
+			auto shader_object_p = name_to_shader_object_p_map[shader_name];
+			u32 shader_index = shader_object_p->index;
+
+			u32 sampler_state_iterator_size = sampler_state_iterators.size();
+
+			// sort sampler state iterators (to let manual slot sampler state iterators are on correct slot)
+			for(u32 i = 0; i < sampler_state_iterator_size; ++i) {
+
+				auto& sampler_state_it = sampler_state_iterators[i];
+				auto& sampler_state = *sampler_state_it;
+
+				if(
+					(sampler_state.second.slot != -1)
+					&& (sampler_state.second.slot != i)
+				) {
+					if(sampler_state.second.slot >= sampler_state_iterator_size) {
+
+						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+							&(sampler_state.second.translation_unit_p->error_group_p()->stack()),
+							sampler_state.second.begin_location,
+							"slot \"" + G_to_string(sampler_state.second.slot) + "\" out of bound"
+						);
+						return false;
+					}
+
+					auto& current_on_slot_sampler_state_it = sampler_state_iterators[sampler_state.second.slot];
+					auto& current_on_slot_sampler_state = *current_on_slot_sampler_state_it;
+
+					if(current_on_slot_sampler_state.second.slot == sampler_state.second.slot) {
+
+						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+							&(sampler_state.second.translation_unit_p->error_group_p()->stack()),
+							sampler_state.second.begin_location,
+							"sampler states \"" + sampler_state.first + "\" and \"" + current_on_slot_sampler_state.first + "\" have the same slot"
+						);
+						return false;
+					}
+
+					std::swap(current_on_slot_sampler_state_it, sampler_state_it);
+				}
+			}
+
+			// bind actual slots
+			for(u32 i = 0; i < sampler_state_iterator_size; ++i) {
+
+				auto& sampler_state_it = sampler_state_iterators[i];
+				auto& sampler_state = *sampler_state_it;
+
+				sampler_state.second.actual_slots[shader_index] = i;
+			}
+		}
+
+		return true;
+	}
+	b8 F_nsl_translation_unit_compiler::setup_srv_resource_actual_slots() {
+
+		auto shader_manager_p = shader_compiler_p_->shader_manager_p();
+		auto resource_manager_p = shader_compiler_p_->resource_manager_p();
+
+		auto& name_to_shader_object_p_map = shader_manager_p->name_to_shader_object_p_map();
+		auto& name_to_resource_info_map = resource_manager_p->name_to_resource_info_map();
+
+		u32 shader_count = name_to_shader_object_p_map.size();
+
+		for(auto& resource : name_to_resource_info_map) {
+
+			if(resource.second.type_class != E_nsl_resource_type_class::SRV)
+				continue;
+
+			resource.second.actual_slots.resize(shader_count);
+			for(auto& actual_slot : resource.second.actual_slots)
+				actual_slot = -1;
+		}
+
+		using F_resource_iterator = std::remove_reference_t<decltype(name_to_resource_info_map)>::iterator;
+		TG_unordered_map<G_string, TG_vector<F_resource_iterator>> shader_name_to_resource_iterators_map;
+
+		// bind resources to shaders
+		for(auto& [shader_name, shader_object_p] : name_to_shader_object_p_map) {
+
+			shader_name_to_resource_iterators_map[shader_name] = TG_vector<F_resource_iterator>();
+		}
+		for(auto it = name_to_resource_info_map.begin(); it != name_to_resource_info_map.end(); ++it) {
+
+			auto& resource = *it;
+
+			if(resource.second.type_class != E_nsl_resource_type_class::SRV)
+				continue;
+
+			b8 is_all_shader = (resource.second.shader_filters.find("*") != resource.second.shader_filters.end());
+
+			if(is_all_shader) {
+
+				for(auto& [shader_name, resource_iterators] : shader_name_to_resource_iterators_map) {
+
+					resource_iterators.push_back(it);
+				}
+			}
+			else {
+				for(const auto& shader_name : resource.second.shader_filters) {
+
+					shader_name_to_resource_iterators_map[shader_name].push_back(it);
+				}
+			}
+		}
+
+		// bind actual slots in shaders
+		for(auto& [shader_name, resource_iterators] : shader_name_to_resource_iterators_map) {
+
+			auto shader_object_p = name_to_shader_object_p_map[shader_name];
+			u32 shader_index = shader_object_p->index;
+
+			u32 resource_iterator_size = resource_iterators.size();
+
+			// sort resource iterators (to let manual slot resource iterators are on correct slot)
+			for(u32 i = 0; i < resource_iterator_size; ++i) {
+
+				auto& resource_it = resource_iterators[i];
+				auto& resource = *resource_it;
+
+				if(
+					(resource.second.slot != -1)
+					&& (resource.second.slot != i)
+				) {
+					if(resource.second.slot >= resource_iterator_size) {
+
+						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+							&(resource.second.translation_unit_p->error_group_p()->stack()),
+							resource.second.begin_location,
+							"slot \"" + G_to_string(resource.second.slot) + "\" out of bound"
+						);
+						return false;
+					}
+
+					auto& current_on_slot_resource_it = resource_iterators[resource.second.slot];
+					auto& current_on_slot_resource = *current_on_slot_resource_it;
+
+					if(current_on_slot_resource.second.slot == resource.second.slot) {
+
+						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+							&(resource.second.translation_unit_p->error_group_p()->stack()),
+							resource.second.begin_location,
+							"resources \"" + resource.first + "\" and \"" + current_on_slot_resource.first + "\" have the same slot"
+						);
+						return false;
+					}
+
+					std::swap(current_on_slot_resource_it, resource_it);
+				}
+			}
+
+			// bind actual slots
+			for(u32 i = 0; i < resource_iterator_size; ++i) {
+
+				auto& resource_it = resource_iterators[i];
+				auto& resource = *resource_it;
+
+				resource.second.actual_slots[shader_index] = i;
+			}
+		}
+
+		return true;
+	}
+	b8 F_nsl_translation_unit_compiler::setup_uav_resource_actual_slots() {
+
+		auto shader_manager_p = shader_compiler_p_->shader_manager_p();
+		auto resource_manager_p = shader_compiler_p_->resource_manager_p();
+
+		auto& name_to_shader_object_p_map = shader_manager_p->name_to_shader_object_p_map();
+		auto& name_to_resource_info_map = resource_manager_p->name_to_resource_info_map();
+
+		u32 shader_count = name_to_shader_object_p_map.size();
+
+		for(auto& resource : name_to_resource_info_map) {
+
+			if(resource.second.type_class != E_nsl_resource_type_class::UAV)
+				continue;
+
+			resource.second.actual_slots.resize(shader_count);
+			for(auto& actual_slot : resource.second.actual_slots)
+				actual_slot = -1;
+		}
+
+		using F_resource_iterator = std::remove_reference_t<decltype(name_to_resource_info_map)>::iterator;
+		TG_unordered_map<G_string, TG_vector<F_resource_iterator>> shader_name_to_resource_iterators_map;
+
+		// bind resources to shaders
+		for(auto& [shader_name, shader_object_p] : name_to_shader_object_p_map) {
+
+			shader_name_to_resource_iterators_map[shader_name] = TG_vector<F_resource_iterator>();
+		}
+		for(auto it = name_to_resource_info_map.begin(); it != name_to_resource_info_map.end(); ++it) {
+
+			auto& resource = *it;
+
+			if(resource.second.type_class != E_nsl_resource_type_class::UAV)
+				continue;
+
+			b8 is_all_shader = (resource.second.shader_filters.find("*") != resource.second.shader_filters.end());
+
+			if(is_all_shader) {
+
+				for(auto& [shader_name, resource_iterators] : shader_name_to_resource_iterators_map) {
+
+					resource_iterators.push_back(it);
+				}
+			}
+			else {
+				for(const auto& shader_name : resource.second.shader_filters) {
+
+					shader_name_to_resource_iterators_map[shader_name].push_back(it);
+				}
+			}
+		}
+
+		// bind actual slots in shaders
+		for(auto& [shader_name, resource_iterators] : shader_name_to_resource_iterators_map) {
+
+			auto shader_object_p = name_to_shader_object_p_map[shader_name];
+			u32 shader_index = shader_object_p->index;
+
+			u32 resource_iterator_size = resource_iterators.size();
+
+			// sort resource iterators (to let manual slot resource iterators are on correct slot)
+			for(u32 i = 0; i < resource_iterator_size; ++i) {
+
+				auto& resource_it = resource_iterators[i];
+				auto& resource = *resource_it;
+
+				if(
+					(resource.second.slot != -1)
+					&& (resource.second.slot != i)
+				) {
+					if(resource.second.slot >= resource_iterator_size) {
+
+						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+							&(resource.second.translation_unit_p->error_group_p()->stack()),
+							resource.second.begin_location,
+							"slot \"" + G_to_string(resource.second.slot) + "\" out of bound"
+						);
+						return false;
+					}
+
+					auto& current_on_slot_resource_it = resource_iterators[resource.second.slot];
+					auto& current_on_slot_resource = *current_on_slot_resource_it;
+
+					if(current_on_slot_resource.second.slot == resource.second.slot) {
+
+						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+							&(resource.second.translation_unit_p->error_group_p()->stack()),
+							resource.second.begin_location,
+							"resources \"" + resource.first + "\" and \"" + current_on_slot_resource.first + "\" have the same slot"
+						);
+						return false;
+					}
+
+					std::swap(current_on_slot_resource_it, resource_it);
+				}
+			}
+
+			// bind actual slots
+			for(u32 i = 0; i < resource_iterator_size; ++i) {
+
+				auto& resource_it = resource_iterators[i];
+				auto& resource = *resource_it;
+
+				resource.second.actual_slots[shader_index] = i;
+			}
+		}
+
+		return true;
+	}
+	b8 F_nsl_translation_unit_compiler::setup_cbv_resource_actual_slots() {
+
+		auto shader_manager_p = shader_compiler_p_->shader_manager_p();
+		auto resource_manager_p = shader_compiler_p_->resource_manager_p();
+
+		auto& name_to_shader_object_p_map = shader_manager_p->name_to_shader_object_p_map();
+		auto& name_to_resource_info_map = resource_manager_p->name_to_resource_info_map();
+
+		u32 shader_count = name_to_shader_object_p_map.size();
+
+		for(auto& resource : name_to_resource_info_map) {
+
+			if(resource.second.type_class != E_nsl_resource_type_class::CBV)
+				continue;
+
+			resource.second.actual_slots.resize(shader_count);
+			for(auto& actual_slot : resource.second.actual_slots)
+				actual_slot = -1;
+		}
+
+		using F_resource_iterator = std::remove_reference_t<decltype(name_to_resource_info_map)>::iterator;
+		TG_unordered_map<G_string, TG_vector<F_resource_iterator>> shader_name_to_resource_iterators_map;
+
+		// bind resources to shaders
+		for(auto& [shader_name, shader_object_p] : name_to_shader_object_p_map) {
+
+			shader_name_to_resource_iterators_map[shader_name] = TG_vector<F_resource_iterator>();
+		}
+		for(auto it = name_to_resource_info_map.begin(); it != name_to_resource_info_map.end(); ++it) {
+
+			auto& resource = *it;
+
+			if(resource.second.type_class != E_nsl_resource_type_class::CBV)
+				continue;
+
+			b8 is_all_shader = (resource.second.shader_filters.find("*") != resource.second.shader_filters.end());
+
+			if(is_all_shader) {
+
+				for(auto& [shader_name, resource_iterators] : shader_name_to_resource_iterators_map) {
+
+					resource_iterators.push_back(it);
+				}
+			}
+			else {
+				for(const auto& shader_name : resource.second.shader_filters) {
+
+					shader_name_to_resource_iterators_map[shader_name].push_back(it);
+				}
+			}
+		}
+
+		// bind actual slots in shaders
+		for(auto& [shader_name, resource_iterators] : shader_name_to_resource_iterators_map) {
+
+			auto shader_object_p = name_to_shader_object_p_map[shader_name];
+			u32 shader_index = shader_object_p->index;
+
+			u32 resource_iterator_size = resource_iterators.size();
+
+			// sort resource iterators (to let manual slot resource iterators are on correct slot)
+			for(u32 i = 0; i < resource_iterator_size; ++i) {
+
+				auto& resource_it = resource_iterators[i];
+				auto& resource = *resource_it;
+
+				if(
+					(resource.second.slot != -1)
+					&& (resource.second.slot != i)
+				) {
+					if(resource.second.slot >= resource_iterator_size) {
+
+						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+							&(resource.second.translation_unit_p->error_group_p()->stack()),
+							resource.second.begin_location,
+							"slot \"" + G_to_string(resource.second.slot) + "\" out of bound"
+						);
+						return false;
+					}
+
+					auto& current_on_slot_resource_it = resource_iterators[resource.second.slot];
+					auto& current_on_slot_resource = *current_on_slot_resource_it;
+
+					if(current_on_slot_resource.second.slot == resource.second.slot) {
+
+						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+							&(resource.second.translation_unit_p->error_group_p()->stack()),
+							resource.second.begin_location,
+							"resources \"" + resource.first + "\" and \"" + current_on_slot_resource.first + "\" have the same slot"
+						);
+						return false;
+					}
+
+					std::swap(current_on_slot_resource_it, resource_it);
+				}
+			}
+
+			// bind actual slots
+			for(u32 i = 0; i < resource_iterator_size; ++i) {
+
+				auto& resource_it = resource_iterators[i];
+				auto& resource = *resource_it;
+
+				resource.second.actual_slots[shader_index] = i;
+			}
+		}
+
+		return true;
+	}
+	b8 F_nsl_translation_unit_compiler::bind_uniforms_to_constant_buffers_internal() {
+
+		auto uniform_manager_p = shader_compiler_p_->uniform_manager_p();
+		auto resource_manager_p = shader_compiler_p_->resource_manager_p();
+
+		auto& name_to_uniform_info_map = uniform_manager_p->name_to_uniform_info_map();
+
+		for(auto& uniform : name_to_uniform_info_map) {
+
+			if(
+				!(resource_manager_p->is_name_has_resource_info(uniform.second.buffer))
+			) {
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					&(uniform.second.translation_unit_p->error_group_p()->stack()),
+					uniform.second.begin_location,
+					"not found buffer \"" + uniform.second.buffer + "\""
+				);
+				return false;
+			}
+
+			auto& constant_buffer = resource_manager_p->resource_info(uniform.second.buffer);
+			constant_buffer.uniforms.push_back(uniform.first);
+		}
+
+		return true;
+	}
+	b8 F_nsl_translation_unit_compiler::setup_constant_buffers_internal() {
+
+		auto data_type_manager_p = shader_compiler_p_->data_type_manager_p();
+		auto uniform_manager_p = shader_compiler_p_->uniform_manager_p();
+		auto resource_manager_p = shader_compiler_p_->resource_manager_p();
+
+		auto& name_to_uniform_info_map = uniform_manager_p->name_to_uniform_info_map();
+		auto& name_to_resource_info_map = resource_manager_p->name_to_resource_info_map();
+
+		for(auto& resource : name_to_resource_info_map) {
+
+			if(resource.second.type == "ConstantBuffer") {
+
+				const auto& uniform_names = resource.second.uniforms;
+
+				u32 uniform_count = uniform_names.size();
+
+				// initialize uniform_iterator_vector
+				using F_uniform_iterator = std::remove_reference_t<decltype(name_to_uniform_info_map)>::iterator;
+				TG_vector<F_uniform_iterator> uniform_iterator_vector(uniform_count);
+				for(u32 i = 0; i < uniform_count; ++i) {
+
+					const auto& uniform_name = uniform_names[i];
+
+					uniform_iterator_vector[i] = name_to_uniform_info_map.find(uniform_name);
+				}
+
+				// sort uniform_iterator_vector by size
+				{
+					auto sort_func = [&](const F_uniform_iterator& a, const F_uniform_iterator& b) -> b8 {
+
+						return (
+							data_type_manager_p->size(a->second.type)
+							> data_type_manager_p->size(b->second.type)
+						);
+					};
+					eastl::sort(uniform_iterator_vector.begin(), uniform_iterator_vector.end(), sort_func);
+				}
+
+				// calculate buffer size and uniform offset
+				{
+					constexpr u32 buffer_alignment = 256;
+					constexpr u32 min_pack_alignment = 16;
+
+					u32 offset = 0;
+
+					for(u32 i = 0; i < uniform_count; ++i) {
+
+						F_uniform_iterator& uniform_iterator = uniform_iterator_vector[i];
+
+						u32 member_alignment = data_type_manager_p->alignment(uniform_iterator->second.type);
+						u32 member_element_count = uniform_iterator->second.count;
+
+						u32 member_single_element_size = data_type_manager_p->size(uniform_iterator->second.type);
+						u32 aligned_member_single_element_size = align_size(member_single_element_size, member_alignment);
+
+						u32 member_size = (
+							(member_element_count - 1) * eastl::max<u32>(aligned_member_single_element_size, min_pack_alignment)
+							+ member_single_element_size
+						);
+
+						offset = align_size(offset, member_alignment);
+
+						uniform_iterator->second.offset = offset;
+
+						offset += member_size;
+					}
+
+					resource.second.size = align_size(offset, buffer_alignment);
+				}
+			}
+		}
 
 		return true;
 	}
@@ -5206,7 +5824,19 @@ namespace nrhi {
 
 		if(!sort_units_internal())
 			return false;
-		if(!read_internal())
+		if(!setup_shaders())
+			return false;
+		if(!setup_sampler_state_actual_slots())
+			return false;
+		if(!setup_srv_resource_actual_slots())
+			return false;
+		if(!setup_uav_resource_actual_slots())
+			return false;
+		if(!setup_cbv_resource_actual_slots())
+			return false;
+		if(!bind_uniforms_to_constant_buffers_internal())
+			return false;
+		if(!setup_constant_buffers_internal())
 			return false;
 		if(!apply_internal())
 			return false;
@@ -5599,27 +6229,6 @@ namespace nrhi {
 		A_nsl_output_language(shader_compiler_p, E_nsl_output_language::HLSL)
 	{
 		register_data_types_internal();
-
-		// setup name_to_register_type_
-		name_to_register_type_["ConstantBuffer"] = 'b';
-		name_to_register_type_["Buffer"] = 't';
-		name_to_register_type_["ByteAddressBuffer"] = 't';
-		name_to_register_type_["StructuredBuffer"] = 't';
-		name_to_register_type_["Texture1D"] = 't';
-		name_to_register_type_["Texture1DArray"] = 't';
-		name_to_register_type_["Texture2D"] = 't';
-		name_to_register_type_["Texture2DArray"] = 't';
-		name_to_register_type_["Texture3D"] = 't';
-		name_to_register_type_["TextureCube"] = 't';
-		name_to_register_type_["TextureCubeArray"] = 't';
-		name_to_register_type_["RWBuffer"] = 'u';
-		name_to_register_type_["RWByteAddressBuffer"] = 'u';
-		name_to_register_type_["RWStructuredBuffer"] = 'u';
-		name_to_register_type_["RWTexture1D"] = 'u';
-		name_to_register_type_["RWTexture1DArray"] = 'u';
-		name_to_register_type_["RWTexture2D"] = 'u';
-		name_to_register_type_["RWTexture2DArray"] = 'u';
-		name_to_register_type_["RWTexture3D"] = 'u';
 	}
 	F_nsl_output_hlsl::~F_nsl_output_hlsl() {
 	}
@@ -5940,17 +6549,48 @@ namespace nrhi {
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 		const F_nsl_sampler_state& sampler_state
 	) {
-		return "SamplerState " + sampler_state.first + " : register(s" + G_to_string(sampler_state.second.actual_slot) + ");";
+		u32 shader_count = sampler_state.second.actual_slots.size();
+
+		G_string result;
+
+		for(u32 i = 0; i < shader_count; ++i)
+		{
+			u32 actual_slot = sampler_state.second.actual_slots[i];
+
+			if(actual_slot != -1)
+				result += (
+					"\n#ifdef NRHI_SHADER_INDEX_" + G_to_string(i)
+					+ "\nSamplerState "
+					+ sampler_state.first
+					+ " : register(s"
+					+ G_to_string(sampler_state.second.actual_slots[i])
+					+ ");"
+					+ "\n#endif"
+				);
+		}
+
+		return std::move(result);
 	}
 	eastl::optional<G_string> F_nsl_output_hlsl::resource_to_string(
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 		const F_nsl_resource& resource
 	) {
-		auto name_to_register_type_it = name_to_register_type_.find(resource.second.type);
-
-		if(name_to_register_type_it == name_to_register_type_.end()) {
-
+		char register_type;
+		switch (resource.second.type_class)
+		{
+		case E_nsl_resource_type_class::SRV:
+			register_type = 't';
+			break;
+		case E_nsl_resource_type_class::UAV:
+			register_type = 'u';
+			break;
+		case E_nsl_resource_type_class::CBV:
+			register_type = 'b';
+			break;
+		case E_nsl_resource_type_class::NONE:
+		default:
 			return eastl::nullopt;
+			break;
 		}
 
 		G_string parsed_type = resource.second.type;
@@ -5974,48 +6614,64 @@ namespace nrhi {
 				parsed_type += ">";
 		}
 
-		if(resource.second.type != "ConstantBuffer")
-			return (
-				// resource type
-				parsed_type
-				+ " "
+		u32 shader_count = resource.second.actual_slots.size();
 
-				// resource name
-				+ resource.first
+		G_string result;
 
-				// register
-				+ " : register("
-				+ G_string(1, name_to_register_type_it->second) // register type
-				+ G_to_string(resource.second.actual_slot) // actual slot
-				+ ");"
-			);
-		else {
-			G_string uniform_declarations;
+		G_string uniform_declarations;
+		auto uniform_manager_p = shader_compiler_p()->uniform_manager_p();
+		for(const auto& uniform : resource.second.uniforms) {
 
-			auto uniform_manager_p = shader_compiler_p()->uniform_manager_p();
+			const auto& uniform_info = uniform_manager_p->uniform_info(uniform);
 
-			for(const auto& uniform : resource.second.uniforms) {
-
-				const auto& uniform_info = uniform_manager_p->uniform_info(uniform);
-
-				uniform_declarations += uniform_info.type + " " + uniform + ";\n";
-			}
-
-			return (
-				"cbuffer "
-
-				// resource name
-				+ resource.first
-
-				// register
-				+ " : register("
-				+ G_string(1, name_to_register_type_it->second) // register type
-				+ G_to_string(resource.second.actual_slot) // actual slot
-				+ "){\n"
-				+ uniform_declarations
-				+ "\n};"
-			);
+			uniform_declarations += uniform_info.type + " " + uniform + ";\n";
 		}
+
+		for(u32 i = 0; i < shader_count; ++i)
+		{
+			u32 actual_slot = resource.second.actual_slots[i];
+
+			if(actual_slot != -1)
+			{
+				result += "\n#ifdef NRHI_SHADER_INDEX_" + G_to_string(i) + "\n";
+
+				if(resource.second.type != "ConstantBuffer")
+					result += (
+						// resource type
+						parsed_type
+						+ " "
+
+						// resource name
+						+ resource.first
+
+						// register
+						+ " : register("
+						+ G_string(1, register_type) // register type
+						+ G_to_string(actual_slot) // actual slot
+						+ ");"
+					);
+				else {
+					result += (
+						"cbuffer "
+
+						// resource name
+						+ resource.first
+
+						// register
+						+ " : register("
+						+ G_string(1, register_type) // register type
+						+ G_to_string(actual_slot) // actual slot
+						+ "){\n"
+						+ uniform_declarations
+						+ "\n};"
+					);
+				}
+
+				result += "\n#endif\n";
+			}
+		}
+
+		return std::move(result);
 	}
 	eastl::optional<G_string> F_nsl_output_hlsl::structure_to_string(
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
@@ -6072,7 +6728,7 @@ namespace nrhi {
 			const auto& value = enumeration.second.values[i];
 
 			if(i != 0)
-				value_declarations += ",\n";
+				value_declarations += "\n";
 
 			value_declarations += (
 				"#define "
@@ -6104,6 +6760,26 @@ namespace nrhi {
 	F_nsl_resource_manager::F_nsl_resource_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
 		shader_compiler_p_(shader_compiler_p)
 	{
+		// setup name_to_resource_type_class_map_
+		name_to_resource_type_class_map_["ConstantBuffer"] = E_nsl_resource_type_class::CBV;
+		name_to_resource_type_class_map_["Buffer"] = E_nsl_resource_type_class::SRV;
+		name_to_resource_type_class_map_["ByteAddressBuffer"] = E_nsl_resource_type_class::SRV;
+		name_to_resource_type_class_map_["StructuredBuffer"] = E_nsl_resource_type_class::SRV;
+		name_to_resource_type_class_map_["Texture1D"] = E_nsl_resource_type_class::SRV;
+		name_to_resource_type_class_map_["Texture1DArray"] = E_nsl_resource_type_class::SRV;
+		name_to_resource_type_class_map_["Texture2D"] = E_nsl_resource_type_class::SRV;
+		name_to_resource_type_class_map_["Texture2DArray"] = E_nsl_resource_type_class::SRV;
+		name_to_resource_type_class_map_["Texture3D"] = E_nsl_resource_type_class::SRV;
+		name_to_resource_type_class_map_["TextureCube"] = E_nsl_resource_type_class::SRV;
+		name_to_resource_type_class_map_["TextureCubeArray"] = E_nsl_resource_type_class::SRV;
+		name_to_resource_type_class_map_["RWBuffer"] = E_nsl_resource_type_class::UAV;
+		name_to_resource_type_class_map_["RWByteAddressBuffer"] = E_nsl_resource_type_class::UAV;
+		name_to_resource_type_class_map_["RWStructuredBuffer"] = E_nsl_resource_type_class::UAV;
+		name_to_resource_type_class_map_["RWTexture1D"] = E_nsl_resource_type_class::UAV;
+		name_to_resource_type_class_map_["RWTexture1DArray"] = E_nsl_resource_type_class::UAV;
+		name_to_resource_type_class_map_["RWTexture2D"] = E_nsl_resource_type_class::UAV;
+		name_to_resource_type_class_map_["RWTexture2DArray"] = E_nsl_resource_type_class::UAV;
+		name_to_resource_type_class_map_["RWTexture3D"] = E_nsl_resource_type_class::UAV;
 	}
 	F_nsl_resource_manager::~F_nsl_resource_manager() {
 	}
@@ -6111,6 +6787,16 @@ namespace nrhi {
 	F_nsl_resource_info F_nsl_resource_manager::process_resource_info(const G_string& name, const F_nsl_resource_info& resource_info) {
 		
 		F_nsl_resource_info result = resource_info;
+
+		// bind type class
+		{
+			auto it = name_to_resource_type_class_map_.find(result.type);
+
+			if(it != name_to_resource_type_class_map_.end()) {
+
+				result.type_class = it->second;
+			}
+		}
 
 		return std::move(result);
 	}
