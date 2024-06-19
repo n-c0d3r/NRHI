@@ -1678,13 +1678,13 @@ namespace nrhi {
 			return eastl::nullopt;
 		}
 
-		return info_trees_[index].name;
+		return parse_value_str(info_trees_[index].name);
 	}
 	b8 F_nsl_info_tree_reader::guarantee_flag(const G_string& name, b8 is_required) const {
 
 		for(const auto& info_tree : info_trees_) {
 
-			if(info_tree.name == name)
+			if(parse_value_str(info_tree.name) == name)
 				return true;
 		}
 
@@ -1700,7 +1700,7 @@ namespace nrhi {
 
 		for(const auto& info_tree : info_trees_) {
 
-			if(info_tree.name == name) {
+			if(parse_value_str(info_tree.name) == name) {
 
 				return F_nsl_info_tree_reader(
 					NCPP_FOH_VALID(shader_compiler_p_),
@@ -3061,13 +3061,16 @@ namespace nrhi {
 				is_array = true;
 			}
 
-			const auto& type_tree = argument_child_info_tree.childs[0];
+			auto type_opt = argument_child_info_tree_reader.read_string(0);
+
+			if(!type_opt)
+				return eastl::nullopt;
 
 			structure_info.argument_members.push_back(
 				F_nsl_data_argument_member {
 					.argument = F_nsl_data_argument {
 						.name = argument_child_info_tree.name,
-						.type = name_manager_p->target(type_tree.name),
+						.type = type_opt.value(),
 						.count = count,
 						.is_array = is_array,
 						.config_map = std::move(data_argument_config_map)
@@ -4568,6 +4571,13 @@ namespace nrhi {
 
 			auto& param_child_info_tree = param_child_info_trees[i];
 
+			F_nsl_info_tree_reader param_child_info_tree_reader(
+				shader_compiler_p(),
+				param_child_info_tree.childs,
+				param_child_info_tree.begin_childs_location,
+				&(unit_p->error_group_p()->stack())
+			);
+
 			if(param_child_info_tree.name[0] == '@') {
 
 				if(is_prev_in_keyword) {
@@ -4591,12 +4601,7 @@ namespace nrhi {
 
 				data_argument_config_map[
 					param_child_info_tree.name.substr(1, param_child_info_tree.name.length() - 1)
-				] = F_nsl_info_tree_reader(
-					shader_compiler_p(),
-					param_child_info_tree.childs,
-					param_child_info_tree.begin_childs_location,
-					&(unit_p->error_group_p()->stack())
-				);
+				] = param_child_info_tree_reader;
 				continue;
 			}
 
@@ -4614,23 +4619,32 @@ namespace nrhi {
 				is_prev_out_keyword = true;
 			}
 			else {
-				if(param_child_info_tree.childs.size() != 1) {
+				// check for count
+				u32 count = 1;
+				b8 is_array = false;
+				if(param_child_info_tree_reader.info_trees().size() >= 2) {
 
-					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-						&(unit_p->error_group_p()->stack()),
-						param_child_info_tree.begin_childs_location,
-						"require param type"
-					);
-					return eastl::nullopt;
+					auto value_opt = param_child_info_tree_reader.read_u32(1);
+
+					if(!value_opt)
+						return eastl::nullopt;
+
+					count = value_opt.value();
+					is_array = true;
 				}
 
-				const auto& type_tree = param_child_info_tree.childs[0];
+				auto type_opt = param_child_info_tree_reader.read_string(0);
+
+				if(!type_opt)
+					return eastl::nullopt;
 
 				data_params_.push_back(
 					F_nsl_data_param {
 						.argument = F_nsl_data_argument{
 							.name = param_child_info_tree.name,
-							.type = type_tree.name,
+							.type = type_opt.value(),
+							.count = count,
+							.is_array = is_array,
 							.config_map = std::move(data_argument_config_map)
 						},
 						.is_in = is_prev_in_keyword || !(is_prev_in_keyword || is_prev_out_keyword),
@@ -4689,6 +4703,16 @@ namespace nrhi {
 		);
 
 		return std::move(childs);
+	}
+	eastl::optional<G_string> A_nsl_shader_object::apply(
+		const F_nsl_ast_tree& tree
+	) {
+		auto output_language_p = shader_compiler_p()->output_language_p();
+
+		return output_language_p->shader_object_to_string(
+			translation_unit_p(),
+			NCPP_KTHIS()
+		);
 	}
 
 
@@ -6748,6 +6772,60 @@ namespace nrhi {
 			+ "\n"
 			+ value_declarations
 			+ "\n"
+		);
+	}
+	eastl::optional<G_string> F_nsl_output_hlsl::shader_object_to_string(
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		TKPA_valid<A_nsl_shader_object> shader_object_p
+	) {
+		G_string data_param_declarations;
+
+		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
+
+		b8 is_first_data_param = true;
+		for(const auto& data_param : shader_object_p->data_params()) {
+
+			G_string argument_type = data_param.argument.type;
+
+			b8 is_semantic = data_type_manager_p->is_name_has_semantic_info(argument_type);
+
+			G_string semantic_option;
+
+			if(is_semantic) {
+
+				const auto& semantic_info = data_type_manager_p->semantic_info(argument_type);
+
+				semantic_option = ": " + argument_type;
+
+				argument_type = semantic_info.target_type;
+			}
+
+			if(!is_first_data_param) {
+
+				data_param_declarations += ",\n";
+			}
+			is_first_data_param = false;
+
+			if(data_param.is_out && data_param.is_in)
+				data_param_declarations += "inout ";
+			if(data_param.is_out && !data_param.is_in)
+				data_param_declarations += "out ";
+
+			data_param_declarations += (
+				argument_type
+				+ " "
+				+ data_param.argument.name
+				+ semantic_option
+			);
+		}
+
+		return (
+			"#ifdef NRHI_SHADER_INDEX_" + G_to_string(shader_object_p->index) + "\n"
+			+ "void main(\n"
+			+ data_param_declarations
+			+ "\n){\n"
+			+ "}\n"
+			+ "#endif\n"
 		);
 	}
 

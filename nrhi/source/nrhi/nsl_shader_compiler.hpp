@@ -1636,6 +1636,9 @@ namespace nrhi {
 			sz index,
 			F_nsl_error_stack* error_stack_p
 		) override;
+		virtual eastl::optional<G_string> apply(
+			const F_nsl_ast_tree& tree
+		);
 
 	};
 
@@ -2631,6 +2634,10 @@ namespace nrhi {
 			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 			const F_nsl_enumeration& enumeration
 		) = 0;
+		virtual eastl::optional<G_string> shader_object_to_string(
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			TKPA_valid<A_nsl_shader_object> shader_object_p
+		) = 0;
 
 	};
 
@@ -2675,6 +2682,10 @@ namespace nrhi {
 		virtual eastl::optional<G_string> enumeration_to_string(
 			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 			const F_nsl_enumeration& enumeration
+		) override;
+		virtual eastl::optional<G_string> shader_object_to_string(
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			TKPA_valid<A_nsl_shader_object> shader_object_p
 		) override;
 
 	};
