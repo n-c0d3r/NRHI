@@ -641,6 +641,7 @@ namespace nrhi {
 		TG_stack<F_nsl_object_config> object_config_stack;
 
 		G_string default_constant_buffer;
+		F_pipeline_state_desc default_pipeline_state_desc;
 
 	};
 
@@ -1730,6 +1731,55 @@ namespace nrhi {
 
 	public:
 		NCPP_OBJECT(F_nsl_pipeline_state_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+
+	};
+
+
+
+	class NRHI_API F_nsl_default_pipeline_state_desc_object : public A_nsl_object {
+
+	public:
+		F_nsl_default_pipeline_state_desc_object(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			TKPA_valid<A_nsl_object_type> type_p,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			const G_string& name = ""
+		);
+		virtual ~F_nsl_default_pipeline_state_desc_object();
+
+	public:
+		NCPP_OBJECT(F_nsl_default_pipeline_state_desc_object);
+
+	public:
+		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
+			F_nsl_context& context,
+			TK_valid<F_nsl_translation_unit> unit_p,
+			TG_vector<F_nsl_ast_tree>& trees,
+			sz index,
+			F_nsl_error_stack* error_stack_p
+		) override;
+
+	};
+
+
+
+	class NRHI_API F_nsl_default_pipeline_state_desc_object_type : public A_nsl_object_type {
+
+	public:
+		F_nsl_default_pipeline_state_desc_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_default_pipeline_state_desc_object_type();
+
+	public:
+		NCPP_OBJECT(F_nsl_default_pipeline_state_desc_object_type);
 
 	public:
 		virtual TK<A_nsl_object> create_object(

@@ -123,6 +123,8 @@ int main() {
 "}\n"
 "\n"
 "@color_formats(R8G8B8A8_UNORM)\n"
+"default_pipeline_state_desc\n"
+"\n"
 "@rasterizer\n"
 "(\n"
 "	cull_mode(BACK)\n"
