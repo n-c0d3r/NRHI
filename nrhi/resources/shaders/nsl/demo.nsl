@@ -37,7 +37,7 @@ resource demo_cb
 	ConstantBuffer
 )
 
-default_uniform_buffer(demo_cb)
+default_constant_buffer(demo_cb)
 uniform demo_uniform(float4)
 
 struct F_vs_input
@@ -51,7 +51,7 @@ struct F_vs_output
 	clip_position(SV_POSITION)
 )
 
-vertex_layout demo_vertex_layout
+input_assembler demo_input_assembler
 (
 	@buffer(0)
 	@offset(0)
@@ -61,7 +61,7 @@ vertex_layout demo_vertex_layout
 	NORMAL
 )
 
-@vertex_layout(demo_vertex_layout)
+@input_assembler(demo_input_assembler)
 vertex_shader vs_main(
 	input(F_vs_input)
 	out output(F_vs_output)

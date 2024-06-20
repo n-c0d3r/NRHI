@@ -2894,6 +2894,7 @@ namespace nrhi {
 				element_format = value_opt.value();
 			}
 		}
+		u32 element_count = data_type_manager_p->element_count(target_type);
 
 		// register semantic
 		name_manager_p->template T_register_name<FE_nsl_name_types::SEMANTIC>(tree.object_implementation.name);
@@ -2902,6 +2903,7 @@ namespace nrhi {
 			F_nsl_semantic_info {
 				.target_type = target_type,
 				.element_format = element_format,
+				.element_count = element_count,
 				.input_class = input_class
 			}
 		);
@@ -3080,6 +3082,8 @@ namespace nrhi {
 				.begin_location = argument_child_info_tree.begin_location,
 				.end_location = argument_child_info_tree.end_location
 			};
+
+			data_argument_config_map = {};
 		}
 
 		// check for alignment annotation
@@ -3634,7 +3638,7 @@ namespace nrhi {
 		}
 
 		// check for buffer annotation
-		uniform_info.buffer = context.default_uniform_buffer;
+		uniform_info.buffer = context.default_constant_buffer;
 		{
 			auto it = context.current_object_config.find("buffer");
 			if(it != context.current_object_config.end()) {
@@ -3701,7 +3705,7 @@ namespace nrhi {
 
 
 
-	F_nsl_default_uniform_buffer_object::F_nsl_default_uniform_buffer_object(
+	F_nsl_default_constant_buffer_object::F_nsl_default_constant_buffer_object(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 		TKPA_valid<A_nsl_object_type> type_p,
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
@@ -3715,10 +3719,10 @@ namespace nrhi {
 		)
 	{
 	}
-	F_nsl_default_uniform_buffer_object::~F_nsl_default_uniform_buffer_object() {
+	F_nsl_default_constant_buffer_object::~F_nsl_default_constant_buffer_object() {
 	}
 
-	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_default_uniform_buffer_object::recursive_build_ast_tree(
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_default_constant_buffer_object::recursive_build_ast_tree(
 		F_nsl_context& context,
 		TK_valid<F_nsl_translation_unit> unit_p,
 		TG_vector<F_nsl_ast_tree>& trees,
@@ -3730,7 +3734,7 @@ namespace nrhi {
 
 		context.parent_object_p = NCPP_KTHIS().no_requirements();
 
-		context.default_uniform_buffer = shader_compiler_p()->name_manager_p()->target(
+		context.default_constant_buffer = shader_compiler_p()->name_manager_p()->target(
 			H_nsl_utilities::clear_space_head_tail(
 				object_implementation.bodies[0].content
 			)
@@ -3741,12 +3745,12 @@ namespace nrhi {
 
 
 
-	F_nsl_default_uniform_buffer_object_type::F_nsl_default_uniform_buffer_object_type(
+	F_nsl_default_constant_buffer_object_type::F_nsl_default_constant_buffer_object_type(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
 	) :
 		A_nsl_object_type(
 			shader_compiler_p,
-			"default_uniform_buffer",
+			"default_constant_buffer",
 			false,
 			1,
 			1,
@@ -3754,10 +3758,10 @@ namespace nrhi {
 		)
 	{
 	}
-	F_nsl_default_uniform_buffer_object_type::~F_nsl_default_uniform_buffer_object_type() {
+	F_nsl_default_constant_buffer_object_type::~F_nsl_default_constant_buffer_object_type() {
 	}
 
-	TK<A_nsl_object> F_nsl_default_uniform_buffer_object_type::create_object(
+	TK<A_nsl_object> F_nsl_default_constant_buffer_object_type::create_object(
 		F_nsl_ast_tree& tree,
 		F_nsl_context& context,
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p
@@ -3765,7 +3769,7 @@ namespace nrhi {
 		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
 
 		auto object_p = register_object(
-			TU<F_nsl_default_uniform_buffer_object>()(
+			TU<F_nsl_default_constant_buffer_object>()(
 				shader_compiler_p(),
 				NCPP_KTHIS(),
 				translation_unit_p,
@@ -4326,7 +4330,7 @@ namespace nrhi {
 
 
 
-	F_nsl_vertex_layout_object::F_nsl_vertex_layout_object(
+	F_nsl_input_assembler_object::F_nsl_input_assembler_object(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 		TKPA_valid<A_nsl_object_type> type_p,
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
@@ -4340,10 +4344,10 @@ namespace nrhi {
 		)
 	{
 	}
-	F_nsl_vertex_layout_object::~F_nsl_vertex_layout_object() {
+	F_nsl_input_assembler_object::~F_nsl_input_assembler_object() {
 	}
 
-	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_vertex_layout_object::recursive_build_ast_tree(
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_input_assembler_object::recursive_build_ast_tree(
 		F_nsl_context& context,
 		TK_valid<F_nsl_translation_unit> unit_p,
 		TG_vector<F_nsl_ast_tree>& trees,
@@ -4357,14 +4361,14 @@ namespace nrhi {
 
 		auto name_manager_p = shader_compiler_p()->name_manager_p();
 		auto translation_unit_compiler_p = shader_compiler_p()->translation_unit_compiler_p();
-		auto vertex_layout_manager_p = shader_compiler_p()->vertex_layout_manager_p();
+		auto input_assembler_manager_p = shader_compiler_p()->input_assembler_manager_p();
 
-		F_nsl_vertex_layout_info vertex_layout_info;
-		vertex_layout_info.config_map = context.current_object_config;
+		F_nsl_input_assembler_info input_assembler_info;
+		input_assembler_info.config_map = context.current_object_config;
 
-		vertex_layout_info.begin_location = tree.begin_location;
-		vertex_layout_info.end_location = tree.end_location;
-		vertex_layout_info.translation_unit_p = unit_p.no_requirements();
+		input_assembler_info.begin_location = tree.begin_location;
+		input_assembler_info.end_location = tree.end_location;
+		input_assembler_info.translation_unit_p = unit_p.no_requirements();
 
 		// parse child info trees
 		auto child_info_trees_opt = H_nsl_utilities::build_info_trees(
@@ -4377,12 +4381,12 @@ namespace nrhi {
 			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 				&(unit_p->error_group_p()->stack()),
 				object_implementation.bodies[0].begin_location,
-				"can't not parse vertex_layout shaders"
+				"can't not parse input_assembler shaders"
 			);
 			return eastl::nullopt;
 		}
 
-		F_nsl_vertex_attribute_config_map attribute_config_map;
+		F_nsl_input_attribute_config_map attribute_config_map;
 
 		auto& child_info_trees = child_info_trees_opt.value();
 
@@ -4391,7 +4395,7 @@ namespace nrhi {
 			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 				&(unit_p->error_group_p()->stack()),
 				object_implementation.bodies[0].begin_location,
-				"require vertex_layout shaders"
+				"require input_assembler shaders"
 			);
 			return eastl::nullopt;
 		}
@@ -4416,7 +4420,7 @@ namespace nrhi {
 				continue;
 			}
 
-			F_nsl_vertex_attribute attribute = {
+			F_nsl_input_attribute attribute = {
 				.semantic = name_manager_p->target(child_info_tree.name)
 			};
 
@@ -4448,7 +4452,7 @@ namespace nrhi {
 				}
 			}
 
-			vertex_layout_info.attributes.push_back(attribute);
+			input_assembler_info.attributes.push_back(attribute);
 
 			child_trees[i] = F_nsl_ast_tree {
 				.type = E_nsl_ast_tree_type::INFO_TREE,
@@ -4456,13 +4460,15 @@ namespace nrhi {
 				.begin_location = child_info_tree.begin_location,
 				.end_location = child_info_tree.end_location
 			};
+
+			attribute_config_map = {};
 		}
 
-		// register vertex_layout
+		// register input_assembler
 		name_manager_p->template T_register_name<FE_nsl_name_types::PIPELINE_STATE>(tree.object_implementation.name);
-		vertex_layout_manager_p->register_vertex_layout(
+		input_assembler_manager_p->register_input_assembler(
 			tree.object_implementation.name,
-			vertex_layout_info
+			input_assembler_info
 		);
 
 		return std::move(child_trees);
@@ -4470,12 +4476,12 @@ namespace nrhi {
 
 
 
-	F_nsl_vertex_layout_object_type::F_nsl_vertex_layout_object_type(
+	F_nsl_input_assembler_object_type::F_nsl_input_assembler_object_type(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
 	) :
 		A_nsl_object_type(
 			shader_compiler_p,
-			"vertex_layout",
+			"input_assembler",
 			true,
 			1,
 			1,
@@ -4483,10 +4489,10 @@ namespace nrhi {
 		)
 	{
 	}
-	F_nsl_vertex_layout_object_type::~F_nsl_vertex_layout_object_type() {
+	F_nsl_input_assembler_object_type::~F_nsl_input_assembler_object_type() {
 	}
 
-	TK<A_nsl_object> F_nsl_vertex_layout_object_type::create_object(
+	TK<A_nsl_object> F_nsl_input_assembler_object_type::create_object(
 		F_nsl_ast_tree& tree,
 		F_nsl_context& context,
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p
@@ -4494,7 +4500,7 @@ namespace nrhi {
 		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
 
 		auto object_p = register_object(
-			TU<F_nsl_vertex_layout_object>()(
+			TU<F_nsl_input_assembler_object>()(
 				shader_compiler_p(),
 				NCPP_KTHIS(),
 				translation_unit_p,
@@ -4660,6 +4666,8 @@ namespace nrhi {
 				.begin_location = param_child_info_tree.begin_location,
 				.end_location = param_child_info_tree.end_location
 			};
+
+			data_argument_config_map = {};
 		}
 
 		// parse body
@@ -4769,9 +4777,9 @@ namespace nrhi {
 
 		auto name_manager_p = shader_compiler_p()->name_manager_p();
 
-		// @vertex_layout annotation
+		// @input_assembler annotation
 		{
-			auto it = context.current_object_config.find("vertex_layout");
+			auto it = context.current_object_config.find("input_assembler");
 			if(it != context.current_object_config.end()) {
 
 				auto value_opt = it->second.read_string(0);
@@ -4779,7 +4787,7 @@ namespace nrhi {
 				if(!value_opt)
 					return eastl::nullopt;
 
-				vertex_layout_name_ = name_manager_p->target(value_opt.value());
+				input_assembler_name_ = name_manager_p->target(value_opt.value());
 			}
 		}
 
@@ -5029,7 +5037,7 @@ namespace nrhi {
 			TU<F_nsl_uniform_object_type>()(shader_compiler_p_)
 		);
 		register_type(
-			TU<F_nsl_default_uniform_buffer_object_type>()(shader_compiler_p_)
+			TU<F_nsl_default_constant_buffer_object_type>()(shader_compiler_p_)
 		);
 		register_type(
 			TU<F_nsl_sampler_state_object_type>()(shader_compiler_p_)
@@ -5038,7 +5046,7 @@ namespace nrhi {
 			TU<F_nsl_pipeline_state_object_type>()(shader_compiler_p_)
 		);
 		register_type(
-			TU<F_nsl_vertex_layout_object_type>()(shader_compiler_p_)
+			TU<F_nsl_input_assembler_object_type>()(shader_compiler_p_)
 		);
 	}
 	F_nsl_object_manager::~F_nsl_object_manager() {
@@ -5811,9 +5819,24 @@ namespace nrhi {
 						u32 member_single_element_size = data_type_manager_p->size(uniform_iterator->second.type);
 						u32 aligned_member_single_element_size = align_size(member_single_element_size, member_alignment);
 
+						E_nsl_element_format member_type_element_format = data_type_manager_p->element_format(uniform_iterator->second.type);
+						u32 member_type_element_count = data_type_manager_p->element_count(uniform_iterator->second.type);
+
 						u32 member_size = (
 							(member_element_count - 1) * eastl::max<u32>(aligned_member_single_element_size, min_pack_alignment)
-							+ member_single_element_size
+							+ (
+								(
+									(member_type_element_count == 3)
+									&& (
+										(member_type_element_format != E_nsl_element_format::FLOAT_32)
+										&& (member_type_element_format != E_nsl_element_format::UINT_32)
+										&& (member_type_element_format != E_nsl_element_format::SINT_32)
+										&& (member_type_element_format != E_nsl_element_format::TYPELESS_32)
+									)
+								)
+								? aligned_member_single_element_size
+								: member_single_element_size
+							)
 						);
 
 						offset = align_size(offset, member_alignment);
@@ -6172,6 +6195,10 @@ namespace nrhi {
 			name,
 			semantic_info.element_format
 		);
+		register_element_count(
+			name,
+			semantic_info.element_count
+		);
 
 		return std::move(result);
 	}
@@ -6194,9 +6221,24 @@ namespace nrhi {
 			u32 member_single_element_size = size(argument.type);
 			u32 aligned_member_single_element_size = align_size(member_single_element_size, member_alignment);
 
+			E_nsl_element_format member_type_element_format = element_format(argument.type);
+			u32 member_type_element_count = element_count(argument.type);
+
 			u32 member_size = (
 				(member_element_count - 1) * eastl::max<u32>(aligned_member_single_element_size, min_pack_alignment)
-				+ member_single_element_size
+				+ (
+					(
+						(member_type_element_count == 3)
+						&& (
+							(member_type_element_format != E_nsl_element_format::FLOAT_32)
+							&& (member_type_element_format != E_nsl_element_format::UINT_32)
+							&& (member_type_element_format != E_nsl_element_format::SINT_32)
+							&& (member_type_element_format != E_nsl_element_format::TYPELESS_32)
+						)
+					)
+					? aligned_member_single_element_size
+					: member_single_element_size
+				)
 			);
 
 			offset = align_size(offset, member_alignment);
@@ -6342,6 +6384,13 @@ namespace nrhi {
 		data_type_manager_p->register_element_format("float", E_nsl_element_format::FLOAT_32);
 		data_type_manager_p->register_element_format("double", E_nsl_element_format::FLOAT_64);
 
+		data_type_manager_p->register_element_count("bool", 1);
+		data_type_manager_p->register_element_count("int", 1);
+		data_type_manager_p->register_element_count("uint", 1);
+		data_type_manager_p->register_element_count("half", 1);
+		data_type_manager_p->register_element_count("float", 1);
+		data_type_manager_p->register_element_count("double", 1);
+
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("bool2");
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("int2");
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("uint2");
@@ -6397,6 +6446,13 @@ namespace nrhi {
 		data_type_manager_p->register_element_format("half2", E_nsl_element_format::FLOAT_16);
 		data_type_manager_p->register_element_format("float2", E_nsl_element_format::FLOAT_32);
 		data_type_manager_p->register_element_format("double2", E_nsl_element_format::FLOAT_64);
+
+		data_type_manager_p->register_element_count("bool2", 2);
+		data_type_manager_p->register_element_count("int2", 2);
+		data_type_manager_p->register_element_count("uint2", 2);
+		data_type_manager_p->register_element_count("half2", 2);
+		data_type_manager_p->register_element_count("float2", 2);
+		data_type_manager_p->register_element_count("double2", 2);
 
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("bool3");
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("int3");
@@ -6454,6 +6510,13 @@ namespace nrhi {
 		data_type_manager_p->register_element_format("float3", E_nsl_element_format::FLOAT_32);
 		data_type_manager_p->register_element_format("double3", E_nsl_element_format::FLOAT_64);
 
+		data_type_manager_p->register_element_count("bool3", 3);
+		data_type_manager_p->register_element_count("int3", 3);
+		data_type_manager_p->register_element_count("uint3", 3);
+		data_type_manager_p->register_element_count("half3", 3);
+		data_type_manager_p->register_element_count("float3", 3);
+		data_type_manager_p->register_element_count("double3", 3);
+
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("bool4");
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("int4");
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("uint4");
@@ -6509,6 +6572,13 @@ namespace nrhi {
 		data_type_manager_p->register_element_format("half4", E_nsl_element_format::FLOAT_16);
 		data_type_manager_p->register_element_format("float4", E_nsl_element_format::FLOAT_32);
 		data_type_manager_p->register_element_format("double4", E_nsl_element_format::FLOAT_64);
+
+		data_type_manager_p->register_element_count("bool4", 4);
+		data_type_manager_p->register_element_count("int4", 4);
+		data_type_manager_p->register_element_count("uint4", 4);
+		data_type_manager_p->register_element_count("half4", 4);
+		data_type_manager_p->register_element_count("float4", 4);
+		data_type_manager_p->register_element_count("double4", 4);
 
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("bool2x2");
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("int2x2");
@@ -6566,6 +6636,13 @@ namespace nrhi {
 		data_type_manager_p->register_element_format("float2x2", E_nsl_element_format::FLOAT_32);
 		data_type_manager_p->register_element_format("double2x2", E_nsl_element_format::FLOAT_64);
 
+		data_type_manager_p->register_element_count("bool2x2", 2 * 2);
+		data_type_manager_p->register_element_count("int2x2", 2 * 2);
+		data_type_manager_p->register_element_count("uint2x2", 2 * 2);
+		data_type_manager_p->register_element_count("half2x2", 2 * 2);
+		data_type_manager_p->register_element_count("float2x2", 2 * 2);
+		data_type_manager_p->register_element_count("double2x2", 2 * 2);
+
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("bool3x3");
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("int3x3");
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("uint3x3");
@@ -6622,6 +6699,13 @@ namespace nrhi {
 		data_type_manager_p->register_element_format("float3x3", E_nsl_element_format::FLOAT_32);
 		data_type_manager_p->register_element_format("double3x3", E_nsl_element_format::FLOAT_64);
 
+		data_type_manager_p->register_element_count("bool3x3", 3 * 3);
+		data_type_manager_p->register_element_count("int3x3", 3 * 3);
+		data_type_manager_p->register_element_count("uint3x3", 3 * 3);
+		data_type_manager_p->register_element_count("half3x3", 3 * 3);
+		data_type_manager_p->register_element_count("float3x3", 3 * 3);
+		data_type_manager_p->register_element_count("double3x3", 3 * 3);
+
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("bool4x4");
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("int4x4");
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("uint4x4");
@@ -6677,6 +6761,13 @@ namespace nrhi {
 		data_type_manager_p->register_element_format("half4x4", E_nsl_element_format::FLOAT_16);
 		data_type_manager_p->register_element_format("float4x4", E_nsl_element_format::FLOAT_32);
 		data_type_manager_p->register_element_format("double4x4", E_nsl_element_format::FLOAT_64);
+
+		data_type_manager_p->register_element_count("bool4x4", 4 * 4);
+		data_type_manager_p->register_element_count("int4x4", 4 * 4);
+		data_type_manager_p->register_element_count("uint4x4", 4 * 4);
+		data_type_manager_p->register_element_count("half4x4", 4 * 4);
+		data_type_manager_p->register_element_count("float4x4", 4 * 4);
+		data_type_manager_p->register_element_count("double4x4", 4 * 4);
 
 		name_manager_p->register_name("F_vector2", "F_vector2_f32");
 		name_manager_p->register_name("F_vector3", "F_vector3_f32");
@@ -7139,16 +7230,496 @@ namespace nrhi {
 
 
 
-	F_nsl_vertex_layout_manager::F_nsl_vertex_layout_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
+	F_nsl_input_assembler_manager::F_nsl_input_assembler_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
 		shader_compiler_p_(shader_compiler_p)
 	{
 	}
-	F_nsl_vertex_layout_manager::~F_nsl_vertex_layout_manager() {
+	F_nsl_input_assembler_manager::~F_nsl_input_assembler_manager() {
 	}
 
-	F_nsl_vertex_layout_info F_nsl_vertex_layout_manager::process_vertex_layout_info(const G_string& name, const F_nsl_vertex_layout_info& vertex_layout_info) {
+	F_nsl_input_assembler_info F_nsl_input_assembler_manager::process_input_assembler_info(const G_string& name, const F_nsl_input_assembler_info& input_assembler_info) {
 
-		F_nsl_vertex_layout_info result = vertex_layout_info;
+		F_nsl_input_assembler_info result = input_assembler_info;
+
+		auto data_type_manager_p = shader_compiler_p_->data_type_manager_p();
+
+		// build desc
+		{
+			u32 attribute_count = result.attributes.size();
+
+			F_input_assembler_desc& desc = result.desc;
+
+			for(u32 i = 0; i < attribute_count; ++i) {
+
+				auto& attribute = result.attributes[i];
+
+				const auto& semantic_info = data_type_manager_p->semantic_info(attribute.semantic);
+
+				E_format format = E_format::NONE;
+				u32 duplicate_count = 0;
+
+				switch (semantic_info.element_format)
+				{
+				case E_nsl_element_format::FLOAT_64:
+					{
+						static E_format formats[] = {
+							E_format::R32G32B32A32_FLOAT,
+							E_format::R32G32_FLOAT
+						};
+						format = formats[
+							4 - eastl::min<u32>(
+								semantic_info.element_count,
+								2
+							)
+						];
+						duplicate_count = u32(
+							ceil(
+								f32(semantic_info.element_count)
+								/ 8.0f
+							)
+						);
+					}
+					break;
+				case E_nsl_element_format::UINT_64:
+					{
+						static E_format formats[] = {
+							E_format::R32G32B32A32_UINT,
+							E_format::R32G32_UINT
+						};
+						format = formats[
+							4 - eastl::min<u32>(
+								semantic_info.element_count,
+								2
+							)
+						];
+						duplicate_count = u32(
+							ceil(
+								f32(semantic_info.element_count)
+								/ 8.0f
+							)
+						);
+					}
+					break;
+				case E_nsl_element_format::SINT_64:
+					{
+						static E_format formats[] = {
+							E_format::R32G32B32A32_SINT,
+							E_format::R32G32_SINT
+						};
+						format = formats[
+							4 - eastl::min<u32>(
+								semantic_info.element_count,
+								2
+							)
+						];
+						duplicate_count = u32(
+							ceil(
+								f32(semantic_info.element_count)
+								/ 8.0f
+							)
+						);
+					}
+					break;
+				case E_nsl_element_format::TYPELESS_64:
+					{
+						static E_format formats[] = {
+							E_format::R32G32B32A32_TYPELESS,
+							E_format::R32G32_TYPELESS
+						};
+						format = formats[
+							4 - eastl::min<u32>(
+								semantic_info.element_count,
+								2
+							)
+						];
+						duplicate_count = u32(
+							ceil(
+								f32(semantic_info.element_count)
+								/ 8.0f
+							)
+						);
+					}
+					break;
+
+				case E_nsl_element_format::FLOAT_32:
+					{
+						static E_format formats[] = {
+							E_format::R32G32B32A32_FLOAT,
+							E_format::R32G32B32_FLOAT,
+							E_format::R32G32_FLOAT,
+							E_format::R32_FLOAT
+						};
+						format = formats[
+							4 - eastl::min<u32>(
+								semantic_info.element_count,
+								4
+							)
+						];
+						duplicate_count = u32(
+							ceil(
+								f32(semantic_info.element_count)
+								/ 4.0f
+							)
+						);
+					}
+					break;
+				case E_nsl_element_format::FLOAT_16:
+					{
+						static E_format formats[] = {
+							E_format::R16G16B16A16_FLOAT,
+							E_format::R16G16B16A16_FLOAT,
+							E_format::R16G16_FLOAT,
+							E_format::R16_FLOAT
+						};
+						format = formats[
+							4 - eastl::min<u32>(
+								semantic_info.element_count,
+								4
+							)
+						];
+						duplicate_count = u32(
+							ceil(
+								f32(semantic_info.element_count)
+								/ 4.0f
+							)
+						);
+					}
+					break;
+
+				case E_nsl_element_format::UNORM_16:
+					{
+						static E_format formats[] = {
+							E_format::R16G16B16A16_UNORM,
+							E_format::R16G16B16A16_UNORM,
+							E_format::R16G16_UNORM,
+							E_format::R16_UNORM
+						};
+						format = formats[
+							4 - eastl::min<u32>(
+								semantic_info.element_count,
+								4
+							)
+						];
+						duplicate_count = u32(
+							ceil(
+								f32(semantic_info.element_count)
+								/ 4.0f
+							)
+						);
+					}
+					break;
+				case E_nsl_element_format::UNORM_8:
+					{
+						static E_format formats[] = {
+							E_format::R8G8B8A8_UNORM,
+							E_format::R8G8B8A8_UNORM,
+							E_format::R8G8_UNORM,
+							E_format::R8_UNORM
+						};
+						format = formats[
+							4 - eastl::min<u32>(
+								semantic_info.element_count,
+								4
+							)
+						];
+						duplicate_count = u32(
+							ceil(
+								f32(semantic_info.element_count)
+								/ 4.0f
+							)
+						);
+					}
+					break;
+
+				case E_nsl_element_format::SNORM_16:
+					{
+						static E_format formats[] = {
+							E_format::R16G16B16A16_SNORM,
+							E_format::R16G16B16A16_SNORM,
+							E_format::R16G16_SNORM,
+							E_format::R16_SNORM
+						};
+						format = formats[
+							4 - eastl::min<u32>(
+								semantic_info.element_count,
+								4
+							)
+						];
+						duplicate_count = u32(
+							ceil(
+								f32(semantic_info.element_count)
+								/ 4.0f
+							)
+						);
+					}
+					break;
+				case E_nsl_element_format::SNORM_8:
+					{
+						static E_format formats[] = {
+							E_format::R8G8B8A8_SNORM,
+							E_format::R8G8B8A8_SNORM,
+							E_format::R8G8_SNORM,
+							E_format::R8_SNORM
+						};
+						format = formats[
+							4 - eastl::min<u32>(
+								semantic_info.element_count,
+								4
+							)
+						];
+						duplicate_count = u32(
+							ceil(
+								f32(semantic_info.element_count)
+								/ 4.0f
+							)
+						);
+					}
+					break;
+
+				case E_nsl_element_format::UINT_32:
+					{
+						static E_format formats[] = {
+							E_format::R32G32B32A32_UINT,
+							E_format::R32G32B32_UINT,
+							E_format::R32G32_UINT,
+							E_format::R32_UINT
+						};
+						format = formats[
+							4 - eastl::min<u32>(
+								semantic_info.element_count,
+								4
+							)
+						];
+						duplicate_count = u32(
+							ceil(
+								f32(semantic_info.element_count)
+								/ 4.0f
+							)
+						);
+					}
+					break;
+				case E_nsl_element_format::UINT_16:
+					{
+						static E_format formats[] = {
+							E_format::R16G16B16A16_UINT,
+							E_format::R16G16B16A16_UINT,
+							E_format::R16G16_UINT,
+							E_format::R16_UINT
+						};
+						format = formats[
+							4 - eastl::min<u32>(
+								semantic_info.element_count,
+								4
+							)
+						];
+						duplicate_count = u32(
+							ceil(
+								f32(semantic_info.element_count)
+								/ 4.0f
+							)
+						);
+					}
+					break;
+				case E_nsl_element_format::UINT_8:
+					{
+						static E_format formats[] = {
+							E_format::R8G8B8A8_UINT,
+							E_format::R8G8B8A8_UINT,
+							E_format::R8G8_UINT,
+							E_format::R8_UINT
+						};
+						format = formats[
+							4 - eastl::min<u32>(
+								semantic_info.element_count,
+								4
+							)
+						];
+						duplicate_count = u32(
+							ceil(
+								f32(semantic_info.element_count)
+								/ 4.0f
+							)
+						);
+					}
+					break;
+
+				case E_nsl_element_format::SINT_32:
+					{
+						static E_format formats[] = {
+							E_format::R32G32B32A32_SINT,
+							E_format::R32G32B32_SINT,
+							E_format::R32G32_SINT,
+							E_format::R32_SINT
+						};
+						format = formats[
+							4 - eastl::min<u32>(
+								semantic_info.element_count,
+								4
+							)
+						];
+						duplicate_count = u32(
+							ceil(
+								f32(semantic_info.element_count)
+								/ 4.0f
+							)
+						);
+					}
+					break;
+				case E_nsl_element_format::SINT_16:
+					{
+						static E_format formats[] = {
+							E_format::R16G16B16A16_SINT,
+							E_format::R16G16B16A16_SINT,
+							E_format::R16G16_SINT,
+							E_format::R16_SINT
+						};
+						format = formats[
+							4 - eastl::min<u32>(
+								semantic_info.element_count,
+								4
+							)
+						];
+						duplicate_count = u32(
+							ceil(
+								f32(semantic_info.element_count)
+								/ 4.0f
+							)
+						);
+					}
+					break;
+				case E_nsl_element_format::SINT_8:
+					{
+						static E_format formats[] = {
+							E_format::R8G8B8A8_SINT,
+							E_format::R8G8B8A8_SINT,
+							E_format::R8G8_SINT,
+							E_format::R8_SINT
+						};
+						format = formats[
+							4 - eastl::min<u32>(
+								semantic_info.element_count,
+								4
+							)
+						];
+						duplicate_count = u32(
+							ceil(
+								f32(semantic_info.element_count)
+								/ 4.0f
+							)
+						);
+					}
+					break;
+
+				case E_nsl_element_format::TYPELESS_32:
+					{
+						static E_format formats[] = {
+							E_format::R32G32B32A32_TYPELESS,
+							E_format::R32G32B32_TYPELESS,
+							E_format::R32G32_TYPELESS,
+							E_format::R32_TYPELESS
+						};
+						format = formats[
+							4 - eastl::min<u32>(
+								semantic_info.element_count,
+								4
+							)
+						];
+						duplicate_count = u32(
+							ceil(
+								f32(semantic_info.element_count)
+								/ 4.0f
+							)
+						);
+					}
+					break;
+				case E_nsl_element_format::TYPELESS_16:
+					{
+						static E_format formats[] = {
+							E_format::R16G16B16A16_TYPELESS,
+							E_format::R16G16B16A16_TYPELESS,
+							E_format::R16G16_TYPELESS,
+							E_format::R16_TYPELESS
+						};
+						format = formats[
+							4 - eastl::min<u32>(
+								semantic_info.element_count,
+								4
+							)
+						];
+						duplicate_count = u32(
+							ceil(
+								f32(semantic_info.element_count)
+								/ 4.0f
+							)
+						);
+					}
+					break;
+				case E_nsl_element_format::TYPELESS_8:
+					{
+						static E_format formats[] = {
+							E_format::R8G8B8A8_TYPELESS,
+							E_format::R8G8B8A8_TYPELESS,
+							E_format::R8G8_TYPELESS,
+							E_format::R8_TYPELESS
+						};
+						format = formats[
+							4 - eastl::min<u32>(
+								semantic_info.element_count,
+								4
+							)
+						];
+						duplicate_count = u32(
+							ceil(
+								f32(semantic_info.element_count)
+								/ 4.0f
+							)
+						);
+					}
+					break;
+				}
+
+				switch (semantic_info.input_class)
+				{
+				case E_nsl_semantic_input_class::PER_VERTEX:
+					desc.vertex_attribute_groups.resize(
+						eastl::max<u32>(
+							desc.vertex_attribute_groups.size(),
+							attribute.buffer + 1
+						)
+					);
+					desc.vertex_attribute_groups[attribute.buffer].push_back(
+						F_vertex_attribute {
+
+							.name = attribute.semantic,
+							.format = format,
+							.duplicate_count = duplicate_count,
+							.offset = attribute.offset
+
+						}
+					);
+					break;
+				case E_nsl_semantic_input_class::PER_INSTANCE:
+					desc.instance_attribute_groups.resize(
+						eastl::max<u32>(
+							desc.instance_attribute_groups.size(),
+							attribute.buffer + 1
+						)
+					);
+					desc.instance_attribute_groups[attribute.buffer].push_back(
+						F_instance_attribute {
+
+							.name = attribute.semantic,
+							.format = format,
+							.duplicate_count = duplicate_count,
+							.offset = attribute.offset
+
+						}
+					);
+					break;
+				}
+
+			}
+		}
 
 		return std::move(result);
 	}
@@ -7172,6 +7743,7 @@ namespace nrhi {
 		auto sampler_state_manager_p = shader_compiler_p_->sampler_state_manager_p();
 		auto resource_manager_p = shader_compiler_p_->resource_manager_p();
 		auto uniform_manager_p = shader_compiler_p_->uniform_manager_p();
+		auto input_assembler_manager_p = shader_compiler_p_->input_assembler_manager_p();
 
 		auto& name_to_primitive_data_type_map = data_type_manager_p->name_to_primitive_data_type_map();
 		auto& name_to_structure_info_map = data_type_manager_p->name_to_structure_info_map();
@@ -7179,8 +7751,35 @@ namespace nrhi {
 		auto& name_to_pipeline_state_info_map = pipeline_state_manager_p->name_to_pipeline_state_info_map();
 		auto& name_to_sampler_state_info_map = sampler_state_manager_p->name_to_sampler_state_info_map();
 		auto& name_to_resource_info_map = resource_manager_p->name_to_resource_info_map();
+		auto& name_to_input_assembler_info_map = input_assembler_manager_p->name_to_input_assembler_info_map();
 
 		TG_unordered_map<G_string, u32> name_to_type_index_map;
+		TG_unordered_map<G_string, u32> name_to_input_assembler_index_map;
+
+		// input assemblers
+		{
+			u32 input_assembler_count = name_to_input_assembler_info_map.size();
+
+			auto it = name_to_input_assembler_info_map.begin();
+
+			for(u32 i = 0; i < input_assembler_count; ++i) {
+
+				auto& input_assembler_info = it->second;
+
+				name_to_input_assembler_index_map[it->first] = i;
+
+				reflection.input_assemblers.push_back(
+					F_nsl_input_assembler_reflection {
+
+						.name = it->first,
+						.desc = input_assembler_info.desc
+
+					}
+				);
+
+				++it;
+			}
+		}
 
 		// primitive data types
 		{
@@ -7305,10 +7904,21 @@ namespace nrhi {
 
 				auto& shader_object_p = it->second;
 
+				u32 input_assembler_index = -1;
+
+				TK<F_nsl_vertex_shader_object> vertex_shader_object_p;
+				if(shader_object_p.T_try_interface<F_nsl_vertex_shader_object>(vertex_shader_object_p)) {
+
+					input_assembler_index = name_to_input_assembler_index_map[
+						vertex_shader_object_p->input_assembler_name()
+					];
+				}
+
 				reflection.shaders[i] = F_nsl_shader_reflection {
 
 					.name = shader_object_p->name(),
-					.type = shader_object_p->type()
+					.type = shader_object_p->type(),
+					.input_assembler_index = input_assembler_index
 
 				};
 
@@ -7482,8 +8092,8 @@ namespace nrhi {
 		pipeline_state_manager_p_(
 			TU<F_nsl_pipeline_state_manager>()(NCPP_KTHIS())
 		),
-		vertex_layout_manager_p_(
-			TU<F_nsl_vertex_layout_manager>()(NCPP_KTHIS())
+		input_assembler_manager_p_(
+			TU<F_nsl_input_assembler_manager>()(NCPP_KTHIS())
 		),
 		reflector_p_(
 			TU<F_nsl_reflector>()(NCPP_KTHIS())
@@ -7505,7 +8115,7 @@ namespace nrhi {
 		uniform_manager_p_(customizer.uniform_manager_creator(NCPP_KTHIS())),
 		sampler_state_manager_p_(customizer.sampler_state_manager_creator(NCPP_KTHIS())),
 		pipeline_state_manager_p_(customizer.pipeline_state_manager_creator(NCPP_KTHIS())),
-		vertex_layout_manager_p_(customizer.vertex_layout_manager_creator(NCPP_KTHIS())),
+		input_assembler_manager_p_(customizer.input_assembler_manager_creator(NCPP_KTHIS())),
 		reflector_p_(customizer.reflector_creator(NCPP_KTHIS()))
 	{
 	}

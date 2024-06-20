@@ -52,7 +52,7 @@ namespace nrhi {
 		G_string name;
 		E_format format;
 		u32 duplicate_count = 1;
-		i32 offset = -1;
+		u32 offset = -1;
 
 	};
 	struct F_instance_attribute {
@@ -60,14 +60,14 @@ namespace nrhi {
 		G_string name;
 		E_format format;
 		u32 duplicate_count = 1;
-		i32 offset = -1;
+		u32 offset = -1;
 
 	};
 
 	struct F_input_assembler_desc {
 
 		TG_vector<TG_vector<F_vertex_attribute>> vertex_attribute_groups;
-		TG_vector<TG_vector<F_vertex_attribute>> instance_attribute_groups;
+		TG_vector<TG_vector<F_instance_attribute>> instance_attribute_groups;
 
 	};
 
