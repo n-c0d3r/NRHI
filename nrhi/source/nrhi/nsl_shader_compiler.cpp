@@ -16,7 +16,17 @@ namespace nrhi {
 				<< "shader index out of bound";
 
 			result += (
+				"#define NSL_SHADER_"
+				+ reflection.shaders[shader_index].name
+				+ "\n"
+			);
+			result += (
 				"#define NSL_SHADER_INDEX_"
+				+ G_to_string(shader_index)
+				+ "\n"
+			);
+			result += (
+				"#define NSL_SHADER_INDEX "
 				+ G_to_string(shader_index)
 				+ "\n"
 			);
@@ -34,9 +44,35 @@ namespace nrhi {
 
 				G_string register_slot_macro = (
 					"NSL_REGISTER_SLOT_"
-					+ G_to_string(shader_index)
-					+ "_"
 					+ sampler_state.name
+				);
+
+				result += (
+					"#define "
+					+ register_slot_macro
+					+ " "
+					+ G_to_string(actual_slot)
+					+ "\n"
+				);
+			}
+		}
+
+		// override resource actual slots
+		{
+			u32 sample_state_count = reflection.resources.size();
+
+			for (u32 i = 0; i < sample_state_count; ++i)
+			{
+				const auto& resource = reflection.resources[i];
+
+				u32 actual_slot = resource.actual_slots[shader_index];
+
+				if(actual_slot == -1)
+					continue;
+
+				G_string register_slot_macro = (
+					"NSL_REGISTER_SLOT_"
+					+ resource.name
 				);
 
 				result += (
@@ -6901,13 +6937,9 @@ namespace nrhi {
 	A_nsl_output_language::~A_nsl_output_language() {
 	}
 
-	G_string A_nsl_output_language::current_register_slot_macro(const G_string& name) {
+	G_string A_nsl_output_language::register_slot_macro(const G_string& name) {
 
-		return "NSL_CURRENT_REGISTER_SLOT_" + name;
-	}
-	G_string A_nsl_output_language::register_slot_macro(u32 shader_index, const G_string& name) {
-
-		return "NSL_REGISTER_SLOT_" + G_to_string(shader_index) + "_" + name;
+		return "NSL_REGISTER_SLOT_" + name;
 	}
 
 
@@ -7427,42 +7459,17 @@ namespace nrhi {
 
 		G_string result;
 
-		G_string sampler_state_current_register_slot_macro = current_register_slot_macro(sampler_state.first);
-
-		for(u32 i = 0; i < shader_count; ++i)
-		{
-			u32 actual_slot = sampler_state.second.actual_slots[i];
-
-			G_string sampler_state_register_slot_macro = register_slot_macro(i, sampler_state.first);
-
-			if(actual_slot != -1)
-				result += (
-					"\n#ifdef NSL_SHADER_INDEX_" + G_to_string(i)
-					+ "\n"
-
-					+ "#define NSL_HAS_SAMPLER_STATE_"
-					+ sampler_state.first
-					+ "\n"
-
-					+ "#define "
-					+ sampler_state_current_register_slot_macro
-					+ " "
-					+ sampler_state_register_slot_macro
-					+ "\n"
-
-					+ "#endif"
-				);
-		}
+		G_string sampler_state_register_slot_macro = register_slot_macro(sampler_state.first);
 
 		result += (
-			G_string("\n#ifdef NSL_HAS_SAMPLER_STATE_")
-			+ sampler_state.first
+			G_string("\n#ifdef ")
+			+ sampler_state_register_slot_macro
 			+ "\n"
 
 			+ "#define NSL_REGISTER_"
 			+ sampler_state.first
 			+ " register(s##"
-			+ sampler_state_current_register_slot_macro
+			+ sampler_state_register_slot_macro
 			+ ")\n"
 
 			+ "SamplerState "
@@ -7470,8 +7477,9 @@ namespace nrhi {
 			+ " : "
 			+ "NSL_REGISTER_"
 			+ sampler_state.first
-			+ ";"
-			+ "\n#endif\n"
+			+ ";\n"
+
+			+ "#endif\n"
 		);
 
 		return std::move(result);
@@ -7528,7 +7536,7 @@ namespace nrhi {
 
 		G_string result;
 
-		G_string resource_current_register_slot_macro = current_register_slot_macro(resource.first);
+		G_string resource_register_slot_macro = register_slot_macro(resource.first);
 
 		G_string uniform_declarations;
 		auto uniform_manager_p = shader_compiler_p()->uniform_manager_p();
@@ -7539,36 +7547,9 @@ namespace nrhi {
 			uniform_declarations += uniform_info.type + " " + uniform + ";\n";
 		}
 
-		for(u32 i = 0; i < shader_count; ++i)
-		{
-			u32 actual_slot = resource.second.actual_slots[i];
-
-			G_string resource_register_slot_macro = register_slot_macro(i, resource.first);
-
-			if(actual_slot != -1)
-			{
-				result += (
-					"\n#ifdef NSL_SHADER_INDEX_" + G_to_string(i)
-					+ "\n"
-
-					+ "#define NSL_HAS_RESOURCE_"
-					+ resource.first
-					+ "\n"
-
-					+ "#define "
-					+ resource_current_register_slot_macro
-					+ " "
-					+ resource_register_slot_macro
-					+ "\n"
-
-					+ "#endif"
-				);
-			}
-		}
-
 		result += (
-			G_string("\n#ifdef NSL_HAS_RESOURCE_")
-			+ resource.first
+			G_string("\n#ifdef ")
+			+ resource_register_slot_macro
 			+ "\n"
 
 			+ "#define NSL_REGISTER_"
@@ -7576,7 +7557,7 @@ namespace nrhi {
 			+ " register("
 		  	+ G_string(1, register_type)
 			+ "##"
-			+ resource_current_register_slot_macro
+			+ resource_register_slot_macro
 			+ ")\n"
 		);
 
@@ -7592,7 +7573,7 @@ namespace nrhi {
 				// register
 				+ " : NSL_REGISTER_"
 				+ resource.first
-				+ ";"
+				+ ";\n"
 			);
 		else {
 			result += (
@@ -7606,11 +7587,11 @@ namespace nrhi {
 				+ resource.first
 				+ "{\n"
 				+ uniform_declarations
-				+ "\n};"
+				+ "\n};\n"
 			);
 		}
 
-		result += "\n#endif\n";
+		result += "#endif\n";
 
 		return std::move(result);
 	}
