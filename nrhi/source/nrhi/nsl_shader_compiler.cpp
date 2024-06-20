@@ -4569,9 +4569,9 @@ namespace nrhi {
 		A_nsl_object_type(
 			shader_compiler_p,
 			"default_pipeline_state_desc",
-			true,
-			0,
-			0,
+			false,
+			1,
+			1,
 			nsl_global_object_type_channel_mask
 		)
 	{
