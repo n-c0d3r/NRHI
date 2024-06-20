@@ -51,6 +51,16 @@ int main() {
 "	Texture2D(float4)\n"
 ")\n"
 "\n"
+"resource demo_texture_2d_3\n"
+"(\n"
+"	Texture2D(float4)\n"
+")\n"
+"\n"
+"resource demo_texture_2d_4\n"
+"(\n"
+"	Texture2D(float4)\n"
+")\n"
+"\n"
 "resource demo_texture_2d_rw\n"
 "(\n"
 "	RWTexture2D(float4)\n"
@@ -145,6 +155,33 @@ int main() {
 		auto compiled_result = compiled_result_opt.value();
 
 		auto reflection = compiler_p->reflect();
+
+		reflection.sort_sampler_states(
+			{
+				TG_unordered_set<G_string>({
+					"demo_sampler_state",
+					"demo_sampler_state3"
+				}),
+				TG_unordered_set<G_string>({
+					"demo_sampler_state2",
+					"demo_sampler_state4"
+				})
+			}
+		);
+
+		reflection.sort_resources(
+			{
+				TG_unordered_set<G_string>({
+					"demo_texture_2d_3",
+					"demo_texture_2d"
+				}),
+				TG_unordered_set<G_string>({
+					"demo_texture_2d_4",
+					"demo_texture_2d_2"
+				})
+			},
+			E_nsl_resource_type_class::SRV
+		);
 	}
 
 	return 0;

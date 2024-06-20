@@ -833,7 +833,7 @@ namespace nrhi {
 		u32 alignment = 0;
 
 	};
-	struct F_nsl_reflection
+	struct NRHI_API F_nsl_reflection
 	{
 		TG_vector<F_nsl_shader_reflection> shaders;
 		TG_vector<F_nsl_input_assembler_reflection> input_assemblers;
@@ -841,6 +841,15 @@ namespace nrhi {
 		TG_vector<F_nsl_sampler_state_reflection> sampler_states;
 		TG_vector<F_nsl_resource_reflection> resources;
 		TG_vector<F_nsl_type_reflection> types;
+
+	public:
+		void sort_sampler_states(
+			const TG_vector<TG_unordered_set<G_string>>& sampler_state_name_sets
+		);
+		void sort_resources(
+			const TG_vector<TG_unordered_set<G_string>>& resource_name_sets,
+			E_nsl_resource_type_class type_class
+		);
 	};
 
 #define NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(error_stack_p, location, ...) if(error_stack_p) (error_stack_p)->push({__VA_ARGS__, location})

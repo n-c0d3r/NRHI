@@ -1948,6 +1948,289 @@ namespace nrhi {
 
 
 
+	void F_nsl_reflection::sort_sampler_states(
+		const TG_vector<TG_unordered_set<G_string>>& sampler_state_name_sets
+	) {
+		u32 sampler_state_count = sampler_states.size();
+		u32 shader_count = shaders.size();
+
+		// setup name_to_sampler_state_index
+		TG_unordered_map<G_string, u32> name_to_sampler_state_index;
+		{
+			for(u32 i = 0; i < sampler_state_count; ++i) {
+
+				const auto& sampler_state = sampler_states[i];
+
+				name_to_sampler_state_index[sampler_state.name] = i;
+			}
+		}
+
+		// build sampler_state_indices_vector
+		TG_unordered_set<G_string> will_be_moved_sampler_state_set;
+		TG_vector<TG_vector<u32>> will_be_moved_sampler_state_indices_vector;
+		will_be_moved_sampler_state_indices_vector.reserve(sampler_state_name_sets.size());
+		{
+			u32 sampler_state_name_set_count = sampler_state_name_sets.size();
+			for(u32 i = 0; i < sampler_state_name_set_count; ++i) {
+
+				const auto& sampler_state_name_set = sampler_state_name_sets[i];
+
+				TG_vector<G_string> sampler_state_names;
+				sampler_state_names.reserve(sampler_state_name_set.size());
+
+				// build sampler_state_names
+				for(const auto& sampler_state_name : sampler_state_name_set) {
+
+					NCPP_ASSERT(name_to_sampler_state_index.find(sampler_state_name) != name_to_sampler_state_index.end())
+						<< "sampler_state not found";
+
+					NCPP_ASSERT(will_be_moved_sampler_state_set.find(sampler_state_name) == will_be_moved_sampler_state_set.end())
+						<< "a sampler_state name can only be in a unique sampler_state name set";
+
+					sampler_state_names.push_back(sampler_state_name);
+				}
+
+				// sort sampler_state_names
+				{
+					auto sort_func = [](const G_string& a, const G_string& b) -> b8 {
+
+						return TF_hash<G_string>{}(a) > TF_hash<G_string>{}(b);
+					};
+					eastl::sort(sampler_state_names.begin(), sampler_state_names.end(), sort_func);
+				}
+
+				// build and store will_be_moved_sampler_state_indices
+				{
+					TG_vector<u32> will_be_moved_sampler_state_indices;
+					will_be_moved_sampler_state_indices.reserve(sampler_state_names.size());
+
+					for(const auto& sampler_state_name : sampler_state_names) {
+
+						will_be_moved_sampler_state_indices.push_back(
+							name_to_sampler_state_index[sampler_state_name]
+						);
+					}
+
+					will_be_moved_sampler_state_indices_vector.push_back(
+						std::move(will_be_moved_sampler_state_indices)
+					);
+				}
+			}
+		}
+
+		// bind new actual slots
+		TG_vector<TG_vector<u32>> new_actual_slots_vector(sampler_states.size());
+		{
+			// setup new_actual_slots_vector
+			for(auto& new_actual_slots : new_actual_slots_vector) {
+
+				new_actual_slots.resize(shader_count);
+
+				for(auto& new_actual_slot : new_actual_slots) {
+
+					new_actual_slot = -1;
+				}
+			}
+
+			// build new_actual_slots_vector
+			for(u32 i = 0; i < shader_count; ++i) {
+
+				u32 next_actual_slot = 0;
+
+				// for sampler_states that name is in sampler_state name sets
+				for(auto& will_be_moved_sampler_state_indices : will_be_moved_sampler_state_indices_vector) {
+
+					for(auto will_be_moved_sampler_state_index : will_be_moved_sampler_state_indices) {
+
+						auto& sampler_state = sampler_states[will_be_moved_sampler_state_index];
+
+						if(sampler_state.actual_slots[i] == -1)
+							continue;
+
+						auto& new_actual_slot = new_actual_slots_vector[will_be_moved_sampler_state_index][i];
+
+						new_actual_slot = next_actual_slot;
+
+						++next_actual_slot;
+					}
+				}
+
+				// for sampler_states that name is not in sampler_state name sets
+				for(u32 j = 0; j < sampler_state_count; ++j) {
+
+					auto& sampler_state = sampler_states[j];
+
+					auto old_actual_slot = sampler_state.actual_slots[i];
+					auto& new_actual_slot = new_actual_slots_vector[j][i];
+
+					if(
+						(old_actual_slot != -1)
+						&& (new_actual_slot == -1)
+					) {
+						new_actual_slot = next_actual_slot;
+
+						++next_actual_slot;
+					}
+				}
+			}
+		}
+
+		// store new_actual_slots_vector
+		for(u32 i = 0; i < sampler_state_count; ++i) {
+
+			auto& sampler_state = sampler_states[i];
+
+			sampler_state.actual_slots = new_actual_slots_vector[i];
+		}
+	}
+	void F_nsl_reflection::sort_resources(
+		const TG_vector<TG_unordered_set<G_string>>& resource_name_sets,
+		E_nsl_resource_type_class type_class
+	) {
+		u32 resource_count = resources.size();
+		u32 shader_count = shaders.size();
+
+		// setup name_to_resource_index
+		TG_unordered_map<G_string, u32> name_to_resource_index;
+		{
+			for(u32 i = 0; i < resource_count; ++i) {
+
+				const auto& resource = resources[i];
+
+				name_to_resource_index[resource.name] = i;
+			}
+		}
+
+		// build resource_indices_vector
+		TG_unordered_set<G_string> will_be_moved_resource_set;
+		TG_vector<TG_vector<u32>> will_be_moved_resource_indices_vector;
+		will_be_moved_resource_indices_vector.reserve(resource_name_sets.size());
+		{
+			u32 resource_name_set_count = resource_name_sets.size();
+			for(u32 i = 0; i < resource_name_set_count; ++i) {
+
+				const auto& resource_name_set = resource_name_sets[i];
+
+				TG_vector<G_string> resource_names;
+				resource_names.reserve(resource_name_set.size());
+
+				// build resource_names
+				for(const auto& resource_name : resource_name_set) {
+
+					NCPP_ASSERT(name_to_resource_index.find(resource_name) != name_to_resource_index.end())
+					<< "resource not found";
+
+					NCPP_ASSERT(will_be_moved_resource_set.find(resource_name) == will_be_moved_resource_set.end())
+						<< "a resource name can only be in a unique resource name set";
+
+					NCPP_ASSERT(resources[name_to_resource_index[resource_name]].type_class == type_class)
+						<< "invalid resource type class";
+
+					resource_names.push_back(resource_name);
+				}
+
+				// sort resource_names
+				{
+					auto sort_func = [](const G_string& a, const G_string& b) -> b8 {
+
+						return TF_hash<G_string>{}(a) > TF_hash<G_string>{}(b);
+					};
+					eastl::sort(resource_names.begin(), resource_names.end(), sort_func);
+				}
+
+				// build and store will_be_moved_resource_indices
+				{
+					TG_vector<u32> will_be_moved_resource_indices;
+					will_be_moved_resource_indices.reserve(resource_names.size());
+
+					for(const auto& resource_name : resource_names) {
+
+						will_be_moved_resource_indices.push_back(
+							name_to_resource_index[resource_name]
+						);
+					}
+
+					will_be_moved_resource_indices_vector.push_back(
+						std::move(will_be_moved_resource_indices)
+					);
+				}
+			}
+		}
+
+		// bind new actual slots
+		TG_vector<TG_vector<u32>> new_actual_slots_vector(resources.size());
+		{
+			// setup new_actual_slots_vector
+			for(auto& new_actual_slots : new_actual_slots_vector) {
+
+				new_actual_slots.resize(shader_count);
+
+				for(auto& new_actual_slot : new_actual_slots) {
+
+					new_actual_slot = -1;
+				}
+			}
+
+			// build new_actual_slots_vector
+			for(u32 i = 0; i < shader_count; ++i) {
+
+				u32 next_actual_slot = 0;
+
+				// for resources that name is in resource name sets
+				for(auto& will_be_moved_resource_indices : will_be_moved_resource_indices_vector) {
+
+					for(auto will_be_moved_resource_index : will_be_moved_resource_indices) {
+
+						auto& resource = resources[will_be_moved_resource_index];
+
+						if(resource.actual_slots[i] == -1)
+							continue;
+
+						auto& new_actual_slot = new_actual_slots_vector[will_be_moved_resource_index][i];
+
+						new_actual_slot = next_actual_slot;
+
+						++next_actual_slot;
+					}
+				}
+
+				// for resources that name is not in resource name sets
+				for(u32 j = 0; j < resource_count; ++j) {
+
+					auto& resource = resources[j];
+
+					auto old_actual_slot = resource.actual_slots[i];
+					auto& new_actual_slot = new_actual_slots_vector[j][i];
+
+					if(resource.type_class != type_class)
+						continue;
+
+					if(
+						(old_actual_slot != -1)
+						&& (new_actual_slot == -1)
+					) {
+						new_actual_slot = next_actual_slot;
+
+						++next_actual_slot;
+					}
+				}
+			}
+		}
+
+		// store new_actual_slots_vector
+		for(u32 i = 0; i < resource_count; ++i) {
+
+			auto& resource = resources[i];
+
+			if(resource.type_class != type_class)
+				continue;
+
+			resource.actual_slots = new_actual_slots_vector[i];
+		}
+	}
+
+
+
 	F_nsl_shader_module_manager::F_nsl_shader_module_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
 		shader_compiler_p_(shader_compiler_p)
 	{
