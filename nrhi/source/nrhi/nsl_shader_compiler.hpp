@@ -2960,7 +2960,8 @@ namespace nrhi {
 		NCPP_OBJECT(A_nsl_output_language);
 
 	public:
-		G_string register_slot_macro(const G_string& name);
+		G_string current_register_slot_macro(const G_string& name);
+		G_string register_slot_macro(u32 shader_index, const G_string& name);
 
 	public:
 		virtual eastl::optional<G_string> define_to_string(

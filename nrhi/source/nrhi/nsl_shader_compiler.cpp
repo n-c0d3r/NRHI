@@ -6857,9 +6857,13 @@ namespace nrhi {
 	A_nsl_output_language::~A_nsl_output_language() {
 	}
 
-	G_string A_nsl_output_language::register_slot_macro(const G_string& name) {
+	G_string A_nsl_output_language::current_register_slot_macro(const G_string& name) {
 
-		return "NSL_REGISTER_SLOT_" + name;
+		return "NSL_CURRENT_REGISTER_SLOT_" + name;
+	}
+	G_string A_nsl_output_language::register_slot_macro(u32 shader_index, const G_string& name) {
+
+		return "NSL_REGISTER_SLOT_" + G_to_string(shader_index) + "_" + name;
 	}
 
 
@@ -7379,11 +7383,13 @@ namespace nrhi {
 
 		G_string result;
 
-		G_string sampler_state_register_slot_macro = register_slot_macro(sampler_state.first);
+		G_string sampler_state_current_register_slot_macro = current_register_slot_macro(sampler_state.first);
 
 		for(u32 i = 0; i < shader_count; ++i)
 		{
 			u32 actual_slot = sampler_state.second.actual_slots[i];
+
+			G_string sampler_state_register_slot_macro = register_slot_macro(i, sampler_state.first);
 
 			if(actual_slot != -1)
 				result += (
@@ -7404,6 +7410,12 @@ namespace nrhi {
 					+ G_to_string(sampler_state.second.actual_slots[i])
 					+ "\n#endif\n"
 
+					+ "#define "
+					+ sampler_state_current_register_slot_macro
+					+ " "
+					+ sampler_state_register_slot_macro
+					+ "\n"
+
 					+ "#endif"
 				);
 		}
@@ -7416,7 +7428,7 @@ namespace nrhi {
 			+ "#define NSL_REGISTER_"
 			+ sampler_state.first
 			+ " register(s##"
-			+ sampler_state_register_slot_macro
+			+ sampler_state_current_register_slot_macro
 			+ ")\n"
 
 			+ "SamplerState "
@@ -7482,7 +7494,7 @@ namespace nrhi {
 
 		G_string result;
 
-		G_string resource_register_slot_macro = register_slot_macro(resource.first);
+		G_string resource_current_register_slot_macro = current_register_slot_macro(resource.first);
 
 		G_string uniform_declarations;
 		auto uniform_manager_p = shader_compiler_p()->uniform_manager_p();
@@ -7496,6 +7508,8 @@ namespace nrhi {
 		for(u32 i = 0; i < shader_count; ++i)
 		{
 			u32 actual_slot = resource.second.actual_slots[i];
+
+			G_string resource_register_slot_macro = register_slot_macro(i, resource.first);
 
 			if(actual_slot != -1)
 			{
@@ -7517,6 +7531,12 @@ namespace nrhi {
 					+ G_to_string(actual_slot)
 					+ "\n#endif\n"
 
+					+ "#define "
+					+ resource_current_register_slot_macro
+					+ " "
+					+ resource_register_slot_macro
+					+ "\n"
+
 					+ "#endif"
 				);
 			}
@@ -7532,7 +7552,7 @@ namespace nrhi {
 			+ " register("
 		  	+ G_string(1, register_type)
 			+ "##"
-			+ resource_register_slot_macro
+			+ resource_current_register_slot_macro
 			+ ")\n"
 		);
 
