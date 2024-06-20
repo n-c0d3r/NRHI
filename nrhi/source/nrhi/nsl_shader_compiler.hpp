@@ -2951,6 +2951,9 @@ namespace nrhi {
 		NCPP_OBJECT(A_nsl_output_language);
 
 	public:
+		G_string register_slot_macro(const G_string& name);
+
+	public:
 		virtual eastl::optional<G_string> define_to_string(
 			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 			const G_string& name,

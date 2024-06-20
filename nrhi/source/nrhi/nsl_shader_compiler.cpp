@@ -6574,6 +6574,11 @@ namespace nrhi {
 	A_nsl_output_language::~A_nsl_output_language() {
 	}
 
+	G_string A_nsl_output_language::register_slot_macro(const G_string& name) {
+
+		return "NSL_REGISTER_SLOT_" + name;
+	}
+
 
 
 	F_nsl_output_hlsl::F_nsl_output_hlsl(
@@ -7091,6 +7096,8 @@ namespace nrhi {
 
 		G_string result;
 
+		G_string sampler_state_register_slot_macro = register_slot_macro(sampler_state.first);
+
 		for(u32 i = 0; i < shader_count; ++i)
 		{
 			u32 actual_slot = sampler_state.second.actual_slots[i];
@@ -7098,14 +7105,45 @@ namespace nrhi {
 			if(actual_slot != -1)
 				result += (
 					"\n#ifdef NSL_SHADER_INDEX_" + G_to_string(i)
-					+ "\nSamplerState "
+					+ "\n"
+
+					+ "#ifndef NSL_HAS_SAMPLER_STATE_"
 					+ sampler_state.first
-					+ " : register(s"
+					+ "\n#define NSL_HAS_SAMPLER_STATE_"
+					+ sampler_state.first
+					+ "\n#endif\n"
+
+					+ "#ifndef "
+					+ sampler_state_register_slot_macro
+					+ "\n#define "
+					+ sampler_state_register_slot_macro
+					+ " "
 					+ G_to_string(sampler_state.second.actual_slots[i])
-					+ ");"
-					+ "\n#endif"
+					+ "\n#endif\n"
+
+					+ "#endif"
 				);
 		}
+
+		result += (
+			G_string("\n#ifdef NSL_HAS_SAMPLER_STATE_")
+			+ sampler_state.first
+			+ "\n"
+
+			+ "#define NSL_REGISTER_"
+			+ sampler_state.first
+			+ " register(s##"
+			+ sampler_state_register_slot_macro
+			+ ")\n"
+
+			+ "SamplerState "
+			+ sampler_state.first
+			+ " : "
+			+ "NSL_REGISTER_"
+			+ sampler_state.first
+			+ ";"
+			+ "\n#endif\n"
+		);
 
 		return std::move(result);
 	}
@@ -7161,6 +7199,8 @@ namespace nrhi {
 
 		G_string result;
 
+		G_string resource_register_slot_macro = register_slot_macro(resource.first);
+
 		G_string uniform_declarations;
 		auto uniform_manager_p = shader_compiler_p()->uniform_manager_p();
 		for(const auto& uniform : resource.second.uniforms) {
@@ -7176,43 +7216,74 @@ namespace nrhi {
 
 			if(actual_slot != -1)
 			{
-				result += "\n#ifdef NSL_SHADER_INDEX_" + G_to_string(i) + "\n";
+				result += (
+					"\n#ifdef NSL_SHADER_INDEX_" + G_to_string(i)
+					+ "\n"
 
-				if(resource.second.type != "ConstantBuffer")
-					result += (
-						// resource type
-						parsed_type
-						+ " "
+					+ "#ifndef NSL_HAS_RESOURCE_"
+					+ resource.first
+					+ "\n#define NSL_HAS_RESOURCE_"
+					+ resource.first
+					+ "\n#endif\n"
 
-						// resource name
-						+ resource.first
+					+ "#ifndef "
+					+ resource_register_slot_macro
+					+ "\n#define "
+					+ resource_register_slot_macro
+					+ " "
+					+ G_to_string(actual_slot)
+					+ "\n#endif\n"
 
-						// register
-						+ " : register("
-						+ G_string(1, register_type) // register type
-						+ G_to_string(actual_slot) // actual slot
-						+ ");"
-					);
-				else {
-					result += (
-						"cbuffer "
-
-						// resource name
-						+ resource.first
-
-						// register
-						+ " : register("
-						+ G_string(1, register_type) // register type
-						+ G_to_string(actual_slot) // actual slot
-						+ "){\n"
-						+ uniform_declarations
-						+ "\n};"
-					);
-				}
-
-				result += "\n#endif\n";
+					+ "#endif"
+				);
 			}
 		}
+
+		result += (
+			G_string("\n#ifdef NSL_HAS_RESOURCE_")
+			+ resource.first
+			+ "\n"
+
+			+ "#define NSL_REGISTER_"
+			+ resource.first
+			+ " register("
+		  	+ G_string(1, register_type)
+			+ "##"
+			+ resource_register_slot_macro
+			+ ")\n"
+		);
+
+		if(resource.second.type != "ConstantBuffer")
+			result += (
+				// resource type
+				parsed_type
+				+ " "
+
+				// resource name
+				+ resource.first
+
+				// register
+				+ " : NSL_REGISTER_"
+				+ resource.first
+				+ ";"
+			);
+		else {
+			result += (
+				"cbuffer "
+
+				// resource name
+				+ resource.first
+
+				// register
+				+ " : NSL_REGISTER_"
+				+ resource.first
+				+ "{\n"
+				+ uniform_declarations
+				+ "\n};"
+			);
+		}
+
+		result += "\n#endif\n";
 
 		return std::move(result);
 	}
