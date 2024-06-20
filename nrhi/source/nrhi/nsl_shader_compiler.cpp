@@ -2895,6 +2895,19 @@ namespace nrhi {
 			}
 		}
 		u32 element_count = data_type_manager_p->element_count(target_type);
+		G_string target_binding = tree.object_implementation.name;
+		{
+			auto it = context.current_object_config.find("target_binding");
+			if(it != context.current_object_config.end()) {
+
+				auto value_opt = it->second.read_string(0);
+
+				if(!value_opt)
+					return eastl::nullopt;
+
+				target_binding = value_opt.value();
+			}
+		}
 
 		// register semantic
 		name_manager_p->template T_register_name<FE_nsl_name_types::SEMANTIC>(tree.object_implementation.name);
@@ -2902,6 +2915,7 @@ namespace nrhi {
 			tree.object_implementation.name,
 			F_nsl_semantic_info {
 				.target_type = target_type,
+				.target_binding = target_binding,
 				.element_format = element_format,
 				.element_count = element_count,
 				.input_class = input_class
@@ -3102,7 +3116,7 @@ namespace nrhi {
 			}
 		}
 
-		// register semantic
+		// register structure
 		name_manager_p->template T_register_name<FE_nsl_name_types::STRUCTURE>(tree.object_implementation.name);
 		data_type_manager_p->register_structure(
 			tree.object_implementation.name,
@@ -3281,7 +3295,7 @@ namespace nrhi {
 			}
 		}
 
-		// register semantic
+		// register enumeration
 		name_manager_p->template T_register_name<FE_nsl_name_types::STRUCTURE>(tree.object_implementation.name);
 		data_type_manager_p->register_enumeration(
 			tree.object_implementation.name,
@@ -6442,6 +6456,9 @@ namespace nrhi {
 
 		F_nsl_semantic_info result = semantic_info;
 
+		if(result.target_binding == "")
+			result.target_binding = name;
+
 		auto name_manager_p = shader_compiler_p_->name_manager_p();
 
 		register_size(
@@ -7045,15 +7062,11 @@ namespace nrhi {
 
 		data_type_manager_p->register_semantic(
 			"SV_Position",
-			F_nsl_semantic_info {
-				"float4"
-			}
+			F_nsl_semantic_info("float4")
 		);
 		data_type_manager_p->register_semantic(
 			"SV_Target",
-			F_nsl_semantic_info {
-				"float4"
-			}
+			F_nsl_semantic_info("float4")
 		);
 	}
 
@@ -7223,7 +7236,7 @@ namespace nrhi {
 
 				const auto& semantic_info = data_type_manager_p->semantic_info(argument_type);
 
-				semantic_option = ": " + argument_type;
+				semantic_option = ": " + semantic_info.target_binding;
 
 				argument_type = semantic_info.target_type;
 			}
@@ -7296,7 +7309,7 @@ namespace nrhi {
 
 				const auto& semantic_info = data_type_manager_p->semantic_info(argument_type);
 
-				semantic_option = ": " + argument_type;
+				semantic_option = ": " + semantic_info.target_binding;
 
 				argument_type = semantic_info.target_type;
 			}

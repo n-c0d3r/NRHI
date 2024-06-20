@@ -623,6 +623,7 @@ namespace nrhi {
 	struct F_nsl_semantic_info {
 
 		G_string target_type;
+		G_string target_binding;
 		E_nsl_element_format element_format;
 		u32 element_count = 1;
 		E_nsl_semantic_input_class input_class = E_nsl_semantic_input_class::PER_VERTEX;
