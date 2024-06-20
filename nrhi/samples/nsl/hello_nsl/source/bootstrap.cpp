@@ -154,9 +154,7 @@ int main() {
 
 		auto compiled_result = compiled_result_opt.value();
 
-		auto reflection = compiler_p->reflect();
-
-		reflection.sort_sampler_states(
+		compiled_result.reflection.sort_sampler_states(
 			{
 				TG_unordered_set<G_string>({
 					"demo_sampler_state",
@@ -169,7 +167,7 @@ int main() {
 			}
 		);
 
-		reflection.sort_resources(
+		compiled_result.reflection.sort_resources(
 			{
 				TG_unordered_set<G_string>({
 					"demo_texture_2d_3",
@@ -181,6 +179,10 @@ int main() {
 				})
 			},
 			E_nsl_resource_type_class::SRV
+		);
+
+		NCPP_INFO() << compiled_result.build(
+			0
 		);
 	}
 

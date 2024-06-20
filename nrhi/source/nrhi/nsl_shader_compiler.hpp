@@ -71,18 +71,6 @@ namespace nrhi {
 
 	};
 
-	struct NRHI_API F_nsl_compiled_result {
-
-		G_string src_content;
-		E_nsl_output_language output_language_enum = E_nsl_output_language::NONE;
-
-		u32 shader_count = 0;
-
-	public:
-		G_string src_content_for_shader_at(u32 shader_index) const;
-
-	};
-
 	struct F_nsl_error {
 		G_string description;
 		sz location = 0;
@@ -850,6 +838,20 @@ namespace nrhi {
 			const TG_vector<TG_unordered_set<G_string>>& resource_name_sets,
 			E_nsl_resource_type_class type_class
 		);
+	};
+
+	struct NRHI_API F_nsl_compiled_result {
+
+		G_string src_content;
+		E_nsl_output_language output_language_enum = E_nsl_output_language::NONE;
+
+		u32 shader_count = 0;
+
+		F_nsl_reflection reflection;
+
+	public:
+		G_string build(u32 shader_index) const;
+
 	};
 
 #define NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(error_stack_p, location, ...) if(error_stack_p) (error_stack_p)->push({__VA_ARGS__, location})
@@ -3602,7 +3604,6 @@ namespace nrhi {
 			E_nsl_output_language output_language_enum,
 			const G_string& abs_path = ""
 		);
-		F_nsl_reflection reflect();
 
 	};
 

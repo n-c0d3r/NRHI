@@ -4,12 +4,54 @@
 
 namespace nrhi {
 
-	G_string F_nsl_compiled_result::src_content_for_shader_at(u32 shader_index) const {
+	G_string F_nsl_compiled_result::build(u32 shader_index) const {
 
-		return (
-			"#define NSL_SHADER_INDEX_" + G_to_string(shader_index) + "\n"
-			+ src_content
-		);
+		G_string result;
+
+		u32 shader_count = reflection.shaders.size();
+
+		// define shader index
+		{
+			NCPP_ASSERT(shader_index < shader_count)
+				<< "shader index out of bound";
+
+			result += (
+				"#define NSL_SHADER_INDEX_"
+				+ G_to_string(shader_index)
+				+ "\n"
+			);
+		}
+
+		// override sampler state actual slots
+		{
+			u32 sample_state_count = reflection.sampler_states.size();
+
+			for (u32 i = 0; i < sample_state_count; ++i)
+			{
+				const auto& sampler_state = reflection.sampler_states[i];
+
+				u32 actual_slot = sampler_state.actual_slots[shader_index];
+
+				G_string register_slot_macro = (
+					"NSL_REGISTER_SLOT_"
+					+ G_to_string(shader_index)
+					+ "_"
+					+ sampler_state.name
+				);
+
+				result += (
+					"#define "
+					+ register_slot_macro
+					+ " "
+					+ G_to_string(actual_slot)
+					+ "\n"
+				);
+			}
+		}
+
+		result += src_content;
+
+		return result;
 	}
 
 
@@ -6496,6 +6538,8 @@ namespace nrhi {
 		if(!compile_minimal())
 			return eastl::nullopt;
 
+		compiled_result_.reflection = shader_compiler_p_->reflector_p()->reflect();
+
 		return compiled_result_;
 	}
 
@@ -7396,19 +7440,9 @@ namespace nrhi {
 					"\n#ifdef NSL_SHADER_INDEX_" + G_to_string(i)
 					+ "\n"
 
-					+ "#ifndef NSL_HAS_SAMPLER_STATE_"
+					+ "#define NSL_HAS_SAMPLER_STATE_"
 					+ sampler_state.first
-					+ "\n#define NSL_HAS_SAMPLER_STATE_"
-					+ sampler_state.first
-					+ "\n#endif\n"
-
-					+ "#ifndef "
-					+ sampler_state_register_slot_macro
-					+ "\n#define "
-					+ sampler_state_register_slot_macro
-					+ " "
-					+ G_to_string(sampler_state.second.actual_slots[i])
-					+ "\n#endif\n"
+					+ "\n"
 
 					+ "#define "
 					+ sampler_state_current_register_slot_macro
@@ -7517,19 +7551,9 @@ namespace nrhi {
 					"\n#ifdef NSL_SHADER_INDEX_" + G_to_string(i)
 					+ "\n"
 
-					+ "#ifndef NSL_HAS_RESOURCE_"
+					+ "#define NSL_HAS_RESOURCE_"
 					+ resource.first
-					+ "\n#define NSL_HAS_RESOURCE_"
-					+ resource.first
-					+ "\n#endif\n"
-
-					+ "#ifndef "
-					+ resource_register_slot_macro
-					+ "\n#define "
-					+ resource_register_slot_macro
-					+ " "
-					+ G_to_string(actual_slot)
-					+ "\n#endif\n"
+					+ "\n"
 
 					+ "#define "
 					+ resource_current_register_slot_macro
@@ -8810,13 +8834,6 @@ namespace nrhi {
 		is_compile_success_ = static_cast<b8>(compile_result_opt);
 
 		return compile_result_opt;
-	}
-	F_nsl_reflection F_nsl_shader_compiler::reflect() {
-
-		NCPP_ASSERT(is_compiled_ && is_compile_success_)
-			<< "shader program is not compiled or not compiled successfully";
-
-		return reflector_p_->reflect();
 	}
 
 }
