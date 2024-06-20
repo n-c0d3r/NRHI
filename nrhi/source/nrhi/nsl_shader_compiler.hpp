@@ -831,6 +831,204 @@ namespace nrhi {
 		TG_vector<F_nsl_type_reflection> types;
 
 	public:
+		NCPP_FORCE_INLINE u32 search_shader_index(const G_string& name) const noexcept {
+
+			u32 shader_count = shaders.size();
+			for(u32 i = 0; i < shader_count; ++i) {
+
+				if(shaders[i].name == name)
+					return i;
+			}
+
+			return -1;
+		}
+		NCPP_FORCE_INLINE F_nsl_shader_reflection& search_shader(const G_string& name) noexcept {
+
+			u32 shader_index = search_shader_index(name);
+
+			NCPP_ASSERT(shader_index != -1)
+				<< "not found shader "
+				<< T_cout_value(name);
+
+			return shaders[shader_index];
+		}
+		NCPP_FORCE_INLINE const F_nsl_shader_reflection& search_shader(const G_string& name) const noexcept {
+
+			u32 shader_index = search_shader_index(name);
+
+			NCPP_ASSERT(shader_index != -1)
+				<< "not found shader "
+				<< T_cout_value(name);
+
+			return shaders[shader_index];
+		}
+
+	public:
+		NCPP_FORCE_INLINE u32 search_input_assembler_index(const G_string& name) const noexcept {
+
+			u32 input_assembler_count = input_assemblers.size();
+			for(u32 i = 0; i < input_assembler_count; ++i) {
+
+				if(input_assemblers[i].name == name)
+					return i;
+			}
+
+			return -1;
+		}
+		NCPP_FORCE_INLINE F_nsl_input_assembler_reflection& search_input_assembler(const G_string& name) noexcept {
+
+			u32 input_assembler_index = search_input_assembler_index(name);
+
+			NCPP_ASSERT(input_assembler_index != -1)
+				<< "not found input assembler "
+				<< T_cout_value(name);
+
+			return input_assemblers[input_assembler_index];
+		}
+		NCPP_FORCE_INLINE const F_nsl_input_assembler_reflection& search_input_assembler(const G_string& name) const noexcept {
+
+			u32 input_assembler_index = search_input_assembler_index(name);
+
+			NCPP_ASSERT(input_assembler_index != -1)
+				<< "not found input assembler "
+				<< T_cout_value(name);
+
+			return input_assemblers[input_assembler_index];
+		}
+
+	public:
+		NCPP_FORCE_INLINE u32 search_pipeline_state_index(const G_string& name) const noexcept {
+
+			u32 pipeline_state_count = pipeline_states.size();
+			for(u32 i = 0; i < pipeline_state_count; ++i) {
+
+				if(pipeline_states[i].name == name)
+					return i;
+			}
+
+			return -1;
+		}
+		NCPP_FORCE_INLINE F_nsl_pipeline_state_reflection& search_pipeline_state(const G_string& name) noexcept {
+
+			u32 pipeline_state_index = search_pipeline_state_index(name);
+
+			NCPP_ASSERT(pipeline_state_index != -1)
+				<< "not found pipeline state "
+				<< T_cout_value(name);
+
+			return pipeline_states[pipeline_state_index];
+		}
+		NCPP_FORCE_INLINE const F_nsl_pipeline_state_reflection& search_pipeline_state(const G_string& name) const noexcept {
+
+			u32 pipeline_state_index = search_pipeline_state_index(name);
+
+			NCPP_ASSERT(pipeline_state_index != -1)
+				<< "not found pipeline state "
+				<< T_cout_value(name);
+
+			return pipeline_states[pipeline_state_index];
+		}
+
+	public:
+		NCPP_FORCE_INLINE u32 search_sampler_state_index(const G_string& name) const noexcept {
+
+			u32 sampler_state_count = sampler_states.size();
+			for(u32 i = 0; i < sampler_state_count; ++i) {
+
+				if(sampler_states[i].name == name)
+					return i;
+			}
+
+			return -1;
+		}
+		NCPP_FORCE_INLINE F_nsl_sampler_state_reflection& search_sampler_state(const G_string& name) noexcept {
+
+			u32 sampler_state_index = search_sampler_state_index(name);
+
+			NCPP_ASSERT(sampler_state_index != -1)
+				<< "not found sampler state "
+				<< T_cout_value(name);
+
+			return sampler_states[sampler_state_index];
+		}
+		NCPP_FORCE_INLINE const F_nsl_sampler_state_reflection& search_sampler_state(const G_string& name) const noexcept {
+
+			u32 sampler_state_index = search_sampler_state_index(name);
+
+			NCPP_ASSERT(sampler_state_index != -1)
+				<< "not found sampler state "
+				<< T_cout_value(name);
+
+			return sampler_states[sampler_state_index];
+		}
+
+	public:
+		NCPP_FORCE_INLINE u32 search_resource_index(const G_string& name) const noexcept {
+
+			u32 resource_count = resources.size();
+			for(u32 i = 0; i < resource_count; ++i) {
+
+				if(resources[i].name == name)
+					return i;
+			}
+
+			return -1;
+		}
+		NCPP_FORCE_INLINE F_nsl_resource_reflection& search_resource(const G_string& name) noexcept {
+
+			u32 resource_index = search_resource_index(name);
+
+			NCPP_ASSERT(resource_index != -1)
+				<< "not found resource "
+				<< T_cout_value(name);
+
+			return resources[resource_index];
+		}
+		NCPP_FORCE_INLINE const F_nsl_resource_reflection& search_resource(const G_string& name) const noexcept {
+
+			u32 resource_index = search_resource_index(name);
+
+			NCPP_ASSERT(resource_index != -1)
+				<< "not found resource "
+				<< T_cout_value(name);
+
+			return resources[resource_index];
+		}
+
+	public:
+		NCPP_FORCE_INLINE u32 search_type_index(const G_string& name) const noexcept {
+
+			u32 type_count = types.size();
+			for(u32 i = 0; i < type_count; ++i) {
+
+				if(types[i].name == name)
+					return i;
+			}
+
+			return -1;
+		}
+		NCPP_FORCE_INLINE F_nsl_type_reflection& search_type(const G_string& name) noexcept {
+
+			u32 type_index = search_type_index(name);
+
+			NCPP_ASSERT(type_index != -1)
+				<< "not found type "
+				<< T_cout_value(name);
+
+			return types[type_index];
+		}
+		NCPP_FORCE_INLINE const F_nsl_type_reflection& search_type(const G_string& name) const noexcept {
+
+			u32 type_index = search_type_index(name);
+
+			NCPP_ASSERT(type_index != -1)
+				<< "not found type "
+				<< T_cout_value(name);
+
+			return types[type_index];
+		}
+
+	public:
 		void sort_sampler_states(
 			const TG_vector<TG_unordered_set<G_string>>& sampler_state_name_sets
 		);
