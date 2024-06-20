@@ -7713,7 +7713,7 @@ namespace nrhi {
 		}
 
 		return (
-			"#ifdef NSL_SHADER_INDEX_" + G_to_string(shader_object_p->index) + "\n"
+			"#ifdef NSL_SHADER_" + shader_object_p->name() + "\n"
 			+ "void main(\n"
 			+ data_param_declarations
 			+ "\n){\n"
