@@ -52,7 +52,7 @@ namespace nrhi {
 		G_string name;
 		E_format format;
 		u32 duplicate_count = 1;
-		u32 offset = -1;
+		u32 offset = NCPP_U32_MAX;
 
 	};
 	struct F_instance_attribute {
@@ -60,7 +60,7 @@ namespace nrhi {
 		G_string name;
 		E_format format;
 		u32 duplicate_count = 1;
-		u32 offset = -1;
+		u32 offset = NCPP_U32_MAX;
 
 	};
 
