@@ -99,10 +99,12 @@ namespace nrhi {
 	private:
 		TK_valid<A_device> device_p_;
 		F_shader_desc desc_;
+		E_shader_type type_ = E_shader_type::NONE;
 
 	public:
 		NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
 		NCPP_FORCE_INLINE const F_shader_desc& desc() const noexcept { return desc_; }
+		NCPP_FORCE_INLINE E_shader_type type() const noexcept { return type_; }
 
 
 
