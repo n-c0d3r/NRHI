@@ -11,7 +11,8 @@ namespace nrhi {
 	) :
 		device_p_(device_p),
 		desc_(desc),
-		type_(desc.blob_p->desc().type)
+		type_(desc.blob_p->desc().type),
+		input_assembler_desc_(desc.blob_p->desc().input_assembler_desc)
 	{
 	}
 	A_shader::~A_shader() {
