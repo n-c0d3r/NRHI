@@ -18,6 +18,13 @@ function(NRHI_EnumHelper_CreateEnum)
     set(TARGET_MAX_VALUE_COUNT_DIV_STEP_FILE_PATH "${targetCPPFilePathParsed}.max_value_count_div_step")
     set(TARGET_INCLUDES_FILE_PATH "${targetCPPFilePathParsed}.includes")
     set(TARGET_PREPARED_VALUE_NAMES_FILE_PATH "${targetCPPFilePathParsed}.prepared_value_names")
+    set(TARGET_LAST_DRIVER_INDEX_FILE_PATH "${targetCPPFilePathParsed}.last_driver_index")
+    string(REPLACE "\\" "/" TARGET_LAST_DRIVER_INDEX_FILE_PATH "${TARGET_LAST_DRIVER_INDEX_FILE_PATH}")
+
+    if(NOT NRHI_IMPLEMENTED_${PARGS_NAME})
+        NCPP_SetGlobal(NRHI_IMPLEMENTED_${PARGS_NAME} "")
+        set(isFirstImplementation ON)
+    endif()
 
 
 
@@ -46,12 +53,12 @@ function(NRHI_EnumHelper_CreateEnum)
 
 
     # Prepare or read files
-    if(${driverIndex} EQUAL 0)
+    if(isFirstImplementation)
         set(hppFileContent "#pragma once \n")
         set(cppFileContent "#include \"${targetHPPFilePathParsed}\" \n")
         set(updateMapBodyContent "")
         set(maxValueCountDivStep "0")
-        set(includesFileContent "#pragma once \n")
+        set(includesFileContent "#pragma once \n #include \"${TARGET_LAST_DRIVER_INDEX_FILE_PATH}\" \n")
         set(prepared_value_names "")
     else()
         file(READ "${PARGS_TARGET_HPP_FILE_PATH}" hppFileContent)
@@ -90,7 +97,7 @@ function(NRHI_EnumHelper_CreateEnum)
 
 
     # Add file headers
-    if(${driverIndex} EQUAL 0)
+    if(isFirstImplementation)
         set(
             hppFileContent
             "${hppFileContent}
@@ -248,7 +255,7 @@ function(NRHI_EnumHelper_CreateEnum)
 
     # Define update map mode
     if(${NRHI_DRIVER_MULTIPLE})
-        if(${driverIndex} EQUAL 0)
+        if(isFirstImplementation)
             set(
                 updateMapBodyContent
                 "${updateMapBodyContent}
@@ -309,7 +316,20 @@ function(NRHI_EnumHelper_CreateEnum)
 
 
     # Add file footers
-    if(${driverIndex} EQUAL ${NRHI_DRIVER_LAST_INDEX})
+#    if(${driverIndex} EQUAL ${NRHI_DRIVER_LAST_INDEX})
+        set(
+            hppFileContent
+            "${hppFileContent}
+                #if NRHI_IMPLEMENTATION_LAST_DRIVER_INDEX_${PARGS_NAME} == ${driverIndex}
+            "
+        )
+        set(
+            cppFileContent
+            "${cppFileContent}
+                #if NRHI_IMPLEMENTATION_LAST_DRIVER_INDEX_${PARGS_NAME} == ${driverIndex}
+            "
+        )
+
         if(${NRHI_DRIVER_MULTIPLE})
             set(
                 cppFileContent
@@ -318,12 +338,6 @@ function(NRHI_EnumHelper_CreateEnum)
                         ncpp::i32 driver_index = nrhi::driver_index();
                         #include \"${TARGET_UPDATE_MAP_BODY_FILE_PATH}\"
                     }
-                "
-            )
-        else()
-            set(
-                cppFileContent
-                "${cppFileContent}
                 "
             )
         endif()
@@ -362,15 +376,17 @@ function(NRHI_EnumHelper_CreateEnum)
             hppFileContent
             "${hppFileContent}
                 }
+                #endif
             "
         )
         set(
             cppFileContent
             "${cppFileContent}
                 }
+                #endif
             "
         )
-    endif()
+#    endif()
 
 
 
@@ -381,5 +397,6 @@ function(NRHI_EnumHelper_CreateEnum)
     file(WRITE "${TARGET_MAX_VALUE_COUNT_DIV_STEP_FILE_PATH}" "${maxValueCountDivStep}")
     file(WRITE "${TARGET_INCLUDES_FILE_PATH}" "${includesFileContent}")
     file(WRITE "${TARGET_PREPARED_VALUE_NAMES_FILE_PATH}" "${prepared_value_names}")
+    file(WRITE "${TARGET_LAST_DRIVER_INDEX_FILE_PATH}" "#define NRHI_IMPLEMENTATION_LAST_DRIVER_INDEX_${PARGS_NAME} ${driverIndex}")
 
 endfunction()
