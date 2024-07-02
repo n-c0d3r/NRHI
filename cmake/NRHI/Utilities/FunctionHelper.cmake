@@ -28,6 +28,17 @@ function(NRHI_FunctionHelper_CreateFunctionClass)
 
 
 
+    # Append function header file
+    if(isFirstImplementation)
+        file(READ "${NRHI_GENERATED_FILES_DIR}/functions.hpp" headerIncludes)
+        file(WRITE "${NRHI_GENERATED_FILES_DIR}/functions.hpp" "${headerIncludes} #include \"${targetHPPFilePathParsed}\" \n")
+
+        file(READ "${NRHI_GENERATED_FILES_DIR}/functions.try_update_maps" try_update_maps)
+        file(WRITE "${NRHI_GENERATED_FILES_DIR}/functions.try_update_maps" "${try_update_maps} NRHI_FUNCTION_CLASS_TRY_UPDATE_MAP(clear, ${PARGS_NAMESPACE}::${PARGS_NAME}); \n")
+    endif()
+
+
+
     # Prepare variables for iterating
     list(LENGTH PARGS_VALUES valueCount)
 

@@ -72,6 +72,11 @@ if(NOT NRHI_DRIVER_COUNT)
 endif()
 
 # Implement drivers
+file(WRITE "${NRHI_GENERATED_FILES_DIR}/enums.hpp" "#pragma once \n")
+file(WRITE "${NRHI_GENERATED_FILES_DIR}/functions.hpp" "#pragma once \n")
+file(WRITE "${NRHI_GENERATED_FILES_DIR}/enums.try_update_maps" "")
+file(WRITE "${NRHI_GENERATED_FILES_DIR}/functions.try_update_maps" "")
+
 if(NRHI_DRIVER_DIRECTX_11 OR NRHI_DRIVER_DIRECTX_12)
     include(NRHI/Drivers/DXGI/Implement)
     NCPP_SetGlobal(NRHI_ENABLE_DXGI ON)

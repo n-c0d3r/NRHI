@@ -1,4 +1,7 @@
 
+include(NCPP/Utilities/SetGlobal)
+include(NCPP/Utilities/ApplyGlobal)
+
 function(NRHI_EnumHelper_CreateEnum)
 
     cmake_parse_arguments(
@@ -24,6 +27,17 @@ function(NRHI_EnumHelper_CreateEnum)
     if(NOT NRHI_IMPLEMENTED_${PARGS_NAME})
         NCPP_SetGlobal(NRHI_IMPLEMENTED_${PARGS_NAME} "")
         set(isFirstImplementation ON)
+    endif()
+
+
+
+    # Append enum header file
+    if(isFirstImplementation)
+        file(READ "${NRHI_GENERATED_FILES_DIR}/enums.hpp" headerIncludes)
+        file(WRITE "${NRHI_GENERATED_FILES_DIR}/enums.hpp" "${headerIncludes} #include \"${targetHPPFilePathParsed}\" \n")
+
+        file(READ "${NRHI_GENERATED_FILES_DIR}/enums.try_update_maps" try_update_maps)
+        file(WRITE "${NRHI_GENERATED_FILES_DIR}/enums.try_update_maps" "${try_update_maps} NRHI_ENUM_TRY_UPDATE_MAP(${PARGS_NAMESPACE}::${PARGS_NAME}); \n")
     endif()
 
 
