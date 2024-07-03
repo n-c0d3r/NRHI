@@ -1090,7 +1090,7 @@ namespace nrhi {
 	TG_map<G_string, ED_texcoord_address_mode> F_nsl_info_tree_reader::texcoord_address_mode_str_to_value_map_;
 	TG_map<G_string, ED_cull_mode> F_nsl_info_tree_reader::cull_mode_str_to_value_map_;
 	TG_map<G_string, ED_fill_mode> F_nsl_info_tree_reader::fill_mode_str_to_value_map_;
-	TG_map<G_string, E_format> F_nsl_info_tree_reader::format_str_to_value_map_;
+	TG_map<G_string, ED_format> F_nsl_info_tree_reader::format_str_to_value_map_;
 	TG_map<G_string, ED_depth_comparison_func> F_nsl_info_tree_reader::depth_comparison_func_str_to_value_map_;
 	TG_map<G_string, ED_primitive_topology> F_nsl_info_tree_reader::primitive_topology_str_to_value_map_;
 
@@ -1217,57 +1217,57 @@ namespace nrhi {
 			fill_mode_str_to_value_map_["SOLID"] = ED_fill_mode::SOLID;
 
 			// setup format_str_to_value_map_
-			format_str_to_value_map_["NONE"] = E_format::NONE;
-			format_str_to_value_map_["R32G32B32A32_FLOAT"] = E_format::R32G32B32A32_FLOAT;
-			format_str_to_value_map_["R32G32B32_FLOAT"] = E_format::R32G32B32_FLOAT;
-			format_str_to_value_map_["R32G32_FLOAT"] = E_format::R32G32_FLOAT;
-			format_str_to_value_map_["R32_FLOAT"] = E_format::R32_FLOAT;
-			format_str_to_value_map_["R16G16B16A16_FLOAT"] = E_format::R16G16B16A16_FLOAT;
-			format_str_to_value_map_["R16G16_FLOAT"] = E_format::R16G16_FLOAT;
-			format_str_to_value_map_["R16_FLOAT"] = E_format::R16_FLOAT;
-			format_str_to_value_map_["D32_FLOAT"] = E_format::D32_FLOAT;
-			format_str_to_value_map_["R16G16B16A16_UNORM"] = E_format::R16G16B16A16_UNORM;
-			format_str_to_value_map_["R16G16_UNORM"] = E_format::R16G16_UNORM;
-			format_str_to_value_map_["R16_UNORM"] = E_format::R16_UNORM;
-			format_str_to_value_map_["R8G8B8A8_UNORM"] = E_format::R8G8B8A8_UNORM;
-			format_str_to_value_map_["R8G8_UNORM"] = E_format::R8G8_UNORM;
-			format_str_to_value_map_["R8_UNORM"] = E_format::R8_UNORM;
-			format_str_to_value_map_["R16G16B16A16_SNORM"] = E_format::R16G16B16A16_SNORM;
-			format_str_to_value_map_["R16G16_SNORM"] = E_format::R16G16_SNORM;
-			format_str_to_value_map_["R16_SNORM"] = E_format::R16_SNORM;
-			format_str_to_value_map_["R8G8B8A8_SNORM"] = E_format::R8G8B8A8_SNORM;
-			format_str_to_value_map_["R8G8_SNORM"] = E_format::R8G8_SNORM;
-			format_str_to_value_map_["R8_SNORM"] = E_format::R8_SNORM;
-			format_str_to_value_map_["R32G32B32A32_UINT"] = E_format::R32G32B32A32_UINT;
-			format_str_to_value_map_["R32G32B32_UINT"] = E_format::R32G32B32_UINT;
-			format_str_to_value_map_["R32G32_UINT"] = E_format::R32G32_UINT;
-			format_str_to_value_map_["R32_UINT"] = E_format::R32_UINT;
-			format_str_to_value_map_["R16G16B16A16_UINT"] = E_format::R16G16B16A16_UINT;
-			format_str_to_value_map_["R16G16_UINT"] = E_format::R16G16_UINT;
-			format_str_to_value_map_["R16_UINT"] = E_format::R16_UINT;
-			format_str_to_value_map_["R8G8B8A8_UINT"] = E_format::R8G8B8A8_UINT;
-			format_str_to_value_map_["R8G8_UINT"] = E_format::R8G8_UINT;
-			format_str_to_value_map_["R8_UINT"] = E_format::R8_UINT;
-			format_str_to_value_map_["R32G32B32A32_SINT"] = E_format::R32G32B32A32_SINT;
-			format_str_to_value_map_["R32G32B32_SINT"] = E_format::R32G32B32_SINT;
-			format_str_to_value_map_["R32G32_SINT"] = E_format::R32G32_SINT;
-			format_str_to_value_map_["R32_SINT"] = E_format::R32_SINT;
-			format_str_to_value_map_["R16G16B16A16_SINT"] = E_format::R16G16B16A16_SINT;
-			format_str_to_value_map_["R16G16_SINT"] = E_format::R16G16_SINT;
-			format_str_to_value_map_["R16_SINT"] = E_format::R16_SINT;
-			format_str_to_value_map_["R8G8B8A8_SINT"] = E_format::R8G8B8A8_SINT;
-			format_str_to_value_map_["R8G8_SINT"] = E_format::R8G8_SINT;
-			format_str_to_value_map_["R8_SINT"] = E_format::R8_SINT;
-			format_str_to_value_map_["R32G32B32A32_TYPELESS"] = E_format::R32G32B32A32_TYPELESS;
-			format_str_to_value_map_["R32G32B32_TYPELESS"] = E_format::R32G32B32_TYPELESS;
-			format_str_to_value_map_["R32G32_TYPELESS"] = E_format::R32G32_TYPELESS;
-			format_str_to_value_map_["R32_TYPELESS"] = E_format::R32_TYPELESS;
-			format_str_to_value_map_["R16G16B16A16_TYPELESS"] = E_format::R16G16B16A16_TYPELESS;
-			format_str_to_value_map_["R16G16_TYPELESS"] = E_format::R16G16_TYPELESS;
-			format_str_to_value_map_["R16_TYPELESS"] = E_format::R16_TYPELESS;
-			format_str_to_value_map_["R8G8B8A8_TYPELESS"] = E_format::R8G8B8A8_TYPELESS;
-			format_str_to_value_map_["R8G8_TYPELESS"] = E_format::R8G8_TYPELESS;
-			format_str_to_value_map_["R8_TYPELESS"] = E_format::R8_TYPELESS;
+			format_str_to_value_map_["NONE"] = ED_format::NONE;
+			format_str_to_value_map_["R32G32B32A32_FLOAT"] = ED_format::R32G32B32A32_FLOAT;
+			format_str_to_value_map_["R32G32B32_FLOAT"] = ED_format::R32G32B32_FLOAT;
+			format_str_to_value_map_["R32G32_FLOAT"] = ED_format::R32G32_FLOAT;
+			format_str_to_value_map_["R32_FLOAT"] = ED_format::R32_FLOAT;
+			format_str_to_value_map_["R16G16B16A16_FLOAT"] = ED_format::R16G16B16A16_FLOAT;
+			format_str_to_value_map_["R16G16_FLOAT"] = ED_format::R16G16_FLOAT;
+			format_str_to_value_map_["R16_FLOAT"] = ED_format::R16_FLOAT;
+			format_str_to_value_map_["D32_FLOAT"] = ED_format::D32_FLOAT;
+			format_str_to_value_map_["R16G16B16A16_UNORM"] = ED_format::R16G16B16A16_UNORM;
+			format_str_to_value_map_["R16G16_UNORM"] = ED_format::R16G16_UNORM;
+			format_str_to_value_map_["R16_UNORM"] = ED_format::R16_UNORM;
+			format_str_to_value_map_["R8G8B8A8_UNORM"] = ED_format::R8G8B8A8_UNORM;
+			format_str_to_value_map_["R8G8_UNORM"] = ED_format::R8G8_UNORM;
+			format_str_to_value_map_["R8_UNORM"] = ED_format::R8_UNORM;
+			format_str_to_value_map_["R16G16B16A16_SNORM"] = ED_format::R16G16B16A16_SNORM;
+			format_str_to_value_map_["R16G16_SNORM"] = ED_format::R16G16_SNORM;
+			format_str_to_value_map_["R16_SNORM"] = ED_format::R16_SNORM;
+			format_str_to_value_map_["R8G8B8A8_SNORM"] = ED_format::R8G8B8A8_SNORM;
+			format_str_to_value_map_["R8G8_SNORM"] = ED_format::R8G8_SNORM;
+			format_str_to_value_map_["R8_SNORM"] = ED_format::R8_SNORM;
+			format_str_to_value_map_["R32G32B32A32_UINT"] = ED_format::R32G32B32A32_UINT;
+			format_str_to_value_map_["R32G32B32_UINT"] = ED_format::R32G32B32_UINT;
+			format_str_to_value_map_["R32G32_UINT"] = ED_format::R32G32_UINT;
+			format_str_to_value_map_["R32_UINT"] = ED_format::R32_UINT;
+			format_str_to_value_map_["R16G16B16A16_UINT"] = ED_format::R16G16B16A16_UINT;
+			format_str_to_value_map_["R16G16_UINT"] = ED_format::R16G16_UINT;
+			format_str_to_value_map_["R16_UINT"] = ED_format::R16_UINT;
+			format_str_to_value_map_["R8G8B8A8_UINT"] = ED_format::R8G8B8A8_UINT;
+			format_str_to_value_map_["R8G8_UINT"] = ED_format::R8G8_UINT;
+			format_str_to_value_map_["R8_UINT"] = ED_format::R8_UINT;
+			format_str_to_value_map_["R32G32B32A32_SINT"] = ED_format::R32G32B32A32_SINT;
+			format_str_to_value_map_["R32G32B32_SINT"] = ED_format::R32G32B32_SINT;
+			format_str_to_value_map_["R32G32_SINT"] = ED_format::R32G32_SINT;
+			format_str_to_value_map_["R32_SINT"] = ED_format::R32_SINT;
+			format_str_to_value_map_["R16G16B16A16_SINT"] = ED_format::R16G16B16A16_SINT;
+			format_str_to_value_map_["R16G16_SINT"] = ED_format::R16G16_SINT;
+			format_str_to_value_map_["R16_SINT"] = ED_format::R16_SINT;
+			format_str_to_value_map_["R8G8B8A8_SINT"] = ED_format::R8G8B8A8_SINT;
+			format_str_to_value_map_["R8G8_SINT"] = ED_format::R8G8_SINT;
+			format_str_to_value_map_["R8_SINT"] = ED_format::R8_SINT;
+			format_str_to_value_map_["R32G32B32A32_TYPELESS"] = ED_format::R32G32B32A32_TYPELESS;
+			format_str_to_value_map_["R32G32B32_TYPELESS"] = ED_format::R32G32B32_TYPELESS;
+			format_str_to_value_map_["R32G32_TYPELESS"] = ED_format::R32G32_TYPELESS;
+			format_str_to_value_map_["R32_TYPELESS"] = ED_format::R32_TYPELESS;
+			format_str_to_value_map_["R16G16B16A16_TYPELESS"] = ED_format::R16G16B16A16_TYPELESS;
+			format_str_to_value_map_["R16G16_TYPELESS"] = ED_format::R16G16_TYPELESS;
+			format_str_to_value_map_["R16_TYPELESS"] = ED_format::R16_TYPELESS;
+			format_str_to_value_map_["R8G8B8A8_TYPELESS"] = ED_format::R8G8B8A8_TYPELESS;
+			format_str_to_value_map_["R8G8_TYPELESS"] = ED_format::R8G8_TYPELESS;
+			format_str_to_value_map_["R8_TYPELESS"] = ED_format::R8_TYPELESS;
 
 			// setup depth_comparison_func_str_to_value_map_
 			depth_comparison_func_str_to_value_map_["NEVER"] = ED_depth_comparison_func::NEVER;
@@ -1951,7 +1951,7 @@ namespace nrhi {
 
 		return it->second;
 	}
-	eastl::optional<E_format> F_nsl_info_tree_reader::read_format(u32 index, b8 is_required) const {
+	eastl::optional<ED_format> F_nsl_info_tree_reader::read_format(u32 index, b8 is_required) const {
 
 		if(!guarantee_index(index, is_required)) {
 
@@ -7908,16 +7908,16 @@ namespace nrhi {
 
 				const auto& semantic_info = data_type_manager_p->semantic_info(attribute.semantic);
 
-				E_format format = E_format::NONE;
+				ED_format format = ED_format::NONE;
 				u32 duplicate_count = 0;
 
 				switch (semantic_info.element_format)
 				{
 				case E_nsl_element_format::FLOAT_64:
 					{
-						static E_format formats[] = {
-							E_format::R32G32B32A32_FLOAT,
-							E_format::R32G32_FLOAT
+						static ED_format formats[] = {
+							ED_format::R32G32B32A32_FLOAT,
+							ED_format::R32G32_FLOAT
 						};
 						format = formats[
 							4 - eastl::min<u32>(
@@ -7935,9 +7935,9 @@ namespace nrhi {
 					break;
 				case E_nsl_element_format::UINT_64:
 					{
-						static E_format formats[] = {
-							E_format::R32G32B32A32_UINT,
-							E_format::R32G32_UINT
+						static ED_format formats[] = {
+							ED_format::R32G32B32A32_UINT,
+							ED_format::R32G32_UINT
 						};
 						format = formats[
 							4 - eastl::min<u32>(
@@ -7955,9 +7955,9 @@ namespace nrhi {
 					break;
 				case E_nsl_element_format::SINT_64:
 					{
-						static E_format formats[] = {
-							E_format::R32G32B32A32_SINT,
-							E_format::R32G32_SINT
+						static ED_format formats[] = {
+							ED_format::R32G32B32A32_SINT,
+							ED_format::R32G32_SINT
 						};
 						format = formats[
 							4 - eastl::min<u32>(
@@ -7975,9 +7975,9 @@ namespace nrhi {
 					break;
 				case E_nsl_element_format::TYPELESS_64:
 					{
-						static E_format formats[] = {
-							E_format::R32G32B32A32_TYPELESS,
-							E_format::R32G32_TYPELESS
+						static ED_format formats[] = {
+							ED_format::R32G32B32A32_TYPELESS,
+							ED_format::R32G32_TYPELESS
 						};
 						format = formats[
 							4 - eastl::min<u32>(
@@ -7996,11 +7996,11 @@ namespace nrhi {
 
 				case E_nsl_element_format::FLOAT_32:
 					{
-						static E_format formats[] = {
-							E_format::R32G32B32A32_FLOAT,
-							E_format::R32G32B32_FLOAT,
-							E_format::R32G32_FLOAT,
-							E_format::R32_FLOAT
+						static ED_format formats[] = {
+							ED_format::R32G32B32A32_FLOAT,
+							ED_format::R32G32B32_FLOAT,
+							ED_format::R32G32_FLOAT,
+							ED_format::R32_FLOAT
 						};
 						format = formats[
 							4 - eastl::min<u32>(
@@ -8018,11 +8018,11 @@ namespace nrhi {
 					break;
 				case E_nsl_element_format::FLOAT_16:
 					{
-						static E_format formats[] = {
-							E_format::R16G16B16A16_FLOAT,
-							E_format::R16G16B16A16_FLOAT,
-							E_format::R16G16_FLOAT,
-							E_format::R16_FLOAT
+						static ED_format formats[] = {
+							ED_format::R16G16B16A16_FLOAT,
+							ED_format::R16G16B16A16_FLOAT,
+							ED_format::R16G16_FLOAT,
+							ED_format::R16_FLOAT
 						};
 						format = formats[
 							4 - eastl::min<u32>(
@@ -8041,11 +8041,11 @@ namespace nrhi {
 
 				case E_nsl_element_format::UNORM_16:
 					{
-						static E_format formats[] = {
-							E_format::R16G16B16A16_UNORM,
-							E_format::R16G16B16A16_UNORM,
-							E_format::R16G16_UNORM,
-							E_format::R16_UNORM
+						static ED_format formats[] = {
+							ED_format::R16G16B16A16_UNORM,
+							ED_format::R16G16B16A16_UNORM,
+							ED_format::R16G16_UNORM,
+							ED_format::R16_UNORM
 						};
 						format = formats[
 							4 - eastl::min<u32>(
@@ -8063,11 +8063,11 @@ namespace nrhi {
 					break;
 				case E_nsl_element_format::UNORM_8:
 					{
-						static E_format formats[] = {
-							E_format::R8G8B8A8_UNORM,
-							E_format::R8G8B8A8_UNORM,
-							E_format::R8G8_UNORM,
-							E_format::R8_UNORM
+						static ED_format formats[] = {
+							ED_format::R8G8B8A8_UNORM,
+							ED_format::R8G8B8A8_UNORM,
+							ED_format::R8G8_UNORM,
+							ED_format::R8_UNORM
 						};
 						format = formats[
 							4 - eastl::min<u32>(
@@ -8086,11 +8086,11 @@ namespace nrhi {
 
 				case E_nsl_element_format::SNORM_16:
 					{
-						static E_format formats[] = {
-							E_format::R16G16B16A16_SNORM,
-							E_format::R16G16B16A16_SNORM,
-							E_format::R16G16_SNORM,
-							E_format::R16_SNORM
+						static ED_format formats[] = {
+							ED_format::R16G16B16A16_SNORM,
+							ED_format::R16G16B16A16_SNORM,
+							ED_format::R16G16_SNORM,
+							ED_format::R16_SNORM
 						};
 						format = formats[
 							4 - eastl::min<u32>(
@@ -8108,11 +8108,11 @@ namespace nrhi {
 					break;
 				case E_nsl_element_format::SNORM_8:
 					{
-						static E_format formats[] = {
-							E_format::R8G8B8A8_SNORM,
-							E_format::R8G8B8A8_SNORM,
-							E_format::R8G8_SNORM,
-							E_format::R8_SNORM
+						static ED_format formats[] = {
+							ED_format::R8G8B8A8_SNORM,
+							ED_format::R8G8B8A8_SNORM,
+							ED_format::R8G8_SNORM,
+							ED_format::R8_SNORM
 						};
 						format = formats[
 							4 - eastl::min<u32>(
@@ -8131,11 +8131,11 @@ namespace nrhi {
 
 				case E_nsl_element_format::UINT_32:
 					{
-						static E_format formats[] = {
-							E_format::R32G32B32A32_UINT,
-							E_format::R32G32B32_UINT,
-							E_format::R32G32_UINT,
-							E_format::R32_UINT
+						static ED_format formats[] = {
+							ED_format::R32G32B32A32_UINT,
+							ED_format::R32G32B32_UINT,
+							ED_format::R32G32_UINT,
+							ED_format::R32_UINT
 						};
 						format = formats[
 							4 - eastl::min<u32>(
@@ -8153,11 +8153,11 @@ namespace nrhi {
 					break;
 				case E_nsl_element_format::UINT_16:
 					{
-						static E_format formats[] = {
-							E_format::R16G16B16A16_UINT,
-							E_format::R16G16B16A16_UINT,
-							E_format::R16G16_UINT,
-							E_format::R16_UINT
+						static ED_format formats[] = {
+							ED_format::R16G16B16A16_UINT,
+							ED_format::R16G16B16A16_UINT,
+							ED_format::R16G16_UINT,
+							ED_format::R16_UINT
 						};
 						format = formats[
 							4 - eastl::min<u32>(
@@ -8175,11 +8175,11 @@ namespace nrhi {
 					break;
 				case E_nsl_element_format::UINT_8:
 					{
-						static E_format formats[] = {
-							E_format::R8G8B8A8_UINT,
-							E_format::R8G8B8A8_UINT,
-							E_format::R8G8_UINT,
-							E_format::R8_UINT
+						static ED_format formats[] = {
+							ED_format::R8G8B8A8_UINT,
+							ED_format::R8G8B8A8_UINT,
+							ED_format::R8G8_UINT,
+							ED_format::R8_UINT
 						};
 						format = formats[
 							4 - eastl::min<u32>(
@@ -8198,11 +8198,11 @@ namespace nrhi {
 
 				case E_nsl_element_format::SINT_32:
 					{
-						static E_format formats[] = {
-							E_format::R32G32B32A32_SINT,
-							E_format::R32G32B32_SINT,
-							E_format::R32G32_SINT,
-							E_format::R32_SINT
+						static ED_format formats[] = {
+							ED_format::R32G32B32A32_SINT,
+							ED_format::R32G32B32_SINT,
+							ED_format::R32G32_SINT,
+							ED_format::R32_SINT
 						};
 						format = formats[
 							4 - eastl::min<u32>(
@@ -8220,11 +8220,11 @@ namespace nrhi {
 					break;
 				case E_nsl_element_format::SINT_16:
 					{
-						static E_format formats[] = {
-							E_format::R16G16B16A16_SINT,
-							E_format::R16G16B16A16_SINT,
-							E_format::R16G16_SINT,
-							E_format::R16_SINT
+						static ED_format formats[] = {
+							ED_format::R16G16B16A16_SINT,
+							ED_format::R16G16B16A16_SINT,
+							ED_format::R16G16_SINT,
+							ED_format::R16_SINT
 						};
 						format = formats[
 							4 - eastl::min<u32>(
@@ -8242,11 +8242,11 @@ namespace nrhi {
 					break;
 				case E_nsl_element_format::SINT_8:
 					{
-						static E_format formats[] = {
-							E_format::R8G8B8A8_SINT,
-							E_format::R8G8B8A8_SINT,
-							E_format::R8G8_SINT,
-							E_format::R8_SINT
+						static ED_format formats[] = {
+							ED_format::R8G8B8A8_SINT,
+							ED_format::R8G8B8A8_SINT,
+							ED_format::R8G8_SINT,
+							ED_format::R8_SINT
 						};
 						format = formats[
 							4 - eastl::min<u32>(
@@ -8265,11 +8265,11 @@ namespace nrhi {
 
 				case E_nsl_element_format::TYPELESS_32:
 					{
-						static E_format formats[] = {
-							E_format::R32G32B32A32_TYPELESS,
-							E_format::R32G32B32_TYPELESS,
-							E_format::R32G32_TYPELESS,
-							E_format::R32_TYPELESS
+						static ED_format formats[] = {
+							ED_format::R32G32B32A32_TYPELESS,
+							ED_format::R32G32B32_TYPELESS,
+							ED_format::R32G32_TYPELESS,
+							ED_format::R32_TYPELESS
 						};
 						format = formats[
 							4 - eastl::min<u32>(
@@ -8287,11 +8287,11 @@ namespace nrhi {
 					break;
 				case E_nsl_element_format::TYPELESS_16:
 					{
-						static E_format formats[] = {
-							E_format::R16G16B16A16_TYPELESS,
-							E_format::R16G16B16A16_TYPELESS,
-							E_format::R16G16_TYPELESS,
-							E_format::R16_TYPELESS
+						static ED_format formats[] = {
+							ED_format::R16G16B16A16_TYPELESS,
+							ED_format::R16G16B16A16_TYPELESS,
+							ED_format::R16G16_TYPELESS,
+							ED_format::R16_TYPELESS
 						};
 						format = formats[
 							4 - eastl::min<u32>(
@@ -8309,11 +8309,11 @@ namespace nrhi {
 					break;
 				case E_nsl_element_format::TYPELESS_8:
 					{
-						static E_format formats[] = {
-							E_format::R8G8B8A8_TYPELESS,
-							E_format::R8G8B8A8_TYPELESS,
-							E_format::R8G8_TYPELESS,
-							E_format::R8_TYPELESS
+						static ED_format formats[] = {
+							ED_format::R8G8B8A8_TYPELESS,
+							ED_format::R8G8B8A8_TYPELESS,
+							ED_format::R8G8_TYPELESS,
+							ED_format::R8_TYPELESS
 						};
 						format = formats[
 							4 - eastl::min<u32>(

@@ -77,7 +77,7 @@ namespace nrhi
 
 	static F_directx11_format_stride_setup directx11_format_stride_setup;
 
-	u32 HD_directx11_format::stride(E_format format)
+	u32 HD_directx11_format::stride(ED_format format)
 	{
 
 		if (u32(format) == 0xFFFFFFFF)
@@ -91,7 +91,7 @@ namespace nrhi
 		return directx11_format_stride_table[u32(format)];
 	}
 
-	u32 HD_directx11_format::aligned_stride(E_format format) {
+	u32 HD_directx11_format::aligned_stride(ED_format format) {
 
 		return (
 			1

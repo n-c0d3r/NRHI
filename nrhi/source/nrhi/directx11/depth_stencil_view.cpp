@@ -60,8 +60,8 @@ namespace nrhi {
 		if(target_resource_type == ED_resource_type::NONE)
 			target_resource_type = resource_desc.type;
 
-		E_format target_format = desc.overrided_format;
-		if(target_format == E_format::NONE)
+		ED_format target_format = desc.overrided_format;
+		if(target_format == ED_format::NONE)
 			target_format = resource_desc.format;
 
 		D3D11_DEPTH_STENCIL_VIEW_DESC d3d11_dsv_desc;

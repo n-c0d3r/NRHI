@@ -157,7 +157,7 @@ int main() {
     U_buffer_handle ibuffer_p = H_buffer::T_create<u32>(
         NCPP_FOREF_VALID(device_p),
         indices,
-        E_format::R32_UINT,
+        ED_format::R32_UINT,
         ED_resource_bind_flag::IBV
     );
 
@@ -187,7 +187,7 @@ int main() {
         {},
         1024,
         1024,
-        E_format::R8G8B8A8_UNORM,
+        ED_format::R8G8B8A8_UNORM,
         1,
         {},
         flag_combine(
@@ -215,7 +215,7 @@ int main() {
 				{
 					{
 						.name = "VERTEX_POSITION",
-						.format = E_format::R32G32B32A32_FLOAT
+						.format = ED_format::R32G32B32A32_FLOAT
 					}
 				}
 			}
@@ -225,7 +225,7 @@ int main() {
 				{
 					{
 						.name = "INSTANCE_POSITION",
-						.format = E_format::R32G32B32A32_FLOAT
+						.format = ED_format::R32G32B32A32_FLOAT
 					}
 				}
 			}

@@ -72,7 +72,7 @@ namespace nrhi {
         };
 		u32 size = 0;
 
-        E_format format = E_format::NONE;
+        ED_format format = ED_format::NONE;
         u32 stride = 0;
 
         u32 mip_level_count = 0;
@@ -104,7 +104,7 @@ namespace nrhi {
     public:
         static F_resource_desc create_buffer_desc(
             u32 count,
-            E_format format,
+            ED_format format,
             ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
             ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
         );
@@ -152,7 +152,7 @@ namespace nrhi {
     public:
         static F_resource_desc create_texture_1d_desc(
             u32 width,
-            E_format format = E_format::R8G8B8A8_UNORM,
+            ED_format format = ED_format::R8G8B8A8_UNORM,
             u32 mip_level_count = 1,
             ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
             ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE,
@@ -163,7 +163,7 @@ namespace nrhi {
         static F_resource_desc create_texture_2d_desc(
             u32 width,
             u32 height,
-            E_format format = E_format::R8G8B8A8_UNORM,
+            ED_format format = ED_format::R8G8B8A8_UNORM,
             u32 mip_level_count = 1,
 			F_sample_desc sample_desc = F_sample_desc{},
             ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
@@ -176,7 +176,7 @@ namespace nrhi {
             u32 width,
             u32 height,
             u32 depth,
-            E_format format = E_format::R8G8B8A8_UNORM,
+            ED_format format = ED_format::R8G8B8A8_UNORM,
             u32 mip_level_count = 1,
             ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
             ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE,
@@ -188,7 +188,7 @@ namespace nrhi {
 			u32 width,
 			u32 height,
 			u32 count,
-			E_format format = E_format::R8G8B8A8_UNORM,
+			ED_format format = ED_format::R8G8B8A8_UNORM,
 			u32 mip_level_count = 1,
 			F_sample_desc sample_desc = F_sample_desc{},
 			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
@@ -199,7 +199,7 @@ namespace nrhi {
 	public:
 		static F_resource_desc create_texture_cube_desc(
 			u32 width,
-			E_format format = E_format::R8G8B8A8_UNORM,
+			ED_format format = ED_format::R8G8B8A8_UNORM,
 			u32 mip_level_count = 1,
 			F_sample_desc sample_desc = F_sample_desc{},
 			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,

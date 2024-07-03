@@ -50,7 +50,7 @@ namespace nrhi {
 	struct F_vertex_attribute {
 
 		G_string name;
-		E_format format;
+		ED_format format;
 		u32 duplicate_count = 1;
 		u32 offset = NCPP_U32_MAX;
 
@@ -58,7 +58,7 @@ namespace nrhi {
 	struct F_instance_attribute {
 
 		G_string name;
-		E_format format;
+		ED_format format;
 		u32 duplicate_count = 1;
 		u32 offset = NCPP_U32_MAX;
 

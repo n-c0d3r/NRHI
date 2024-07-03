@@ -76,7 +76,7 @@ namespace nrhi {
 	struct F_depth_stencil_desc {
 
 		b8 enable_depth_test = false;
-		E_format format = E_format::D32_FLOAT;
+		ED_format format = ED_format::D32_FLOAT;
 		ED_depth_comparison_func depth_comparison_func = ED_depth_comparison_func::LESS;
 		b8 depth_buffer_write = true;
 
@@ -96,8 +96,8 @@ namespace nrhi {
 
 		ED_pipeline_state_type type = ED_pipeline_state_type::NONE;
 
-		TG_vector<E_format> color_formats = {
-			E_format::R8G8B8A8_UNORM
+		TG_vector<ED_format> color_formats = {
+			ED_format::R8G8B8A8_UNORM
 		};
 		F_depth_stencil_desc depth_stencil_desc;
 

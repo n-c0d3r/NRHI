@@ -103,7 +103,7 @@ namespace nrhi {
             TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_data,
             u32 count,
-            E_format format,
+            ED_format format,
             ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
             ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
         );
@@ -113,7 +113,7 @@ namespace nrhi {
         static U_buffer_handle T_create(
             TKPA_valid<A_device> device_p,
             const TG_span<F_element__>& data,
-            E_format format,
+            ED_format format,
             ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
             ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
         ) {
@@ -259,7 +259,7 @@ namespace nrhi {
 			KPA_valid_buffer_handle buffer_p,
 			const F_initial_resource_data& initial_data,
 			u32 count,
-			E_format format,
+			ED_format format,
 			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
 			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 		);
@@ -269,7 +269,7 @@ namespace nrhi {
 		static void T_rebuild(
 			KPA_valid_buffer_handle buffer_p,
 			const TG_span<F_element__>& data,
-			E_format format,
+			ED_format format,
 			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
 			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 		) {

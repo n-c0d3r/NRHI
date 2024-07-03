@@ -20,7 +20,7 @@ function(NRHI_DXGI_ImplementFormats)
 
     NRHI_EnumHelper_CreateEnum(
         NAMESPACE "nrhi"
-        NAME "E_format"
+        NAME "ED_format"
         DRIVER_UPPER_CASE_NAME ${PARGS_DRIVER_UPPER_CASE_NAME}
         TARGET_HPP_FILE_PATH "${NRHI_FORMAT_ENUM_HPP_FILE_PATH}"
         TARGET_CPP_FILE_PATH "${NRHI_FORMAT_ENUM_CPP_FILE_PATH}"

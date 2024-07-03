@@ -30,7 +30,7 @@ namespace nrhi {
 
     F_resource_desc H_resource_desc::create_buffer_desc(
         u32 count,
-        E_format format,
+        ED_format format,
         ED_resource_bind_flag bind_flags,
         ED_resource_heap_type heap_type
     ) {
@@ -79,7 +79,7 @@ namespace nrhi {
 
     F_resource_desc H_resource_desc::create_texture_1d_desc(
         u32 width,
-        E_format format,
+        ED_format format,
         u32 mip_level_count,
         ED_resource_bind_flag bind_flags,
         ED_resource_heap_type heap_type,
@@ -115,7 +115,7 @@ namespace nrhi {
     F_resource_desc H_resource_desc::create_texture_2d_desc(
         u32 width,
         u32 height,
-        E_format format,
+        ED_format format,
         u32 mip_level_count,
         F_sample_desc sample_desc,
         ED_resource_bind_flag bind_flags,
@@ -154,7 +154,7 @@ namespace nrhi {
         u32 width,
         u32 height,
         u32 depth,
-        E_format format,
+        ED_format format,
         u32 mip_level_count,
         ED_resource_bind_flag bind_flags,
         ED_resource_heap_type heap_type,
@@ -191,7 +191,7 @@ namespace nrhi {
 		u32 width,
 		u32 height,
 		u32 count,
-		E_format format,
+		ED_format format,
 		u32 mip_level_count,
 		F_sample_desc sample_desc,
 		ED_resource_bind_flag bind_flags,
@@ -228,7 +228,7 @@ namespace nrhi {
 
 	F_resource_desc H_resource_desc::create_texture_cube_desc(
 		u32 width,
-		E_format format,
+		ED_format format,
 		u32 mip_level_count,
 		F_sample_desc sample_desc,
 		ED_resource_bind_flag bind_flags,
@@ -275,7 +275,7 @@ namespace nrhi {
 
 			.size = count * u32(sizeof(u32)),
 
-			.format = E_format::R32_UINT,
+			.format = ED_format::R32_UINT,
 			.stride = sizeof(u32),
 
 			.mip_level_count = 1,

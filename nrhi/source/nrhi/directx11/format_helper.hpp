@@ -44,8 +44,8 @@ namespace nrhi {
     class NRHI_API HD_directx11_format {
 
     public:
-        static u32 stride(E_format format);
-        static u32 aligned_stride(E_format format);
+        static u32 stride(ED_format format);
+        static u32 aligned_stride(ED_format format);
 
     };
 
