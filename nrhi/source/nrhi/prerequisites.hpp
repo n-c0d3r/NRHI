@@ -191,9 +191,8 @@ namespace nrhi {}
                     };\
                 )
     #define NRHI_ENUM_BREAK goto NCPP_GLUE(NRHI_INTERNAL_ENUM_BREAK_POINT_, NCPP_LINE)
-    #define NRHI_ENUM_CASE(...) if((__VA_ARGS__) != NCPP_GLUE(NRHI_INTERNAL_ENUM_TEMP_, NCPP_LINE)) NRHI_ENUM_BREAK;\
-    
-    #define NRHI_ENUM_DEFAULT(...) \
+    #define NRHI_ENUM_CASE(Value, ...) if((Value) == NCPP_GLUE(NRHI_INTERNAL_ENUM_TEMP_, NCPP_LINE)) { __VA_ARGS__ }
+    #define NRHI_ENUM_DEFAULT(...) { __VA_ARGS__ }
 
 #else
     #define NRHI_ENUM_SWITCH(Value, ...) NCPP_EXPAND(\
@@ -203,10 +202,8 @@ namespace nrhi {}
                     };\
                 )
     #define NRHI_ENUM_BREAK break
-    #define NRHI_ENUM_CASE(...) case __VA_ARGS__: \
-                
-    #define NRHI_ENUM_DEFAULT(...) \
-                default: \
+    #define NRHI_ENUM_CASE(Value, ...) case Value: { __VA_ARGS__ }
+    #define NRHI_ENUM_DEFAULT(...) default: { __VA_ARGS__ }
                 
 #endif
 #pragma endregion

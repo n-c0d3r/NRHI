@@ -104,7 +104,8 @@ namespace nrhi {
 	) {
 		NRHI_ENUM_SWITCH(
 			pipeline_state_p->desc().type,
-			NRHI_ENUM_CASE(E_pipeline_state_type::GRAPHICS)
+			NRHI_ENUM_CASE(
+				E_pipeline_state_type::GRAPHICS,
 				bind_graphics_pipeline_state(
 					command_list_p,
 					{
@@ -112,7 +113,9 @@ namespace nrhi {
 					}
 				);
 				NRHI_ENUM_BREAK;
-			NRHI_ENUM_CASE(E_pipeline_state_type::COMPUTE)
+            )
+			NRHI_ENUM_CASE(
+				E_pipeline_state_type::COMPUTE,
 				bind_compute_pipeline_state(
 					command_list_p,
 					{
@@ -120,6 +123,7 @@ namespace nrhi {
 					}
 				);
 				NRHI_ENUM_BREAK;
+            )
 		);
 	}
 	void HD_directx11_command_list::bind_graphics_pipeline_state(

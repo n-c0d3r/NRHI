@@ -69,20 +69,25 @@ namespace nrhi {
 		d3d11_dsv_desc.Format = DXGI_FORMAT(target_format);
 		NRHI_ENUM_SWITCH(
 			target_resource_type,
-			NRHI_ENUM_CASE(E_resource_type::TEXTURE_2D)
+			NRHI_ENUM_CASE(
+				E_resource_type::TEXTURE_2D,
 				d3d11_dsv_desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 				d3d11_dsv_desc.Texture2D.MipSlice = desc.target_mip_level;
 				NRHI_ENUM_BREAK;
-			NRHI_ENUM_CASE(E_resource_type::TEXTURE_2D_ARRAY)
+            )
+			NRHI_ENUM_CASE(
+				E_resource_type::TEXTURE_2D_ARRAY,
 				d3d11_dsv_desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DARRAY;
 				d3d11_dsv_desc.Texture2DArray.MipSlice = desc.base_mip_level;
 				d3d11_dsv_desc.Texture2DArray.FirstArraySlice = desc.index;
 				d3d11_dsv_desc.Texture2DArray.ArraySize = desc.count;
 				NCPP_ASSERT(desc.count) << "texture 2d array size can't be zero";
 				NRHI_ENUM_BREAK;
-			NRHI_ENUM_DEFAULT()
+            )
+			NRHI_ENUM_DEFAULT(
 				NCPP_ASSERT(false) << "invalid resource type";
 				NRHI_ENUM_BREAK;
+			)
 		);
 
 		d3d11_device_p->CreateDepthStencilView(

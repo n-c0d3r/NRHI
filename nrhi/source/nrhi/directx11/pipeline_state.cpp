@@ -26,10 +26,14 @@ namespace nrhi {
 	) {
 		NRHI_ENUM_SWITCH(
 			desc.type,
-			NRHI_ENUM_CASE(E_pipeline_state_type::GRAPHICS)
+			NRHI_ENUM_CASE(
+				E_pipeline_state_type::GRAPHICS,
 				return TU<F_directx11_graphics_pipeline_state>()(device_p, desc);
-			NRHI_ENUM_CASE(E_pipeline_state_type::COMPUTE)
+            )
+			NRHI_ENUM_CASE(
+				E_pipeline_state_type::COMPUTE,
 				return TU<F_directx11_compute_pipeline_state>()(device_p, desc);
+            )
 		);
 	}
 

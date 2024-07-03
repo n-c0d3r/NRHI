@@ -23,7 +23,7 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "namespace nrhi {
         }"
     VALUES
-        "compile_hlsl" "TU<A_shader_class>(
+        "compile_hlsl_from_src_content" "TU<A_shader_class>(
             const G_string& name,
             const G_string& src_content,
             const G_string& abs_path,

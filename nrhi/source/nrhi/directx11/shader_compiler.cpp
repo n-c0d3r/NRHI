@@ -8,7 +8,7 @@
 
 namespace nrhi {
 
-	TU<A_shader_class> HD_directx11_shader_compiler::compile_hlsl(
+	TU<A_shader_class> HD_directx11_shader_compiler::compile_hlsl_from_src_content(
 		const G_string& name,
 		const G_string& src_content,
 		const G_string& abs_path,
@@ -28,7 +28,8 @@ namespace nrhi {
 
 			NRHI_ENUM_SWITCH(
 				kernel_desc.type,
-				NRHI_ENUM_CASE(E_shader_type::VERTEX)
+				NRHI_ENUM_CASE(
+					E_shader_type::VERTEX,
 					hr = D3DCompile(
 						src_content.data(),
 						src_content.size() * sizeof(char),
@@ -51,7 +52,9 @@ namespace nrhi {
 						<< ncpp::E_log_color::V_FOREGROUND_BRIGHT_RED
 						<< (char*)d3d11_error_blob_p->GetBufferPointer();
 					NRHI_ENUM_BREAK;
-				NRHI_ENUM_CASE(E_shader_type::PIXEL)
+            	)
+				NRHI_ENUM_CASE(
+					E_shader_type::PIXEL,
 					hr = D3DCompile(
 						src_content.data(),
 						src_content.size() * sizeof(char),
@@ -74,7 +77,9 @@ namespace nrhi {
 						<< ncpp::E_log_color::V_FOREGROUND_BRIGHT_RED
 						<< (char*)d3d11_error_blob_p->GetBufferPointer();
 					NRHI_ENUM_BREAK;
-				NRHI_ENUM_CASE(E_shader_type::COMPUTE)
+            	)
+				NRHI_ENUM_CASE(
+					E_shader_type::COMPUTE,
 					hr = D3DCompile(
 						src_content.data(),
 						src_content.size() * sizeof(char),
@@ -97,6 +102,7 @@ namespace nrhi {
 						<< ncpp::E_log_color::V_FOREGROUND_BRIGHT_RED
 						<< (char*)d3d11_error_blob_p->GetBufferPointer();
 					NRHI_ENUM_BREAK;
+            	)
 			);
 
 			shader_blob_p_vector.push_back(
@@ -136,7 +142,8 @@ namespace nrhi {
 
 			NRHI_ENUM_SWITCH(
 				kernel_desc.type,
-				NRHI_ENUM_CASE(E_shader_type::VERTEX)
+				NRHI_ENUM_CASE(
+					E_shader_type::VERTEX,
 					hr = D3DCompileFromFile(
 						abs_wpath.data(),
 						0,
@@ -157,7 +164,9 @@ namespace nrhi {
 					<< ncpp::E_log_color::V_FOREGROUND_BRIGHT_RED
 					<< (char*)d3d11_error_blob_p->GetBufferPointer();
 					NRHI_ENUM_BREAK;
-				NRHI_ENUM_CASE(E_shader_type::PIXEL)
+            	)
+				NRHI_ENUM_CASE(
+					E_shader_type::PIXEL,
 					hr = D3DCompileFromFile(
 						abs_wpath.data(),
 						0,
@@ -178,7 +187,9 @@ namespace nrhi {
 					<< ncpp::E_log_color::V_FOREGROUND_BRIGHT_RED
 					<< (char*)d3d11_error_blob_p->GetBufferPointer();
 					NRHI_ENUM_BREAK;
-				NRHI_ENUM_CASE(E_shader_type::COMPUTE)
+            	)
+				NRHI_ENUM_CASE(
+					E_shader_type::COMPUTE,
 					hr = D3DCompileFromFile(
 						abs_wpath.data(),
 						0,
@@ -199,7 +210,8 @@ namespace nrhi {
 					<< ncpp::E_log_color::V_FOREGROUND_BRIGHT_RED
 					<< (char*)d3d11_error_blob_p->GetBufferPointer();
 					NRHI_ENUM_BREAK;
-				);
+				)
+			);
 
 			shader_blob_p_vector.push_back(
 				TS_valid<F_directx11_shader_blob>::T_make(

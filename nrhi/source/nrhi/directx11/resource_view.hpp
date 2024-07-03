@@ -109,16 +109,16 @@ namespace nrhi {
         );
 
 	public:
-		static U_srv_handle create_srv(
+		static U_srv_handle create_default_srv(
 			TKPA_valid<A_resource> resource_p
 		);
-		static U_uav_handle create_uav(
+		static U_uav_handle create_default_uav(
 			TKPA_valid<A_resource> resource_p
 		);
-		static U_rtv_handle create_rtv(
+		static U_rtv_handle create_default_rtv(
 			TKPA_valid<A_resource> resource_p
 		);
-		static U_dsv_handle create_dsv(
+		static U_dsv_handle create_default_dsv(
 			TKPA_valid<A_resource> resource_p
 		);
 

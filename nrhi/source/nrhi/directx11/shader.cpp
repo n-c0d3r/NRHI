@@ -242,12 +242,18 @@ namespace nrhi {
 
 		NRHI_ENUM_SWITCH(
 			desc.blob_p->desc().type,
-			NRHI_ENUM_CASE(E_shader_type::VERTEX)
+			NRHI_ENUM_CASE(
+				E_shader_type::VERTEX,
 				return TU<F_directx11_vertex_shader>()(device_p, desc);
-			NRHI_ENUM_CASE(E_shader_type::PIXEL)
+            )
+			NRHI_ENUM_CASE(
+				E_shader_type::PIXEL,
 				return TU<F_directx11_pixel_shader>()(device_p, desc);
-			NRHI_ENUM_CASE(E_shader_type::COMPUTE)
+            )
+			NRHI_ENUM_CASE(
+				E_shader_type::COMPUTE,
 				return TU<F_directx11_compute_shader>()(device_p, desc);
+            )
 		);
 
 		return null;

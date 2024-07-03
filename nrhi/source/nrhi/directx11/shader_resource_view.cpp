@@ -69,32 +69,43 @@ namespace nrhi {
         d3d11_srv_desc.Format = DXGI_FORMAT(target_format);
 		NRHI_ENUM_SWITCH(
 			target_resource_type,
-			NRHI_ENUM_CASE(E_resource_type::BUFFER)
+			NRHI_ENUM_CASE(
+				E_resource_type::BUFFER,
 				d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
 				d3d11_srv_desc.Buffer.FirstElement = desc.mem_offset / resource_desc.stride;
 				d3d11_srv_desc.Buffer.NumElements = resource_desc.size / resource_desc.stride;
 				NRHI_ENUM_BREAK;
-			NRHI_ENUM_CASE(E_resource_type::STRUCTURED_BUFFER)
+            )
+			NRHI_ENUM_CASE(
+				E_resource_type::STRUCTURED_BUFFER,
 				d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
 				d3d11_srv_desc.Buffer.FirstElement = desc.mem_offset / resource_desc.stride;
 				d3d11_srv_desc.Buffer.NumElements = resource_desc.size / resource_desc.stride;
 				NRHI_ENUM_BREAK;
-			NRHI_ENUM_CASE(E_resource_type::TEXTURE_1D)
+            )
+			NRHI_ENUM_CASE(
+				E_resource_type::TEXTURE_1D,
 				d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE1D;
 				d3d11_srv_desc.Texture1D.MipLevels = resource_desc.mip_level_count;
 				d3d11_srv_desc.Texture1D.MostDetailedMip = desc.base_mip_level;
 				NRHI_ENUM_BREAK;
-			NRHI_ENUM_CASE(E_resource_type::TEXTURE_2D)
+            )
+			NRHI_ENUM_CASE(
+				E_resource_type::TEXTURE_2D,
 				d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 				d3d11_srv_desc.Texture2D.MipLevels = resource_desc.mip_level_count;
 				d3d11_srv_desc.Texture2D.MostDetailedMip = desc.base_mip_level;
 				NRHI_ENUM_BREAK;
-			NRHI_ENUM_CASE(E_resource_type::TEXTURE_3D)
+            )
+			NRHI_ENUM_CASE(
+				E_resource_type::TEXTURE_3D,
 				d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE3D;
 				d3d11_srv_desc.Texture3D.MipLevels = resource_desc.mip_level_count;
 				d3d11_srv_desc.Texture3D.MostDetailedMip = desc.base_mip_level;
 				NRHI_ENUM_BREAK;
-			NRHI_ENUM_CASE(E_resource_type::TEXTURE_2D_ARRAY)
+            )
+			NRHI_ENUM_CASE(
+				E_resource_type::TEXTURE_2D_ARRAY,
 				d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
 				d3d11_srv_desc.Texture2DArray.MipLevels = resource_desc.mip_level_count;
 				d3d11_srv_desc.Texture2DArray.FirstArraySlice = desc.index;
@@ -102,14 +113,18 @@ namespace nrhi {
 				d3d11_srv_desc.Texture2DArray.MostDetailedMip = desc.base_mip_level;
 				NCPP_ASSERT(desc.count) << "texture 2d array size can't be zero";
 				NRHI_ENUM_BREAK;
-			NRHI_ENUM_CASE(E_resource_type::TEXTURE_CUBE)
+            )
+			NRHI_ENUM_CASE(
+				E_resource_type::TEXTURE_CUBE,
 				d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
 				d3d11_srv_desc.TextureCube.MipLevels = resource_desc.mip_level_count;
 				d3d11_srv_desc.TextureCube.MostDetailedMip = desc.base_mip_level;
 				NRHI_ENUM_BREAK;
-			NRHI_ENUM_DEFAULT()
+            )
+			NRHI_ENUM_DEFAULT(
 				NCPP_ASSERT(false) << "invalid resource type";
 				NRHI_ENUM_BREAK;
+			)
 		);
 
         d3d11_device_p->CreateShaderResourceView(

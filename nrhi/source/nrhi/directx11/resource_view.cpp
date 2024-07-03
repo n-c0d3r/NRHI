@@ -45,18 +45,22 @@ namespace nrhi {
 	){
 		NRHI_ENUM_SWITCH(
 			desc.type,
-			NRHI_ENUM_CASE(E_resource_view_type::SRV)
+			NRHI_ENUM_CASE(
+				E_resource_view_type::SRV,
 				return { TU<F_directx11_shader_resource_view>()(device_p, desc) };
-				NRHI_ENUM_BREAK;
-			NRHI_ENUM_CASE(E_resource_view_type::UAV)
+            )
+			NRHI_ENUM_CASE(
+				E_resource_view_type::UAV,
 				return { TU<F_directx11_unordered_access_view>()(device_p, desc) };
-				NRHI_ENUM_BREAK;
-			NRHI_ENUM_CASE(E_resource_view_type::RTV)
+            )
+			NRHI_ENUM_CASE(
+				E_resource_view_type::RTV,
 				return { TU<F_directx11_render_target_view>()(device_p, desc) };
-				NRHI_ENUM_BREAK;
-			NRHI_ENUM_CASE(E_resource_view_type::DSV)
+            )
+			NRHI_ENUM_CASE(
+				E_resource_view_type::DSV,
 				return { TU<F_directx11_depth_stencil_view>()(device_p, desc) };
-				NRHI_ENUM_BREAK;
+            )
 		);
 	}
 
@@ -89,7 +93,7 @@ namespace nrhi {
 		return { TU<F_directx11_depth_stencil_view>()(device_p, desc) };
     }
 
-	U_srv_handle HD_directx11_resource_view::create_srv(
+	U_srv_handle HD_directx11_resource_view::create_default_srv(
 		TKPA_valid<A_resource> resource_p
 	) {
 
@@ -97,12 +101,16 @@ namespace nrhi {
 
 		NRHI_ENUM_SWITCH(
 			resource_p->desc().type,
-			NRHI_ENUM_CASE(E_resource_type::TEXTURE_2D_ARRAY)
+			NRHI_ENUM_CASE(
+				E_resource_type::TEXTURE_2D_ARRAY,
 				count = resource_p->desc().array_size;
 				NRHI_ENUM_BREAK;
-			NRHI_ENUM_CASE(E_resource_type::TEXTURE_CUBE)
+            )
+			NRHI_ENUM_CASE(
+				E_resource_type::TEXTURE_CUBE,
 				count = 6;
 				NRHI_ENUM_BREAK;
+            )
 		);
 
 		return {
@@ -115,7 +123,7 @@ namespace nrhi {
 			)
 		};
 	}
-	U_uav_handle HD_directx11_resource_view::create_uav(
+	U_uav_handle HD_directx11_resource_view::create_default_uav(
 		TKPA_valid<A_resource> resource_p
 	) {
 
@@ -123,12 +131,16 @@ namespace nrhi {
 
 		NRHI_ENUM_SWITCH(
 			resource_p->desc().type,
-			NRHI_ENUM_CASE(E_resource_type::TEXTURE_2D_ARRAY)
+			NRHI_ENUM_CASE(
+				E_resource_type::TEXTURE_2D_ARRAY,
 				count = resource_p->desc().array_size;
 				NRHI_ENUM_BREAK;
-			NRHI_ENUM_CASE(E_resource_type::TEXTURE_CUBE)
+            )
+			NRHI_ENUM_CASE(
+				E_resource_type::TEXTURE_CUBE,
 				count = 6;
 				NRHI_ENUM_BREAK;
+            )
 		);
 
 		return {
@@ -141,7 +153,7 @@ namespace nrhi {
 			)
 		};
 	}
-	U_rtv_handle HD_directx11_resource_view::create_rtv(
+	U_rtv_handle HD_directx11_resource_view::create_default_rtv(
 		TKPA_valid<A_resource> resource_p
 	) {
 
@@ -149,12 +161,16 @@ namespace nrhi {
 
 		NRHI_ENUM_SWITCH(
 			resource_p->desc().type,
-			NRHI_ENUM_CASE(E_resource_type::TEXTURE_2D_ARRAY)
+			NRHI_ENUM_CASE(
+				E_resource_type::TEXTURE_2D_ARRAY,
 				count = resource_p->desc().array_size;
 				NRHI_ENUM_BREAK;
-			NRHI_ENUM_CASE(E_resource_type::TEXTURE_CUBE)
+            )
+			NRHI_ENUM_CASE(
+				E_resource_type::TEXTURE_CUBE,
 				count = 6;
 				NRHI_ENUM_BREAK;
+            )
 		);
 
 		return {
@@ -167,7 +183,7 @@ namespace nrhi {
 			)
 		};
 	}
-	U_dsv_handle HD_directx11_resource_view::create_dsv(
+	U_dsv_handle HD_directx11_resource_view::create_default_dsv(
 		TKPA_valid<A_resource> resource_p
 	) {
 
@@ -175,12 +191,16 @@ namespace nrhi {
 
 		NRHI_ENUM_SWITCH(
 			resource_p->desc().type,
-			NRHI_ENUM_CASE(E_resource_type::TEXTURE_2D_ARRAY)
+			NRHI_ENUM_CASE(
+				E_resource_type::TEXTURE_2D_ARRAY,
 				count = resource_p->desc().array_size;
 				NRHI_ENUM_BREAK;
-			NRHI_ENUM_CASE(E_resource_type::TEXTURE_CUBE)
+            )
+			NRHI_ENUM_CASE(
+				E_resource_type::TEXTURE_CUBE,
 				count = 6;
 				NRHI_ENUM_BREAK;
+            )
 		);
 
 		return {

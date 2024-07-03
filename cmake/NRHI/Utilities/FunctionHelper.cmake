@@ -175,14 +175,8 @@ function(NRHI_FunctionHelper_CreateFunctionClass)
                     set(
                         hppFileContent
                         "${hppFileContent}
-                        private:
-                            static ncpp::TF_first_template_targ<${funcTypeValue}>* ${name}___internal_${nameIndex};
                         public:
-                            template<typename... F_args__>
-                            requires requires(ncpp::TF_first_template_targ<${funcTypeValue}>* functor_p) { functor_p(std::declval<F_args__&&>()...); }
-                            static NCPP_FORCE_INLINE auto ${name}(F_args__&&... args) {
-                                return ${name}___internal_${nameIndex}(NCPP_FORWARD(args)...);
-                            }
+                            static ncpp::TF_first_template_targ<${funcTypeValue}>* ${name};
                         "
                     )
                 endif()
@@ -224,7 +218,7 @@ function(NRHI_FunctionHelper_CreateFunctionClass)
                     set(
                         cppFileContent
                         "${cppFileContent}
-                        ncpp::TF_first_template_targ<${funcTypeValue}>* ${PARGS_NAME}::${name}___internal_${nameIndex} = 0;
+                        ncpp::TF_first_template_targ<${funcTypeValue}>* ${PARGS_NAME}::${name} = 0;
                         "
                     )
                 endif()
@@ -283,10 +277,10 @@ function(NRHI_FunctionHelper_CreateFunctionClass)
                         updateMapBodyContent
                         "${updateMapBodyContent}
                         if(clear) {
-                            ${PARGS_NAME}::${name}___internal_${nameIndex} = &(${PARGS_DRIVER_SPECIFIC_NAME}::${name});
+                            ${PARGS_NAME}::${name} = 0;
                         }
                         else
-                            ${PARGS_NAME}::${name}___internal_${nameIndex} = 0;
+                            ${PARGS_NAME}::${name} = &(${PARGS_DRIVER_SPECIFIC_NAME}::${name});
                         "
                     )
                 else()

@@ -233,7 +233,7 @@ int main() {
 	};
 
 	// create demo shader class
-	auto shader_class_p = H_shader_compiler::compile_hlsl(
+	auto shader_class_p = H_shader_compiler::compile_hlsl_from_src_content(
 		// shader class name
 		"DemoShaderClass",
 		// shader class source content
