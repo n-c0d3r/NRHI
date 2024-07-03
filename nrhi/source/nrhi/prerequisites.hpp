@@ -175,6 +175,40 @@ namespace nrhi {}
     #define NRHI_DRIVER_FORWARD_FUNC_P(...) (&(__VA_ARGS__))
 #endif
 
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+#ifdef NRHI_DRIVER_MULTIPLE
+    #define NRHI_ENUM_SWITCH(Value, ...) NCPP_EXPAND(\
+                    {\
+                        auto NCPP_GLUE(NRHI_INTERNAL_ENUM_TEMP_, NCPP_LINE) = Value;\
+                        \
+                        __VA_ARGS__;\
+                        \
+                        NCPP_GLUE(NRHI_INTERNAL_ENUM_BREAK_POINT_, NCPP_LINE):\
+                        {}\
+                    };\
+                )
+    #define NRHI_ENUM_BREAK goto NCPP_GLUE(NRHI_INTERNAL_ENUM_BREAK_POINT_, NCPP_LINE)
+    #define NRHI_ENUM_CASE(...) if((__VA_ARGS__) != NCPP_GLUE(NRHI_INTERNAL_ENUM_TEMP_, NCPP_LINE)) NRHI_ENUM_BREAK;\
+    
+    #define NRHI_ENUM_DEFAULT(...) \
+
+#else
+    #define NRHI_ENUM_SWITCH(Value, ...) NCPP_EXPAND(\
+                    switch(Value)\
+                    {\
+                        __VA_ARGS__;\
+                    };\
+                )
+    #define NRHI_ENUM_BREAK break
+    #define NRHI_ENUM_CASE(...) case __VA_ARGS__: \
+                
+    #define NRHI_ENUM_DEFAULT(...) \
+                default: \
+                
+#endif
 #pragma endregion
 
 

@@ -24,8 +24,9 @@ function(NRHI_EnumHelper_CreateEnum)
     set(TARGET_LAST_DRIVER_INDEX_FILE_PATH "${targetCPPFilePathParsed}.last_driver_index")
     string(REPLACE "\\" "/" TARGET_LAST_DRIVER_INDEX_FILE_PATH "${TARGET_LAST_DRIVER_INDEX_FILE_PATH}")
 
-    if(NOT NRHI_IMPLEMENTED_${PARGS_NAME})
-        NCPP_SetGlobal(NRHI_IMPLEMENTED_${PARGS_NAME} "")
+    string(REPLACE "::" "." parsedNamespaceForFile "${PARGS_NAMESPACE}")
+    if(NOT EXISTS "${NRHI_GENERATED_FILES_DIR}/is_first_implementation_flags/${parsedNamespaceForFile}.${PARGS_NAME}")
+        file(WRITE "${NRHI_GENERATED_FILES_DIR}/is_first_implementation_flags/${parsedNamespaceForFile}.${PARGS_NAME}" "")
         set(isFirstImplementation ON)
     endif()
 
@@ -68,7 +69,7 @@ function(NRHI_EnumHelper_CreateEnum)
 
     # Prepare or read files
     if(isFirstImplementation)
-        set(hppFileContent "#pragma once \n")
+        set(hppFileContent "#pragma once \n #include \"${TARGET_LAST_DRIVER_INDEX_FILE_PATH}\" \n")
         set(cppFileContent "#include \"${targetHPPFilePathParsed}\" \n")
         set(updateMapBodyContent "")
         set(maxValueCountDivStep "0")
@@ -139,9 +140,35 @@ function(NRHI_EnumHelper_CreateEnum)
 
                             return value___nrhi_internal___;
                         }
+                        template<typename F__>
+                        NCPP_FORCE_INLINE operator F__ () const noexcept {
+
+                            using F_equivalent = ncpp::utilities::TF_nth_template_targ<
+                                sizeof(F__),
+                                void,
+                                ncpp::u8,
+                                ncpp::u16,
+                                void,
+                                ncpp::u32,
+                                void,
+                                void,
+                                void,
+                                ncpp::u64
+                            >;
+
+                            return (F__)((F_equivalent)value___nrhi_internal___);
+                        }
                         NCPP_FORCE_INLINE operator bool () const noexcept {
 
                             return (value___nrhi_internal___ != 0);
+                        }
+                        NCPP_FORCE_INLINE bool operator == (${PARGS_NAME} x) const noexcept {
+
+                            return (value___nrhi_internal___ == x.value___nrhi_internal___);
+                        }
+                        NCPP_FORCE_INLINE bool operator != (${PARGS_NAME} x) const noexcept {
+
+                            return (value___nrhi_internal___ != x.value___nrhi_internal___);
                         }
 
                         static void update_map();

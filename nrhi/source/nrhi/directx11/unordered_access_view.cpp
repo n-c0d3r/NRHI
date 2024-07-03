@@ -67,40 +67,41 @@ namespace nrhi {
 		D3D11_UNORDERED_ACCESS_VIEW_DESC d3d11_uav_desc;
 		memset(&d3d11_uav_desc, 0, sizeof(D3D11_UNORDERED_ACCESS_VIEW_DESC));
 		d3d11_uav_desc.Format = DXGI_FORMAT(target_format);
-		switch (target_resource_type) {
-		case E_resource_type::BUFFER:
-			d3d11_uav_desc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
-			d3d11_uav_desc.Buffer.FirstElement = desc.mem_offset / resource_desc.stride;
-			d3d11_uav_desc.Buffer.NumElements = resource_desc.size / resource_desc.stride;
-			break;
-		case E_resource_type::STRUCTURED_BUFFER:
-			d3d11_uav_desc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
-			d3d11_uav_desc.Buffer.FirstElement = desc.mem_offset / resource_desc.stride;
-			d3d11_uav_desc.Buffer.NumElements = resource_desc.size / resource_desc.stride;
-			break;
-		case E_resource_type::TEXTURE_1D:
-			d3d11_uav_desc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE1D;
-			d3d11_uav_desc.Texture1D.MipSlice = desc.base_mip_level;
-			break;
-		case E_resource_type::TEXTURE_2D:
-			d3d11_uav_desc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
-			d3d11_uav_desc.Texture2D.MipSlice = desc.base_mip_level;
-			break;
-		case E_resource_type::TEXTURE_3D:
-			d3d11_uav_desc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE3D;
-			d3d11_uav_desc.Texture3D.MipSlice = desc.base_mip_level;
-			break;
-		case E_resource_type::TEXTURE_2D_ARRAY:
-			d3d11_uav_desc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2DARRAY;
-			d3d11_uav_desc.Texture2DArray.MipSlice = desc.base_mip_level;
-			d3d11_uav_desc.Texture2DArray.FirstArraySlice = desc.index;
-			d3d11_uav_desc.Texture2DArray.ArraySize = desc.count;
-			NCPP_ASSERT(desc.count) << "texture 2d array size can't be zero";
-			break;
-		default:
-			NCPP_ASSERT(false) << "invalid resource type";
-			break;
-		}
+		NRHI_ENUM_SWITCH(
+			target_resource_type,
+			NRHI_ENUM_CASE(E_resource_type::BUFFER)
+				d3d11_uav_desc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
+				d3d11_uav_desc.Buffer.FirstElement = desc.mem_offset / resource_desc.stride;
+				d3d11_uav_desc.Buffer.NumElements = resource_desc.size / resource_desc.stride;
+				NRHI_ENUM_BREAK;
+			NRHI_ENUM_CASE(E_resource_type::STRUCTURED_BUFFER)
+				d3d11_uav_desc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
+				d3d11_uav_desc.Buffer.FirstElement = desc.mem_offset / resource_desc.stride;
+				d3d11_uav_desc.Buffer.NumElements = resource_desc.size / resource_desc.stride;
+				NRHI_ENUM_BREAK;
+			NRHI_ENUM_CASE(E_resource_type::TEXTURE_1D)
+				d3d11_uav_desc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE1D;
+				d3d11_uav_desc.Texture1D.MipSlice = desc.base_mip_level;
+				NRHI_ENUM_BREAK;
+			NRHI_ENUM_CASE(E_resource_type::TEXTURE_2D)
+				d3d11_uav_desc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
+				d3d11_uav_desc.Texture2D.MipSlice = desc.base_mip_level;
+				NRHI_ENUM_BREAK;
+			NRHI_ENUM_CASE(E_resource_type::TEXTURE_3D)
+				d3d11_uav_desc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE3D;
+				d3d11_uav_desc.Texture3D.MipSlice = desc.base_mip_level;
+				NRHI_ENUM_BREAK;
+			NRHI_ENUM_CASE(E_resource_type::TEXTURE_2D_ARRAY)
+				d3d11_uav_desc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2DARRAY;
+				d3d11_uav_desc.Texture2DArray.MipSlice = desc.base_mip_level;
+				d3d11_uav_desc.Texture2DArray.FirstArraySlice = desc.index;
+				d3d11_uav_desc.Texture2DArray.ArraySize = desc.count;
+				NCPP_ASSERT(desc.count) << "texture 2d array size can't be zero";
+				NRHI_ENUM_BREAK;
+			NRHI_ENUM_DEFAULT()
+				NCPP_ASSERT(false) << "invalid resource type";
+				NRHI_ENUM_BREAK;
+		);
 
 		d3d11_device_p->CreateUnorderedAccessView(
 			d3d11_resource_p,

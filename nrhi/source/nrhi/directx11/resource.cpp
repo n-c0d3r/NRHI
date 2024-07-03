@@ -42,15 +42,15 @@ namespace nrhi {
         const F_initial_resource_data& initial_resource_data,
         const F_resource_desc& desc
     ){
-
-        switch (desc.type) {
-		case E_resource_type::BUFFER:
-			return TU<F_directx11_buffer>()(device_p, initial_resource_data, desc);
-		case E_resource_type::STRUCTURED_BUFFER:
-			return TU<F_directx11_structured_buffer>()(device_p, initial_resource_data, desc);
-		case E_resource_type::INDIRECT_BUFFER:
-			return TU<F_directx11_indirect_buffer>()(device_p, initial_resource_data, desc);
-        }
+		NRHI_ENUM_SWITCH(
+			desc.type,
+			NRHI_ENUM_CASE(E_resource_type::BUFFER)
+				return TU<F_directx11_buffer>()(device_p, initial_resource_data, desc);
+			NRHI_ENUM_CASE(E_resource_type::STRUCTURED_BUFFER)
+				return TU<F_directx11_structured_buffer>()(device_p, initial_resource_data, desc);
+			NRHI_ENUM_CASE(E_resource_type::INDIRECT_BUFFER)
+				return TU<F_directx11_indirect_buffer>()(device_p, initial_resource_data, desc);
+		);
         return null;
     }
 

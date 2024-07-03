@@ -55,20 +55,21 @@ namespace nrhi {
         d3d11_texture_1d_desc.ArraySize = 1;
         d3d11_texture_1d_desc.BindFlags = D3D11_BIND_FLAG(desc_.bind_flags);
         d3d11_texture_1d_desc.Format = DXGI_FORMAT(desc_.format);
-        switch (desc_.heap_type) {
-            case E_resource_heap_type::GREAD_GWRITE:
+        NRHI_ENUM_SWITCH(
+			desc_.heap_type,
+            NRHI_ENUM_CASE(E_resource_heap_type::GREAD_GWRITE)
                 d3d11_texture_1d_desc.CPUAccessFlags = 0;
                 d3d11_texture_1d_desc.Usage = D3D11_USAGE_DEFAULT;
-                break;
-            case E_resource_heap_type::GREAD_CWRITE:
+                NRHI_ENUM_BREAK;
+            NRHI_ENUM_CASE(E_resource_heap_type::GREAD_CWRITE)
                 d3d11_texture_1d_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
                 d3d11_texture_1d_desc.Usage = D3D11_USAGE_DYNAMIC;
-                break;
-            case E_resource_heap_type::CREAD_GWRITE:
+                NRHI_ENUM_BREAK;
+            NRHI_ENUM_CASE(E_resource_heap_type::CREAD_GWRITE)
                 d3d11_texture_1d_desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
                 d3d11_texture_1d_desc.Usage = D3D11_USAGE_STAGING;
-                break;
-        }
+                NRHI_ENUM_BREAK;
+		);
         d3d11_texture_1d_desc.MiscFlags = 0;
 
 		if((desc_.mip_level_count > 1) && desc_.is_mip_map_generatable)
@@ -172,20 +173,21 @@ namespace nrhi {
         d3d11_texture_2d_desc.Format = DXGI_FORMAT(desc_.format);
         d3d11_texture_2d_desc.SampleDesc.Count = desc_.sample_desc.count;
         d3d11_texture_2d_desc.SampleDesc.Quality = desc_.sample_desc.quality;
-        switch (desc_.heap_type) {
-            case E_resource_heap_type::GREAD_GWRITE:
+        NRHI_ENUM_SWITCH(
+			desc_.heap_type,
+            NRHI_ENUM_CASE(E_resource_heap_type::GREAD_GWRITE)
                 d3d11_texture_2d_desc.CPUAccessFlags = 0;
                 d3d11_texture_2d_desc.Usage = D3D11_USAGE_DEFAULT;
-                break;
-            case E_resource_heap_type::GREAD_CWRITE:
+                NRHI_ENUM_BREAK;
+            NRHI_ENUM_CASE(E_resource_heap_type::GREAD_CWRITE)
                 d3d11_texture_2d_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
                 d3d11_texture_2d_desc.Usage = D3D11_USAGE_DYNAMIC;
-                break;
-            case E_resource_heap_type::CREAD_GWRITE:
+                NRHI_ENUM_BREAK;
+            NRHI_ENUM_CASE(E_resource_heap_type::CREAD_GWRITE)
                 d3d11_texture_2d_desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
                 d3d11_texture_2d_desc.Usage = D3D11_USAGE_STAGING;
-                break;
-        }
+                NRHI_ENUM_BREAK;
+		);
         d3d11_texture_2d_desc.MiscFlags = 0;
 
 		if((desc_.mip_level_count > 1) && desc_.is_mip_map_generatable)
@@ -287,20 +289,21 @@ namespace nrhi {
         d3d11_texture_3d_desc.MipLevels = desc_.mip_level_count;
         d3d11_texture_3d_desc.BindFlags = D3D11_BIND_FLAG(desc_.bind_flags);
         d3d11_texture_3d_desc.Format = DXGI_FORMAT(desc_.format);
-        switch (desc_.heap_type) {
-            case E_resource_heap_type::GREAD_GWRITE:
+        NRHI_ENUM_SWITCH(
+			desc_.heap_type,
+            NRHI_ENUM_CASE(E_resource_heap_type::GREAD_GWRITE)
                 d3d11_texture_3d_desc.CPUAccessFlags = 0;
                 d3d11_texture_3d_desc.Usage = D3D11_USAGE_DEFAULT;
-                break;
-            case E_resource_heap_type::GREAD_CWRITE:
+                NRHI_ENUM_BREAK;
+            NRHI_ENUM_CASE(E_resource_heap_type::GREAD_CWRITE)
                 d3d11_texture_3d_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
                 d3d11_texture_3d_desc.Usage = D3D11_USAGE_DYNAMIC;
-                break;
-            case E_resource_heap_type::CREAD_GWRITE:
+                NRHI_ENUM_BREAK;
+            NRHI_ENUM_CASE(E_resource_heap_type::CREAD_GWRITE)
                 d3d11_texture_3d_desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
                 d3d11_texture_3d_desc.Usage = D3D11_USAGE_STAGING;
-                break;
-        }
+                NRHI_ENUM_BREAK;
+		);
         d3d11_texture_3d_desc.MiscFlags = 0;
 
 		if((desc_.mip_level_count > 1) && desc_.is_mip_map_generatable)
@@ -403,20 +406,21 @@ namespace nrhi {
 		d3d11_texture_2d_array_desc.Format = DXGI_FORMAT(desc_.format);
 		d3d11_texture_2d_array_desc.SampleDesc.Count = desc_.sample_desc.count;
 		d3d11_texture_2d_array_desc.SampleDesc.Quality = desc_.sample_desc.quality;
-		switch (desc_.heap_type) {
-		case E_resource_heap_type::GREAD_GWRITE:
-			d3d11_texture_2d_array_desc.CPUAccessFlags = 0;
-			d3d11_texture_2d_array_desc.Usage = D3D11_USAGE_DEFAULT;
-			break;
-		case E_resource_heap_type::GREAD_CWRITE:
-			d3d11_texture_2d_array_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-			d3d11_texture_2d_array_desc.Usage = D3D11_USAGE_DYNAMIC;
-			break;
-		case E_resource_heap_type::CREAD_GWRITE:
-			d3d11_texture_2d_array_desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
-			d3d11_texture_2d_array_desc.Usage = D3D11_USAGE_STAGING;
-			break;
-		}
+		NRHI_ENUM_SWITCH(
+			desc_.heap_type,
+			NRHI_ENUM_CASE(E_resource_heap_type::GREAD_GWRITE)
+				d3d11_texture_2d_array_desc.CPUAccessFlags = 0;
+				d3d11_texture_2d_array_desc.Usage = D3D11_USAGE_DEFAULT;
+				NRHI_ENUM_BREAK;
+			NRHI_ENUM_CASE(E_resource_heap_type::GREAD_CWRITE)
+				d3d11_texture_2d_array_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+				d3d11_texture_2d_array_desc.Usage = D3D11_USAGE_DYNAMIC;
+				NRHI_ENUM_BREAK;
+			NRHI_ENUM_CASE(E_resource_heap_type::CREAD_GWRITE)
+				d3d11_texture_2d_array_desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+				d3d11_texture_2d_array_desc.Usage = D3D11_USAGE_STAGING;
+				NRHI_ENUM_BREAK;
+		);
 		d3d11_texture_2d_array_desc.MiscFlags = 0;
 
 		if((desc_.mip_level_count > 1) && desc_.is_mip_map_generatable)
@@ -521,20 +525,21 @@ namespace nrhi {
 		d3d11_texture_cube_desc.Format = DXGI_FORMAT(desc_.format);
 		d3d11_texture_cube_desc.SampleDesc.Count = desc_.sample_desc.count;
 		d3d11_texture_cube_desc.SampleDesc.Quality = desc_.sample_desc.quality;
-		switch (desc_.heap_type) {
-		case E_resource_heap_type::GREAD_GWRITE:
-			d3d11_texture_cube_desc.CPUAccessFlags = 0;
-			d3d11_texture_cube_desc.Usage = D3D11_USAGE_DEFAULT;
-			break;
-		case E_resource_heap_type::GREAD_CWRITE:
-			d3d11_texture_cube_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-			d3d11_texture_cube_desc.Usage = D3D11_USAGE_DYNAMIC;
-			break;
-		case E_resource_heap_type::CREAD_GWRITE:
-			d3d11_texture_cube_desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
-			d3d11_texture_cube_desc.Usage = D3D11_USAGE_STAGING;
-			break;
-		}
+		NRHI_ENUM_SWITCH(
+			desc_.heap_type,
+			NRHI_ENUM_CASE(E_resource_heap_type::GREAD_GWRITE)
+				d3d11_texture_cube_desc.CPUAccessFlags = 0;
+				d3d11_texture_cube_desc.Usage = D3D11_USAGE_DEFAULT;
+				NRHI_ENUM_BREAK;
+			NRHI_ENUM_CASE(E_resource_heap_type::GREAD_CWRITE)
+				d3d11_texture_cube_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+				d3d11_texture_cube_desc.Usage = D3D11_USAGE_DYNAMIC;
+				NRHI_ENUM_BREAK;
+			NRHI_ENUM_CASE(E_resource_heap_type::CREAD_GWRITE)
+				d3d11_texture_cube_desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+				d3d11_texture_cube_desc.Usage = D3D11_USAGE_STAGING;
+				NRHI_ENUM_BREAK;
+		);
 		d3d11_texture_cube_desc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
 
 		if((desc_.mip_level_count > 1) && desc_.is_mip_map_generatable)

@@ -69,11 +69,11 @@ namespace nrhi {
 
         void try_update_map_enums(){
 
-			#include <nrhi/enums.try_update_maps>
+//			#include <nrhi/enums.try_update_maps>
         }
         void try_update_map_functions(bool clear){
 
-			#include <nrhi/functions.try_update_maps>
+//			#include <nrhi/functions.try_update_maps>
         }
         void try_update_map(bool clear){
 

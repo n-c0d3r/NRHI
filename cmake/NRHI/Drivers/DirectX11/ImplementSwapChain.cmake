@@ -26,7 +26,7 @@ NRHI_FunctionHelper_CreateFunctionClass(
     VALUES
         "create" "TU<A_swapchain>(
             TKPA_valid<A_command_queue> command_queue_p,
-            TKPA_valid<A_surface> surface_p,
+            TKPA_valid<F_surface> surface_p,
             const F_swapchain_desc& desc
         )"
         "present" "void(TKPA_valid<A_swapchain> swapchain_p)"

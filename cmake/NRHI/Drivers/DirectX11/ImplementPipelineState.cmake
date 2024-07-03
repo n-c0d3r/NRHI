@@ -31,6 +31,10 @@ NRHI_FunctionHelper_CreateFunctionClass(
             TKPA_valid<A_device> device_p,
             const F_pipeline_state_desc& desc
         )"
+        "create_compute_pipeline_state" "U_compute_pipeline_state_handle(
+			TKPA_valid<A_device> device_p,
+			const F_pipeline_state_desc& desc
+		)"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX11> Implement pipeline state done")

@@ -43,21 +43,21 @@ namespace nrhi {
 		TKPA_valid<A_device> device_p,
 		const F_resource_view_desc& desc
 	){
-
-		switch(desc.type) {
-		case E_resource_view_type::SRV:
-			return { TU<F_directx11_shader_resource_view>()(device_p, desc) };
-			break;
-		case E_resource_view_type::UAV:
-			return { TU<F_directx11_unordered_access_view>()(device_p, desc) };
-			break;
-		case E_resource_view_type::RTV:
-			return { TU<F_directx11_render_target_view>()(device_p, desc) };
-			break;
-		case E_resource_view_type::DSV:
-			return { TU<F_directx11_depth_stencil_view>()(device_p, desc) };
-			break;
-		}
+		NRHI_ENUM_SWITCH(
+			desc.type,
+			NRHI_ENUM_CASE(E_resource_view_type::SRV)
+				return { TU<F_directx11_shader_resource_view>()(device_p, desc) };
+				NRHI_ENUM_BREAK;
+			NRHI_ENUM_CASE(E_resource_view_type::UAV)
+				return { TU<F_directx11_unordered_access_view>()(device_p, desc) };
+				NRHI_ENUM_BREAK;
+			NRHI_ENUM_CASE(E_resource_view_type::RTV)
+				return { TU<F_directx11_render_target_view>()(device_p, desc) };
+				NRHI_ENUM_BREAK;
+			NRHI_ENUM_CASE(E_resource_view_type::DSV)
+				return { TU<F_directx11_depth_stencil_view>()(device_p, desc) };
+				NRHI_ENUM_BREAK;
+		);
 	}
 
     U_srv_handle HD_directx11_resource_view::create_srv(
@@ -95,15 +95,15 @@ namespace nrhi {
 
 		u32 count = 0;
 
-		switch(resource_p->desc().type) {
-
-		case E_resource_type::TEXTURE_2D_ARRAY:
-			count = resource_p->desc().array_size;
-			break;
-		case E_resource_type::TEXTURE_CUBE:
-			count = 6;
-			break;
-		};
+		NRHI_ENUM_SWITCH(
+			resource_p->desc().type,
+			NRHI_ENUM_CASE(E_resource_type::TEXTURE_2D_ARRAY)
+				count = resource_p->desc().array_size;
+				NRHI_ENUM_BREAK;
+			NRHI_ENUM_CASE(E_resource_type::TEXTURE_CUBE)
+				count = 6;
+				NRHI_ENUM_BREAK;
+		);
 
 		return {
 			TU<F_directx11_shader_resource_view>()(
@@ -121,15 +121,15 @@ namespace nrhi {
 
 		u32 count = 0;
 
-		switch(resource_p->desc().type) {
-
-		case E_resource_type::TEXTURE_2D_ARRAY:
-			count = resource_p->desc().array_size;
-			break;
-		case E_resource_type::TEXTURE_CUBE:
-			count = 6;
-			break;
-		};
+		NRHI_ENUM_SWITCH(
+			resource_p->desc().type,
+			NRHI_ENUM_CASE(E_resource_type::TEXTURE_2D_ARRAY)
+				count = resource_p->desc().array_size;
+				NRHI_ENUM_BREAK;
+			NRHI_ENUM_CASE(E_resource_type::TEXTURE_CUBE)
+				count = 6;
+				NRHI_ENUM_BREAK;
+		);
 
 		return {
 			TU<F_directx11_unordered_access_view>()(
@@ -147,15 +147,15 @@ namespace nrhi {
 
 		u32 count = 0;
 
-		switch(resource_p->desc().type) {
-
-		case E_resource_type::TEXTURE_2D_ARRAY:
-			count = resource_p->desc().array_size;
-			break;
-		case E_resource_type::TEXTURE_CUBE:
-			count = 6;
-			break;
-		};
+		NRHI_ENUM_SWITCH(
+			resource_p->desc().type,
+			NRHI_ENUM_CASE(E_resource_type::TEXTURE_2D_ARRAY)
+				count = resource_p->desc().array_size;
+				NRHI_ENUM_BREAK;
+			NRHI_ENUM_CASE(E_resource_type::TEXTURE_CUBE)
+				count = 6;
+				NRHI_ENUM_BREAK;
+		);
 
 		return {
 			TU<F_directx11_render_target_view>()(
@@ -173,15 +173,15 @@ namespace nrhi {
 
 		u32 count = 0;
 
-		switch(resource_p->desc().type) {
-
-		case E_resource_type::TEXTURE_2D_ARRAY:
-			count = resource_p->desc().array_size;
-			break;
-		case E_resource_type::TEXTURE_CUBE:
-			count = 6;
-			break;
-		};
+		NRHI_ENUM_SWITCH(
+			resource_p->desc().type,
+			NRHI_ENUM_CASE(E_resource_type::TEXTURE_2D_ARRAY)
+				count = resource_p->desc().array_size;
+				NRHI_ENUM_BREAK;
+			NRHI_ENUM_CASE(E_resource_type::TEXTURE_CUBE)
+				count = 6;
+				NRHI_ENUM_BREAK;
+		);
 
 		return {
 			TU<F_directx11_depth_stencil_view>()(

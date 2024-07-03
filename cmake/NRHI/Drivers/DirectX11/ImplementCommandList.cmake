@@ -40,6 +40,10 @@ NRHI_FunctionHelper_CreateFunctionClass(
             f32 depth,
             u8 stencil
         )"
+        "bind_pipeline_state" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            TKPA_valid<A_pipeline_state> pipeline_state_p
+        )"
         "bind_graphics_pipeline_state" "void(
             TKPA_valid<A_command_list> command_list_p,
             KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p
@@ -62,7 +66,7 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "ZIA_bind_vertex_buffer" "void(
             TKPA_valid<A_command_list> command_list_p,
             KPA_valid_buffer_handle vertex_buffer_p,
-            u32> offset,
+            u32 offset,
             u32 slot_index
         )"
         "ZIA_bind_instance_buffers" "void(
@@ -74,7 +78,7 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "ZIA_bind_instance_buffer" "void(
             TKPA_valid<A_command_list> command_list_p,
             KPA_valid_buffer_handle instance_buffer_p,
-            u32> offset,
+            u32 offset,
             u32 slot_index
         )"
         "ZVS_bind_constant_buffers" "void(

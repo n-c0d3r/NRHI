@@ -13,7 +13,6 @@ namespace nrhi {
         E_resource_bind_flag bind_flags,
         E_resource_heap_type heap_type
     ) {
-
         return H_resource::create_buffer(
             device_p,
             initial_data,
@@ -34,7 +33,6 @@ namespace nrhi {
         E_resource_bind_flag bind_flags,
         E_resource_heap_type heap_type
     ) {
-
         return H_resource::create_buffer(
             device_p,
             initial_data,
@@ -55,7 +53,6 @@ namespace nrhi {
         E_resource_bind_flag bind_flags,
         E_resource_heap_type heap_type
     ) {
-
         return H_resource::create_structured_buffer(
             device_p,
             initial_data,
@@ -75,7 +72,6 @@ namespace nrhi {
 		E_resource_bind_flag bind_flags,
 		E_resource_heap_type heap_type
 	) {
-
 		return H_resource::create_indirect_buffer(
 			device_p,
 			initial_data,
@@ -97,7 +93,6 @@ namespace nrhi {
 		E_resource_bind_flag bind_flags,
 		E_resource_heap_type heap_type
 	) {
-
 		buffer_p->rebuild(
 			initial_data,
 			H_resource_desc::create_buffer_desc(
@@ -117,7 +112,6 @@ namespace nrhi {
 		E_resource_bind_flag bind_flags,
 		E_resource_heap_type heap_type
 	) {
-
 		buffer_p->rebuild(
 			initial_data,
 			H_resource_desc::create_buffer_desc(
@@ -137,7 +131,6 @@ namespace nrhi {
 		E_resource_bind_flag bind_flags,
 		E_resource_heap_type heap_type
 	) {
-
 		structured_buffer_p->rebuild(
 			initial_data,
 			H_resource_desc::create_structured_buffer_desc(
@@ -156,7 +149,6 @@ namespace nrhi {
 		E_resource_bind_flag bind_flags,
 		E_resource_heap_type heap_type
 	) {
-
 		indirect_buffer_p->rebuild(
 			initial_data,
 			H_resource_desc::create_indirect_buffer_desc(

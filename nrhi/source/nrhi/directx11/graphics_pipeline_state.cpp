@@ -80,23 +80,21 @@ namespace nrhi {
 		// get d3d11 shaders
 		for(auto shader_p : desc.shader_p_vector) {
 
-			switch (shader_p->type()) {
-
-			case E_shader_type::VERTEX:
-				NCPP_ASSERT(!d3d11_vertex_shader_p_) << "only accept 1 vertex shader";
-				d3d11_vertex_shader_p_ = shader_p.T_cast<F_directx11_vertex_shader>()->d3d11_vertex_shader_p();
-				d3d11_input_layout_p_ = shader_p.T_cast<F_directx11_vertex_shader>()->d3d11_input_layout_p();
-				break;
-
-			case E_shader_type::PIXEL:
-				NCPP_ASSERT(!d3d11_pixel_shader_p_) << "only accept 1 pixel shader";
-				d3d11_pixel_shader_p_ = shader_p.T_cast<F_directx11_pixel_shader>()->d3d11_pixel_shader_p();
-				break;
-
-			default:
-				NCPP_ASSERT(false) << "invalid shader type";
-				break;
-			}
+			NRHI_ENUM_SWITCH(
+				shader_p->type(),
+				NRHI_ENUM_CASE(E_shader_type::VERTEX)
+					NCPP_ASSERT(!d3d11_vertex_shader_p_) << "only accept 1 vertex shader";
+					d3d11_vertex_shader_p_ = shader_p.T_cast<F_directx11_vertex_shader>()->d3d11_vertex_shader_p();
+					d3d11_input_layout_p_ = shader_p.T_cast<F_directx11_vertex_shader>()->d3d11_input_layout_p();
+					NRHI_ENUM_BREAK;
+				NRHI_ENUM_CASE(E_shader_type::PIXEL)
+					NCPP_ASSERT(!d3d11_pixel_shader_p_) << "only accept 1 pixel shader";
+					d3d11_pixel_shader_p_ = shader_p.T_cast<F_directx11_pixel_shader>()->d3d11_pixel_shader_p();
+					NRHI_ENUM_BREAK;
+				NRHI_ENUM_DEFAULT()
+					NCPP_ASSERT(false) << "invalid shader type";
+					NRHI_ENUM_BREAK;
+			);
 		}
 		NCPP_ASSERT(d3d11_vertex_shader_p_) << "vertex shader is required";
 		NCPP_ASSERT(d3d11_input_layout_p_) << "d3d11 input layout is required";

@@ -37,6 +37,11 @@ NRHI_FunctionHelper_CreateFunctionClass(
             const F_initial_resource_data& initial_resource_data,
             const F_resource_desc& desc
         )"
+        "create_indirect_buffer" "U_indirect_buffer_handle(
+            TKPA_valid<A_device> device_p,
+            const F_initial_resource_data& initial_resource_data,
+            const F_resource_desc& desc
+        )"
         "create_texture_1d" "U_texture_1d_handle(
             TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_resource_data,

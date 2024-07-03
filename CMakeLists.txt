@@ -32,6 +32,10 @@ set(NRHI_DEPENDENCIES_DIR "${CMAKE_CURRENT_BINARY_DIR}/dependencies")
 set(NRHI_GENERATED_FILES_DIR "${CMAKE_CURRENT_BINARY_DIR}/nrhi/generated_files/nrhi")
 set(NRHI_THIRD_PARTY_DIR "${CMAKE_CURRENT_SOURCE_DIR}/third_party")
 
+if(EXISTS "${NRHI_GENERATED_FILES_DIR}")
+    file(REMOVE_RECURSE "${NRHI_GENERATED_FILES_DIR}")
+endif()
+
 
 
 #####################################################################################

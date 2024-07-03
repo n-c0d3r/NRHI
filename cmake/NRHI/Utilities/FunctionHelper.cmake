@@ -21,8 +21,9 @@ function(NRHI_FunctionHelper_CreateFunctionClass)
     set(TARGET_LAST_DRIVER_INDEX_FILE_PATH "${targetCPPFilePathParsed}.last_driver_index")
     string(REPLACE "\\" "/" TARGET_LAST_DRIVER_INDEX_FILE_PATH "${TARGET_LAST_DRIVER_INDEX_FILE_PATH}")
 
-    if(NOT NRHI_IMPLEMENTED_${PARGS_NAME})
-        NCPP_SetGlobal(NRHI_IMPLEMENTED_${PARGS_NAME} "")
+    string(REPLACE "::" "." parsedNamespaceForFile "${PARGS_NAMESPACE}")
+    if(NOT EXISTS "${NRHI_GENERATED_FILES_DIR}/is_first_implementation_flags/${parsedNamespaceForFile}.${PARGS_NAME}")
+        file(WRITE "${NRHI_GENERATED_FILES_DIR}/is_first_implementation_flags/${parsedNamespaceForFile}.${PARGS_NAME}" "")
         set(isFirstImplementation ON)
     endif()
 
@@ -58,7 +59,7 @@ function(NRHI_FunctionHelper_CreateFunctionClass)
 
     # Prepare or read files
     if(isFirstImplementation)
-        set(hppFileContent "#pragma once \n")
+        set(hppFileContent "#pragma once \n #include \"${TARGET_LAST_DRIVER_INDEX_FILE_PATH}\" \n")
         set(cppFileContent "#include \"${targetHPPFilePathParsed}\" \n")
         set(updateMapBodyContent "")
         set(maxValueCountDivStep "0")
@@ -174,7 +175,14 @@ function(NRHI_FunctionHelper_CreateFunctionClass)
                     set(
                         hppFileContent
                         "${hppFileContent}
-                        static ncpp::TF_first_template_targ<${funcTypeValue}> ${name};
+                        private:
+                            static ncpp::TF_first_template_targ<${funcTypeValue}>* ${name}___internal_${nameIndex};
+                        public:
+                            template<typename... F_args__>
+                            requires requires(ncpp::TF_first_template_targ<${funcTypeValue}>* functor_p) { functor_p(std::declval<F_args__&&>()...); }
+                            static NCPP_FORCE_INLINE auto ${name}(F_args__&&... args) {
+                                return ${name}___internal_${nameIndex}(NCPP_FORWARD(args)...);
+                            }
                         "
                     )
                 endif()
@@ -216,7 +224,7 @@ function(NRHI_FunctionHelper_CreateFunctionClass)
                     set(
                         cppFileContent
                         "${cppFileContent}
-                        ncpp::TF_first_template_targ<${funcTypeValue}> ${PARGS_NAME}::${name} = 0;
+                        ncpp::TF_first_template_targ<${funcTypeValue}>* ${PARGS_NAME}::${name}___internal_${nameIndex} = 0;
                         "
                     )
                 endif()
@@ -274,10 +282,11 @@ function(NRHI_FunctionHelper_CreateFunctionClass)
                     set(
                         updateMapBodyContent
                         "${updateMapBodyContent}
-                        if(clear)
-                            ${PARGS_NAME}::${name} = &(${PARGS_DRIVER_SPECIFIC_NAME}::${name});
+                        if(clear) {
+                            ${PARGS_NAME}::${name}___internal_${nameIndex} = &(${PARGS_DRIVER_SPECIFIC_NAME}::${name});
+                        }
                         else
-                            ${PARGS_NAME}::${name} = 0;
+                            ${PARGS_NAME}::${name}___internal_${nameIndex} = 0;
                         "
                     )
                 else()

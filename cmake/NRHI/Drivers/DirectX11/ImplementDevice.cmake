@@ -25,7 +25,7 @@ NRHI_FunctionHelper_CreateFunctionClass(
         }"
     VALUES
         "create" "TU<A_device>(TKPA_valid<A_adapter> adapter_p)"
-        "max_queue_count" "void(A_device*)"
+        "max_queue_count" "u32(A_device*)"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX11> Implement device done")
