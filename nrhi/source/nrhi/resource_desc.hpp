@@ -79,13 +79,13 @@ namespace nrhi {
 
         F_sample_desc sample_desc;
 
-        E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE;
+        ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE;
 
-        E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE;
+        ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE;
 
 		b8 is_mip_map_generatable = false;
 
-        E_resource_type type = E_resource_type::NONE;
+        ED_resource_type type = ED_resource_type::NONE;
 
         b8 can_create_view = true;
 
@@ -97,24 +97,24 @@ namespace nrhi {
         static F_resource_desc create_buffer_desc(
             u32 count,
             u32 stride,
-            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+            ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+            ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
         );
 
     public:
         static F_resource_desc create_buffer_desc(
             u32 count,
             E_format format,
-            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+            ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+            ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
         );
 
     public:
         template<typename F_element__>
         static F_resource_desc T_create_buffer_desc(
             u32 count,
-            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+            ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+            ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
         ) {
 
             return create_buffer_desc(
@@ -129,16 +129,16 @@ namespace nrhi {
         static F_resource_desc create_structured_buffer_desc(
             u32 count,
             u32 stride,
-            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+            ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+            ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
         );
 
     public:
         template<typename F_element__>
         static F_resource_desc T_create_structured_buffer_desc(
             u32 count,
-            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+            ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+            ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
         ) {
 
             return create_structured_buffer_desc(
@@ -154,8 +154,8 @@ namespace nrhi {
             u32 width,
             E_format format = E_format::R8G8B8A8_UNORM,
             u32 mip_level_count = 1,
-            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE,
+            ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+            ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE,
 			b8 is_mip_map_generatable = false
         );
 
@@ -166,8 +166,8 @@ namespace nrhi {
             E_format format = E_format::R8G8B8A8_UNORM,
             u32 mip_level_count = 1,
 			F_sample_desc sample_desc = F_sample_desc{},
-            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE,
+            ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+            ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE,
 			b8 is_mip_map_generatable = false
         );
 
@@ -178,8 +178,8 @@ namespace nrhi {
             u32 depth,
             E_format format = E_format::R8G8B8A8_UNORM,
             u32 mip_level_count = 1,
-            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE,
+            ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+            ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE,
 			b8 is_mip_map_generatable = false
         );
 
@@ -191,8 +191,8 @@ namespace nrhi {
 			E_format format = E_format::R8G8B8A8_UNORM,
 			u32 mip_level_count = 1,
 			F_sample_desc sample_desc = F_sample_desc{},
-			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE,
+			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE,
 			b8 is_mip_map_generatable = false
 		);
 
@@ -202,16 +202,16 @@ namespace nrhi {
 			E_format format = E_format::R8G8B8A8_UNORM,
 			u32 mip_level_count = 1,
 			F_sample_desc sample_desc = F_sample_desc{},
-			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE,
+			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE,
 			b8 is_mip_map_generatable = false
 		);
 
 	public:
 		static F_resource_desc create_indirect_buffer_desc(
 			u32 count,
-			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 		);
 
     };

@@ -25,7 +25,7 @@ namespace nrhi {
 	) :
 		F_directx11_shader(device_p, desc)
 	{
-		NCPP_ASSERT(desc.blob_p->desc().type == E_shader_type::VERTEX) << "invalid blob's shader type";
+		NCPP_ASSERT(desc.blob_p->desc().type == ED_shader_type::VERTEX) << "invalid blob's shader type";
 
 		const auto& blob_desc = desc.blob_p->desc();
 		const auto& input_assembler_desc = blob_desc.input_assembler_desc;
@@ -187,7 +187,7 @@ namespace nrhi {
 	) :
 		F_directx11_shader(device_p, desc)
 	{
-		NCPP_ASSERT(desc.blob_p->desc().type == E_shader_type::PIXEL) << "invalid blob's shader type";
+		NCPP_ASSERT(desc.blob_p->desc().type == ED_shader_type::PIXEL) << "invalid blob's shader type";
 
 		const auto& d3d11_shader_blob_p = desc.blob_p.T_cast<F_directx11_shader_blob>();
 
@@ -214,7 +214,7 @@ namespace nrhi {
 	) :
 		F_directx11_shader(device_p, desc)
 	{
-		NCPP_ASSERT(desc.blob_p->desc().type == E_shader_type::COMPUTE) << "invalid blob's shader type";
+		NCPP_ASSERT(desc.blob_p->desc().type == ED_shader_type::COMPUTE) << "invalid blob's shader type";
 
 		const auto& d3d11_shader_blob_p = desc.blob_p.T_cast<F_directx11_shader_blob>();
 
@@ -243,15 +243,15 @@ namespace nrhi {
 		NRHI_ENUM_SWITCH(
 			desc.blob_p->desc().type,
 			NRHI_ENUM_CASE(
-				E_shader_type::VERTEX,
+				ED_shader_type::VERTEX,
 				return TU<F_directx11_vertex_shader>()(device_p, desc);
             )
 			NRHI_ENUM_CASE(
-				E_shader_type::PIXEL,
+				ED_shader_type::PIXEL,
 				return TU<F_directx11_pixel_shader>()(device_p, desc);
             )
 			NRHI_ENUM_CASE(
-				E_shader_type::COMPUTE,
+				ED_shader_type::COMPUTE,
 				return TU<F_directx11_compute_shader>()(device_p, desc);
             )
 		);

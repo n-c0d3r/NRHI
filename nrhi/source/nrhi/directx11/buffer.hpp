@@ -52,13 +52,13 @@ namespace nrhi {
             TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_data,
             const F_resource_desc& desc,
-            E_resource_type overrided_type = E_resource_type::BUFFER
+            ED_resource_type overrided_type = ED_resource_type::BUFFER
         );
         F_directx11_buffer(
             TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_data,
             const F_resource_desc& desc,
-            E_resource_type overrided_type,
+            ED_resource_type overrided_type,
             ID3D11Buffer* d3d11_buffer_p
         );
         virtual ~F_directx11_buffer();
@@ -87,13 +87,13 @@ namespace nrhi {
             TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_data,
             const F_resource_desc& desc,
-            E_resource_type overrided_type = E_resource_type::STRUCTURED_BUFFER
+            ED_resource_type overrided_type = ED_resource_type::STRUCTURED_BUFFER
         );
         F_directx11_structured_buffer(
 			TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_data,
             const F_resource_desc& desc,
-            E_resource_type overrided_type,
+            ED_resource_type overrided_type,
             ID3D11Buffer* d3d11_buffer_p
         );
         virtual ~F_directx11_structured_buffer();
@@ -122,13 +122,13 @@ namespace nrhi {
 			TKPA_valid<A_device> device_p,
 			const F_initial_resource_data& initial_data,
 			const F_resource_desc& desc,
-			E_resource_type overrided_type = E_resource_type::INDIRECT_BUFFER
+			ED_resource_type overrided_type = ED_resource_type::INDIRECT_BUFFER
 		);
 		F_directx11_indirect_buffer(
 			TKPA_valid<A_device> device_p,
 			const F_initial_resource_data& initial_data,
 			const F_resource_desc& desc,
-			E_resource_type overrided_type,
+			ED_resource_type overrided_type,
 			ID3D11Buffer* d3d11_buffer_p
 		);
 		virtual ~F_directx11_indirect_buffer();

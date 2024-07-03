@@ -54,7 +54,7 @@ namespace nrhi {
 	public:
 		F_directx11_shader_blob(
 			const F_shader_blob_desc& desc,
-			E_shader_type overrided_type,
+			ED_shader_type overrided_type,
 			ID3DBlob* d3d_blob_p
 		);
 		virtual ~F_directx11_shader_blob();

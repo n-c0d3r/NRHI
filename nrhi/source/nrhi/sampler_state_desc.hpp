@@ -44,11 +44,11 @@ namespace nrhi {
 
 	struct F_sampler_state_desc {
 
-		E_filter filter = E_filter::MIN_MAG_MIP_LINEAR;
-		TG_array<E_texcoord_address_mode, 3> texcoord_address_modes = {
-			E_texcoord_address_mode::WRAP,
-			E_texcoord_address_mode::WRAP,
-			E_texcoord_address_mode::WRAP
+		ED_filter filter = ED_filter::MIN_MAG_MIP_LINEAR;
+		TG_array<ED_texcoord_address_mode, 3> texcoord_address_modes = {
+			ED_texcoord_address_mode::WRAP,
+			ED_texcoord_address_mode::WRAP,
+			ED_texcoord_address_mode::WRAP
 		};
 
 		f32 lod_offset = 0;

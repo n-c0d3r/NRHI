@@ -8,8 +8,8 @@ namespace nrhi {
     F_resource_desc H_resource_desc::create_buffer_desc(
         u32 count,
         u32 stride,
-        E_resource_bind_flag bind_flags,
-        E_resource_heap_type heap_type
+        ED_resource_bind_flag bind_flags,
+        ED_resource_heap_type heap_type
     ) {
 
         return {
@@ -23,7 +23,7 @@ namespace nrhi {
             .bind_flags = bind_flags,
             .heap_type = heap_type,
 
-            .type = E_resource_type::BUFFER
+            .type = ED_resource_type::BUFFER
 
         };
     }
@@ -31,8 +31,8 @@ namespace nrhi {
     F_resource_desc H_resource_desc::create_buffer_desc(
         u32 count,
         E_format format,
-        E_resource_bind_flag bind_flags,
-        E_resource_heap_type heap_type
+        ED_resource_bind_flag bind_flags,
+        ED_resource_heap_type heap_type
     ) {
 
 		u32 stride = H_format::stride(format);
@@ -49,7 +49,7 @@ namespace nrhi {
             .bind_flags = bind_flags,
             .heap_type = heap_type,
 
-            .type = E_resource_type::BUFFER
+            .type = ED_resource_type::BUFFER
 
         };
     }
@@ -57,8 +57,8 @@ namespace nrhi {
     F_resource_desc H_resource_desc::create_structured_buffer_desc(
         u32 count,
         u32 stride,
-        E_resource_bind_flag bind_flags,
-        E_resource_heap_type heap_type
+        ED_resource_bind_flag bind_flags,
+        ED_resource_heap_type heap_type
     ) {
 
         return {
@@ -72,7 +72,7 @@ namespace nrhi {
             .bind_flags = bind_flags,
             .heap_type = heap_type,
 
-            .type = E_resource_type::STRUCTURED_BUFFER
+            .type = ED_resource_type::STRUCTURED_BUFFER
 
         };
     }
@@ -81,8 +81,8 @@ namespace nrhi {
         u32 width,
         E_format format,
         u32 mip_level_count,
-        E_resource_bind_flag bind_flags,
-        E_resource_heap_type heap_type,
+        ED_resource_bind_flag bind_flags,
+        ED_resource_heap_type heap_type,
 		b8 is_mip_map_generatable
     ) {
 
@@ -107,7 +107,7 @@ namespace nrhi {
 
 			.is_mip_map_generatable = is_mip_map_generatable,
 
-            .type = E_resource_type::TEXTURE_1D
+            .type = ED_resource_type::TEXTURE_1D
 
         };
     }
@@ -118,8 +118,8 @@ namespace nrhi {
         E_format format,
         u32 mip_level_count,
         F_sample_desc sample_desc,
-        E_resource_bind_flag bind_flags,
-        E_resource_heap_type heap_type,
+        ED_resource_bind_flag bind_flags,
+        ED_resource_heap_type heap_type,
 		b8 is_mip_map_generatable
     ) {
 
@@ -145,7 +145,7 @@ namespace nrhi {
 
 			.is_mip_map_generatable = is_mip_map_generatable,
 
-            .type = E_resource_type::TEXTURE_2D
+            .type = ED_resource_type::TEXTURE_2D
 
         };
     }
@@ -156,8 +156,8 @@ namespace nrhi {
         u32 depth,
         E_format format,
         u32 mip_level_count,
-        E_resource_bind_flag bind_flags,
-        E_resource_heap_type heap_type,
+        ED_resource_bind_flag bind_flags,
+        ED_resource_heap_type heap_type,
 		b8 is_mip_map_generatable
     ) {
 
@@ -182,7 +182,7 @@ namespace nrhi {
 
 			.is_mip_map_generatable = is_mip_map_generatable,
 
-            .type = E_resource_type::TEXTURE_3D
+            .type = ED_resource_type::TEXTURE_3D
 
         };
     }
@@ -194,8 +194,8 @@ namespace nrhi {
 		E_format format,
 		u32 mip_level_count,
 		F_sample_desc sample_desc,
-		E_resource_bind_flag bind_flags,
-		E_resource_heap_type heap_type,
+		ED_resource_bind_flag bind_flags,
+		ED_resource_heap_type heap_type,
 		b8 is_mip_map_generatable
 	) {
 
@@ -221,7 +221,7 @@ namespace nrhi {
 
 			.is_mip_map_generatable = is_mip_map_generatable,
 
-			.type = E_resource_type::TEXTURE_2D
+			.type = ED_resource_type::TEXTURE_2D
 
 		};
 	}
@@ -231,8 +231,8 @@ namespace nrhi {
 		E_format format,
 		u32 mip_level_count,
 		F_sample_desc sample_desc,
-		E_resource_bind_flag bind_flags,
-		E_resource_heap_type heap_type,
+		ED_resource_bind_flag bind_flags,
+		ED_resource_heap_type heap_type,
 		b8 is_mip_map_generatable
 	) {
 
@@ -258,15 +258,15 @@ namespace nrhi {
 
 			.is_mip_map_generatable = is_mip_map_generatable,
 
-			.type = E_resource_type::TEXTURE_CUBE
+			.type = ED_resource_type::TEXTURE_CUBE
 
 		};
 	}
 
 	F_resource_desc H_resource_desc::create_indirect_buffer_desc(
 		u32 count,
-		E_resource_bind_flag bind_flags,
-		E_resource_heap_type heap_type
+		ED_resource_bind_flag bind_flags,
+		ED_resource_heap_type heap_type
 	) {
 
 		return {
@@ -283,7 +283,7 @@ namespace nrhi {
 			.bind_flags = bind_flags,
 			.heap_type = heap_type,
 
-			.type = E_resource_type::INDIRECT_BUFFER
+			.type = ED_resource_type::INDIRECT_BUFFER
 
 		};
 	}

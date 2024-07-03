@@ -36,7 +36,7 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "clear_dsv" "void(
             TKPA_valid<A_command_list> command_list_p,
             KPA_valid_dsv_handle dsv_p,
-            E_clear_flag flag,
+            ED_clear_flag flag,
             f32 depth,
             u8 stencil
         )"

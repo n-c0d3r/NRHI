@@ -10,8 +10,8 @@ namespace nrhi {
         const F_initial_resource_data& initial_data,
         u32 count,
         u32 stride,
-        E_resource_bind_flag bind_flags,
-        E_resource_heap_type heap_type
+        ED_resource_bind_flag bind_flags,
+        ED_resource_heap_type heap_type
     ) {
         return H_resource::create_buffer(
             device_p,
@@ -30,8 +30,8 @@ namespace nrhi {
         const F_initial_resource_data& initial_data,
         u32 count,
         E_format format,
-        E_resource_bind_flag bind_flags,
-        E_resource_heap_type heap_type
+        ED_resource_bind_flag bind_flags,
+        ED_resource_heap_type heap_type
     ) {
         return H_resource::create_buffer(
             device_p,
@@ -50,8 +50,8 @@ namespace nrhi {
         const F_initial_resource_data& initial_data,
         u32 count,
         u32 stride,
-        E_resource_bind_flag bind_flags,
-        E_resource_heap_type heap_type
+        ED_resource_bind_flag bind_flags,
+        ED_resource_heap_type heap_type
     ) {
         return H_resource::create_structured_buffer(
             device_p,
@@ -69,8 +69,8 @@ namespace nrhi {
 		TKPA_valid<A_device> device_p,
 		const F_initial_resource_data& initial_data,
 		u32 count,
-		E_resource_bind_flag bind_flags,
-		E_resource_heap_type heap_type
+		ED_resource_bind_flag bind_flags,
+		ED_resource_heap_type heap_type
 	) {
 		return H_resource::create_indirect_buffer(
 			device_p,
@@ -90,8 +90,8 @@ namespace nrhi {
 		const F_initial_resource_data& initial_data,
 		u32 count,
 		u32 stride,
-		E_resource_bind_flag bind_flags,
-		E_resource_heap_type heap_type
+		ED_resource_bind_flag bind_flags,
+		ED_resource_heap_type heap_type
 	) {
 		buffer_p->rebuild(
 			initial_data,
@@ -109,8 +109,8 @@ namespace nrhi {
 		const F_initial_resource_data& initial_data,
 		u32 count,
 		E_format format,
-		E_resource_bind_flag bind_flags,
-		E_resource_heap_type heap_type
+		ED_resource_bind_flag bind_flags,
+		ED_resource_heap_type heap_type
 	) {
 		buffer_p->rebuild(
 			initial_data,
@@ -128,8 +128,8 @@ namespace nrhi {
 		const F_initial_resource_data& initial_data,
 		u32 count,
 		u32 stride,
-		E_resource_bind_flag bind_flags,
-		E_resource_heap_type heap_type
+		ED_resource_bind_flag bind_flags,
+		ED_resource_heap_type heap_type
 	) {
 		structured_buffer_p->rebuild(
 			initial_data,
@@ -146,8 +146,8 @@ namespace nrhi {
 		KPA_valid_indirect_buffer_handle indirect_buffer_p,
 		const F_initial_resource_data& initial_data,
 		u32 count,
-		E_resource_bind_flag bind_flags,
-		E_resource_heap_type heap_type
+		ED_resource_bind_flag bind_flags,
+		ED_resource_heap_type heap_type
 	) {
 		indirect_buffer_p->rebuild(
 			initial_data,

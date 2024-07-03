@@ -32,7 +32,7 @@ int main() {
 
 
     // create command queue and command list
-    auto command_list_type = E_command_list_type::DIRECT;
+    auto command_list_type = ED_command_list_type::DIRECT;
 
     auto command_queue_p = H_command_queue::create(
         NCPP_FOREF_VALID(device_p),
@@ -86,7 +86,7 @@ int main() {
     U_buffer_handle vbuffer_p = H_buffer::T_create<F_vector4>(
         NCPP_FOREF_VALID(device_p),
         vertices,
-        E_resource_bind_flag::VBV
+        ED_resource_bind_flag::VBV
     );
 
 	TG_vector<F_vector4> instances = {
@@ -143,7 +143,7 @@ int main() {
 	U_buffer_handle instance_buffer_p = H_buffer::T_create<F_vector4>(
 		NCPP_FOREF_VALID(device_p),
 		instances,
-		E_resource_bind_flag::INSTBV
+		ED_resource_bind_flag::INSTBV
 	);
 
     TG_vector<u32> indices = {
@@ -158,14 +158,14 @@ int main() {
         NCPP_FOREF_VALID(device_p),
         indices,
         E_format::R32_UINT,
-        E_resource_bind_flag::IBV
+        ED_resource_bind_flag::IBV
     );
 
     TG_vector<F_matrix4x4> buffer2_data(128);
     U_structured_buffer_handle buffer2_p = H_buffer::T_create_structured<F_matrix4x4>(
         NCPP_FOREF_VALID(device_p),
         buffer2_data,
-        E_resource_bind_flag::SRV
+        ED_resource_bind_flag::SRV
     );
     U_srv_handle buffer2_srv_p = H_resource_view::create_srv(
         NCPP_FOREF_VALID(device_p),
@@ -178,8 +178,8 @@ int main() {
     U_buffer_handle cbuffer_p = H_buffer::T_create<F_vector4>(
         NCPP_FOREF_VALID(device_p),
         NCPP_INIL_SPAN(output_color),
-        E_resource_bind_flag::CBV,
-        E_resource_heap_type::GREAD_CWRITE
+        ED_resource_bind_flag::CBV,
+        ED_resource_heap_type::GREAD_CWRITE
     );
 
     U_texture_2d_handle texture_2d_p = H_texture::create_2d(
@@ -191,8 +191,8 @@ int main() {
         1,
         {},
         flag_combine(
-            E_resource_bind_flag::SRV,
-            E_resource_bind_flag::RTV
+            ED_resource_bind_flag::SRV,
+            ED_resource_bind_flag::RTV
         )
     );
     U_srv_handle texture_2d_srv_p = H_resource_view::create_srv(
@@ -247,12 +247,12 @@ int main() {
 		NCPP_INIL_SPAN(
 			F_shader_kernel_desc {
 				.name = "vmain",
-				.type = E_shader_type::VERTEX,
+				.type = ED_shader_type::VERTEX,
 				.input_assembler_desc = input_assembler_desc
 			},
 			F_shader_kernel_desc {
 				.name = "pmain",
-				.type = E_shader_type::PIXEL
+				.type = ED_shader_type::PIXEL
 			}
 		)
 	);

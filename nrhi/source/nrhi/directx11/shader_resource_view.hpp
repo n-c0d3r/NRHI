@@ -51,12 +51,12 @@ namespace nrhi {
         F_directx11_shader_resource_view(
             TKPA_valid<A_device> device_p,
             const F_resource_view_desc& desc,
-            E_resource_view_type overrided_type = E_resource_view_type::SRV
+            ED_resource_view_type overrided_type = ED_resource_view_type::SRV
         );
         F_directx11_shader_resource_view(
             TKPA_valid<A_device> device_p,
             const F_resource_view_desc& desc,
-            E_resource_view_type overrided_type,
+            ED_resource_view_type overrided_type,
             ID3D11ShaderResourceView* d3d11_shader_resource_view_p
         );
         virtual ~F_directx11_shader_resource_view();

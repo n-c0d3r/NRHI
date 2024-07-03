@@ -1086,13 +1086,13 @@ namespace nrhi {
 	TG_map<G_string, b8> F_nsl_info_tree_reader::b8_str_to_value_map_;
 	TG_map<G_string, E_nsl_element_format> F_nsl_info_tree_reader::element_format_str_to_value_map_;
 	TG_map<G_string, E_nsl_semantic_input_class> F_nsl_info_tree_reader::semantic_input_class_str_to_value_map_;
-	TG_map<G_string, E_filter> F_nsl_info_tree_reader::filter_str_to_value_map_;
-	TG_map<G_string, E_texcoord_address_mode> F_nsl_info_tree_reader::texcoord_address_mode_str_to_value_map_;
-	TG_map<G_string, E_cull_mode> F_nsl_info_tree_reader::cull_mode_str_to_value_map_;
-	TG_map<G_string, E_fill_mode> F_nsl_info_tree_reader::fill_mode_str_to_value_map_;
+	TG_map<G_string, ED_filter> F_nsl_info_tree_reader::filter_str_to_value_map_;
+	TG_map<G_string, ED_texcoord_address_mode> F_nsl_info_tree_reader::texcoord_address_mode_str_to_value_map_;
+	TG_map<G_string, ED_cull_mode> F_nsl_info_tree_reader::cull_mode_str_to_value_map_;
+	TG_map<G_string, ED_fill_mode> F_nsl_info_tree_reader::fill_mode_str_to_value_map_;
 	TG_map<G_string, E_format> F_nsl_info_tree_reader::format_str_to_value_map_;
-	TG_map<G_string, E_depth_comparison_func> F_nsl_info_tree_reader::depth_comparison_func_str_to_value_map_;
-	TG_map<G_string, E_primitive_topology> F_nsl_info_tree_reader::primitive_topology_str_to_value_map_;
+	TG_map<G_string, ED_depth_comparison_func> F_nsl_info_tree_reader::depth_comparison_func_str_to_value_map_;
+	TG_map<G_string, ED_primitive_topology> F_nsl_info_tree_reader::primitive_topology_str_to_value_map_;
 
 	F_nsl_info_tree_reader::F_nsl_info_tree_reader(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
@@ -1149,72 +1149,72 @@ namespace nrhi {
 			semantic_input_class_str_to_value_map_["PER_INSTANCE"] = E_nsl_semantic_input_class::PER_INSTANCE;
 
 			// setup filter_str_to_value_map_
-			filter_str_to_value_map_["MIN_MAG_MIP_POINT"] = E_filter::MIN_MAG_MIP_POINT;
-			filter_str_to_value_map_["MIN_MAG_POINT_MIP_LINEAR"] = E_filter::MIN_MAG_POINT_MIP_LINEAR;
-			filter_str_to_value_map_["MIN_POINT_MAG_LINEAR_MIP_POINT"] = E_filter::MIN_POINT_MAG_LINEAR_MIP_POINT;
-			filter_str_to_value_map_["MIN_POINT_MAG_MIP_LINEAR"] = E_filter::MIN_POINT_MAG_MIP_LINEAR;
-			filter_str_to_value_map_["MIN_LINEAR_MAG_MIP_POINT"] = E_filter::MIN_LINEAR_MAG_MIP_POINT;
-			filter_str_to_value_map_["MIN_LINEAR_MAG_POINT_MIP_LINEAR"] = E_filter::MIN_LINEAR_MAG_POINT_MIP_LINEAR;
-			filter_str_to_value_map_["MIN_MAG_LINEAR_MIP_POINT"] = E_filter::MIN_MAG_LINEAR_MIP_POINT;
-			filter_str_to_value_map_["MIN_MAG_MIP_LINEAR"] = E_filter::MIN_MAG_MIP_LINEAR;
-			filter_str_to_value_map_["ANISOTROPIC"] = E_filter::ANISOTROPIC;
-			filter_str_to_value_map_["COMPARISON_MIN_MAG_MIP_POINT"] = E_filter::COMPARISON_MIN_MAG_MIP_POINT;
+			filter_str_to_value_map_["MIN_MAG_MIP_POINT"] = ED_filter::MIN_MAG_MIP_POINT;
+			filter_str_to_value_map_["MIN_MAG_POINT_MIP_LINEAR"] = ED_filter::MIN_MAG_POINT_MIP_LINEAR;
+			filter_str_to_value_map_["MIN_POINT_MAG_LINEAR_MIP_POINT"] = ED_filter::MIN_POINT_MAG_LINEAR_MIP_POINT;
+			filter_str_to_value_map_["MIN_POINT_MAG_MIP_LINEAR"] = ED_filter::MIN_POINT_MAG_MIP_LINEAR;
+			filter_str_to_value_map_["MIN_LINEAR_MAG_MIP_POINT"] = ED_filter::MIN_LINEAR_MAG_MIP_POINT;
+			filter_str_to_value_map_["MIN_LINEAR_MAG_POINT_MIP_LINEAR"] = ED_filter::MIN_LINEAR_MAG_POINT_MIP_LINEAR;
+			filter_str_to_value_map_["MIN_MAG_LINEAR_MIP_POINT"] = ED_filter::MIN_MAG_LINEAR_MIP_POINT;
+			filter_str_to_value_map_["MIN_MAG_MIP_LINEAR"] = ED_filter::MIN_MAG_MIP_LINEAR;
+			filter_str_to_value_map_["ANISOTROPIC"] = ED_filter::ANISOTROPIC;
+			filter_str_to_value_map_["COMPARISON_MIN_MAG_MIP_POINT"] = ED_filter::COMPARISON_MIN_MAG_MIP_POINT;
 			filter_str_to_value_map_["COMPARISON_MIN_MAG_POINT_MIP_LINEAR"] =
-				E_filter::COMPARISON_MIN_MAG_POINT_MIP_LINEAR;
+				ED_filter::COMPARISON_MIN_MAG_POINT_MIP_LINEAR;
 			filter_str_to_value_map_["COMPARISON_MIN_POINT_MAG_LINEAR_MIP_POINT"] =
-				E_filter::COMPARISON_MIN_POINT_MAG_LINEAR_MIP_POINT;
+				ED_filter::COMPARISON_MIN_POINT_MAG_LINEAR_MIP_POINT;
 			filter_str_to_value_map_["COMPARISON_MIN_POINT_MAG_MIP_LINEAR"] =
-				E_filter::COMPARISON_MIN_POINT_MAG_MIP_LINEAR;
+				ED_filter::COMPARISON_MIN_POINT_MAG_MIP_LINEAR;
 			filter_str_to_value_map_["COMPARISON_MIN_LINEAR_MAG_MIP_POINT"] =
-				E_filter::COMPARISON_MIN_LINEAR_MAG_MIP_POINT;
+				ED_filter::COMPARISON_MIN_LINEAR_MAG_MIP_POINT;
 			filter_str_to_value_map_["COMPARISON_MIN_LINEAR_MAG_POINT_MIP_LINEAR"] =
-				E_filter::COMPARISON_MIN_LINEAR_MAG_POINT_MIP_LINEAR;
+				ED_filter::COMPARISON_MIN_LINEAR_MAG_POINT_MIP_LINEAR;
 			filter_str_to_value_map_["COMPARISON_MIN_MAG_LINEAR_MIP_POINT"] =
-				E_filter::COMPARISON_MIN_MAG_LINEAR_MIP_POINT;
-			filter_str_to_value_map_["COMPARISON_MIN_MAG_MIP_LINEAR"] = E_filter::COMPARISON_MIN_MAG_MIP_LINEAR;
-			filter_str_to_value_map_["COMPARISON_ANISOTROPIC"] = E_filter::COMPARISON_ANISOTROPIC;
-			filter_str_to_value_map_["MINIMUM_MIN_MAG_MIP_POINT"] = E_filter::MINIMUM_MIN_MAG_MIP_POINT;
-			filter_str_to_value_map_["MINIMUM_MIN_MAG_POINT_MIP_LINEAR"] = E_filter::MINIMUM_MIN_MAG_POINT_MIP_LINEAR;
+				ED_filter::COMPARISON_MIN_MAG_LINEAR_MIP_POINT;
+			filter_str_to_value_map_["COMPARISON_MIN_MAG_MIP_LINEAR"] = ED_filter::COMPARISON_MIN_MAG_MIP_LINEAR;
+			filter_str_to_value_map_["COMPARISON_ANISOTROPIC"] = ED_filter::COMPARISON_ANISOTROPIC;
+			filter_str_to_value_map_["MINIMUM_MIN_MAG_MIP_POINT"] = ED_filter::MINIMUM_MIN_MAG_MIP_POINT;
+			filter_str_to_value_map_["MINIMUM_MIN_MAG_POINT_MIP_LINEAR"] = ED_filter::MINIMUM_MIN_MAG_POINT_MIP_LINEAR;
 			filter_str_to_value_map_["MINIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT"] =
-				E_filter::MINIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT;
-			filter_str_to_value_map_["MINIMUM_MIN_POINT_MAG_MIP_LINEAR"] = E_filter::MINIMUM_MIN_POINT_MAG_MIP_LINEAR;
-			filter_str_to_value_map_["MINIMUM_MIN_LINEAR_MAG_MIP_POINT"] = E_filter::MINIMUM_MIN_LINEAR_MAG_MIP_POINT;
+				ED_filter::MINIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT;
+			filter_str_to_value_map_["MINIMUM_MIN_POINT_MAG_MIP_LINEAR"] = ED_filter::MINIMUM_MIN_POINT_MAG_MIP_LINEAR;
+			filter_str_to_value_map_["MINIMUM_MIN_LINEAR_MAG_MIP_POINT"] = ED_filter::MINIMUM_MIN_LINEAR_MAG_MIP_POINT;
 			filter_str_to_value_map_["MINIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR"] =
-				E_filter::MINIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR;
-			filter_str_to_value_map_["MINIMUM_MIN_MAG_LINEAR_MIP_POINT"] = E_filter::MINIMUM_MIN_MAG_LINEAR_MIP_POINT;
-			filter_str_to_value_map_["MINIMUM_MIN_MAG_MIP_LINEAR"] = E_filter::MINIMUM_MIN_MAG_MIP_LINEAR;
-			filter_str_to_value_map_["MINIMUM_ANISOTROPIC"] = E_filter::MINIMUM_ANISOTROPIC;
-			filter_str_to_value_map_["MAXIMUM_MIN_MAG_MIP_POINT"] = E_filter::MAXIMUM_MIN_MAG_MIP_POINT;
-			filter_str_to_value_map_["MAXIMUM_MIN_MAG_POINT_MIP_LINEAR"] = E_filter::MAXIMUM_MIN_MAG_POINT_MIP_LINEAR;
+				ED_filter::MINIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR;
+			filter_str_to_value_map_["MINIMUM_MIN_MAG_LINEAR_MIP_POINT"] = ED_filter::MINIMUM_MIN_MAG_LINEAR_MIP_POINT;
+			filter_str_to_value_map_["MINIMUM_MIN_MAG_MIP_LINEAR"] = ED_filter::MINIMUM_MIN_MAG_MIP_LINEAR;
+			filter_str_to_value_map_["MINIMUM_ANISOTROPIC"] = ED_filter::MINIMUM_ANISOTROPIC;
+			filter_str_to_value_map_["MAXIMUM_MIN_MAG_MIP_POINT"] = ED_filter::MAXIMUM_MIN_MAG_MIP_POINT;
+			filter_str_to_value_map_["MAXIMUM_MIN_MAG_POINT_MIP_LINEAR"] = ED_filter::MAXIMUM_MIN_MAG_POINT_MIP_LINEAR;
 			filter_str_to_value_map_["MAXIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT"] =
-				E_filter::MAXIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT;
-			filter_str_to_value_map_["MAXIMUM_MIN_POINT_MAG_MIP_LINEAR"] = E_filter::MAXIMUM_MIN_POINT_MAG_MIP_LINEAR;
-			filter_str_to_value_map_["MAXIMUM_MIN_LINEAR_MAG_MIP_POINT"] = E_filter::MAXIMUM_MIN_LINEAR_MAG_MIP_POINT;
+				ED_filter::MAXIMUM_MIN_POINT_MAG_LINEAR_MIP_POINT;
+			filter_str_to_value_map_["MAXIMUM_MIN_POINT_MAG_MIP_LINEAR"] = ED_filter::MAXIMUM_MIN_POINT_MAG_MIP_LINEAR;
+			filter_str_to_value_map_["MAXIMUM_MIN_LINEAR_MAG_MIP_POINT"] = ED_filter::MAXIMUM_MIN_LINEAR_MAG_MIP_POINT;
 			filter_str_to_value_map_["MAXIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR"] =
-				E_filter::MAXIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR;
-			filter_str_to_value_map_["MAXIMUM_MIN_MAG_LINEAR_MIP_POINT"] = E_filter::MAXIMUM_MIN_MAG_LINEAR_MIP_POINT;
-			filter_str_to_value_map_["MAXIMUM_MIN_MAG_MIP_LINEAR"] = E_filter::MAXIMUM_MIN_MAG_MIP_LINEAR;
-			filter_str_to_value_map_["MAXIMUM_ANISOTROPIC"] = E_filter::MAXIMUM_ANISOTROPIC;
+				ED_filter::MAXIMUM_MIN_LINEAR_MAG_POINT_MIP_LINEAR;
+			filter_str_to_value_map_["MAXIMUM_MIN_MAG_LINEAR_MIP_POINT"] = ED_filter::MAXIMUM_MIN_MAG_LINEAR_MIP_POINT;
+			filter_str_to_value_map_["MAXIMUM_MIN_MAG_MIP_LINEAR"] = ED_filter::MAXIMUM_MIN_MAG_MIP_LINEAR;
+			filter_str_to_value_map_["MAXIMUM_ANISOTROPIC"] = ED_filter::MAXIMUM_ANISOTROPIC;
 
 			// setup texcoord_address_mode_str_to_value_map_
-			texcoord_address_mode_str_to_value_map_["CLAMP"] = E_texcoord_address_mode::CLAMP;
-			texcoord_address_mode_str_to_value_map_["WRAP"] = E_texcoord_address_mode::WRAP;
-			texcoord_address_mode_str_to_value_map_["BORDER"] = E_texcoord_address_mode::BORDER;
-			texcoord_address_mode_str_to_value_map_["MIRROR"] = E_texcoord_address_mode::MIRROR;
-			texcoord_address_mode_str_to_value_map_["MIRROR_ONCE"] = E_texcoord_address_mode::MIRROR_ONCE;
+			texcoord_address_mode_str_to_value_map_["CLAMP"] = ED_texcoord_address_mode::CLAMP;
+			texcoord_address_mode_str_to_value_map_["WRAP"] = ED_texcoord_address_mode::WRAP;
+			texcoord_address_mode_str_to_value_map_["BORDER"] = ED_texcoord_address_mode::BORDER;
+			texcoord_address_mode_str_to_value_map_["MIRROR"] = ED_texcoord_address_mode::MIRROR;
+			texcoord_address_mode_str_to_value_map_["MIRROR_ONCE"] = ED_texcoord_address_mode::MIRROR_ONCE;
 
 			// setup cull_mode_str_to_value_map_
-			cull_mode_str_to_value_map_["NONE"] = E_cull_mode::NONE;
-			cull_mode_str_to_value_map_["BACK"] = E_cull_mode::BACK;
-			cull_mode_str_to_value_map_["FRONT"] = E_cull_mode::FRONT;
+			cull_mode_str_to_value_map_["NONE"] = ED_cull_mode::NONE;
+			cull_mode_str_to_value_map_["BACK"] = ED_cull_mode::BACK;
+			cull_mode_str_to_value_map_["FRONT"] = ED_cull_mode::FRONT;
 			cull_mode_str_to_value_map_["BOTH"] = flag_combine(
-				E_cull_mode::BACK,
-				E_cull_mode::FRONT
+				ED_cull_mode::BACK,
+				ED_cull_mode::FRONT
 			);
 
 			// setup fill_mode_str_to_value_map_
-			fill_mode_str_to_value_map_["WIREFRAME"] = E_fill_mode::WIREFRAME;
-			fill_mode_str_to_value_map_["SOLID"] = E_fill_mode::SOLID;
+			fill_mode_str_to_value_map_["WIREFRAME"] = ED_fill_mode::WIREFRAME;
+			fill_mode_str_to_value_map_["SOLID"] = ED_fill_mode::SOLID;
 
 			// setup format_str_to_value_map_
 			format_str_to_value_map_["NONE"] = E_format::NONE;
@@ -1270,19 +1270,19 @@ namespace nrhi {
 			format_str_to_value_map_["R8_TYPELESS"] = E_format::R8_TYPELESS;
 
 			// setup depth_comparison_func_str_to_value_map_
-			depth_comparison_func_str_to_value_map_["NEVER"] = E_depth_comparison_func::NEVER;
-			depth_comparison_func_str_to_value_map_["LESS"] = E_depth_comparison_func::LESS;
-			depth_comparison_func_str_to_value_map_["EQUAL"] = E_depth_comparison_func::EQUAL;
-			depth_comparison_func_str_to_value_map_["LESS_EQUAL"] = E_depth_comparison_func::LESS_EQUAL;
-			depth_comparison_func_str_to_value_map_["GREATER"] = E_depth_comparison_func::GREATER;
-			depth_comparison_func_str_to_value_map_["NOT_EQUAL"] = E_depth_comparison_func::NOT_EQUAL;
-			depth_comparison_func_str_to_value_map_["GREATER_EQUAL"] = E_depth_comparison_func::GREATER_EQUAL;
-			depth_comparison_func_str_to_value_map_["ALWAYS"] = E_depth_comparison_func::ALWAYS;
+			depth_comparison_func_str_to_value_map_["NEVER"] = ED_depth_comparison_func::NEVER;
+			depth_comparison_func_str_to_value_map_["LESS"] = ED_depth_comparison_func::LESS;
+			depth_comparison_func_str_to_value_map_["EQUAL"] = ED_depth_comparison_func::EQUAL;
+			depth_comparison_func_str_to_value_map_["LESS_EQUAL"] = ED_depth_comparison_func::LESS_EQUAL;
+			depth_comparison_func_str_to_value_map_["GREATER"] = ED_depth_comparison_func::GREATER;
+			depth_comparison_func_str_to_value_map_["NOT_EQUAL"] = ED_depth_comparison_func::NOT_EQUAL;
+			depth_comparison_func_str_to_value_map_["GREATER_EQUAL"] = ED_depth_comparison_func::GREATER_EQUAL;
+			depth_comparison_func_str_to_value_map_["ALWAYS"] = ED_depth_comparison_func::ALWAYS;
 
 			// setup primitive_topology_str_to_value_map_
-			primitive_topology_str_to_value_map_["NONE"] = E_primitive_topology::NONE;
-			primitive_topology_str_to_value_map_["LINE_LIST"] = E_primitive_topology::LINE_LIST;
-			primitive_topology_str_to_value_map_["TRIANGLE_LIST"] = E_primitive_topology::TRIANGLE_LIST;
+			primitive_topology_str_to_value_map_["NONE"] = ED_primitive_topology::NONE;
+			primitive_topology_str_to_value_map_["LINE_LIST"] = ED_primitive_topology::LINE_LIST;
+			primitive_topology_str_to_value_map_["TRIANGLE_LIST"] = ED_primitive_topology::TRIANGLE_LIST;
 		}
 	}
 	F_nsl_info_tree_reader::~F_nsl_info_tree_reader() {
@@ -1855,7 +1855,7 @@ namespace nrhi {
 
 		return it->second;
 	}
-	eastl::optional<E_filter> F_nsl_info_tree_reader::read_filter(u32 index, b8 is_required) const {
+	eastl::optional<ED_filter> F_nsl_info_tree_reader::read_filter(u32 index, b8 is_required) const {
 
 		if(!guarantee_index(index, is_required)) {
 
@@ -1879,7 +1879,7 @@ namespace nrhi {
 
 		return it->second;
 	}
-	eastl::optional<E_texcoord_address_mode> F_nsl_info_tree_reader::read_texcoord_address_mode(u32 index, b8 is_required) const {
+	eastl::optional<ED_texcoord_address_mode> F_nsl_info_tree_reader::read_texcoord_address_mode(u32 index, b8 is_required) const {
 
 		if(!guarantee_index(index, is_required)) {
 
@@ -1903,7 +1903,7 @@ namespace nrhi {
 
 		return it->second;
 	}
-	eastl::optional<E_cull_mode> F_nsl_info_tree_reader::read_cull_mode(u32 index, b8 is_required) const {
+	eastl::optional<ED_cull_mode> F_nsl_info_tree_reader::read_cull_mode(u32 index, b8 is_required) const {
 
 		if(!guarantee_index(index, is_required)) {
 
@@ -1927,7 +1927,7 @@ namespace nrhi {
 
 		return it->second;
 	}
-	eastl::optional<E_fill_mode> F_nsl_info_tree_reader::read_fill_mode(u32 index, b8 is_required) const {
+	eastl::optional<ED_fill_mode> F_nsl_info_tree_reader::read_fill_mode(u32 index, b8 is_required) const {
 
 		if(!guarantee_index(index, is_required)) {
 
@@ -1975,7 +1975,7 @@ namespace nrhi {
 
 		return it->second;
 	}
-	eastl::optional<E_depth_comparison_func> F_nsl_info_tree_reader::read_depth_comparison_func(u32 index, b8 is_required) const {
+	eastl::optional<ED_depth_comparison_func> F_nsl_info_tree_reader::read_depth_comparison_func(u32 index, b8 is_required) const {
 
 		if(!guarantee_index(index, is_required)) {
 
@@ -1999,7 +1999,7 @@ namespace nrhi {
 
 		return it->second;
 	}
-	eastl::optional<E_primitive_topology> F_nsl_info_tree_reader::read_primitive_topology(u32 index, b8 is_required) const {
+	eastl::optional<ED_primitive_topology> F_nsl_info_tree_reader::read_primitive_topology(u32 index, b8 is_required) const {
 
 		if(!guarantee_index(index, is_required)) {
 
@@ -5152,7 +5152,7 @@ namespace nrhi {
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 		TKPA_valid<A_nsl_object_type> type_p,
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
-		E_shader_type type,
+		ED_shader_type type,
 		const G_string& name
 	) :
 		A_nsl_object(
@@ -5385,7 +5385,7 @@ namespace nrhi {
 			shader_compiler_p,
 			type_p,
 			translation_unit_p,
-			E_shader_type::VERTEX,
+			ED_shader_type::VERTEX,
 			name
 		)
 	{
@@ -5474,7 +5474,7 @@ namespace nrhi {
 			shader_compiler_p,
 			type_p,
 			translation_unit_p,
-			E_shader_type::PIXEL,
+			ED_shader_type::PIXEL,
 			name
 		)
 	{
@@ -5529,7 +5529,7 @@ namespace nrhi {
 			shader_compiler_p,
 			type_p,
 			translation_unit_p,
-			E_shader_type::COMPUTE,
+			ED_shader_type::COMPUTE,
 			name
 		)
 	{
@@ -7866,14 +7866,14 @@ namespace nrhi {
 		// check pipeline state type
 		for(const auto& shader_object_p : shader_object_p_vector) {
 
-			if(shader_object_p->type() == E_shader_type::COMPUTE) {
+			if(shader_object_p->type() == ED_shader_type::COMPUTE) {
 
-				result.desc.type = E_pipeline_state_type::COMPUTE;
+				result.desc.type = ED_pipeline_state_type::COMPUTE;
 				break;
 			}
-			if(shader_object_p->type() == E_shader_type::VERTEX) {
+			if(shader_object_p->type() == ED_shader_type::VERTEX) {
 
-				result.desc.type = E_pipeline_state_type::GRAPHICS;
+				result.desc.type = ED_pipeline_state_type::GRAPHICS;
 				break;
 			}
 		}

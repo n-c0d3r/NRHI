@@ -184,13 +184,13 @@ namespace nrhi {
 		static TG_map<G_string, b8> b8_str_to_value_map_;
 		static TG_map<G_string, E_nsl_element_format> element_format_str_to_value_map_;
 		static TG_map<G_string, E_nsl_semantic_input_class> semantic_input_class_str_to_value_map_;
-		static TG_map<G_string, E_filter> filter_str_to_value_map_;
-		static TG_map<G_string, E_texcoord_address_mode> texcoord_address_mode_str_to_value_map_;
-		static TG_map<G_string, E_cull_mode> cull_mode_str_to_value_map_;
-		static TG_map<G_string, E_fill_mode> fill_mode_str_to_value_map_;
+		static TG_map<G_string, ED_filter> filter_str_to_value_map_;
+		static TG_map<G_string, ED_texcoord_address_mode> texcoord_address_mode_str_to_value_map_;
+		static TG_map<G_string, ED_cull_mode> cull_mode_str_to_value_map_;
+		static TG_map<G_string, ED_fill_mode> fill_mode_str_to_value_map_;
 		static TG_map<G_string, E_format> format_str_to_value_map_;
-		static TG_map<G_string, E_depth_comparison_func> depth_comparison_func_str_to_value_map_;
-		static TG_map<G_string, E_primitive_topology> primitive_topology_str_to_value_map_;
+		static TG_map<G_string, ED_depth_comparison_func> depth_comparison_func_str_to_value_map_;
+		static TG_map<G_string, ED_primitive_topology> primitive_topology_str_to_value_map_;
 
 	public:
 		NCPP_FORCE_INLINE TKPA<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
@@ -240,13 +240,13 @@ namespace nrhi {
 		eastl::optional<F_nsl_info_tree_reader> read_sub(const G_string& name, b8 is_required = true) const;
 		eastl::optional<E_nsl_element_format> read_element_format(u32 index, b8 is_required = true) const;
 		eastl::optional<E_nsl_semantic_input_class> read_semantic_input_class(u32 index, b8 is_required = true) const;
-		eastl::optional<E_filter> read_filter(u32 index, b8 is_required = true) const;
-		eastl::optional<E_texcoord_address_mode> read_texcoord_address_mode(u32 index, b8 is_required = true) const;
-		eastl::optional<E_cull_mode> read_cull_mode(u32 index, b8 is_required = true) const;
-		eastl::optional<E_fill_mode> read_fill_mode(u32 index, b8 is_required = true) const;
+		eastl::optional<ED_filter> read_filter(u32 index, b8 is_required = true) const;
+		eastl::optional<ED_texcoord_address_mode> read_texcoord_address_mode(u32 index, b8 is_required = true) const;
+		eastl::optional<ED_cull_mode> read_cull_mode(u32 index, b8 is_required = true) const;
+		eastl::optional<ED_fill_mode> read_fill_mode(u32 index, b8 is_required = true) const;
 		eastl::optional<E_format> read_format(u32 index, b8 is_required = true) const;
-		eastl::optional<E_depth_comparison_func> read_depth_comparison_func(u32 index, b8 is_required = true) const;
-		eastl::optional<E_primitive_topology> read_primitive_topology(u32 index, b8 is_required = true) const;
+		eastl::optional<ED_depth_comparison_func> read_depth_comparison_func(u32 index, b8 is_required = true) const;
+		eastl::optional<ED_primitive_topology> read_primitive_topology(u32 index, b8 is_required = true) const;
 
 	};
 
@@ -412,7 +412,7 @@ namespace nrhi {
 
 		TG_vector<G_string> shaders;
 
-		E_pipeline_state_type type = E_pipeline_state_type::NONE;
+		ED_pipeline_state_type type = ED_pipeline_state_type::NONE;
 
 		F_pipeline_state_desc desc;
 
@@ -714,7 +714,7 @@ namespace nrhi {
 
 		G_string name;
 
-		E_shader_type type;
+		ED_shader_type type;
 
 		u32 input_assembler_index = NCPP_U32_MAX;
 
@@ -2054,7 +2054,7 @@ namespace nrhi {
 	class NRHI_API A_nsl_shader_object : public A_nsl_object {
 
 	private:
-		E_shader_type type_ = E_shader_type::NONE;
+		ED_shader_type type_ = ED_shader_type::NONE;
 
 	protected:
 		TG_vector<F_nsl_data_param> data_params_;
@@ -2073,7 +2073,7 @@ namespace nrhi {
 			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 			TKPA_valid<A_nsl_object_type> type_p,
 			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
-			E_shader_type type,
+			ED_shader_type type,
 			const G_string& name = ""
 		);
 

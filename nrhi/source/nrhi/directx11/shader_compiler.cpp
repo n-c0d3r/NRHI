@@ -29,7 +29,7 @@ namespace nrhi {
 			NRHI_ENUM_SWITCH(
 				kernel_desc.type,
 				NRHI_ENUM_CASE(
-					E_shader_type::VERTEX,
+					ED_shader_type::VERTEX,
 					hr = D3DCompile(
 						src_content.data(),
 						src_content.size() * sizeof(char),
@@ -54,7 +54,7 @@ namespace nrhi {
 					NRHI_ENUM_BREAK;
             	)
 				NRHI_ENUM_CASE(
-					E_shader_type::PIXEL,
+					ED_shader_type::PIXEL,
 					hr = D3DCompile(
 						src_content.data(),
 						src_content.size() * sizeof(char),
@@ -79,7 +79,7 @@ namespace nrhi {
 					NRHI_ENUM_BREAK;
             	)
 				NRHI_ENUM_CASE(
-					E_shader_type::COMPUTE,
+					ED_shader_type::COMPUTE,
 					hr = D3DCompile(
 						src_content.data(),
 						src_content.size() * sizeof(char),
@@ -143,7 +143,7 @@ namespace nrhi {
 			NRHI_ENUM_SWITCH(
 				kernel_desc.type,
 				NRHI_ENUM_CASE(
-					E_shader_type::VERTEX,
+					ED_shader_type::VERTEX,
 					hr = D3DCompileFromFile(
 						abs_wpath.data(),
 						0,
@@ -166,7 +166,7 @@ namespace nrhi {
 					NRHI_ENUM_BREAK;
             	)
 				NRHI_ENUM_CASE(
-					E_shader_type::PIXEL,
+					ED_shader_type::PIXEL,
 					hr = D3DCompileFromFile(
 						abs_wpath.data(),
 						0,
@@ -189,7 +189,7 @@ namespace nrhi {
 					NRHI_ENUM_BREAK;
             	)
 				NRHI_ENUM_CASE(
-					E_shader_type::COMPUTE,
+					ED_shader_type::COMPUTE,
 					hr = D3DCompileFromFile(
 						abs_wpath.data(),
 						0,

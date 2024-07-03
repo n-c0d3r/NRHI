@@ -11,8 +11,8 @@ namespace nrhi {
         u32 width,
         E_format format,
         u32 mip_level_count,
-        E_resource_bind_flag bind_flags,
-        E_resource_heap_type heap_type,
+        ED_resource_bind_flag bind_flags,
+        ED_resource_heap_type heap_type,
 		b8 is_mip_map_generatable
     ) {
 
@@ -38,8 +38,8 @@ namespace nrhi {
         E_format format,
         u32 mip_level_count,
         F_sample_desc sample_desc,
-        E_resource_bind_flag bind_flags,
-        E_resource_heap_type heap_type,
+        ED_resource_bind_flag bind_flags,
+        ED_resource_heap_type heap_type,
 		b8 is_mip_map_generatable
     ) {
 
@@ -67,8 +67,8 @@ namespace nrhi {
         u32 depth,
         E_format format,
         u32 mip_level_count,
-        E_resource_bind_flag bind_flags,
-        E_resource_heap_type heap_type,
+        ED_resource_bind_flag bind_flags,
+        ED_resource_heap_type heap_type,
 		b8 is_mip_map_generatable
     ) {
 
@@ -97,8 +97,8 @@ namespace nrhi {
 		E_format format,
 		u32 mip_level_count,
 		F_sample_desc sample_desc,
-		E_resource_bind_flag bind_flags,
-		E_resource_heap_type heap_type,
+		ED_resource_bind_flag bind_flags,
+		ED_resource_heap_type heap_type,
 		b8 is_mip_map_generatable
 	) {
 
@@ -126,8 +126,8 @@ namespace nrhi {
 		E_format format,
 		u32 mip_level_count,
 		F_sample_desc sample_desc,
-		E_resource_bind_flag bind_flags,
-		E_resource_heap_type heap_type,
+		ED_resource_bind_flag bind_flags,
+		ED_resource_heap_type heap_type,
 		b8 is_mip_map_generatable
 	) {
 
@@ -154,8 +154,8 @@ namespace nrhi {
 		u32 width,
 		E_format format,
 		u32 mip_level_count,
-		E_resource_bind_flag bind_flags,
-		E_resource_heap_type heap_type,
+		ED_resource_bind_flag bind_flags,
+		ED_resource_heap_type heap_type,
 		b8 is_mip_map_generatable
 	) {
 
@@ -180,8 +180,8 @@ namespace nrhi {
 		E_format format,
 		u32 mip_level_count,
 		F_sample_desc sample_desc,
-		E_resource_bind_flag bind_flags,
-		E_resource_heap_type heap_type,
+		ED_resource_bind_flag bind_flags,
+		ED_resource_heap_type heap_type,
 		b8 is_mip_map_generatable
 	) {
 
@@ -208,8 +208,8 @@ namespace nrhi {
 		u32 depth,
 		E_format format,
 		u32 mip_level_count,
-		E_resource_bind_flag bind_flags,
-		E_resource_heap_type heap_type,
+		ED_resource_bind_flag bind_flags,
+		ED_resource_heap_type heap_type,
 		b8 is_mip_map_generatable
 	) {
 
@@ -237,8 +237,8 @@ namespace nrhi {
 		E_format format,
 		u32 mip_level_count,
 		F_sample_desc sample_desc,
-		E_resource_bind_flag bind_flags,
-		E_resource_heap_type heap_type,
+		ED_resource_bind_flag bind_flags,
+		ED_resource_heap_type heap_type,
 		b8 is_mip_map_generatable
 	) {
 
@@ -265,8 +265,8 @@ namespace nrhi {
 		E_format format,
 		u32 mip_level_count,
 		F_sample_desc sample_desc,
-		E_resource_bind_flag bind_flags,
-		E_resource_heap_type heap_type,
+		ED_resource_bind_flag bind_flags,
+		ED_resource_heap_type heap_type,
 		b8 is_mip_map_generatable
 	) {
 

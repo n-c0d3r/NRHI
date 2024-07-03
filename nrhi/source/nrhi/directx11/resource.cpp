@@ -12,7 +12,7 @@ namespace nrhi {
         TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_data,
         const F_resource_desc& desc,
-        E_resource_type overrided_type
+        ED_resource_type overrided_type
     ) :
         A_resource(device_p, initial_data, desc, overrided_type)
     {
@@ -21,7 +21,7 @@ namespace nrhi {
         TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_data,
         const F_resource_desc& desc,
-        E_resource_type overrided_type,
+        ED_resource_type overrided_type,
         ID3D11Resource* d3d11_resource_p
     ) :
         A_resource(device_p, initial_data, desc, overrided_type),
@@ -45,15 +45,15 @@ namespace nrhi {
 		NRHI_ENUM_SWITCH(
 			desc.type,
 			NRHI_ENUM_CASE(
-                E_resource_type::BUFFER,
+                ED_resource_type::BUFFER,
 				return TU<F_directx11_buffer>()(device_p, initial_resource_data, desc);
             )
 			NRHI_ENUM_CASE(
-                E_resource_type::STRUCTURED_BUFFER,
+                ED_resource_type::STRUCTURED_BUFFER,
 				return TU<F_directx11_structured_buffer>()(device_p, initial_resource_data, desc);
             )
 			NRHI_ENUM_CASE(
-                E_resource_type::INDIRECT_BUFFER,
+                ED_resource_type::INDIRECT_BUFFER,
 				return TU<F_directx11_indirect_buffer>()(device_p, initial_resource_data, desc);
             )
 		);

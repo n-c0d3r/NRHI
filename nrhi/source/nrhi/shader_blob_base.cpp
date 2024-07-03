@@ -6,7 +6,7 @@ namespace nrhi {
 
 	A_shader_blob::A_shader_blob(
 		const F_shader_blob_desc& desc,
-		E_shader_type overrided_type
+		ED_shader_type overrided_type
 	) :
 		desc_(desc)
 	{

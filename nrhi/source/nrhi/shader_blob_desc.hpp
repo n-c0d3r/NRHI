@@ -76,7 +76,7 @@ namespace nrhi {
 	struct F_shader_blob_desc {
 
 		G_string name;
-		E_shader_type type = E_shader_type::NONE;
+		ED_shader_type type = ED_shader_type::NONE;
 
 		F_input_assembler_desc input_assembler_desc;
 

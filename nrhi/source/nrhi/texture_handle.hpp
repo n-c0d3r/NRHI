@@ -78,9 +78,9 @@ namespace nrhi {
 
 		NCPP_FHANDLE_GENERATED_BODY(texture_cube_handle, A_resource);
 
-		U_srv_handle create_face_srv(E_texture_cube_face face, u32 base_mip_level = 0) const noexcept;
-		U_uav_handle create_face_uav(E_texture_cube_face face, u32 base_mip_level = 0) const noexcept;
-		U_rtv_handle create_face_rtv(E_texture_cube_face face, u32 target_mip_level = 0) const noexcept;
+		U_srv_handle create_face_srv(ED_texture_cube_face face, u32 base_mip_level = 0) const noexcept;
+		U_uav_handle create_face_uav(ED_texture_cube_face face, u32 base_mip_level = 0) const noexcept;
+		U_rtv_handle create_face_rtv(ED_texture_cube_face face, u32 target_mip_level = 0) const noexcept;
 
 	};
 

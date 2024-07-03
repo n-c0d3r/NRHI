@@ -57,8 +57,8 @@ namespace nrhi {
 
 	struct F_rasterizer_desc {
 
-		E_cull_mode cull_mode = E_cull_mode::BACK;
-		E_fill_mode fill_mode = E_fill_mode::SOLID;
+		ED_cull_mode cull_mode = ED_cull_mode::BACK;
+		ED_fill_mode fill_mode = ED_fill_mode::SOLID;
 
 		b8 font_counter_clock_wise = false;
 
@@ -77,7 +77,7 @@ namespace nrhi {
 
 		b8 enable_depth_test = false;
 		E_format format = E_format::D32_FLOAT;
-		E_depth_comparison_func depth_comparison_func = E_depth_comparison_func::LESS;
+		ED_depth_comparison_func depth_comparison_func = ED_depth_comparison_func::LESS;
 		b8 depth_buffer_write = true;
 
 		NCPP_FORCE_INLINE b8 operator == (const F_depth_stencil_desc& b) noexcept {
@@ -94,7 +94,7 @@ namespace nrhi {
 
 	struct F_pipeline_state_desc {
 
-		E_pipeline_state_type type = E_pipeline_state_type::NONE;
+		ED_pipeline_state_type type = ED_pipeline_state_type::NONE;
 
 		TG_vector<E_format> color_formats = {
 			E_format::R8G8B8A8_UNORM
@@ -103,7 +103,7 @@ namespace nrhi {
 
 		F_rasterizer_desc rasterizer_desc;
 
-		E_primitive_topology primitive_topology = E_primitive_topology::TRIANGLE_LIST;
+		ED_primitive_topology primitive_topology = ED_primitive_topology::TRIANGLE_LIST;
 
 		TG_vector<TK_valid<A_shader>> shader_p_vector;
 

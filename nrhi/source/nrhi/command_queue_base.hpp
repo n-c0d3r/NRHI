@@ -48,7 +48,7 @@ namespace nrhi {
 
     struct F_command_queue_desc {
 
-        E_command_list_type type;
+        ED_command_list_type type;
 
     };
 

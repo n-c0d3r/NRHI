@@ -52,7 +52,7 @@ namespace nrhi {
 
     struct F_root_param_desc {
 
-        E_root_param_type type;
+        ED_root_param_type type;
 
         union {
 

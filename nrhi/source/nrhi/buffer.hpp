@@ -55,8 +55,8 @@ namespace nrhi {
             const F_initial_resource_data& initial_data,
             u32 count,
             u32 stride,
-            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+            ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+            ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
         );
 
     public:
@@ -65,8 +65,8 @@ namespace nrhi {
             TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_data,
             u32 count,
-            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+            ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+            ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
         ) {
 
             return create(
@@ -84,8 +84,8 @@ namespace nrhi {
         static U_buffer_handle T_create(
             TKPA_valid<A_device> device_p,
             const TG_span<F_element__>& data,
-            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+            ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+            ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
         ) {
 
             return create(
@@ -104,8 +104,8 @@ namespace nrhi {
             const F_initial_resource_data& initial_data,
             u32 count,
             E_format format,
-            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+            ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+            ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
         );
 
     public:
@@ -114,8 +114,8 @@ namespace nrhi {
             TKPA_valid<A_device> device_p,
             const TG_span<F_element__>& data,
             E_format format,
-            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+            ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+            ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
         ) {
 
             return create(
@@ -134,8 +134,8 @@ namespace nrhi {
             const F_initial_resource_data& initial_data,
             u32 count,
             u32 stride,
-            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+            ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+            ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
         );
 
     public:
@@ -144,8 +144,8 @@ namespace nrhi {
             TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_data,
             u32 count,
-            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+            ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+            ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
         ) {
 
             return create_structured(
@@ -163,8 +163,8 @@ namespace nrhi {
         static U_structured_buffer_handle T_create_structured(
             TKPA_valid<A_device> device_p,
             const TG_span<F_element__>& data,
-            E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-            E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+            ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+            ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
         ) {
 
             return create_structured(
@@ -182,16 +182,16 @@ namespace nrhi {
 			TKPA_valid<A_device> device_p,
 			const F_initial_resource_data& initial_data,
 			u32 count,
-			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 		);
 
 	public:
 		static U_indirect_buffer_handle create_indirect(
 			TKPA_valid<A_device> device_p,
 			const TG_span<u32>& data,
-			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 		) {
 
 			return create_indirect(
@@ -211,8 +211,8 @@ namespace nrhi {
 			const F_initial_resource_data& initial_data,
 			u32 count,
 			u32 stride,
-			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 		);
 
 	public:
@@ -221,8 +221,8 @@ namespace nrhi {
 			KPA_valid_buffer_handle buffer_p,
 			const F_initial_resource_data& initial_data,
 			u32 count,
-			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 		) {
 
 			return rebuild(
@@ -240,8 +240,8 @@ namespace nrhi {
 		static void T_rebuild(
 			KPA_valid_buffer_handle buffer_p,
 			const TG_span<F_element__>& data,
-			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 		) {
 
 			return rebuild(
@@ -260,8 +260,8 @@ namespace nrhi {
 			const F_initial_resource_data& initial_data,
 			u32 count,
 			E_format format,
-			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 		);
 
 	public:
@@ -270,8 +270,8 @@ namespace nrhi {
 			KPA_valid_buffer_handle buffer_p,
 			const TG_span<F_element__>& data,
 			E_format format,
-			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 		) {
 
 			return rebuild(
@@ -290,8 +290,8 @@ namespace nrhi {
 			const F_initial_resource_data& initial_data,
 			u32 count,
 			u32 stride,
-			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 		);
 
 	public:
@@ -300,8 +300,8 @@ namespace nrhi {
 			KPA_valid_structured_buffer_handle structured_buffer_p,
 			const F_initial_resource_data& initial_data,
 			u32 count,
-			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 		) {
 
 			return rebuild_structured(
@@ -319,8 +319,8 @@ namespace nrhi {
 		static void T_rebuild_structured(
 			KPA_valid_structured_buffer_handle structured_buffer_p,
 			const TG_span<F_element__>& data,
-			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 		) {
 
 			return rebuild_structured(
@@ -338,16 +338,16 @@ namespace nrhi {
 			KPA_valid_indirect_buffer_handle indirect_buffer_p,
 			const F_initial_resource_data& initial_data,
 			u32 count,
-			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 		);
 
 	public:
 		static void rebuild_indirect(
 			KPA_valid_indirect_buffer_handle indirect_buffer_p,
 			const TG_span<u32>& data,
-			E_resource_bind_flag bind_flags = E_resource_bind_flag::NONE,
-			E_resource_heap_type heap_type = E_resource_heap_type::GREAD_GWRITE
+			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 		) {
 
 			return rebuild_indirect(

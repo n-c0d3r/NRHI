@@ -54,7 +54,7 @@ namespace nrhi {
 
     struct F_command_list_desc {
 
-        E_command_list_type type;
+        ED_command_list_type type;
 
     };
 
@@ -88,7 +88,7 @@ namespace nrhi {
 		void clear_rtv(KPA_valid_rtv_handle rtv_p, PA_vector4 color);
 		void clear_dsv(
 			KPA_valid_dsv_handle dsv_p,
-			E_clear_flag flag,
+			ED_clear_flag flag,
 			f32 depth,
 			u8 stencil
 		);

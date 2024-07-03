@@ -10,7 +10,7 @@ namespace nrhi {
         TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_data,
         const F_resource_desc& desc,
-        E_resource_type overrided_type
+        ED_resource_type overrided_type
     ) :
         F_directx11_resource(
             device_p,
@@ -29,7 +29,7 @@ namespace nrhi {
         TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_data,
         const F_resource_desc& desc,
-        E_resource_type overrided_type,
+        ED_resource_type overrided_type,
         ID3D11Buffer* d3d11_buffer_p
     ) :
         F_directx11_resource(device_p, initial_data, desc, overrided_type, d3d11_buffer_p)
@@ -55,19 +55,19 @@ namespace nrhi {
         NRHI_ENUM_SWITCH(
 			desc_.heap_type,
             NRHI_ENUM_CASE(
-                E_resource_heap_type::GREAD_GWRITE,
+                ED_resource_heap_type::GREAD_GWRITE,
                 d3d11_buffer_desc.CPUAccessFlags = 0;
                 d3d11_buffer_desc.Usage = D3D11_USAGE_DEFAULT;
                 NRHI_ENUM_BREAK;
             )
             NRHI_ENUM_CASE(
-                E_resource_heap_type::GREAD_CWRITE,
+                ED_resource_heap_type::GREAD_CWRITE,
                 d3d11_buffer_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
                 d3d11_buffer_desc.Usage = D3D11_USAGE_DYNAMIC;
                 NRHI_ENUM_BREAK;
             )
             NRHI_ENUM_CASE(
-                E_resource_heap_type::CREAD_GWRITE,
+                ED_resource_heap_type::CREAD_GWRITE,
                 d3d11_buffer_desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
                 d3d11_buffer_desc.Usage = D3D11_USAGE_STAGING;
                 NRHI_ENUM_BREAK;
@@ -120,7 +120,7 @@ namespace nrhi {
         TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_data,
         const F_resource_desc& desc,
-        E_resource_type overrided_type
+        ED_resource_type overrided_type
     ) :
         F_directx11_buffer(
             device_p,
@@ -139,7 +139,7 @@ namespace nrhi {
         TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_data,
         const F_resource_desc& desc,
-        E_resource_type overrided_type,
+        ED_resource_type overrided_type,
         ID3D11Buffer* d3d11_buffer_p
     ) :
         F_directx11_buffer(device_p, initial_data, desc, overrided_type, d3d11_buffer_p)
@@ -165,19 +165,19 @@ namespace nrhi {
         NRHI_ENUM_SWITCH(
 			desc_.heap_type,
             NRHI_ENUM_CASE(
-                E_resource_heap_type::GREAD_GWRITE,
+                ED_resource_heap_type::GREAD_GWRITE,
                 d3d11_buffer_desc.CPUAccessFlags = 0;
                 d3d11_buffer_desc.Usage = D3D11_USAGE_DEFAULT;
                 NRHI_ENUM_BREAK;
             )
             NRHI_ENUM_CASE(
-                E_resource_heap_type::GREAD_CWRITE,
+                ED_resource_heap_type::GREAD_CWRITE,
                 d3d11_buffer_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
                 d3d11_buffer_desc.Usage = D3D11_USAGE_DYNAMIC;
                 NRHI_ENUM_BREAK;
             )
             NRHI_ENUM_CASE(
-                E_resource_heap_type::CREAD_GWRITE,
+                ED_resource_heap_type::CREAD_GWRITE,
                 d3d11_buffer_desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
                 d3d11_buffer_desc.Usage = D3D11_USAGE_STAGING;
                 NRHI_ENUM_BREAK;
@@ -230,7 +230,7 @@ namespace nrhi {
 		TKPA_valid<A_device> device_p,
 		const F_initial_resource_data& initial_data,
 		const F_resource_desc& desc,
-		E_resource_type overrided_type
+		ED_resource_type overrided_type
 	) :
 		F_directx11_buffer(
 			device_p,
@@ -249,7 +249,7 @@ namespace nrhi {
 		TKPA_valid<A_device> device_p,
 		const F_initial_resource_data& initial_data,
 		const F_resource_desc& desc,
-		E_resource_type overrided_type,
+		ED_resource_type overrided_type,
 		ID3D11Buffer* d3d11_buffer_p
 	) :
 		F_directx11_buffer(device_p, initial_data, desc, overrided_type, d3d11_buffer_p)
@@ -275,19 +275,19 @@ namespace nrhi {
 		NRHI_ENUM_SWITCH(
 			desc_.heap_type,
 			NRHI_ENUM_CASE(
-                E_resource_heap_type::GREAD_GWRITE,
+                ED_resource_heap_type::GREAD_GWRITE,
 				d3d11_buffer_desc.CPUAccessFlags = 0;
 				d3d11_buffer_desc.Usage = D3D11_USAGE_DEFAULT;
 				NRHI_ENUM_BREAK;
             )
 			NRHI_ENUM_CASE(
-                E_resource_heap_type::GREAD_CWRITE,
+                ED_resource_heap_type::GREAD_CWRITE,
 				d3d11_buffer_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 				d3d11_buffer_desc.Usage = D3D11_USAGE_DYNAMIC;
 				NRHI_ENUM_BREAK;
             )
 			NRHI_ENUM_CASE(
-                E_resource_heap_type::CREAD_GWRITE,
+                ED_resource_heap_type::CREAD_GWRITE,
 				d3d11_buffer_desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
 				d3d11_buffer_desc.Usage = D3D11_USAGE_STAGING;
 				NRHI_ENUM_BREAK;

@@ -10,7 +10,7 @@ namespace nrhi {
     F_directx11_shader_resource_view::F_directx11_shader_resource_view(
         TKPA_valid<A_device> device_p,
         const F_resource_view_desc& desc,
-        E_resource_view_type overrided_type
+        ED_resource_view_type overrided_type
     ) :
         F_directx11_resource_view(
             device_p,
@@ -26,7 +26,7 @@ namespace nrhi {
     F_directx11_shader_resource_view::F_directx11_shader_resource_view(
         TKPA_valid<A_device> device_p,
         const F_resource_view_desc& desc,
-        E_resource_view_type overrided_type,
+        ED_resource_view_type overrided_type,
         ID3D11ShaderResourceView* d3d11_shader_resource_view_p
     ) :
         F_directx11_resource_view(device_p, desc, overrided_type, d3d11_shader_resource_view_p)
@@ -49,15 +49,15 @@ namespace nrhi {
 
         NCPP_ASSERT(
             u32(resource_desc.bind_flags)
-            & u32(E_resource_bind_flag::SRV)
+            & u32(ED_resource_bind_flag::SRV)
         ) << "resource bind flag is not conpatible";
 
         ID3D11Device* d3d11_device_p = device_p.T_cast<F_directx11_device>()->d3d11_device_p();
         ID3D11Resource* d3d11_resource_p = resource_p.T_cast<F_directx11_resource>()->d3d11_resource_p();
         ID3D11View* d3d11_view_p = 0;
 
-		E_resource_type target_resource_type = desc.overrided_resource_type;
-		if(target_resource_type == E_resource_type::NONE)
+		ED_resource_type target_resource_type = desc.overrided_resource_type;
+		if(target_resource_type == ED_resource_type::NONE)
 			target_resource_type = resource_desc.type;
 
 		E_format target_format = desc.overrided_format;
@@ -70,42 +70,42 @@ namespace nrhi {
 		NRHI_ENUM_SWITCH(
 			target_resource_type,
 			NRHI_ENUM_CASE(
-				E_resource_type::BUFFER,
+				ED_resource_type::BUFFER,
 				d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
 				d3d11_srv_desc.Buffer.FirstElement = desc.mem_offset / resource_desc.stride;
 				d3d11_srv_desc.Buffer.NumElements = resource_desc.size / resource_desc.stride;
 				NRHI_ENUM_BREAK;
             )
 			NRHI_ENUM_CASE(
-				E_resource_type::STRUCTURED_BUFFER,
+				ED_resource_type::STRUCTURED_BUFFER,
 				d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
 				d3d11_srv_desc.Buffer.FirstElement = desc.mem_offset / resource_desc.stride;
 				d3d11_srv_desc.Buffer.NumElements = resource_desc.size / resource_desc.stride;
 				NRHI_ENUM_BREAK;
             )
 			NRHI_ENUM_CASE(
-				E_resource_type::TEXTURE_1D,
+				ED_resource_type::TEXTURE_1D,
 				d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE1D;
 				d3d11_srv_desc.Texture1D.MipLevels = resource_desc.mip_level_count;
 				d3d11_srv_desc.Texture1D.MostDetailedMip = desc.base_mip_level;
 				NRHI_ENUM_BREAK;
             )
 			NRHI_ENUM_CASE(
-				E_resource_type::TEXTURE_2D,
+				ED_resource_type::TEXTURE_2D,
 				d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 				d3d11_srv_desc.Texture2D.MipLevels = resource_desc.mip_level_count;
 				d3d11_srv_desc.Texture2D.MostDetailedMip = desc.base_mip_level;
 				NRHI_ENUM_BREAK;
             )
 			NRHI_ENUM_CASE(
-				E_resource_type::TEXTURE_3D,
+				ED_resource_type::TEXTURE_3D,
 				d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE3D;
 				d3d11_srv_desc.Texture3D.MipLevels = resource_desc.mip_level_count;
 				d3d11_srv_desc.Texture3D.MostDetailedMip = desc.base_mip_level;
 				NRHI_ENUM_BREAK;
             )
 			NRHI_ENUM_CASE(
-				E_resource_type::TEXTURE_2D_ARRAY,
+				ED_resource_type::TEXTURE_2D_ARRAY,
 				d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
 				d3d11_srv_desc.Texture2DArray.MipLevels = resource_desc.mip_level_count;
 				d3d11_srv_desc.Texture2DArray.FirstArraySlice = desc.index;
@@ -115,7 +115,7 @@ namespace nrhi {
 				NRHI_ENUM_BREAK;
             )
 			NRHI_ENUM_CASE(
-				E_resource_type::TEXTURE_CUBE,
+				ED_resource_type::TEXTURE_CUBE,
 				d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
 				d3d11_srv_desc.TextureCube.MipLevels = resource_desc.mip_level_count;
 				d3d11_srv_desc.TextureCube.MostDetailedMip = desc.base_mip_level;

@@ -10,7 +10,7 @@ namespace nrhi {
         TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_data,
         const F_resource_desc& desc,
-        E_resource_type overrided_type
+        ED_resource_type overrided_type
     ) :
         F_directx11_resource(
             device_p,
@@ -29,7 +29,7 @@ namespace nrhi {
         TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_data,
         const F_resource_desc& desc,
-        E_resource_type overrided_type,
+        ED_resource_type overrided_type,
         ID3D11Texture1D* d3d11_texture_1d_p
     ) :
         F_directx11_resource(device_p, initial_data, desc, overrided_type, d3d11_texture_1d_p)
@@ -58,19 +58,19 @@ namespace nrhi {
         NRHI_ENUM_SWITCH(
 			desc_.heap_type,
             NRHI_ENUM_CASE(
-				E_resource_heap_type::GREAD_GWRITE,
+				ED_resource_heap_type::GREAD_GWRITE,
                 d3d11_texture_1d_desc.CPUAccessFlags = 0;
                 d3d11_texture_1d_desc.Usage = D3D11_USAGE_DEFAULT;
                 NRHI_ENUM_BREAK;
             )
             NRHI_ENUM_CASE(
-				E_resource_heap_type::GREAD_CWRITE,
+				ED_resource_heap_type::GREAD_CWRITE,
                 d3d11_texture_1d_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
                 d3d11_texture_1d_desc.Usage = D3D11_USAGE_DYNAMIC;
                 NRHI_ENUM_BREAK;
             )
             NRHI_ENUM_CASE(
-				E_resource_heap_type::CREAD_GWRITE,
+				ED_resource_heap_type::CREAD_GWRITE,
                 d3d11_texture_1d_desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
                 d3d11_texture_1d_desc.Usage = D3D11_USAGE_STAGING;
                 NRHI_ENUM_BREAK;
@@ -131,7 +131,7 @@ namespace nrhi {
         TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_data,
         const F_resource_desc& desc,
-        E_resource_type overrided_type
+        ED_resource_type overrided_type
     ) :
         F_directx11_resource(
             device_p,
@@ -150,7 +150,7 @@ namespace nrhi {
         TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_data,
         const F_resource_desc& desc,
-        E_resource_type overrided_type,
+        ED_resource_type overrided_type,
         ID3D11Texture2D* d3d11_texture_2d_p
     ) :
         F_directx11_resource(device_p, initial_data, desc, overrided_type, d3d11_texture_2d_p)
@@ -182,19 +182,19 @@ namespace nrhi {
         NRHI_ENUM_SWITCH(
 			desc_.heap_type,
             NRHI_ENUM_CASE(
-				E_resource_heap_type::GREAD_GWRITE,
+				ED_resource_heap_type::GREAD_GWRITE,
                 d3d11_texture_2d_desc.CPUAccessFlags = 0;
                 d3d11_texture_2d_desc.Usage = D3D11_USAGE_DEFAULT;
                 NRHI_ENUM_BREAK;
             )
             NRHI_ENUM_CASE(
-				E_resource_heap_type::GREAD_CWRITE,
+				ED_resource_heap_type::GREAD_CWRITE,
                 d3d11_texture_2d_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
                 d3d11_texture_2d_desc.Usage = D3D11_USAGE_DYNAMIC;
                 NRHI_ENUM_BREAK;
             )
             NRHI_ENUM_CASE(
-				E_resource_heap_type::CREAD_GWRITE,
+				ED_resource_heap_type::CREAD_GWRITE,
                 d3d11_texture_2d_desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
                 d3d11_texture_2d_desc.Usage = D3D11_USAGE_STAGING;
                 NRHI_ENUM_BREAK;
@@ -255,7 +255,7 @@ namespace nrhi {
         TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_data,
         const F_resource_desc& desc,
-        E_resource_type overrided_type
+        ED_resource_type overrided_type
     ) :
         F_directx11_resource(
             device_p,
@@ -274,7 +274,7 @@ namespace nrhi {
         TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_data,
         const F_resource_desc& desc,
-        E_resource_type overrided_type,
+        ED_resource_type overrided_type,
         ID3D11Texture3D* d3d11_texture_3d_p
     ) :
         F_directx11_resource(device_p, initial_data, desc, overrided_type, d3d11_texture_3d_p)
@@ -304,19 +304,19 @@ namespace nrhi {
         NRHI_ENUM_SWITCH(
 			desc_.heap_type,
             NRHI_ENUM_CASE(
-				E_resource_heap_type::GREAD_GWRITE,
+				ED_resource_heap_type::GREAD_GWRITE,
                 d3d11_texture_3d_desc.CPUAccessFlags = 0;
                 d3d11_texture_3d_desc.Usage = D3D11_USAGE_DEFAULT;
                 NRHI_ENUM_BREAK;
             )
             NRHI_ENUM_CASE(
-				E_resource_heap_type::GREAD_CWRITE,
+				ED_resource_heap_type::GREAD_CWRITE,
                 d3d11_texture_3d_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
                 d3d11_texture_3d_desc.Usage = D3D11_USAGE_DYNAMIC;
                 NRHI_ENUM_BREAK;
             )
             NRHI_ENUM_CASE(
-				E_resource_heap_type::CREAD_GWRITE,
+				ED_resource_heap_type::CREAD_GWRITE,
                 d3d11_texture_3d_desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
                 d3d11_texture_3d_desc.Usage = D3D11_USAGE_STAGING;
                 NRHI_ENUM_BREAK;
@@ -376,7 +376,7 @@ namespace nrhi {
 		TKPA_valid<A_device> device_p,
 		const F_initial_resource_data& initial_data,
 		const F_resource_desc& desc,
-		E_resource_type overrided_type
+		ED_resource_type overrided_type
 	) :
 		F_directx11_resource(
 			device_p,
@@ -395,7 +395,7 @@ namespace nrhi {
 		TKPA_valid<A_device> device_p,
 		const F_initial_resource_data& initial_data,
 		const F_resource_desc& desc,
-		E_resource_type overrided_type,
+		ED_resource_type overrided_type,
 		ID3D11Texture2D* d3d11_texture_2d_array_p
 	) :
 		F_directx11_resource(device_p, initial_data, desc, overrided_type, d3d11_texture_2d_array_p)
@@ -427,19 +427,19 @@ namespace nrhi {
 		NRHI_ENUM_SWITCH(
 			desc_.heap_type,
 			NRHI_ENUM_CASE(
-				E_resource_heap_type::GREAD_GWRITE,
+				ED_resource_heap_type::GREAD_GWRITE,
 				d3d11_texture_2d_array_desc.CPUAccessFlags = 0;
 				d3d11_texture_2d_array_desc.Usage = D3D11_USAGE_DEFAULT;
 				NRHI_ENUM_BREAK;
             )
 			NRHI_ENUM_CASE(
-				E_resource_heap_type::GREAD_CWRITE,
+				ED_resource_heap_type::GREAD_CWRITE,
 				d3d11_texture_2d_array_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 				d3d11_texture_2d_array_desc.Usage = D3D11_USAGE_DYNAMIC;
 				NRHI_ENUM_BREAK;
             )
 			NRHI_ENUM_CASE(
-				E_resource_heap_type::CREAD_GWRITE,
+				ED_resource_heap_type::CREAD_GWRITE,
 				d3d11_texture_2d_array_desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
 				d3d11_texture_2d_array_desc.Usage = D3D11_USAGE_STAGING;
 				NRHI_ENUM_BREAK;
@@ -501,7 +501,7 @@ namespace nrhi {
 		TKPA_valid<A_device> device_p,
 		const F_initial_resource_data& initial_data,
 		const F_resource_desc& desc,
-		E_resource_type overrided_type
+		ED_resource_type overrided_type
 	) :
 		F_directx11_texture_2d_array(
 			device_p,
@@ -520,7 +520,7 @@ namespace nrhi {
 		TKPA_valid<A_device> device_p,
 		const F_initial_resource_data& initial_data,
 		const F_resource_desc& desc,
-		E_resource_type overrided_type,
+		ED_resource_type overrided_type,
 		ID3D11Texture2D* d3d11_texture_cube_p
 	) :
 		F_directx11_texture_2d_array(device_p, initial_data, desc, overrided_type, d3d11_texture_cube_p)
@@ -552,19 +552,19 @@ namespace nrhi {
 		NRHI_ENUM_SWITCH(
 			desc_.heap_type,
 			NRHI_ENUM_CASE(
-				E_resource_heap_type::GREAD_GWRITE,
+				ED_resource_heap_type::GREAD_GWRITE,
 				d3d11_texture_cube_desc.CPUAccessFlags = 0;
 				d3d11_texture_cube_desc.Usage = D3D11_USAGE_DEFAULT;
 				NRHI_ENUM_BREAK;
             )
 			NRHI_ENUM_CASE(
-				E_resource_heap_type::GREAD_CWRITE,
+				ED_resource_heap_type::GREAD_CWRITE,
 				d3d11_texture_cube_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 				d3d11_texture_cube_desc.Usage = D3D11_USAGE_DYNAMIC;
 				NRHI_ENUM_BREAK;
             )
 			NRHI_ENUM_CASE(
-				E_resource_heap_type::CREAD_GWRITE,
+				ED_resource_heap_type::CREAD_GWRITE,
 				d3d11_texture_cube_desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
 				d3d11_texture_cube_desc.Usage = D3D11_USAGE_STAGING;
 				NRHI_ENUM_BREAK;

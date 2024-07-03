@@ -80,13 +80,13 @@ namespace nrhi {
 
 #define NRHI_VCREATE_SHADER(...) std::remove_const_t<std::remove_reference_t<decltype(__VA_ARGS__)>>::H_shader_factory::create
 #define NRHI_ECREATE_SHADER(...) 	ncpp::TF_nth_template_targ< \
-										__VA_ARGS__ != nrhi::E_shader_type::VERTEX,          \
+										__VA_ARGS__ != nrhi::ED_shader_type::VERTEX,          \
 										nrhi::H_vertex_shader,                                     \
 									ncpp::TF_nth_template_targ< \
-										__VA_ARGS__ != nrhi::E_shader_type::PIXEL,          \
+										__VA_ARGS__ != nrhi::ED_shader_type::PIXEL,          \
 										nrhi::H_pixel_shader,                                     \
                                    	ncpp::TF_nth_template_targ< \
-										__VA_ARGS__ != nrhi::E_shader_type::COMPUTE,          \
+										__VA_ARGS__ != nrhi::ED_shader_type::COMPUTE,          \
 										nrhi::H_compute_shader,                             \
 										void\
 									>                                                   \
@@ -100,13 +100,13 @@ namespace nrhi {
 	private:
 		TK_valid<A_device> device_p_;
 		F_shader_desc desc_;
-		E_shader_type type_ = E_shader_type::NONE;
+		ED_shader_type type_ = ED_shader_type::NONE;
 		F_input_assembler_desc input_assembler_desc_;
 
 	public:
 		NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
 		NCPP_FORCE_INLINE const F_shader_desc& desc() const noexcept { return desc_; }
-		NCPP_FORCE_INLINE E_shader_type type() const noexcept { return type_; }
+		NCPP_FORCE_INLINE ED_shader_type type() const noexcept { return type_; }
 		NCPP_FORCE_INLINE const auto& input_assembler_desc() const noexcept { return input_assembler_desc_; }
 
 

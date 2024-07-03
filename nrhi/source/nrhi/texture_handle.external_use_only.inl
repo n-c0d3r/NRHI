@@ -50,7 +50,7 @@ namespace nrhi {
 		return H_resource_view::create_srv(
 			oref->device_p(),
 			{
-				.overrided_resource_type = E_resource_type::TEXTURE_2D_ARRAY,
+				.overrided_resource_type = ED_resource_type::TEXTURE_2D_ARRAY,
 				.resource_p = NCPP_FOH_VALID(oref),
 				.base_mip_level = base_mip_level,
 				.index = index,
@@ -64,7 +64,7 @@ namespace nrhi {
 		return H_resource_view::create_srv(
 			oref->device_p(),
 			{
-				.overrided_resource_type = E_resource_type::TEXTURE_2D_ARRAY,
+				.overrided_resource_type = ED_resource_type::TEXTURE_2D_ARRAY,
 				.resource_p = NCPP_FOH_VALID(oref),
 				.base_mip_level = base_mip_level,
 				.index = index,
@@ -78,7 +78,7 @@ namespace nrhi {
 		return H_resource_view::create_srv(
 			oref->device_p(),
 			{
-				.overrided_resource_type = E_resource_type::TEXTURE_2D_ARRAY,
+				.overrided_resource_type = ED_resource_type::TEXTURE_2D_ARRAY,
 				.resource_p = NCPP_FOH_VALID(oref),
 				.target_mip_level = target_mip_level,
 				.index = index,
@@ -88,12 +88,12 @@ namespace nrhi {
 	}
 
 	NCPP_FHANDLE_TEMPLATE_DEFINE_MEMBER(A_resource)
-	NCPP_FORCE_INLINE U_srv_handle TF_texture_cube_handle<F_oref__>::create_face_srv(E_texture_cube_face face, u32 base_mip_level) const noexcept {
+	NCPP_FORCE_INLINE U_srv_handle TF_texture_cube_handle<F_oref__>::create_face_srv(ED_texture_cube_face face, u32 base_mip_level) const noexcept {
 
 		return H_resource_view::create_srv(
 			oref->device_p(),
 			{
-				.overrided_resource_type = E_resource_type::TEXTURE_CUBE,
+				.overrided_resource_type = ED_resource_type::TEXTURE_CUBE,
 				.resource_p = NCPP_FOH_VALID(oref),
 				.base_mip_level = base_mip_level,
 				.index = (u32)D3D11_TEXTURECUBE_FACE(face),
@@ -102,12 +102,12 @@ namespace nrhi {
 		);
 	}
 	NCPP_FHANDLE_TEMPLATE_DEFINE_MEMBER(A_resource)
-	NCPP_FORCE_INLINE U_uav_handle TF_texture_cube_handle<F_oref__>::create_face_uav(E_texture_cube_face face, u32 base_mip_level) const noexcept {
+	NCPP_FORCE_INLINE U_uav_handle TF_texture_cube_handle<F_oref__>::create_face_uav(ED_texture_cube_face face, u32 base_mip_level) const noexcept {
 
 		return H_resource_view::create_uav(
 			oref->device_p(),
 			{
-				.overrided_resource_type = E_resource_type::TEXTURE_2D_ARRAY,
+				.overrided_resource_type = ED_resource_type::TEXTURE_2D_ARRAY,
 				.resource_p = NCPP_FOH_VALID(oref),
 				.base_mip_level = base_mip_level,
 				.index = (u32)D3D11_TEXTURECUBE_FACE(face),
@@ -116,12 +116,12 @@ namespace nrhi {
 		);
 	}
 	NCPP_FHANDLE_TEMPLATE_DEFINE_MEMBER(A_resource)
-	NCPP_FORCE_INLINE U_rtv_handle TF_texture_cube_handle<F_oref__>::create_face_rtv(E_texture_cube_face face, u32 base_mip_level) const noexcept {
+	NCPP_FORCE_INLINE U_rtv_handle TF_texture_cube_handle<F_oref__>::create_face_rtv(ED_texture_cube_face face, u32 base_mip_level) const noexcept {
 
 		return H_resource_view::create_rtv(
 			oref->device_p(),
 			{
-				.overrided_resource_type = E_resource_type::TEXTURE_2D_ARRAY,
+				.overrided_resource_type = ED_resource_type::TEXTURE_2D_ARRAY,
 				.resource_p = NCPP_FOH_VALID(oref),
 				.base_mip_level = base_mip_level,
 				.index = (u32)D3D11_TEXTURECUBE_FACE(face),

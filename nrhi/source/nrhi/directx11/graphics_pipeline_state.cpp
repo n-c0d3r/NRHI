@@ -72,7 +72,7 @@ namespace nrhi {
 	F_directx11_graphics_pipeline_state::F_directx11_graphics_pipeline_state(
 		TKPA_valid<A_device> device_p,
 		const F_pipeline_state_desc& desc,
-		E_pipeline_state_type overrided_type
+		ED_pipeline_state_type overrided_type
 	) :
 		F_directx11_pipeline_state(device_p, desc, overrided_type)
 	{
@@ -83,14 +83,14 @@ namespace nrhi {
 			NRHI_ENUM_SWITCH(
 				shader_p->type(),
 				NRHI_ENUM_CASE(
-					E_shader_type::VERTEX,
+					ED_shader_type::VERTEX,
 					NCPP_ASSERT(!d3d11_vertex_shader_p_) << "only accept 1 vertex shader";
 					d3d11_vertex_shader_p_ = shader_p.T_cast<F_directx11_vertex_shader>()->d3d11_vertex_shader_p();
 					d3d11_input_layout_p_ = shader_p.T_cast<F_directx11_vertex_shader>()->d3d11_input_layout_p();
 					NRHI_ENUM_BREAK;
             	)
 				NRHI_ENUM_CASE(
-					E_shader_type::PIXEL,
+					ED_shader_type::PIXEL,
 					NCPP_ASSERT(!d3d11_pixel_shader_p_) << "only accept 1 pixel shader";
 					d3d11_pixel_shader_p_ = shader_p.T_cast<F_directx11_pixel_shader>()->d3d11_pixel_shader_p();
 					NRHI_ENUM_BREAK;

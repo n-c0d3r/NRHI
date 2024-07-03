@@ -52,13 +52,13 @@ namespace nrhi {
             TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_data,
             const F_resource_desc& desc,
-            E_resource_type overrided_type = E_resource_type::TEXTURE_1D
+            ED_resource_type overrided_type = ED_resource_type::TEXTURE_1D
         );
         F_directx11_texture_1d(
             TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_data,
             const F_resource_desc& desc,
-            E_resource_type overrided_type,
+            ED_resource_type overrided_type,
             ID3D11Texture1D* d3d11_texture_1d_p
         );
         virtual ~F_directx11_texture_1d();
@@ -87,13 +87,13 @@ namespace nrhi {
             TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_data,
             const F_resource_desc& desc,
-            E_resource_type overrided_type = E_resource_type::TEXTURE_2D
+            ED_resource_type overrided_type = ED_resource_type::TEXTURE_2D
         );
         F_directx11_texture_2d(
             TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_data,
             const F_resource_desc& desc,
-            E_resource_type overrided_type,
+            ED_resource_type overrided_type,
             ID3D11Texture2D* d3d11_texture_2d_p
         );
         virtual ~F_directx11_texture_2d();
@@ -122,13 +122,13 @@ namespace nrhi {
             TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_data,
             const F_resource_desc& desc,
-            E_resource_type overrided_type = E_resource_type::TEXTURE_3D
+            ED_resource_type overrided_type = ED_resource_type::TEXTURE_3D
         );
         F_directx11_texture_3d(
             TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_data,
             const F_resource_desc& desc,
-            E_resource_type overrided_type,
+            ED_resource_type overrided_type,
             ID3D11Texture3D* d3d11_texture_3d_p
         );
         virtual ~F_directx11_texture_3d();
@@ -157,13 +157,13 @@ namespace nrhi {
 			TKPA_valid<A_device> device_p,
 			const F_initial_resource_data& initial_data,
 			const F_resource_desc& desc,
-			E_resource_type overrided_type = E_resource_type::TEXTURE_2D_ARRAY
+			ED_resource_type overrided_type = ED_resource_type::TEXTURE_2D_ARRAY
 		);
 		F_directx11_texture_2d_array(
 			TKPA_valid<A_device> device_p,
 			const F_initial_resource_data& initial_data,
 			const F_resource_desc& desc,
-			E_resource_type overrided_type,
+			ED_resource_type overrided_type,
 			ID3D11Texture2D* d3d11_texture_2d_array_p
 		);
 		virtual ~F_directx11_texture_2d_array();
@@ -192,13 +192,13 @@ namespace nrhi {
 			TKPA_valid<A_device> device_p,
 			const F_initial_resource_data& initial_data,
 			const F_resource_desc& desc,
-			E_resource_type overrided_type = E_resource_type::TEXTURE_CUBE
+			ED_resource_type overrided_type = ED_resource_type::TEXTURE_CUBE
 		);
 		F_directx11_texture_cube(
 			TKPA_valid<A_device> device_p,
 			const F_initial_resource_data& initial_data,
 			const F_resource_desc& desc,
-			E_resource_type overrided_type,
+			ED_resource_type overrided_type,
 			ID3D11Texture2D* d3d11_texture_cube_p
 		);
 		virtual ~F_directx11_texture_cube();

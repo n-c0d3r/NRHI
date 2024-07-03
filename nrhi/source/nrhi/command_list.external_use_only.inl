@@ -52,7 +52,7 @@ namespace nrhi {
 	}
 	NCPP_FORCE_INLINE void A_command_list::clear_dsv(
 		KPA_valid_dsv_handle dsv_p,
-		E_clear_flag flag,
+		ED_clear_flag flag,
 		f32 depth,
 		u8 stencil
 	) {

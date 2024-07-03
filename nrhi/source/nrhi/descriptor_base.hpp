@@ -49,7 +49,7 @@ namespace nrhi {
 
     struct F_descriptor_range_desc {
 
-        E_descriptor_range_type type;
+        ED_descriptor_range_type type;
 
         u32 base_register = 0;
         u32 register_space = 0;
@@ -66,7 +66,7 @@ namespace nrhi {
 
     struct F_descriptor_heap_desc {
 
-        E_descriptor_heap_type type;
+        ED_descriptor_heap_type type;
 
     };
 

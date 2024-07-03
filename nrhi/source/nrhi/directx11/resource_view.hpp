@@ -68,12 +68,12 @@ namespace nrhi {
         F_directx11_resource_view(
             TKPA_valid<A_device> device_p,
             const F_resource_view_desc& desc,
-            E_resource_view_type overrided_type
+            ED_resource_view_type overrided_type
         );
         F_directx11_resource_view(
             TKPA_valid<A_device> device_p,
             const F_resource_view_desc& desc,
-            E_resource_view_type overrided_type,
+            ED_resource_view_type overrided_type,
             ID3D11View* d3d11_view_p
         );
         ~F_directx11_resource_view();

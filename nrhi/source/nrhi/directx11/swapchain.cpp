@@ -56,8 +56,8 @@ namespace nrhi {
             desc.format,
             1,
             desc.sample_desc,
-            E_resource_bind_flag::RTV,
-            E_resource_heap_type::GREAD_GWRITE
+            ED_resource_bind_flag::RTV,
+            ED_resource_heap_type::GREAD_GWRITE
         );
         back_texture_2d_desc.can_create_view = false;
         back_texture_2d_p_ = {
@@ -65,7 +65,7 @@ namespace nrhi {
                 device_p,
                 F_initial_resource_data {},
                 back_texture_2d_desc,
-                E_resource_type::TEXTURE_2D,
+                ED_resource_type::TEXTURE_2D,
                 (ID3D11Texture2D*)0
             )
         };
@@ -78,7 +78,7 @@ namespace nrhi {
             TU<F_directx11_render_target_view>()(
                 device_p,
                 back_rtv_desc,
-                E_resource_view_type::RTV,
+                ED_resource_view_type::RTV,
                 (ID3D11RenderTargetView*)0
             )
         };

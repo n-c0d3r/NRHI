@@ -53,7 +53,7 @@ namespace nrhi {
 		F_directx11_pipeline_state(
 			TKPA_valid<A_device> device_p,
 			const F_pipeline_state_desc& desc,
-			E_pipeline_state_type overrided_type
+			ED_pipeline_state_type overrided_type
 		);
 		virtual ~F_directx11_pipeline_state();
 
