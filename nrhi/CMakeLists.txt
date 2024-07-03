@@ -71,12 +71,6 @@ if(NOT NRHI_DRIVER_COUNT)
     message(FATAL_ERROR "No driver enabled")
 endif()
 
-# Clear generated directory
-if(EXISTS "${NRHI_GENERATED_FILES_DIR}")
-    file(REMOVE_RECURSE "${NRHI_GENERATED_FILES_DIR}")
-endif()
-file(MAKE_DIRECTORY "${NRHI_GENERATED_FILES_DIR}")
-
 # Implement drivers
 file(WRITE "${NRHI_GENERATED_FILES_DIR}/enums.hpp" "#pragma once \n")
 file(WRITE "${NRHI_GENERATED_FILES_DIR}/functions.hpp" "#pragma once \n")
