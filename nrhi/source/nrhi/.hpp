@@ -101,7 +101,7 @@ namespace nrhi {
 
     NRHI_USING_NLIB_NAMESPACES();
 
-    NRHI_API void initialize_system(u32 driver_index = 0);
+    NRHI_API void initialize_system(u32 driver_index = NRHI_DRIVER_INDEX_DEFAULT);
     NRHI_API void release_system();
 
 }

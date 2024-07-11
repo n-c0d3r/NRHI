@@ -1,5 +1,5 @@
 
-message(STATUS "<NRHI::Drivers::DirectX11> Start implementing descriptor heap type")
+message(STATUS "<NRHI::Drivers::DirectX12> Start implementing descriptor heap type")
 
 include(NRHI/Utilities/EnumHelper)
 
@@ -13,11 +13,14 @@ NCPP_SetGlobal(NRHI_DESCRIPTOR_HEAP_TYPE_ENUM_CPP_FILE_PATH "${NRHI_GENERATED_FI
 NRHI_EnumHelper_CreateEnum(
     NAMESPACE "nrhi"
     NAME "ED_descriptor_heap_type"
-    DRIVER_UPPER_CASE_NAME "DIRECTX_11"
+    DRIVER_UPPER_CASE_NAME "DIRECTX_12"
     TARGET_HPP_FILE_PATH "${NRHI_DESCRIPTOR_HEAP_TYPE_ENUM_HPP_FILE_PATH}"
     TARGET_CPP_FILE_PATH "${NRHI_DESCRIPTOR_HEAP_TYPE_ENUM_CPP_FILE_PATH}"
     VALUES
-        MANAGED 0x4
+        CBV_SRV_UAV D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV
+        SAMPLER D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER
+        RTV D3D12_DESCRIPTOR_HEAP_TYPE_RTV
+        DSV D3D12_DESCRIPTOR_HEAP_TYPE_DSV
 )
 
-message(STATUS "<NRHI::Drivers::DirectX11> Implement descriptor heap type done")
+message(STATUS "<NRHI::Drivers::DirectX12> Implement descriptor heap type done")

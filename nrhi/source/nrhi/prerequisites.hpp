@@ -66,6 +66,13 @@ namespace nrhi {}
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+#ifdef NRHI_ENABLE_DXGI
+#include <dxgi.h>
+#include <dxgi1_2.h>
+#include <dxgi1_3.h>
+#include <dxgi1_4.h>
+#endif
+
 #ifdef NRHI_DRIVER_DIRECTX_11
 #include <d3d11.h>
 #endif
@@ -261,7 +268,7 @@ namespace nrhi {
     }
 #else
     namespace internal {
-        constexpr ncpp::i32 driver_index = 0;
+        constexpr ncpp::i32 driver_index = NRHI_DRIVER_INDEX_DEFAULT;
         inline ncpp::b8 try_set_driver_index(ncpp::i32 new_driver_index) {
 
             if (new_driver_index != internal::driver_index)

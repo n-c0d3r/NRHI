@@ -17,7 +17,7 @@ int main() {
 
 
 
-    // initialize nrhi and deferrered release it
+    // initialize nrhi and deferredly release it
     nrhi::initialize_system();
     NCPP_DEFER(nrhi::release_system());
 

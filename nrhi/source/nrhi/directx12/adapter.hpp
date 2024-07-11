@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/descriptor.hpp
+/** @file nrhi/dxgi/adapter.hpp
 *
-*   Implement descriptor.
+*   Implement dxgi adapter.
 */
 
 
@@ -33,67 +33,67 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#ifdef NRHI_DRIVER_SUPPORT_DESCRIPTOR_MANAGEMENT
-#include <nrhi/descriptor_range_type.hpp>
-#include <nrhi/descriptor_heap_type.hpp>
-#endif // NRHI_DRIVER_SUPPORT_DESCRIPTOR_MANAGEMENT
+#include <nrhi/adapter_base.hpp>
 
 #pragma endregion
 
 
 
-#ifdef NRHI_DRIVER_SUPPORT_DESCRIPTOR_MANAGEMENT
 namespace nrhi {
 
-    class A_device;
-    class A_descriptor_heap;
+    namespace internal {
+
+        extern NRHI_API IDXGIFactory* dxgi_factory_p;
+
+    }
 
 
 
-    struct F_descriptor_range_desc {
+    class NRHI_API F_directx12_adapter : public A_adapter {
 
-        ED_descriptor_range_type type;
-
-        u32 base_register = 0;
-        u32 register_space = 0;
-
-    };
-
-    struct F_descriptor_table_desc {
-
-        TG_span<F_descriptor_range_desc> range_descs;
-
-    };
+    public:
+        friend class HD_directx12_adapter;
 
 
-
-    struct F_descriptor_heap_desc {
-
-        ED_descriptor_heap_type type;
-
-    };
-
-
-
-    class NRHI_API A_descriptor_heap {
 
     private:
-        TK_valid<A_device> device_p_;
-        F_descriptor_heap_desc desc_;
+        IDXGIAdapter* dxgi_adapter_p_;
 
     public:
-        NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
-        NCPP_FORCE_INLINE const F_descriptor_heap_desc& desc() const noexcept { return desc_; }
+        NCPP_FORCE_INLINE IDXGIAdapter* dxgi_adapter_p() noexcept { return dxgi_adapter_p_; }
 
 
-
-    protected:
-        A_descriptor_heap(TK_valid<A_device> device_p, const F_descriptor_heap_desc& desc);
 
     public:
-        virtual ~A_descriptor_heap();
+        F_directx12_adapter(u32 index, IDXGIAdapter* dxgi_adapter_p);
+        ~F_directx12_adapter();
+
+    };
+
+
+
+    class NRHI_API HD_directx12_adapter {
+
+    public:
+        friend class F_directx12_factory_helper;
+
+
+
+    private:
+        static TG_vector<TU<A_adapter>> unique_adapter_p_vector_;
+        static TG_vector<TK_valid<A_adapter>> keyed_adapter_p_vector_;
+
+
+
+    public:
+        static const TG_vector<TK_valid<A_adapter>>& adapter_p_vector();
+
+
+
+    private:
+        static void initialize_adapters();
+        static void release_adapters();
 
     };
 
 }
-#endif // NRHI_DRIVER_SUPPORT_DESCRIPTOR_MANAGEMENT

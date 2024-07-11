@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/descriptor.hpp
+/** @file nrhi/directx12/factory.hpp
 *
-*   Implement descriptor.
+*   Implement directx12 factory.
 */
 
 
@@ -29,71 +29,31 @@
 
 #include <nrhi/prerequisites.hpp>
 
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-
-#ifdef NRHI_DRIVER_SUPPORT_DESCRIPTOR_MANAGEMENT
-#include <nrhi/descriptor_range_type.hpp>
-#include <nrhi/descriptor_heap_type.hpp>
-#endif // NRHI_DRIVER_SUPPORT_DESCRIPTOR_MANAGEMENT
-
 #pragma endregion
 
 
 
-#ifdef NRHI_DRIVER_SUPPORT_DESCRIPTOR_MANAGEMENT
 namespace nrhi {
 
-    class A_device;
-    class A_descriptor_heap;
+    class NRHI_API F_directx12_factory_helper {
+
+    public:
+        friend class HD_directx12_system;
 
 
-
-    struct F_descriptor_range_desc {
-
-        ED_descriptor_range_type type;
-
-        u32 base_register = 0;
-        u32 register_space = 0;
-
-    };
-
-    struct F_descriptor_table_desc {
-
-        TG_span<F_descriptor_range_desc> range_descs;
-
-    };
-
-
-
-    struct F_descriptor_heap_desc {
-
-        ED_descriptor_heap_type type;
-
-    };
-
-
-
-    class NRHI_API A_descriptor_heap {
 
     private:
-        TK_valid<A_device> device_p_;
-        F_descriptor_heap_desc desc_;
+        static IDXGIFactory* factory_p_;
 
     public:
-        NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
-        NCPP_FORCE_INLINE const F_descriptor_heap_desc& desc() const noexcept { return desc_; }
+        static NCPP_FORCE_INLINE IDXGIFactory* factory_p() noexcept { return factory_p_; }
 
 
 
-    protected:
-        A_descriptor_heap(TK_valid<A_device> device_p, const F_descriptor_heap_desc& desc);
-
-    public:
-        virtual ~A_descriptor_heap();
+    private:
+        static void initialize();
+        static void release();
 
     };
 
 }
-#endif // NRHI_DRIVER_SUPPORT_DESCRIPTOR_MANAGEMENT

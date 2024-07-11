@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/descriptor.hpp
+/** @file nrhi/directx12/driver.hpp
 *
-*   Implement descriptor.
+*   Implement directx12 driver.
 */
 
 
@@ -33,67 +33,20 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#ifdef NRHI_DRIVER_SUPPORT_DESCRIPTOR_MANAGEMENT
-#include <nrhi/descriptor_range_type.hpp>
-#include <nrhi/descriptor_heap_type.hpp>
-#endif // NRHI_DRIVER_SUPPORT_DESCRIPTOR_MANAGEMENT
+#include <nrhi/driver_base.hpp>
 
 #pragma endregion
 
 
 
-#ifdef NRHI_DRIVER_SUPPORT_DESCRIPTOR_MANAGEMENT
 namespace nrhi {
 
-    class A_device;
-    class A_descriptor_heap;
-
-
-
-    struct F_descriptor_range_desc {
-
-        ED_descriptor_range_type type;
-
-        u32 base_register = 0;
-        u32 register_space = 0;
-
-    };
-
-    struct F_descriptor_table_desc {
-
-        TG_span<F_descriptor_range_desc> range_descs;
-
-    };
-
-
-
-    struct F_descriptor_heap_desc {
-
-        ED_descriptor_heap_type type;
-
-    };
-
-
-
-    class NRHI_API A_descriptor_heap {
-
-    private:
-        TK_valid<A_device> device_p_;
-        F_descriptor_heap_desc desc_;
+    class NRHI_API HD_directx12_driver {
 
     public:
-        NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
-        NCPP_FORCE_INLINE const F_descriptor_heap_desc& desc() const noexcept { return desc_; }
-
-
-
-    protected:
-        A_descriptor_heap(TK_valid<A_device> device_p, const F_descriptor_heap_desc& desc);
-
-    public:
-        virtual ~A_descriptor_heap();
+        static constexpr b8 is_support_descriptor_management() { return true; }
+        static constexpr b8 is_support_advanced_resource() { return true; }
 
     };
 
 }
-#endif // NRHI_DRIVER_SUPPORT_DESCRIPTOR_MANAGEMENT
