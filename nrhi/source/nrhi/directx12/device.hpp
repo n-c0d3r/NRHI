@@ -47,6 +47,14 @@ namespace nrhi {
 
     class NRHI_API F_directx12_device : public A_device {
 
+	private:
+		ID3D12Device* d3d12_device_p_ = 0;
+
+	public:
+		NCPP_FORCE_INLINE ID3D12Device* d3d12_device_p() noexcept { return d3d12_device_p_; }
+
+
+
     public:
         F_directx12_device(TK_valid<A_adapter> adapter_p);
         ~F_directx12_device();

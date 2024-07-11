@@ -1,4 +1,5 @@
 #include <nrhi/directx11/device.hpp>
+#include <nrhi/directx11/adapter.hpp>
 
 
 
@@ -7,7 +8,6 @@ namespace nrhi {
     F_directx11_device::F_directx11_device(TKPA_valid<A_adapter> adapter_p) :
         A_device(adapter_p)
     {
-
         HRESULT hr;
 
         D3D_DRIVER_TYPE driver_types[] = {
@@ -26,7 +26,7 @@ namespace nrhi {
         for (UINT driver_type_index = 0; driver_type_index < num_driver_types;)
         {
             hr = D3D11CreateDevice(
-                NULL,
+				adapter_p.T_cast<F_directx11_adapter>()->dxgi_adapter_p(),
                 driver_types[driver_type_index],
                 NULL,
                 NULL,
@@ -43,7 +43,6 @@ namespace nrhi {
         }
 
         NCPP_ASSERT(SUCCEEDED(hr)) << "can't create d3d11 device";
-
     }
     F_directx11_device::~F_directx11_device(){
 

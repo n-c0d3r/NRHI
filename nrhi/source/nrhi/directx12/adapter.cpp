@@ -34,7 +34,7 @@ namespace nrhi {
         auto* factory_p = F_directx12_factory_helper::factory_p();
         IDXGIAdapter* dxgi_adapter_p = 0;
 
-        for (UINT i = 0; factory_p->EnumAdapters(i, &dxgi_adapter_p) != DXGI_ERROR_NOT_FOUND; ++i) {
+		for (UINT i = 0; factory_p->EnumAdapters(i, &dxgi_adapter_p) != DXGI_ERROR_NOT_FOUND; ++i) {
 
             auto adapter_p = TU<F_directx12_adapter>()(i, dxgi_adapter_p);
 
