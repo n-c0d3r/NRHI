@@ -60,6 +60,7 @@ namespace nrhi {
 		PA_vector4 color
 	) {
 		NCPP_ASSERT(rtv_p->is_valid_generation()) << "render target view's generation is not valid";
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
 		ID3D11DeviceContext* d3d11_device_context_p = command_list_p.T_cast<F_directx11_command_list>()->d3d11_device_context_p();
 
@@ -88,6 +89,8 @@ namespace nrhi {
 		f32 depth,
 		u8 stencil
 	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
 		ID3D11DeviceContext* d3d11_device_context_p = command_list_p.T_cast<F_directx11_command_list>()->d3d11_device_context_p();
 
 		d3d11_device_context_p->ClearDepthStencilView(
@@ -130,6 +133,8 @@ namespace nrhi {
 		TKPA_valid<A_command_list> command_list_p,
 		KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p
 	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
 		const auto desc = graphics_pipeline_state_p->desc();
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
@@ -202,6 +207,8 @@ namespace nrhi {
 		TKPA_valid<A_command_list> command_list_p,
 		KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p
 	) {
+		NCPP_ASSERT(command_list_p->supports_compute()) << "command list does not support compute";
+
 		const auto desc = compute_pipeline_state_p->desc();
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
@@ -232,6 +239,8 @@ namespace nrhi {
 		KPA_valid_buffer_handle index_buffer_p,
 		u32 offset
 	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
 		NCPP_ENABLE_IF_ASSERTION_ENABLED(
@@ -262,6 +271,8 @@ namespace nrhi {
 		const TG_span<u32>& offset_span,
 		u32 base_slot_index
 	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
 		auto& temp_state = directx11_command_list_p->temp_state_;
@@ -302,6 +313,8 @@ namespace nrhi {
 		u32 offset,
 		u32 slot_index
 	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
 		auto& temp_state = directx11_command_list_p->temp_state_;
@@ -333,6 +346,8 @@ namespace nrhi {
 		const TG_span<u32>& offset_span,
 		u32 base_slot_index
 	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
 		auto& temp_state = directx11_command_list_p->temp_state_;
@@ -373,6 +388,8 @@ namespace nrhi {
 		u32 offset,
 		u32 slot_index
 	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
 		auto& temp_state = directx11_command_list_p->temp_state_;
@@ -405,6 +422,8 @@ namespace nrhi {
 		u32 base_slot_index
 	)
 	{
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
@@ -441,6 +460,8 @@ namespace nrhi {
 		u32 slot_index
 	)
 	{
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
@@ -467,6 +488,8 @@ namespace nrhi {
 		const TG_span<K_valid_srv_handle>& srv_p_span,
 		u32 base_slot_index
 	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
 		NCPP_ENABLE_IF_ASSERTION_ENABLED(
 			for(const auto& srv_p : srv_p_span)
 				NCPP_ASSERT(srv_p->is_valid_generation()) << "shader resource view's generation is not valid";
@@ -498,6 +521,8 @@ namespace nrhi {
 		KPA_valid_srv_handle srv_p,
 		u32 slot_index
 	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
 		NCPP_ASSERT(srv_p->is_valid_generation()) << "shader resource view's generation is not valid";
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
@@ -517,6 +542,8 @@ namespace nrhi {
 		const TG_span<TK_valid<A_sampler_state>>& sampler_state_p_span,
 		u32 base_slot_index
 	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
@@ -543,6 +570,8 @@ namespace nrhi {
 		TKPA_valid<A_sampler_state> sampler_state_p,
 		u32 slot_index
 	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
@@ -562,6 +591,8 @@ namespace nrhi {
 		u32 base_slot_index
 	)
 	{
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
@@ -598,6 +629,8 @@ namespace nrhi {
 		u32 slot_index
 	)
 	{
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
@@ -624,6 +657,8 @@ namespace nrhi {
 		const TG_span<K_valid_srv_handle>& srv_p_span,
 		u32 base_slot_index
 	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
 		NCPP_ENABLE_IF_ASSERTION_ENABLED(
 			for(const auto& srv_p : srv_p_span)
 				NCPP_ASSERT(srv_p->is_valid_generation()) << "shader resource view's generation is not valid";
@@ -655,6 +690,8 @@ namespace nrhi {
 		KPA_valid_srv_handle srv_p,
 		u32 slot_index
 	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
 		NCPP_ASSERT(srv_p->is_valid_generation()) << "shader resource view's generation is not valid";
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
@@ -674,6 +711,8 @@ namespace nrhi {
 		const TG_span<TK_valid<A_sampler_state>>& sampler_state_p_span,
 		u32 base_slot_index
 	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
@@ -700,6 +739,8 @@ namespace nrhi {
 		TKPA_valid<A_sampler_state> sampler_state_p,
 		u32 slot_index
 	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
@@ -717,6 +758,8 @@ namespace nrhi {
 		TKPA_valid<A_command_list> command_list_p,
 		TKPA_valid<A_frame_buffer> frame_buffer_p
 	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
 		NCPP_ASSERT(frame_buffer_p->is_valid_generation()) << "frame buffer's generation is not valid";
 
 		const auto& frame_buffer_desc = frame_buffer_p->desc();
@@ -769,6 +812,8 @@ namespace nrhi {
 		const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
 		u32 base_slot_index
 	) {
+		NCPP_ASSERT(command_list_p->supports_compute()) << "command list does not support compute";
+
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
@@ -804,6 +849,8 @@ namespace nrhi {
 		KPA_valid_buffer_handle constant_buffer_p,
 		u32 slot_index
 	) {
+		NCPP_ASSERT(command_list_p->supports_compute()) << "command list does not support compute";
+
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
@@ -830,6 +877,8 @@ namespace nrhi {
 		const TG_span<K_valid_srv_handle>& srv_p_span,
 		u32 base_slot_index
 	) {
+		NCPP_ASSERT(command_list_p->supports_compute()) << "command list does not support compute";
+
 		NCPP_ENABLE_IF_ASSERTION_ENABLED(
 			for(const auto& srv_p : srv_p_span)
 				NCPP_ASSERT(srv_p->is_valid_generation()) << "shader resource view's generation is not valid";
@@ -861,6 +910,8 @@ namespace nrhi {
 		KPA_valid_srv_handle srv_p,
 		u32 slot_index
 	) {
+		NCPP_ASSERT(command_list_p->supports_compute()) << "command list does not support compute";
+
 		NCPP_ASSERT(srv_p->is_valid_generation()) << "shader resource view's generation is not valid";
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
@@ -880,6 +931,8 @@ namespace nrhi {
 		const TG_span<K_valid_uav_handle>& uav_p_span,
 		u32 base_slot_index
 	) {
+		NCPP_ASSERT(command_list_p->supports_compute()) << "command list does not support compute";
+
 		NCPP_ENABLE_IF_ASSERTION_ENABLED(
 			for(const auto& uav_p : uav_p_span)
 				NCPP_ASSERT(uav_p->is_valid_generation()) << "unordered access view's generation is not valid";
@@ -912,6 +965,8 @@ namespace nrhi {
 		KPA_valid_uav_handle uav_p,
 		u32 slot_index
 	) {
+		NCPP_ASSERT(command_list_p->supports_compute()) << "command list does not support compute";
+
 		NCPP_ASSERT(uav_p->is_valid_generation()) << "unordered access view's generation is not valid";
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
@@ -932,6 +987,8 @@ namespace nrhi {
 		const TG_span<TK_valid<A_sampler_state>>& sampler_state_p_span,
 		u32 base_slot_index
 	) {
+		NCPP_ASSERT(command_list_p->supports_compute()) << "command list does not support compute";
+
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
@@ -958,6 +1015,8 @@ namespace nrhi {
 		TKPA_valid<A_sampler_state> sampler_state_p,
 		u32 slot_index
 	) {
+		NCPP_ASSERT(command_list_p->supports_compute()) << "command list does not support compute";
+
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
@@ -976,6 +1035,7 @@ namespace nrhi {
 		u32 vertex_count,
 		u32 base_vertex_location
 	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
@@ -1006,6 +1066,7 @@ namespace nrhi {
 		u32 base_vertex_location,
 		u32 base_instance_location
 	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
@@ -1037,6 +1098,7 @@ namespace nrhi {
 		u32 base_index_location,
 		u32 base_vertex_location
 	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
@@ -1070,6 +1132,7 @@ namespace nrhi {
 		u32 base_vertex_location,
 		u32 base_instance_location
 	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
@@ -1102,6 +1165,7 @@ namespace nrhi {
 		TKPA_valid<A_command_list> command_list_p,
 		PA_vector3_u32 thread_group_count_3d
 	) {
+		NCPP_ASSERT(command_list_p->supports_compute()) << "command list does not support compute";
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
@@ -1126,6 +1190,7 @@ namespace nrhi {
 		KPA_indirect_buffer_handle indirect_buffer_p,
 		u32 indirect_buffer_offset
 	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
@@ -1153,6 +1218,7 @@ namespace nrhi {
 		KPA_indirect_buffer_handle indirect_buffer_p,
 		u32 indirect_buffer_offset
 	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
@@ -1182,6 +1248,7 @@ namespace nrhi {
 		KPA_indirect_buffer_handle indirect_buffer_p,
 		u32 indirect_buffer_offset
 	) {
+		NCPP_ASSERT(command_list_p->supports_compute()) << "command list does not support compute";
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
@@ -1208,6 +1275,8 @@ namespace nrhi {
 		u32 src_data_offset,
 		u32 dst_data_offset
 	) {
+		NCPP_ASSERT(command_list_p->supports_blit()) << "command list does not support blit";
+
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 		const auto& directx11_resource_p = resource_p.T_cast<F_directx11_resource>();
 

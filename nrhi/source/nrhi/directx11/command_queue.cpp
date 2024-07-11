@@ -36,7 +36,6 @@ namespace nrhi {
         TKPA_valid<A_command_queue> command_queue_p,
         TG_span<TK_valid<A_command_list>> command_list_p_span
     ) {
-
         sz command_list_count = command_list_p_span.size();
 
         TG_vector<ID3D11CommandList*> d3d11_command_list_p_vector(command_list_count);
@@ -44,6 +43,8 @@ namespace nrhi {
         for(u32 i = 0; i < command_list_count; ++i) {
 
             TK_valid<A_command_list> command_list_p = command_list_p_span[i];
+
+			NCPP_ASSERT(command_queue_p->is_compatible(command_list_p)) << "non-compatible command list";
 
             ID3D11DeviceContext* d3d11_deferred_ctx_p = command_list_p.T_cast<F_directx11_command_list>()->d3d11_device_context_p();
 
@@ -71,6 +72,7 @@ namespace nrhi {
 		TKPA_valid<A_command_queue> command_queue_p,
 		TKPA_valid<A_command_list> command_list_p
 	) {
+		NCPP_ASSERT(command_queue_p->is_compatible(command_list_p)) << "non-compatible command list";
 
 		ID3D11CommandList* d3d11_command_list_p = 0;
 

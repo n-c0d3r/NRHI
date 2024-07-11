@@ -19,6 +19,9 @@ NRHI_EnumHelper_CreateEnum(
     VALUES
         DEFAULT 0
         DIRECT 0
+        GRAPHICS 1
+        COMPUTE 2
+        BLIT 3
 )
 
 message(STATUS "<NRHI::Drivers::DirectX11> Implement command list type done")

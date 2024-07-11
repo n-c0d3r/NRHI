@@ -46,9 +46,11 @@ namespace nrhi {
 
 
 
+	using ED_command_queue_type = ED_command_list_type;
+
     struct F_command_queue_desc {
 
-        ED_command_list_type type;
+		ED_command_queue_type type = ED_command_queue_type::DIRECT;
 
     };
 
@@ -59,10 +61,16 @@ namespace nrhi {
     private:
         TK_valid<A_device> device_p_;
         F_command_queue_desc desc_;
+		b8 supports_graphics_ = false;
+		b8 supports_compute_ = false;
+		b8 supports_blit_ = false;
 
     public:
         NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
         NCPP_FORCE_INLINE const F_command_queue_desc& desc() const noexcept { return desc_; }
+		NCPP_FORCE_INLINE b8 supports_graphics() const noexcept { return supports_graphics_; }
+		NCPP_FORCE_INLINE b8 supports_compute() const noexcept { return supports_compute_; }
+		NCPP_FORCE_INLINE b8 supports_blit() const noexcept { return supports_blit_; }
 
 
 
@@ -80,6 +88,11 @@ namespace nrhi {
 	public:
 		void execute_command_lists(TG_span<TK_valid<A_command_list>> command_list_p_span);
 		void execute_command_list(TKPA_valid<A_command_list> command_list_p);
+
+
+
+	public:
+		b8 is_compatible(TKPA_valid<A_command_list> command_list_p) const;
 
     };
 
