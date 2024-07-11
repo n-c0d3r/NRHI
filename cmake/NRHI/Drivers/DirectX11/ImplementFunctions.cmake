@@ -17,12 +17,6 @@ include(NRHI/Drivers/DirectX11/ImplementShaderBlob)
 include(NRHI/Drivers/DirectX11/ImplementPipelineState)
 include(NRHI/Drivers/DirectX11/ImplementFrameBuffer)
 include(NRHI/Drivers/DirectX11/ImplementSamplerState)
-include(NRHI/Drivers/DXGI/AdapterHelper)
-
-
-
-NRHI_DXGI_ImplementAdapter(
-    DRIVER_UPPER_CASE_NAME "DIRECTX_11"
-)
+include(NRHI/Drivers/DirectX11/ImplementAdapter)
 
 message(STATUS "<NRHI::Drivers::DirectX11> Implement functions done")

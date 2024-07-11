@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/dxgi/factory.hpp
+/** @file nrhi/directx11/factory.hpp
 *
-*   Implement dxgi factory.
+*   Implement directx11 factory.
 */
 
 
@@ -35,11 +35,10 @@
 
 namespace nrhi {
 
-    class NRHI_API F_dxgi_factory_helper {
+    class NRHI_API F_directx11_factory_helper {
 
     public:
         friend class HD_directx11_system;
-        friend class HD_directx12_system;
 
 
 

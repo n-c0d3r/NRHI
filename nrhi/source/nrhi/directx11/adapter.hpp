@@ -49,10 +49,10 @@ namespace nrhi {
 
 
 
-    class NRHI_API F_dxgi_adapter : public A_adapter {
+    class NRHI_API F_directx11_adapter : public A_adapter {
 
     public:
-        friend class HD_dxgi_adapter;
+        friend class HD_directx11_adapter;
 
 
 
@@ -65,17 +65,17 @@ namespace nrhi {
 
 
     public:
-        F_dxgi_adapter(u32 index, IDXGIAdapter* dxgi_adapter_p);
-        ~F_dxgi_adapter();
+        F_directx11_adapter(u32 index, IDXGIAdapter* dxgi_adapter_p);
+        ~F_directx11_adapter();
 
     };
 
 
 
-    class NRHI_API HD_dxgi_adapter {
+    class NRHI_API HD_directx11_adapter {
 
     public:
-        friend class F_dxgi_factory_helper;
+        friend class F_directx11_factory_helper;
 
 
 

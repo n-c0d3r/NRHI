@@ -4,7 +4,7 @@
 #include <nrhi/directx11/texture.hpp>
 #include <nrhi/directx11/render_target_view.hpp>
 #include <nrhi/resource_desc.hpp>
-#include <nrhi/dxgi/factory.hpp>
+#include <nrhi/directx11/factory.hpp>
 
 
 
@@ -41,7 +41,7 @@ namespace nrhi {
         dxgi_swapchain_desc.SampleDesc.Quality = desc.sample_desc.quality;
         dxgi_swapchain_desc.Windowed = TRUE;
 
-        F_dxgi_factory_helper::factory_p()->CreateSwapChain(
+        F_directx11_factory_helper::factory_p()->CreateSwapChain(
             device_p.T_cast<F_directx11_device>()->d3d11_device_p(),
             &dxgi_swapchain_desc,
             &dxgi_swapchain_p_
