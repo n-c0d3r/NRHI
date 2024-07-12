@@ -24,6 +24,7 @@ NRHI_FunctionHelper_CreateFunctionClass(
     VALUES
         "is_support_advanced_resource_binding" "bool()"
         "is_support_advanced_resource_management" "bool()"
+        "is_support_advanced_work_submission" "bool()"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement driver done")

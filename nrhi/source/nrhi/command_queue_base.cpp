@@ -10,7 +10,6 @@ namespace nrhi {
         desc_(desc),
 		supports_graphics_(
 			(desc.type == ED_command_list_type::DIRECT)
-			|| (desc.type == ED_command_list_type::GRAPHICS)
 		),
 		supports_compute_(
 			(desc.type == ED_command_list_type::DIRECT)

@@ -11,7 +11,7 @@ namespace nrhi {
         u32 count,
         u32 stride,
         ED_resource_bind_flag bind_flags,
-        ED_resource_heap_type heap_type
+        ED_resource_usage usage
     ) {
         return H_resource::create_buffer(
             device_p,
@@ -20,7 +20,7 @@ namespace nrhi {
                 count,
                 stride,
                 bind_flags,
-                heap_type
+                usage
             )
         );
     }
@@ -31,7 +31,7 @@ namespace nrhi {
         u32 count,
         ED_format format,
         ED_resource_bind_flag bind_flags,
-        ED_resource_heap_type heap_type
+        ED_resource_usage usage
     ) {
         return H_resource::create_buffer(
             device_p,
@@ -40,7 +40,7 @@ namespace nrhi {
                 count,
                 format,
                 bind_flags,
-                heap_type
+                usage
             )
         );
     }
@@ -51,7 +51,7 @@ namespace nrhi {
         u32 count,
         u32 stride,
         ED_resource_bind_flag bind_flags,
-        ED_resource_heap_type heap_type
+        ED_resource_usage usage
     ) {
         return H_resource::create_structured_buffer(
             device_p,
@@ -60,7 +60,7 @@ namespace nrhi {
                 count,
                 stride,
                 bind_flags,
-                heap_type
+                usage
             )
         );
     }
@@ -70,7 +70,7 @@ namespace nrhi {
 		const F_initial_resource_data& initial_data,
 		u32 count,
 		ED_resource_bind_flag bind_flags,
-		ED_resource_heap_type heap_type
+		ED_resource_usage usage
 	) {
 		return H_resource::create_indirect_buffer(
 			device_p,
@@ -78,7 +78,7 @@ namespace nrhi {
 			H_resource_desc::create_indirect_buffer_desc(
 				count,
 				bind_flags,
-				heap_type
+				usage
 			)
 		);
 	}
@@ -91,7 +91,7 @@ namespace nrhi {
 		u32 count,
 		u32 stride,
 		ED_resource_bind_flag bind_flags,
-		ED_resource_heap_type heap_type
+		ED_resource_usage usage
 	) {
 		buffer_p->rebuild(
 			initial_data,
@@ -99,7 +99,7 @@ namespace nrhi {
 				count,
 				stride,
 				bind_flags,
-				heap_type
+				usage
 			)
 		);
 	}
@@ -110,7 +110,7 @@ namespace nrhi {
 		u32 count,
 		ED_format format,
 		ED_resource_bind_flag bind_flags,
-		ED_resource_heap_type heap_type
+		ED_resource_usage usage
 	) {
 		buffer_p->rebuild(
 			initial_data,
@@ -118,7 +118,7 @@ namespace nrhi {
 				count,
 				format,
 				bind_flags,
-				heap_type
+				usage
 			)
 		);
 	}
@@ -129,7 +129,7 @@ namespace nrhi {
 		u32 count,
 		u32 stride,
 		ED_resource_bind_flag bind_flags,
-		ED_resource_heap_type heap_type
+		ED_resource_usage usage
 	) {
 		structured_buffer_p->rebuild(
 			initial_data,
@@ -137,7 +137,7 @@ namespace nrhi {
 				count,
 				stride,
 				bind_flags,
-				heap_type
+				usage
 			)
 		);
 	}
@@ -147,14 +147,14 @@ namespace nrhi {
 		const F_initial_resource_data& initial_data,
 		u32 count,
 		ED_resource_bind_flag bind_flags,
-		ED_resource_heap_type heap_type
+		ED_resource_usage usage
 	) {
 		indirect_buffer_p->rebuild(
 			initial_data,
 			H_resource_desc::create_indirect_buffer_desc(
 				count,
 				bind_flags,
-				heap_type
+				usage
 			)
 		);
 	}

@@ -1,12 +1,12 @@
-#include <nrhi/command_list_base.hpp>
+#include <nrhi/command_allocator_base.hpp>
 
 
 
 namespace nrhi {
 
-    A_command_list::A_command_list(TKPA_valid<A_device> device_p, const F_command_list_desc& desc) :
-        device_p_(device_p),
-        desc_(desc),
+	A_command_allocator::A_command_allocator(TKPA_valid<A_device> device_p, const F_command_allocator_desc& desc) :
+		device_p_(device_p),
+		desc_(desc),
 		supports_graphics_(
 			(desc.type == ED_command_list_type::DIRECT)
 		),
@@ -18,11 +18,11 @@ namespace nrhi {
 			(desc.type == ED_command_list_type::DIRECT)
 			|| (desc.type == ED_command_list_type::BLIT)
 		)
-    {
+	{
 
-    }
-    A_command_list::~A_command_list(){
+	}
+	A_command_allocator::~A_command_allocator(){
 
-    }
+	}
 
 }

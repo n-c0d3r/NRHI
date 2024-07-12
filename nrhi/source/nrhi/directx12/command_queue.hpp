@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/directx12/driver.hpp
+/** @file nrhi/directx12/command_queue.hpp
 *
-*   Implement directx12 driver.
+*   Implement directx12 command_queue.
 */
 
 
@@ -33,7 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/driver_base.hpp>
+#include <nrhi/command_queue_base.hpp>
 
 #pragma endregion
 
@@ -41,13 +41,43 @@
 
 namespace nrhi {
 
-    class NRHI_API HD_directx12_driver {
+	class A_device;
+	class A_command_list;
 
-    public:
-        static constexpr b8 is_support_advanced_resource_binding() { return true; }
-        static constexpr b8 is_support_advanced_resource_management() { return true; }
-        static constexpr b8 is_support_advanced_work_submission() { return true; }
 
-    };
+
+	class NRHI_API F_directx12_command_queue : public A_command_queue {
+
+	private:
+		ID3D12CommandQueue* d3d12_command_queue_p_ = 0;
+
+	public:
+		NCPP_FORCE_INLINE ID3D12CommandQueue* d3d12_command_queue_p() noexcept { return d3d12_command_queue_p_; }
+
+
+
+	public:
+		F_directx12_command_queue(TKPA_valid<A_device> device_p, const F_command_queue_desc& desc);
+		~F_directx12_command_queue();
+
+	};
+
+
+
+	class NRHI_API HD_directx12_command_queue {
+
+	public:
+		static TU<A_command_queue> create(TKPA_valid<A_device> device_p, const F_command_queue_desc& desc);
+
+		static void execute_command_lists(
+			TKPA_valid<A_command_queue> command_queue_p,
+			TG_span<TK_valid<A_command_list>> command_list_p_span
+		);
+		static void execute_command_list(
+			TKPA_valid<A_command_queue> command_queue_p,
+			TKPA_valid<A_command_list> command_list_p
+		);
+
+	};
 
 }

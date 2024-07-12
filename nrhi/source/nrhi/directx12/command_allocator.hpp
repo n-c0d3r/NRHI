@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/directx12/driver.hpp
+/** @file nrhi/directx12/command_allocator.hpp
 *
-*   Implement directx12 driver.
+*   Implement directx12 command_allocator.
 */
 
 
@@ -33,7 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/driver_base.hpp>
+#include <nrhi/command_allocator_base.hpp>
 
 #pragma endregion
 
@@ -41,13 +41,38 @@
 
 namespace nrhi {
 
-    class NRHI_API HD_directx12_driver {
+	class A_device;
 
-    public:
-        static constexpr b8 is_support_advanced_resource_binding() { return true; }
-        static constexpr b8 is_support_advanced_resource_management() { return true; }
-        static constexpr b8 is_support_advanced_work_submission() { return true; }
 
-    };
+
+	class NRHI_API F_directx12_command_allocator : public A_command_allocator {
+
+	public:
+		friend class HD_directx12_command_allocator;
+
+
+
+	private:
+		ID3D12CommandAllocator* d3d12_command_allocator_p_ = 0;
+
+	public:
+		NCPP_FORCE_INLINE ID3D12CommandAllocator* d3d12_command_allocator_p() const noexcept { return d3d12_command_allocator_p_; }
+
+
+
+	public:
+		F_directx12_command_allocator(TKPA_valid<A_device> device_p, const F_command_allocator_desc& desc);
+		~F_directx12_command_allocator();
+
+	};
+
+
+
+	class NRHI_API HD_directx12_command_allocator {
+
+	public:
+		static TU<A_command_allocator> create(TKPA_valid<A_device> device_p, const F_command_allocator_desc& desc);
+
+	};
 
 }

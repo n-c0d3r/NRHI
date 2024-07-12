@@ -56,21 +56,21 @@ namespace nrhi {
         d3d11_texture_1d_desc.BindFlags = D3D11_BIND_FLAG(desc_.bind_flags);
         d3d11_texture_1d_desc.Format = DXGI_FORMAT(desc_.format);
         NRHI_ENUM_SWITCH(
-			desc_.heap_type,
+			desc_.usage,
             NRHI_ENUM_CASE(
-				ED_resource_heap_type::GREAD_GWRITE,
+				ED_resource_usage::GREAD_GWRITE,
                 d3d11_texture_1d_desc.CPUAccessFlags = 0;
                 d3d11_texture_1d_desc.Usage = D3D11_USAGE_DEFAULT;
                 NRHI_ENUM_BREAK;
             )
             NRHI_ENUM_CASE(
-				ED_resource_heap_type::GREAD_CWRITE,
+				ED_resource_usage::GREAD_CWRITE,
                 d3d11_texture_1d_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
                 d3d11_texture_1d_desc.Usage = D3D11_USAGE_DYNAMIC;
                 NRHI_ENUM_BREAK;
             )
             NRHI_ENUM_CASE(
-				ED_resource_heap_type::CREAD_GWRITE,
+				ED_resource_usage::CREAD_GWRITE,
                 d3d11_texture_1d_desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
                 d3d11_texture_1d_desc.Usage = D3D11_USAGE_STAGING;
                 NRHI_ENUM_BREAK;
@@ -180,21 +180,21 @@ namespace nrhi {
         d3d11_texture_2d_desc.SampleDesc.Count = desc_.sample_desc.count;
         d3d11_texture_2d_desc.SampleDesc.Quality = desc_.sample_desc.quality;
         NRHI_ENUM_SWITCH(
-			desc_.heap_type,
+			desc_.usage,
             NRHI_ENUM_CASE(
-				ED_resource_heap_type::GREAD_GWRITE,
+				ED_resource_usage::GREAD_GWRITE,
                 d3d11_texture_2d_desc.CPUAccessFlags = 0;
                 d3d11_texture_2d_desc.Usage = D3D11_USAGE_DEFAULT;
                 NRHI_ENUM_BREAK;
             )
             NRHI_ENUM_CASE(
-				ED_resource_heap_type::GREAD_CWRITE,
+				ED_resource_usage::GREAD_CWRITE,
                 d3d11_texture_2d_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
                 d3d11_texture_2d_desc.Usage = D3D11_USAGE_DYNAMIC;
                 NRHI_ENUM_BREAK;
             )
             NRHI_ENUM_CASE(
-				ED_resource_heap_type::CREAD_GWRITE,
+				ED_resource_usage::CREAD_GWRITE,
                 d3d11_texture_2d_desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
                 d3d11_texture_2d_desc.Usage = D3D11_USAGE_STAGING;
                 NRHI_ENUM_BREAK;
@@ -302,21 +302,21 @@ namespace nrhi {
         d3d11_texture_3d_desc.BindFlags = D3D11_BIND_FLAG(desc_.bind_flags);
         d3d11_texture_3d_desc.Format = DXGI_FORMAT(desc_.format);
         NRHI_ENUM_SWITCH(
-			desc_.heap_type,
+			desc_.usage,
             NRHI_ENUM_CASE(
-				ED_resource_heap_type::GREAD_GWRITE,
+				ED_resource_usage::GREAD_GWRITE,
                 d3d11_texture_3d_desc.CPUAccessFlags = 0;
                 d3d11_texture_3d_desc.Usage = D3D11_USAGE_DEFAULT;
                 NRHI_ENUM_BREAK;
             )
             NRHI_ENUM_CASE(
-				ED_resource_heap_type::GREAD_CWRITE,
+				ED_resource_usage::GREAD_CWRITE,
                 d3d11_texture_3d_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
                 d3d11_texture_3d_desc.Usage = D3D11_USAGE_DYNAMIC;
                 NRHI_ENUM_BREAK;
             )
             NRHI_ENUM_CASE(
-				ED_resource_heap_type::CREAD_GWRITE,
+				ED_resource_usage::CREAD_GWRITE,
                 d3d11_texture_3d_desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
                 d3d11_texture_3d_desc.Usage = D3D11_USAGE_STAGING;
                 NRHI_ENUM_BREAK;
@@ -425,21 +425,21 @@ namespace nrhi {
 		d3d11_texture_2d_array_desc.SampleDesc.Count = desc_.sample_desc.count;
 		d3d11_texture_2d_array_desc.SampleDesc.Quality = desc_.sample_desc.quality;
 		NRHI_ENUM_SWITCH(
-			desc_.heap_type,
+			desc_.usage,
 			NRHI_ENUM_CASE(
-				ED_resource_heap_type::GREAD_GWRITE,
+				ED_resource_usage::GREAD_GWRITE,
 				d3d11_texture_2d_array_desc.CPUAccessFlags = 0;
 				d3d11_texture_2d_array_desc.Usage = D3D11_USAGE_DEFAULT;
 				NRHI_ENUM_BREAK;
             )
 			NRHI_ENUM_CASE(
-				ED_resource_heap_type::GREAD_CWRITE,
+				ED_resource_usage::GREAD_CWRITE,
 				d3d11_texture_2d_array_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 				d3d11_texture_2d_array_desc.Usage = D3D11_USAGE_DYNAMIC;
 				NRHI_ENUM_BREAK;
             )
 			NRHI_ENUM_CASE(
-				ED_resource_heap_type::CREAD_GWRITE,
+				ED_resource_usage::CREAD_GWRITE,
 				d3d11_texture_2d_array_desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
 				d3d11_texture_2d_array_desc.Usage = D3D11_USAGE_STAGING;
 				NRHI_ENUM_BREAK;
@@ -550,21 +550,21 @@ namespace nrhi {
 		d3d11_texture_cube_desc.SampleDesc.Count = desc_.sample_desc.count;
 		d3d11_texture_cube_desc.SampleDesc.Quality = desc_.sample_desc.quality;
 		NRHI_ENUM_SWITCH(
-			desc_.heap_type,
+			desc_.usage,
 			NRHI_ENUM_CASE(
-				ED_resource_heap_type::GREAD_GWRITE,
+				ED_resource_usage::GREAD_GWRITE,
 				d3d11_texture_cube_desc.CPUAccessFlags = 0;
 				d3d11_texture_cube_desc.Usage = D3D11_USAGE_DEFAULT;
 				NRHI_ENUM_BREAK;
             )
 			NRHI_ENUM_CASE(
-				ED_resource_heap_type::GREAD_CWRITE,
+				ED_resource_usage::GREAD_CWRITE,
 				d3d11_texture_cube_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 				d3d11_texture_cube_desc.Usage = D3D11_USAGE_DYNAMIC;
 				NRHI_ENUM_BREAK;
             )
 			NRHI_ENUM_CASE(
-				ED_resource_heap_type::CREAD_GWRITE,
+				ED_resource_usage::CREAD_GWRITE,
 				d3d11_texture_cube_desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
 				d3d11_texture_cube_desc.Usage = D3D11_USAGE_STAGING;
 				NRHI_ENUM_BREAK;

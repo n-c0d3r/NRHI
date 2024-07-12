@@ -179,7 +179,7 @@ int main() {
         NCPP_FOREF_VALID(device_p),
         NCPP_INIL_SPAN(output_color),
         ED_resource_bind_flag::CBV,
-        ED_resource_heap_type::GREAD_CWRITE
+        ED_resource_usage::GREAD_CWRITE
     );
 
     U_texture_2d_handle texture_2d_p = H_texture::create_2d(

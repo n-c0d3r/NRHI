@@ -46,6 +46,7 @@ namespace nrhi {
     public:
         static constexpr b8 is_support_advanced_resource_binding() { return false; }
         static constexpr b8 is_support_advanced_resource_management() { return false; }
+        static constexpr b8 is_support_advanced_work_submission() { return false; }
 
     };
 

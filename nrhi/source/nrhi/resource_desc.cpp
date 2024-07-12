@@ -9,7 +9,7 @@ namespace nrhi {
         u32 count,
         u32 stride,
         ED_resource_bind_flag bind_flags,
-        ED_resource_heap_type heap_type
+        ED_resource_usage usage
     ) {
 
         return {
@@ -21,7 +21,7 @@ namespace nrhi {
             .stride = stride,
 
             .bind_flags = bind_flags,
-            .heap_type = heap_type,
+            .usage = usage,
 
             .type = ED_resource_type::BUFFER
 
@@ -32,7 +32,7 @@ namespace nrhi {
         u32 count,
         ED_format format,
         ED_resource_bind_flag bind_flags,
-        ED_resource_heap_type heap_type
+        ED_resource_usage usage
     ) {
 
 		u32 stride = H_format::stride(format);
@@ -47,7 +47,7 @@ namespace nrhi {
             .stride = stride,
 
             .bind_flags = bind_flags,
-            .heap_type = heap_type,
+            .usage = usage,
 
             .type = ED_resource_type::BUFFER
 
@@ -58,7 +58,7 @@ namespace nrhi {
         u32 count,
         u32 stride,
         ED_resource_bind_flag bind_flags,
-        ED_resource_heap_type heap_type
+        ED_resource_usage usage
     ) {
 
         return {
@@ -70,7 +70,7 @@ namespace nrhi {
             .stride = stride,
 
             .bind_flags = bind_flags,
-            .heap_type = heap_type,
+            .usage = usage,
 
             .type = ED_resource_type::STRUCTURED_BUFFER
 
@@ -82,7 +82,7 @@ namespace nrhi {
         ED_format format,
         u32 mip_level_count,
         ED_resource_bind_flag bind_flags,
-        ED_resource_heap_type heap_type,
+        ED_resource_usage usage,
 		b8 is_mip_map_generatable
     ) {
 
@@ -103,7 +103,7 @@ namespace nrhi {
             .mip_level_count = mip_level_count,
 
             .bind_flags = bind_flags,
-            .heap_type = heap_type,
+            .usage = usage,
 
 			.is_mip_map_generatable = is_mip_map_generatable,
 
@@ -119,7 +119,7 @@ namespace nrhi {
         u32 mip_level_count,
         F_sample_desc sample_desc,
         ED_resource_bind_flag bind_flags,
-        ED_resource_heap_type heap_type,
+        ED_resource_usage usage,
 		b8 is_mip_map_generatable
     ) {
 
@@ -141,7 +141,7 @@ namespace nrhi {
             .sample_desc = sample_desc,
 
             .bind_flags = bind_flags,
-            .heap_type = heap_type,
+            .usage = usage,
 
 			.is_mip_map_generatable = is_mip_map_generatable,
 
@@ -157,7 +157,7 @@ namespace nrhi {
         ED_format format,
         u32 mip_level_count,
         ED_resource_bind_flag bind_flags,
-        ED_resource_heap_type heap_type,
+        ED_resource_usage usage,
 		b8 is_mip_map_generatable
     ) {
 
@@ -178,7 +178,7 @@ namespace nrhi {
             .mip_level_count = mip_level_count,
 
             .bind_flags = bind_flags,
-            .heap_type = heap_type,
+            .usage = usage,
 
 			.is_mip_map_generatable = is_mip_map_generatable,
 
@@ -195,7 +195,7 @@ namespace nrhi {
 		u32 mip_level_count,
 		F_sample_desc sample_desc,
 		ED_resource_bind_flag bind_flags,
-		ED_resource_heap_type heap_type,
+		ED_resource_usage usage,
 		b8 is_mip_map_generatable
 	) {
 
@@ -217,7 +217,7 @@ namespace nrhi {
 			.sample_desc = sample_desc,
 
 			.bind_flags = bind_flags,
-			.heap_type = heap_type,
+			.usage = usage,
 
 			.is_mip_map_generatable = is_mip_map_generatable,
 
@@ -232,7 +232,7 @@ namespace nrhi {
 		u32 mip_level_count,
 		F_sample_desc sample_desc,
 		ED_resource_bind_flag bind_flags,
-		ED_resource_heap_type heap_type,
+		ED_resource_usage usage,
 		b8 is_mip_map_generatable
 	) {
 
@@ -254,7 +254,7 @@ namespace nrhi {
 			.sample_desc = sample_desc,
 
 			.bind_flags = bind_flags,
-			.heap_type = heap_type,
+			.usage = usage,
 
 			.is_mip_map_generatable = is_mip_map_generatable,
 
@@ -266,7 +266,7 @@ namespace nrhi {
 	F_resource_desc H_resource_desc::create_indirect_buffer_desc(
 		u32 count,
 		ED_resource_bind_flag bind_flags,
-		ED_resource_heap_type heap_type
+		ED_resource_usage usage
 	) {
 
 		return {
@@ -281,7 +281,7 @@ namespace nrhi {
 			.mip_level_count = 1,
 
 			.bind_flags = bind_flags,
-			.heap_type = heap_type,
+			.usage = usage,
 
 			.type = ED_resource_type::INDIRECT_BUFFER
 

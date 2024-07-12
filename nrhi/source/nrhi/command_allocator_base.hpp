@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/directx12/driver.hpp
+/** @file nrhi/command_allocator_base.hpp
 *
-*   Implement directx12 driver.
+*   Implement command allocator base class.
 */
 
 
@@ -33,21 +33,57 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/driver_base.hpp>
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+#include <nrhi/command_list_type.hpp>
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #pragma endregion
 
 
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 namespace nrhi {
 
-    class NRHI_API HD_directx12_driver {
+	class A_device;
 
-    public:
-        static constexpr b8 is_support_advanced_resource_binding() { return true; }
-        static constexpr b8 is_support_advanced_resource_management() { return true; }
-        static constexpr b8 is_support_advanced_work_submission() { return true; }
 
-    };
+
+	struct F_command_allocator_desc {
+
+		ED_command_list_type type = ED_command_list_type::DIRECT;
+
+	};
+
+
+
+	class NRHI_API A_command_allocator {
+
+	private:
+		TK_valid<A_device> device_p_;
+		F_command_allocator_desc desc_;
+		b8 supports_graphics_ = false;
+		b8 supports_compute_ = false;
+		b8 supports_blit_ = false;
+
+	public:
+		NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
+		NCPP_FORCE_INLINE const F_command_allocator_desc& desc() const noexcept { return desc_; }
+		NCPP_FORCE_INLINE b8 supports_graphics() const noexcept { return supports_graphics_; }
+		NCPP_FORCE_INLINE b8 supports_compute() const noexcept { return supports_compute_; }
+		NCPP_FORCE_INLINE b8 supports_blit() const noexcept { return supports_blit_; }
+
+
+
+	protected:
+		A_command_allocator(TKPA_valid<A_device> device_p, const F_command_allocator_desc& desc);
+
+	public:
+		virtual ~A_command_allocator();
+
+	public:
+		NCPP_OBJECT(A_command_allocator);
+
+	};
 
 }
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION

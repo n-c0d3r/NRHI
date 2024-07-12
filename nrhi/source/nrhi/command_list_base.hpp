@@ -50,11 +50,19 @@ namespace nrhi {
     class A_frame_buffer;
     class A_sampler_state;
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+    class A_command_allocator;
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
 
 
     struct F_command_list_desc {
 
         ED_command_list_type type = ED_command_list_type::DIRECT;
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+		TK<A_command_allocator> manual_command_allocator_p;
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
     };
 
@@ -69,12 +77,23 @@ namespace nrhi {
 		b8 supports_compute_ = false;
 		b8 supports_blit_ = false;
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+	protected:
+		TU<A_command_allocator> owned_command_allocator_p_;
+		TK<A_command_allocator> command_allocator_p_;
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
     public:
         NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
         NCPP_FORCE_INLINE const F_command_list_desc& desc() const noexcept { return desc_; }
         NCPP_FORCE_INLINE b8 supports_graphics() const noexcept { return supports_graphics_; }
         NCPP_FORCE_INLINE b8 supports_compute() const noexcept { return supports_compute_; }
         NCPP_FORCE_INLINE b8 supports_blit() const noexcept { return supports_blit_; }
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+        NCPP_FORCE_INLINE TK<A_command_allocator> owned_command_allocator_p() const noexcept { return owned_command_allocator_p_.keyed(); }
+        NCPP_FORCE_INLINE TK_valid<A_command_allocator> command_allocator_p() const noexcept { return NCPP_FOH_VALID(command_allocator_p_); }
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 
 

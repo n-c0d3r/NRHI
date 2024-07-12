@@ -57,7 +57,7 @@ namespace nrhi {
             1,
             desc.sample_desc,
             ED_resource_bind_flag::RTV,
-            ED_resource_heap_type::GREAD_GWRITE
+            ED_resource_usage::GREAD_GWRITE
         );
         back_texture_2d_desc.can_create_view = false;
         back_texture_2d_p_ = {
