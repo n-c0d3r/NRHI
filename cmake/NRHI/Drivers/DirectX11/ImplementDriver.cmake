@@ -22,8 +22,8 @@ NRHI_FunctionHelper_CreateFunctionClass(
     ADDITIONAL_CODE
         ""
     VALUES
-        "is_support_descriptor_management" "bool()"
-        "is_support_advanced_resource" "bool()"
+        "is_support_advanced_resource_binding" "bool()"
+        "is_support_advanced_resource_management" "bool()"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX11> Implement driver done")

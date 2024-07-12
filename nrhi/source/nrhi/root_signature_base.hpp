@@ -33,13 +33,16 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 #include <nrhi/root_param_type.hpp>
 #include <nrhi/descriptor_base.hpp>
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 #pragma endregion
 
 
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 namespace nrhi {
 
     struct F_root_constant_desc {
@@ -62,5 +65,5 @@ namespace nrhi {
         };
 
     };
-
 }
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING

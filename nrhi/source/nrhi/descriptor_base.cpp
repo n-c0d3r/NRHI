@@ -2,7 +2,7 @@
 
 
 
-#ifdef NRHI_DRIVER_SUPPORT_DESCRIPTOR_MANAGEMENT
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 namespace nrhi {
 
     A_descriptor_heap::A_descriptor_heap(TK_valid<A_device> device_p, const F_descriptor_heap_desc& desc) :
@@ -14,4 +14,4 @@ namespace nrhi {
     }
 
 }
-#endif // NRHI_DRIVER_SUPPORT_DESCRIPTOR_MANAGEMENT
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING

@@ -44,8 +44,8 @@ namespace nrhi {
     class NRHI_API HD_directx11_driver {
 
     public:
-        static constexpr b8 is_support_descriptor_management() { return false; }
-        static constexpr b8 is_support_advanced_resource() { return false; }
+        static constexpr b8 is_support_advanced_resource_binding() { return false; }
+        static constexpr b8 is_support_advanced_resource_management() { return false; }
 
     };
 
