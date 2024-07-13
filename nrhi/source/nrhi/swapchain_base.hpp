@@ -104,6 +104,8 @@ namespace nrhi {
 	public:
 		void present();
 
+		void ASYNC_present();
+
     };
 
 }

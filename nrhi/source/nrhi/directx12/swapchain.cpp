@@ -47,8 +47,6 @@ namespace nrhi {
 
 		NCPP_ASSERT(dxgi_swapchain_p_) << "can't create swapchain";
 
-		current_back_rtv_index_ = dxgi_swapchain_p_->GetCurrentBackBufferIndex();
-
 
 
 		// create back texture 2d resource
@@ -195,19 +193,14 @@ namespace nrhi {
 
 		auto dx12_swapchain_p = swapchain_p.T_cast<F_directx12_swapchain>();
 
-		return dx12_swapchain_p->current_back_rtv_index_;
+		return dx12_swapchain_p->dxgi_swapchain_p_->GetCurrentBackBufferIndex();
 	}
 
-	void HD_directx12_swapchain::present(TKPA_valid<A_swapchain> swapchain_p){
+	void HD_directx12_swapchain::ASYNC_present(TKPA_valid<A_swapchain> swapchain_p){
 
 		auto dx12_swapchain_p = swapchain_p.T_cast<F_directx12_swapchain>();
 
 		dx12_swapchain_p->dxgi_swapchain_p()->Present(0, 0);
-
-		dx12_swapchain_p->current_back_rtv_index_ = (
-			(dx12_swapchain_p->current_back_rtv_index_ + 1)
-			% swapchain_p->desc().back_rtv_count - 1
-		);
 	}
 
 }

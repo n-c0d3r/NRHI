@@ -62,7 +62,6 @@ namespace nrhi {
 		typename F_event::F_listener_handle surface_resize_handle_;
 
 		TG_vector<U_texture_2d_handle> buffer_p_vector_;
-		u8 current_back_rtv_index_ = 0;
 
 	public:
 		NCPP_FORCE_INLINE IDXGISwapChain3* dxgi_swapchain_p() noexcept { return dxgi_swapchain_p_; }
@@ -97,7 +96,7 @@ namespace nrhi {
 		static u8 current_back_rtv_index(TKPA_valid<A_swapchain>);
 
 	public:
-		static void present(TKPA_valid<A_swapchain>);
+		static void ASYNC_present(TKPA_valid<A_swapchain>);
 
 	};
 

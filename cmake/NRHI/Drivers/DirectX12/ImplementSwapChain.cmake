@@ -30,7 +30,7 @@ NRHI_FunctionHelper_CreateFunctionClass(
             const F_swapchain_desc& desc
         )"
         "current_back_rtv_index" "u8(TKPA_valid<A_swapchain> swapchain_p)"
-        "present" "void(TKPA_valid<A_swapchain> swapchain_p)"
+        "ASYNC_present" "void(TKPA_valid<A_swapchain> swapchain_p)"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement swapchain done")
