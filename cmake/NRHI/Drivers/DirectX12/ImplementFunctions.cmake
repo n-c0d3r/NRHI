@@ -9,5 +9,6 @@ include(NRHI/Drivers/DirectX12/ImplementCommandQueue)
 include(NRHI/Drivers/DirectX12/ImplementCommandList)
 include(NRHI/Drivers/DirectX12/ImplementCommandAllocator)
 include(NRHI/Drivers/DirectX12/ImplementSwapChain)
+include(NRHI/Drivers/DirectX12/ImplementFence)
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement functions done")

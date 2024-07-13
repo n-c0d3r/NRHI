@@ -54,4 +54,13 @@ namespace nrhi {
 		H_command_queue::execute_command_list(NCPP_KTHIS(), command_list_p);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 	}
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+	NCPP_FORCE_INLINE void A_command_queue::signal(
+		TKPA_valid<A_fence> fence_p,
+		u64 new_value
+	) {
+		H_command_queue::signal(NCPP_KTHIS(), fence_p, new_value);
+	}
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 }

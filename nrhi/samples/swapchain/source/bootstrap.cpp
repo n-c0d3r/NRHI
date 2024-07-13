@@ -31,6 +31,16 @@ int main() {
 
 
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+	// create fence
+	auto fence_p = H_fence::create(
+		NCPP_FOREF_VALID(device_p),
+		F_fence_desc {}
+	);
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+
+
 	// create surface manager and surface
 	F_surface_manager surface_manager;
 	auto surface_p = surface_manager.create_surface({
@@ -58,8 +68,33 @@ int main() {
 
 
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+	// frame counter
+	u64 frame_counter = 0;
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+
+
 	// run app
 	surface_manager.T_run([&](F_surface_manager& surface_manager){
+
+		if(!swapchain_p)
+			return;
+
+#ifndef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+	  	swapchain_p->present();
+#else
+	  	swapchain_p->ASYNC_present();
+
+		u64 target_fence_value = frame_counter;
+		command_queue_p->signal(
+			NCPP_FOH_VALID(fence_p),
+			target_fence_value
+		);
+		fence_p->wait(target_fence_value);
+
+		++frame_counter;
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 	});
 
 	return 0;

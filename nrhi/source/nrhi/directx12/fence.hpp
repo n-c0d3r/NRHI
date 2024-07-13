@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/command_queue_base.hpp
+/** @file nrhi/directx12/fence.hpp
 *
-*   Implement command queue base class.
+*   Implement directx12 fence.
 */
 
 
@@ -33,7 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/command_list_type.hpp>
+#include <nrhi/fence_base.hpp>
 
 #pragma endregion
 
@@ -41,70 +41,51 @@
 
 namespace nrhi {
 
-    class A_device;
-    class A_command_list;
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-    class A_fence;
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+	class A_device;
 
 
 
-	using ED_command_queue_type = ED_command_list_type;
-
-    struct F_command_queue_desc {
-
-		ED_command_queue_type type = ED_command_queue_type::DIRECT;
-
-    };
-
-
-
-    class NRHI_API A_command_queue {
-
-    private:
-        TK_valid<A_device> device_p_;
-        F_command_queue_desc desc_;
-		b8 supports_graphics_ = false;
-		b8 supports_compute_ = false;
-		b8 supports_blit_ = false;
-
-    public:
-        NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
-        NCPP_FORCE_INLINE const F_command_queue_desc& desc() const noexcept { return desc_; }
-		NCPP_FORCE_INLINE b8 supports_graphics() const noexcept { return supports_graphics_; }
-		NCPP_FORCE_INLINE b8 supports_compute() const noexcept { return supports_compute_; }
-		NCPP_FORCE_INLINE b8 supports_blit() const noexcept { return supports_blit_; }
-
-
-
-    protected:
-        A_command_queue(TKPA_valid<A_device> device_p, const F_command_queue_desc& desc);
-
-    public:
-        virtual ~A_command_queue();
+	class NRHI_API F_directx12_fence : public A_fence {
 
 	public:
-		NCPP_OBJECT(A_command_queue);
+		friend class HD_directx12_fence;
+
+
+
+	private:
+		ID3D12Fence* d3d12_fence_p_ = 0;
+
+	public:
+		NCPP_FORCE_INLINE ID3D12Fence* d3d12_fence_p() noexcept { return d3d12_fence_p_; }
 
 
 
 	public:
-		void execute_command_lists(TG_span<TK_valid<A_command_list>> command_list_p_span);
-		void execute_command_list(TKPA_valid<A_command_list> command_list_p);
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-		void signal(
-			TKPA_valid<A_fence> fence_p,
-			u64 new_value
+		F_directx12_fence(
+			TKPA_valid<A_device> device_p,
+			const F_fence_desc& desc
 		);
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+		~F_directx12_fence();
+
+	};
+
+
+
+	class NRHI_API HD_directx12_fence {
+
+	public:
+		static TU<A_fence> create(
+			TKPA_valid<A_device> device_p,
+			const F_fence_desc& desc
+		);
 
 
 
 	public:
-		b8 is_compatible(TKPA_valid<A_command_list> command_list_p) const;
+		static u64 value(TKPA_valid<A_fence>);
+		static void wait(TKPA_valid<A_fence>, u64 target_value);
+		static b8 is_completed(TKPA_valid<A_fence>, u64 target_value);
 
-    };
+	};
 
 }

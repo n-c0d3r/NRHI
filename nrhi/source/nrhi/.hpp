@@ -76,6 +76,7 @@ namespace nrhi { }
 #include <nrhi/command_queue.external_use_only.inl>
 #include <nrhi/swapchain.external_use_only.inl>
 #include <nrhi/frame_buffer.external_use_only.inl>
+#include <nrhi/fence.external_use_only.inl>
 
 #include <nrhi/texture_handle.external_use_only.inl>
 

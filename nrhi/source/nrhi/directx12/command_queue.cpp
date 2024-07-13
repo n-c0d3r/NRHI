@@ -1,6 +1,7 @@
 #include <nrhi/directx12/command_queue.hpp>
 #include <nrhi/directx12/command_list.hpp>
 #include <nrhi/directx12/device.hpp>
+#include <nrhi/directx12/fence.hpp>
 
 
 
@@ -32,63 +33,15 @@ namespace nrhi {
 		return TU<F_directx12_command_queue>()(device_p, desc);
 	}
 
-	void HD_directx12_command_queue::execute_command_lists(
+	void HD_directx12_command_queue::signal(
 		TKPA_valid<A_command_queue> command_queue_p,
-		TG_span<TK_valid<A_command_list>> command_list_p_span
+		TKPA_valid<A_fence> fence_p,
+		u64 new_value
 	) {
-//		sz command_list_count = command_list_p_span.size();
-//
-//		TG_vector<ID3D12CommandList*> d3d12_command_list_p_vector(command_list_count);
-//
-//		for(u32 i = 0; i < command_list_count; ++i) {
-//
-//			TK_valid<A_command_list> command_list_p = command_list_p_span[i];
-//
-//			NCPP_ASSERT(command_queue_p->is_compatible(command_list_p)) << "non-compatible command list";
-//
-//			ID3D12DeviceContext* d3d12_deferred_ctx_p = command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_queue_p();
-//
-//			d3d12_deferred_ctx_p->FinishCommandList(false, &(d3d12_command_list_p_vector[i]));
-//		}
-//
-//
-//		for(u32 i = 0; i < command_list_count; ++i) {
-//
-//			command_queue_p
-//				.T_cast<F_directx12_command_queue>()
-//				->d3d12_command_queue_p()
-//				->ExecuteCommandList(
-//					d3d12_command_list_p_vector[i],
-//					false
-//				);
-//		}
-//
-//		for(u32 i = 0; i < command_list_count; ++i) {
-//
-//			d3d12_command_list_p_vector[i]->Release();
-//		}
-	}
-	void HD_directx12_command_queue::execute_command_list(
-		TKPA_valid<A_command_queue> command_queue_p,
-		TKPA_valid<A_command_list> command_list_p
-	) {
-		NCPP_ASSERT(command_queue_p->is_compatible(command_list_p)) << "non-compatible command list";
-
-//		ID3D12CommandList* d3d12_command_list_p = 0;
-//
-//		ID3D12DeviceContext* d3d12_deferred_ctx_p = command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_queue_p();
-//
-//		d3d12_deferred_ctx_p->FinishCommandList(false, &d3d12_command_list_p);
-//
-//		command_queue_p
-//			.T_cast<F_directx12_command_queue>()
-//			->d3d12_command_queue_p()
-//			->ExecuteCommandList(
-//				d3d12_command_list_p,
-//				false
-//			);
-//
-//		d3d12_command_list_p->Release();
+		command_queue_p.T_cast<F_directx12_command_queue>()->d3d12_command_queue_p()->Signal(
+			fence_p.T_cast<F_directx12_fence>()->d3d12_fence_p(),
+			new_value
+		);
 	}
 
 }
