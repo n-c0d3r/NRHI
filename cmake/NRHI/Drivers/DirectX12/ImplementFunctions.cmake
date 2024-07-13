@@ -8,5 +8,6 @@ include(NRHI/Drivers/DirectX12/ImplementAdapter)
 include(NRHI/Drivers/DirectX12/ImplementCommandQueue)
 include(NRHI/Drivers/DirectX12/ImplementCommandList)
 include(NRHI/Drivers/DirectX12/ImplementCommandAllocator)
+include(NRHI/Drivers/DirectX12/ImplementSwapChain)
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement functions done")
