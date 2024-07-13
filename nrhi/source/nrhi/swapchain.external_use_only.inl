@@ -42,6 +42,10 @@
 
 namespace nrhi {
 
+	NCPP_FORCE_INLINE u8 A_swapchain::current_back_rtv_index() const noexcept {
+
+		return H_swapchain::current_back_rtv_index(NCPP_KTHIS().T_cast<A_swapchain>());
+	}
 	NCPP_FORCE_INLINE void A_swapchain::present() {
 
 		H_swapchain::present(NCPP_KTHIS());
