@@ -81,8 +81,13 @@ namespace nrhi {
 		)
 			d3d12_resource_desc.Flags &= D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE;
 
-		if(desc.heap_type == ED_resource_heap_type::GREAD_CWRITE)
-			d3d12_resource_states |= D3D12_RESOURCE_STATE_GENERIC_READ;
+		NCPP_ASSERT(
+			(desc.heap_type != ED_resource_heap_type::GREAD_CWRITE)
+			|| (
+				(desc.heap_type == ED_resource_heap_type::GREAD_CWRITE)
+				&& (d3d12_resource_states & D3D12_RESOURCE_STATE_GENERIC_READ)
+			)
+		) << "GENERIC_READ initial state is required for GREAD-CWRITE resource";
 
 		HRESULT hr = d3d12_device_p->CreateCommittedResource(
 			&d3d12_heap_properties,
