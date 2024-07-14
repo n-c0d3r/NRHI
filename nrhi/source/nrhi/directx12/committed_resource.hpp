@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/directx12/resource.hpp
+/** @file nrhi/directx12/committed_resource.hpp
 *
-*   Implement directx12 resource.
+*   Implement directx12 committed resource.
 */
 
 
@@ -33,9 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/resource_base.hpp>
-#include <nrhi/buffer.hpp>
-#include <nrhi/texture.hpp>
+#include <nrhi/directx12/resource.hpp>
 
 #pragma endregion
 
@@ -43,55 +41,35 @@
 
 namespace nrhi {
 
-	class A_device;
-
-
-
-	class NRHI_API F_directx12_resource : public A_resource {
-
-	protected:
-		ID3D12Resource* d3d12_resource_p_ = 0;
+	class NRHI_API F_directx12_committed_resource : public F_directx12_resource {
 
 	public:
-		NCPP_FORCE_INLINE ID3D12Resource* d3d12_resource_p() noexcept { return d3d12_resource_p_; }
-		NCPP_FORCE_INLINE void set_d3d12_resource_p_unsafe(ID3D12Resource* value) noexcept {
-			d3d12_resource_p_ = value;
-		}
-
-	public:
-		F_directx12_resource(
+		F_directx12_committed_resource(
+			TKPA_valid<A_device> device_p,
+			const F_initial_resource_data& initial_data,
+			const F_resource_desc& desc
+		);
+		F_directx12_committed_resource(
 			TKPA_valid<A_device> device_p,
 			const F_initial_resource_data& initial_data,
 			const F_resource_desc& desc,
 			ED_resource_type overrided_type
 		);
-		F_directx12_resource(
+		F_directx12_committed_resource(
 			TKPA_valid<A_device> device_p,
 			const F_initial_resource_data& initial_data,
 			const F_resource_desc& desc,
 			ED_resource_type overrided_type,
 			ID3D12Resource* d3d12_resource_p
 		);
-		virtual ~F_directx12_resource();
+		virtual ~F_directx12_committed_resource();
 
-	};
-
-
-
-	class NRHI_API HD_directx12_resource {
-
-	public:
-		static TU<A_resource> create(
+	private:
+		static ID3D12Resource* create_d3d12_committed_resource(
 			TKPA_valid<A_device> device_p,
-			const F_initial_resource_data& initial_resource_data,
-			const F_resource_desc& desc
-		);
-
-	public:
-		static U_buffer_handle create_buffer(
-			TKPA_valid<A_device> device_p,
-			const F_initial_resource_data& initial_resource_data,
-			const F_resource_desc& desc
+			const F_initial_resource_data& initial_data,
+			const F_resource_desc& desc,
+			ED_resource_type overrided_type
 		);
 
 	};

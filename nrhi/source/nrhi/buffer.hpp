@@ -56,7 +56,7 @@ namespace nrhi {
             u32 count,
             u32 stride,
             ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-            ED_resource_usage usage = ED_resource_usage::GREAD_GWRITE
+            ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
         );
 
     public:
@@ -66,7 +66,7 @@ namespace nrhi {
             const F_initial_resource_data& initial_data,
             u32 count,
             ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-            ED_resource_usage usage = ED_resource_usage::GREAD_GWRITE
+            ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
         ) {
 
             return create(
@@ -75,7 +75,7 @@ namespace nrhi {
                 count,
                 sizeof(F_element__),
                 bind_flags,
-                usage
+                heap_type
             );
         }
 
@@ -85,7 +85,7 @@ namespace nrhi {
             TKPA_valid<A_device> device_p,
             const TG_span<F_element__>& data,
             ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-            ED_resource_usage usage = ED_resource_usage::GREAD_GWRITE
+            ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
         ) {
 
             return create(
@@ -94,7 +94,7 @@ namespace nrhi {
 				(u32)(data.size()),
 				(u32)(sizeof(F_element__)),
                 bind_flags,
-                usage
+                heap_type
             );
         }
 
@@ -105,7 +105,7 @@ namespace nrhi {
             u32 count,
             ED_format format,
             ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-            ED_resource_usage usage = ED_resource_usage::GREAD_GWRITE
+            ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
         );
 
     public:
@@ -115,7 +115,7 @@ namespace nrhi {
             const TG_span<F_element__>& data,
             ED_format format,
             ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-            ED_resource_usage usage = ED_resource_usage::GREAD_GWRITE
+            ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
         ) {
 
             return create(
@@ -124,7 +124,7 @@ namespace nrhi {
 				(u32)(data.size()),
                 format,
                 bind_flags,
-                usage
+                heap_type
             );
         }
 
@@ -135,7 +135,7 @@ namespace nrhi {
             u32 count,
             u32 stride,
             ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-            ED_resource_usage usage = ED_resource_usage::GREAD_GWRITE
+            ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
         );
 
     public:
@@ -145,7 +145,7 @@ namespace nrhi {
             const F_initial_resource_data& initial_data,
             u32 count,
             ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-            ED_resource_usage usage = ED_resource_usage::GREAD_GWRITE
+            ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
         ) {
 
             return create_structured(
@@ -154,7 +154,7 @@ namespace nrhi {
                 count,
                 sizeof(F_element__),
                 bind_flags,
-                usage
+                heap_type
             );
         }
 
@@ -164,7 +164,7 @@ namespace nrhi {
             TKPA_valid<A_device> device_p,
             const TG_span<F_element__>& data,
             ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-            ED_resource_usage usage = ED_resource_usage::GREAD_GWRITE
+            ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
         ) {
 
             return create_structured(
@@ -173,7 +173,7 @@ namespace nrhi {
 				(u32)(data.size()),
 				(u32)(sizeof(F_element__)),
                 bind_flags,
-                usage
+                heap_type
             );
         }
 
@@ -183,7 +183,7 @@ namespace nrhi {
 			const F_initial_resource_data& initial_data,
 			u32 count,
 			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-			ED_resource_usage usage = ED_resource_usage::GREAD_GWRITE
+			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 		);
 
 	public:
@@ -191,7 +191,7 @@ namespace nrhi {
 			TKPA_valid<A_device> device_p,
 			const TG_span<u32>& data,
 			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-			ED_resource_usage usage = ED_resource_usage::GREAD_GWRITE
+			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 		) {
 
 			return create_indirect(
@@ -199,7 +199,7 @@ namespace nrhi {
 				{ { .data_p = (void*)(data.data()) } },
 				(u32)(data.size()),
 				bind_flags,
-				usage
+				heap_type
 			);
 		}
 
@@ -212,7 +212,7 @@ namespace nrhi {
 			u32 count,
 			u32 stride,
 			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-			ED_resource_usage usage = ED_resource_usage::GREAD_GWRITE
+			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 		);
 
 	public:
@@ -222,7 +222,7 @@ namespace nrhi {
 			const F_initial_resource_data& initial_data,
 			u32 count,
 			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-			ED_resource_usage usage = ED_resource_usage::GREAD_GWRITE
+			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 		) {
 
 			return rebuild(
@@ -231,7 +231,7 @@ namespace nrhi {
 				count,
 				sizeof(F_element__),
 				bind_flags,
-				usage
+				heap_type
 			);
 		}
 
@@ -241,7 +241,7 @@ namespace nrhi {
 			KPA_valid_buffer_handle buffer_p,
 			const TG_span<F_element__>& data,
 			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-			ED_resource_usage usage = ED_resource_usage::GREAD_GWRITE
+			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 		) {
 
 			return rebuild(
@@ -250,7 +250,7 @@ namespace nrhi {
 				(u32)(data.size()),
 				(u32)(sizeof(F_element__)),
 				bind_flags,
-				usage
+				heap_type
 			);
 		}
 
@@ -261,7 +261,7 @@ namespace nrhi {
 			u32 count,
 			ED_format format,
 			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-			ED_resource_usage usage = ED_resource_usage::GREAD_GWRITE
+			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 		);
 
 	public:
@@ -271,7 +271,7 @@ namespace nrhi {
 			const TG_span<F_element__>& data,
 			ED_format format,
 			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-			ED_resource_usage usage = ED_resource_usage::GREAD_GWRITE
+			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 		) {
 
 			return rebuild(
@@ -280,7 +280,7 @@ namespace nrhi {
 				(u32)(data.size()),
 				format,
 				bind_flags,
-				usage
+				heap_type
 			);
 		}
 
@@ -291,7 +291,7 @@ namespace nrhi {
 			u32 count,
 			u32 stride,
 			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-			ED_resource_usage usage = ED_resource_usage::GREAD_GWRITE
+			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 		);
 
 	public:
@@ -301,7 +301,7 @@ namespace nrhi {
 			const F_initial_resource_data& initial_data,
 			u32 count,
 			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-			ED_resource_usage usage = ED_resource_usage::GREAD_GWRITE
+			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 		) {
 
 			return rebuild_structured(
@@ -310,7 +310,7 @@ namespace nrhi {
 				count,
 				sizeof(F_element__),
 				bind_flags,
-				usage
+				heap_type
 			);
 		}
 
@@ -320,7 +320,7 @@ namespace nrhi {
 			KPA_valid_structured_buffer_handle structured_buffer_p,
 			const TG_span<F_element__>& data,
 			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-			ED_resource_usage usage = ED_resource_usage::GREAD_GWRITE
+			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 		) {
 
 			return rebuild_structured(
@@ -329,7 +329,7 @@ namespace nrhi {
 				(u32)(data.size()),
 				(u32)(sizeof(F_element__)),
 				bind_flags,
-				usage
+				heap_type
 			);
 		}
 
@@ -339,7 +339,7 @@ namespace nrhi {
 			const F_initial_resource_data& initial_data,
 			u32 count,
 			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-			ED_resource_usage usage = ED_resource_usage::GREAD_GWRITE
+			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 		);
 
 	public:
@@ -347,7 +347,7 @@ namespace nrhi {
 			KPA_valid_indirect_buffer_handle indirect_buffer_p,
 			const TG_span<u32>& data,
 			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-			ED_resource_usage usage = ED_resource_usage::GREAD_GWRITE
+			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 		) {
 
 			return rebuild_indirect(
@@ -355,7 +355,7 @@ namespace nrhi {
 				{ { .data_p = (void*)(data.data()) } },
 				(u32)(data.size()),
 				bind_flags,
-				usage
+				heap_type
 			);
 		}
 

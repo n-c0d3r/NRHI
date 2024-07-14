@@ -53,21 +53,21 @@ namespace nrhi {
         d3d11_buffer_desc.BindFlags = D3D11_BIND_FLAG(desc_.bind_flags);
         d3d11_buffer_desc.ByteWidth = desc_.size;
         NRHI_ENUM_SWITCH(
-			desc_.usage,
+			desc_.heap_type,
             NRHI_ENUM_CASE(
-                ED_resource_usage::GREAD_GWRITE,
+                ED_resource_heap_type::GREAD_GWRITE,
                 d3d11_buffer_desc.CPUAccessFlags = 0;
                 d3d11_buffer_desc.Usage = D3D11_USAGE_DEFAULT;
                 NRHI_ENUM_BREAK;
             )
             NRHI_ENUM_CASE(
-                ED_resource_usage::GREAD_CWRITE,
+                ED_resource_heap_type::GREAD_CWRITE,
                 d3d11_buffer_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
                 d3d11_buffer_desc.Usage = D3D11_USAGE_DYNAMIC;
                 NRHI_ENUM_BREAK;
             )
             NRHI_ENUM_CASE(
-                ED_resource_usage::CREAD_GWRITE,
+                ED_resource_heap_type::CREAD_GWRITE,
                 d3d11_buffer_desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
                 d3d11_buffer_desc.Usage = D3D11_USAGE_STAGING;
                 NRHI_ENUM_BREAK;
@@ -163,21 +163,21 @@ namespace nrhi {
         d3d11_buffer_desc.BindFlags = D3D11_BIND_FLAG(desc_.bind_flags);
         d3d11_buffer_desc.ByteWidth = desc_.size;
         NRHI_ENUM_SWITCH(
-			desc_.usage,
+			desc_.heap_type,
             NRHI_ENUM_CASE(
-                ED_resource_usage::GREAD_GWRITE,
+                ED_resource_heap_type::GREAD_GWRITE,
                 d3d11_buffer_desc.CPUAccessFlags = 0;
                 d3d11_buffer_desc.Usage = D3D11_USAGE_DEFAULT;
                 NRHI_ENUM_BREAK;
             )
             NRHI_ENUM_CASE(
-                ED_resource_usage::GREAD_CWRITE,
+                ED_resource_heap_type::GREAD_CWRITE,
                 d3d11_buffer_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
                 d3d11_buffer_desc.Usage = D3D11_USAGE_DYNAMIC;
                 NRHI_ENUM_BREAK;
             )
             NRHI_ENUM_CASE(
-                ED_resource_usage::CREAD_GWRITE,
+                ED_resource_heap_type::CREAD_GWRITE,
                 d3d11_buffer_desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
                 d3d11_buffer_desc.Usage = D3D11_USAGE_STAGING;
                 NRHI_ENUM_BREAK;
@@ -273,21 +273,21 @@ namespace nrhi {
 		d3d11_buffer_desc.BindFlags = D3D11_BIND_FLAG(desc_.bind_flags);
 		d3d11_buffer_desc.ByteWidth = desc_.size;
 		NRHI_ENUM_SWITCH(
-			desc_.usage,
+			desc_.heap_type,
 			NRHI_ENUM_CASE(
-                ED_resource_usage::GREAD_GWRITE,
+                ED_resource_heap_type::GREAD_GWRITE,
 				d3d11_buffer_desc.CPUAccessFlags = 0;
 				d3d11_buffer_desc.Usage = D3D11_USAGE_DEFAULT;
 				NRHI_ENUM_BREAK;
             )
 			NRHI_ENUM_CASE(
-                ED_resource_usage::GREAD_CWRITE,
+                ED_resource_heap_type::GREAD_CWRITE,
 				d3d11_buffer_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 				d3d11_buffer_desc.Usage = D3D11_USAGE_DYNAMIC;
 				NRHI_ENUM_BREAK;
             )
 			NRHI_ENUM_CASE(
-                ED_resource_usage::CREAD_GWRITE,
+                ED_resource_heap_type::CREAD_GWRITE,
 				d3d11_buffer_desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
 				d3d11_buffer_desc.Usage = D3D11_USAGE_STAGING;
 				NRHI_ENUM_BREAK;

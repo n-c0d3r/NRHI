@@ -10,7 +10,8 @@ include(NRHI/Drivers/DirectX12/ImplementCommandListType)
 include(NRHI/Drivers/DirectX12/ImplementFenceFlag)
 include(NRHI/Drivers/DirectX12/ImplementResourceBindFlag)
 include(NRHI/Drivers/DirectX12/ImplementResourceType)
-include(NRHI/Drivers/DirectX12/ImplementResourceUsage)
+include(NRHI/Drivers/DirectX12/ImplementResourceState)
+include(NRHI/Drivers/DirectX12/ImplementResourceHeapType)
 
 
 

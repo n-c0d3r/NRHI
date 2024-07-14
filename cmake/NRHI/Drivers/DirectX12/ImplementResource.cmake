@@ -27,6 +27,11 @@ NRHI_FunctionHelper_CreateFunctionClass(
             const F_initial_resource_data& initial_data,
             const F_resource_desc& desc
         )"
+        "create_buffer" "U_buffer_handle(
+            TKPA_valid<A_device> device_p,
+            const F_initial_resource_data& initial_resource_data,
+            const F_resource_desc& desc
+        )"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement resource done")

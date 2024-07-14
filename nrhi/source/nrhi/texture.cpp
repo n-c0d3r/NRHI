@@ -12,7 +12,7 @@ namespace nrhi {
         ED_format format,
         u32 mip_level_count,
         ED_resource_bind_flag bind_flags,
-        ED_resource_usage usage,
+        ED_resource_heap_type heap_type,
 		b8 is_mip_map_generatable
     ) {
 
@@ -24,7 +24,7 @@ namespace nrhi {
                 format,
                 mip_level_count,
                 bind_flags,
-                usage,
+                heap_type,
 				is_mip_map_generatable
             )
         );
@@ -39,7 +39,7 @@ namespace nrhi {
         u32 mip_level_count,
         F_sample_desc sample_desc,
         ED_resource_bind_flag bind_flags,
-        ED_resource_usage usage,
+        ED_resource_heap_type heap_type,
 		b8 is_mip_map_generatable
     ) {
 
@@ -53,7 +53,7 @@ namespace nrhi {
                 mip_level_count,
                 sample_desc,
                 bind_flags,
-                usage,
+                heap_type,
 				is_mip_map_generatable
             )
         );
@@ -68,7 +68,7 @@ namespace nrhi {
         ED_format format,
         u32 mip_level_count,
         ED_resource_bind_flag bind_flags,
-        ED_resource_usage usage,
+        ED_resource_heap_type heap_type,
 		b8 is_mip_map_generatable
     ) {
 
@@ -82,7 +82,7 @@ namespace nrhi {
                 format,
                 mip_level_count,
                 bind_flags,
-                usage,
+                heap_type,
 				is_mip_map_generatable
             )
         );
@@ -98,7 +98,7 @@ namespace nrhi {
 		u32 mip_level_count,
 		F_sample_desc sample_desc,
 		ED_resource_bind_flag bind_flags,
-		ED_resource_usage usage,
+		ED_resource_heap_type heap_type,
 		b8 is_mip_map_generatable
 	) {
 
@@ -113,7 +113,7 @@ namespace nrhi {
 				mip_level_count,
 				sample_desc,
 				bind_flags,
-				usage,
+				heap_type,
 				is_mip_map_generatable
 			)
 		);
@@ -127,7 +127,7 @@ namespace nrhi {
 		u32 mip_level_count,
 		F_sample_desc sample_desc,
 		ED_resource_bind_flag bind_flags,
-		ED_resource_usage usage,
+		ED_resource_heap_type heap_type,
 		b8 is_mip_map_generatable
 	) {
 
@@ -140,7 +140,7 @@ namespace nrhi {
 				mip_level_count,
 				sample_desc,
 				bind_flags,
-				usage,
+				heap_type,
 				is_mip_map_generatable
 			)
 		);
@@ -155,7 +155,7 @@ namespace nrhi {
 		ED_format format,
 		u32 mip_level_count,
 		ED_resource_bind_flag bind_flags,
-		ED_resource_usage usage,
+		ED_resource_heap_type heap_type,
 		b8 is_mip_map_generatable
 	) {
 
@@ -166,7 +166,7 @@ namespace nrhi {
 				format,
 				mip_level_count,
 				bind_flags,
-				usage,
+				heap_type,
 				is_mip_map_generatable
 			)
 		);
@@ -181,7 +181,7 @@ namespace nrhi {
 		u32 mip_level_count,
 		F_sample_desc sample_desc,
 		ED_resource_bind_flag bind_flags,
-		ED_resource_usage usage,
+		ED_resource_heap_type heap_type,
 		b8 is_mip_map_generatable
 	) {
 
@@ -194,7 +194,7 @@ namespace nrhi {
 				mip_level_count,
 				sample_desc,
 				bind_flags,
-				usage,
+				heap_type,
 				is_mip_map_generatable
 			)
 		);
@@ -209,7 +209,7 @@ namespace nrhi {
 		ED_format format,
 		u32 mip_level_count,
 		ED_resource_bind_flag bind_flags,
-		ED_resource_usage usage,
+		ED_resource_heap_type heap_type,
 		b8 is_mip_map_generatable
 	) {
 
@@ -222,7 +222,7 @@ namespace nrhi {
 				format,
 				mip_level_count,
 				bind_flags,
-				usage,
+				heap_type,
 				is_mip_map_generatable
 			)
 		);
@@ -238,7 +238,7 @@ namespace nrhi {
 		u32 mip_level_count,
 		F_sample_desc sample_desc,
 		ED_resource_bind_flag bind_flags,
-		ED_resource_usage usage,
+		ED_resource_heap_type heap_type,
 		b8 is_mip_map_generatable
 	) {
 
@@ -252,7 +252,7 @@ namespace nrhi {
 				mip_level_count,
 				sample_desc,
 				bind_flags,
-				usage,
+				heap_type,
 				is_mip_map_generatable
 			)
 		);
@@ -266,7 +266,7 @@ namespace nrhi {
 		u32 mip_level_count,
 		F_sample_desc sample_desc,
 		ED_resource_bind_flag bind_flags,
-		ED_resource_usage usage,
+		ED_resource_heap_type heap_type,
 		b8 is_mip_map_generatable
 	) {
 
@@ -278,7 +278,7 @@ namespace nrhi {
 				mip_level_count,
 				sample_desc,
 				bind_flags,
-				usage,
+				heap_type,
 				is_mip_map_generatable
 			)
 		);

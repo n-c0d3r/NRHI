@@ -72,6 +72,10 @@ namespace nrhi { }
 #include <nrhi/directx11/compute_pipeline_state.hpp>
 #endif
 
+#ifdef NRHI_DRIVER_DIRECTX_12
+#include <nrhi/directx12/committed_resource.hpp>
+#endif
+
 #include <nrhi/command_list.external_use_only.inl>
 #include <nrhi/command_queue.external_use_only.inl>
 #include <nrhi/swapchain.external_use_only.inl>

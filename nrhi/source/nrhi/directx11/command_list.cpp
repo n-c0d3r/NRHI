@@ -1283,7 +1283,7 @@ namespace nrhi {
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
 		ID3D11Resource* d3d11_resource_p = directx11_resource_p->d3d11_resource_p();
 
-		NCPP_ASSERT(resource_p->desc().usage == ED_resource_usage::GREAD_CWRITE) << "invalid resource heap type";
+		NCPP_ASSERT(resource_p->desc().heap_type == ED_resource_heap_type::GREAD_CWRITE) << "invalid resource heap type";
 
 		NCPP_ASSERT(data_p) << "invalid data";
 		NCPP_ASSERT(data_size) << "invalid data size";
