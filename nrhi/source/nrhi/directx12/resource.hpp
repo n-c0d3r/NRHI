@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/directx11/swapchain.hpp
+/** @file nrhi/directx12/resource.hpp
 *
-*   Implement directx11 swapchain.
+*   Implement directx12 resource.
 */
 
 
@@ -33,9 +33,9 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/swapchain_base.hpp>
+#include <nrhi/resource_base.hpp>
+#include <nrhi/buffer.hpp>
 #include <nrhi/texture.hpp>
-#include <nrhi/resource_view_base.hpp>
 
 #pragma endregion
 
@@ -43,62 +43,49 @@
 
 namespace nrhi {
 
-    class A_command_queue;
-    class A_command_list;
-    class A_resource;
-    class A_resource_view;
+	class A_device;
 
 
 
-    class NRHI_API F_directx11_swapchain : public A_swapchain {
+	class NRHI_API F_directx12_resource : public A_resource {
 
-	public:
-		friend class HD_directx11_swapchain;
-
-
-
-    private:
-        IDXGISwapChain* dxgi_swapchain_p_ = 0;
-        typename F_event::F_listener_handle surface_resize_handle_;
-
-		TG_vector<U_texture_2d_handle> buffer_p_vector_;
-		u8 current_back_rtv_index_ = 0;
-
-    public:
-        NCPP_FORCE_INLINE IDXGISwapChain* dxgi_swapchain_p() noexcept { return dxgi_swapchain_p_; }
-		NCPP_FORCE_INLINE void set_dxgi_swapchain_p_unsafe(IDXGISwapChain* value) noexcept { dxgi_swapchain_p_ = value; }
-
-
-
-    public:
-        F_directx11_swapchain(
-            TKPA_valid<A_command_queue> command_queue_p,
-            TKPA_valid<F_surface> surface_p,
-            const F_swapchain_desc& desc
-        );
-        ~F_directx11_swapchain();
-
-    private:
-        void update_d3d11_object_for_buffer_rtvs();
-
-    };
-
-
-
-    class NRHI_API HD_directx11_swapchain {
-
-    public:
-        static TU<A_swapchain> create(
-            TKPA_valid<A_command_queue> command_queue_p,
-            TKPA_valid<F_surface> surface_p,
-            const F_swapchain_desc& desc
-        );
+	protected:
+		ID3D12Resource* d3d12_resource_p_ = 0;
 
 	public:
-		static u8 current_back_rtv_index(TKPA_valid<A_swapchain>);
+		NCPP_FORCE_INLINE ID3D12Resource* d3d12_resource_p() noexcept { return d3d12_resource_p_; }
+		NCPP_FORCE_INLINE void set_d3d12_resource_p_unsafe(ID3D12Resource* value) noexcept {
+			d3d12_resource_p_ = value;
+		}
 
 	public:
-		static void present(TKPA_valid<A_swapchain>);
+		F_directx12_resource(
+			TKPA_valid<A_device> device_p,
+			const F_initial_resource_data& initial_data,
+			const F_resource_desc& desc,
+			ED_resource_type overrided_type
+		);
+		F_directx12_resource(
+			TKPA_valid<A_device> device_p,
+			const F_initial_resource_data& initial_data,
+			const F_resource_desc& desc,
+			ED_resource_type overrided_type,
+			ID3D12Resource* d3d12_resource_p
+		);
+		virtual ~F_directx12_resource();
+
+	};
+
+
+
+	class NRHI_API HD_directx12_resource {
+
+	public:
+		static TU<A_resource> create(
+			TKPA_valid<A_device> device_p,
+			const F_initial_resource_data& initial_resource_data,
+			const F_resource_desc& desc
+		);
 
 	};
 

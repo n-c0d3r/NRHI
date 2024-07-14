@@ -52,6 +52,7 @@ namespace nrhi {
 
 	public:
 		NCPP_FORCE_INLINE ID3D12Device* d3d12_device_p() noexcept { return d3d12_device_p_; }
+		NCPP_FORCE_INLINE void set_d3d12_device_p_unsafe(ID3D12Device* value) noexcept { d3d12_device_p_ = value; }
 
 
 

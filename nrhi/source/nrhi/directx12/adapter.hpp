@@ -61,6 +61,7 @@ namespace nrhi {
 
     public:
         NCPP_FORCE_INLINE IDXGIAdapter* dxgi_adapter_p() noexcept { return dxgi_adapter_p_; }
+		NCPP_FORCE_INLINE void set_dxgi_adapter_p_unsafe(IDXGIAdapter* value) noexcept { dxgi_adapter_p_ = value; }
 
 
 

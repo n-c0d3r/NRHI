@@ -85,10 +85,10 @@ int main() {
 	  		swapchain_p->present();
 	 	)
 		else NRHI_DRIVER_ENABLE_IF_SUPPORT_ADVANCED_WORK_SUBMISSION(
-			swapchain_p->ASYNC_present();
+			swapchain_p->async_present();
 
 			u64 target_fence_value = frame_counter;
-			command_queue_p->ASYNC_signal(
+			command_queue_p->async_signal(
 				NCPP_FOH_VALID(fence_p),
 				target_fence_value
 			);

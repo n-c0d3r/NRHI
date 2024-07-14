@@ -96,7 +96,7 @@ namespace nrhi {
 #endif
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-		void ASYNC_signal(
+		void async_signal(
 			TKPA_valid<A_fence> fence_p,
 			u64 new_value
 		);

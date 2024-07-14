@@ -57,6 +57,7 @@ namespace nrhi {
 
 	public:
 		NCPP_FORCE_INLINE ID3D12CommandAllocator* d3d12_command_allocator_p() const noexcept { return d3d12_command_allocator_p_; }
+		NCPP_FORCE_INLINE void set_d3d12_command_allocator_p_unsafe(ID3D12CommandAllocator* value) noexcept { d3d12_command_allocator_p_ = value; }
 
 
 

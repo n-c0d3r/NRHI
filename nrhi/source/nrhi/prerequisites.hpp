@@ -450,6 +450,61 @@ namespace nrhi {}
 #endif
 #endif
 
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+#define NRHI_DRIVER_DIRECTX_12_ID_MASK___RESOURCE_TYPE 0x11000000
+#define NRHI_DRIVER_DIRECTX_12_ID_OFFSET___RESOURCE_TYPE 6
+#define NRHI_DRIVER_DIRECTX_12_REMOVE_ID___RESOURCE_TYPE(...) (\
+                (~NRHI_DRIVER_DIRECTX_12_ID_MASK___RESOURCE_TYPE) \
+                & (__VA_ARGS__)\
+            )
+#define NRHI_DRIVER_DIRECTX_12_REMOVE_PAYLOAD___RESOURCE_TYPE(...) (\
+                NRHI_DRIVER_DIRECTX_12_ID_MASK___RESOURCE_TYPE \
+                & (__VA_ARGS__)\
+            )
+#define NRHI_DRIVER_DIRECTX_12_GET_ID___RESOURCE_TYPE(...) (\
+                NRHI_DRIVER_DIRECTX_12_REMOVE_PAYLOAD___RESOURCE_TYPE(__VA_ARGS__)\
+                >> NRHI_DRIVER_DIRECTX_12_ID_OFFSET___RESOURCE_TYPE\
+            )
+#define NRHI_DRIVER_DIRECTX_12_GENERATE___RESOURCE_TYPE(ID, ...) (\
+                NRHI_DRIVER_DIRECTX_12_REMOVE_ID___RESOURCE_TYPE(__VA_ARGS__)\
+                | NRHI_DRIVER_DIRECTX_12_REMOVE_PAYLOAD___RESOURCE_TYPE(__VA_ARGS__)\
+            )
+
+#define NRHI_DRIVER_DIRECTX_12_MAP___RESOURCE_TYPE___TO___RESOURCE_DIMENSION(...) (\
+                NRHI_DRIVER_DIRECTX_12_REMOVE_ID___RESOURCE_TYPE(__VA_ARGS__)\
+            )
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+#define NRHI_DRIVER_DIRECTX_12_ID_MASK___RESOURCE_BIND_FLAG 0x11000000
+#define NRHI_DRIVER_DIRECTX_12_ID_OFFSET___RESOURCE_BIND_FLAG 6
+#define NRHI_DRIVER_DIRECTX_12_REMOVE_ID___RESOURCE_BIND_FLAG(...) (\
+                (~NRHI_DRIVER_DIRECTX_12_ID_MASK___RESOURCE_BIND_FLAG) \
+                & (__VA_ARGS__)\
+            )
+#define NRHI_DRIVER_DIRECTX_12_REMOVE_PAYLOAD___RESOURCE_BIND_FLAG(...) (\
+                NRHI_DRIVER_DIRECTX_12_ID_MASK___RESOURCE_BIND_FLAG \
+                & (__VA_ARGS__)\
+            )
+#define NRHI_DRIVER_DIRECTX_12_GET_ID___RESOURCE_BIND_FLAG(...) (\
+                NRHI_DRIVER_DIRECTX_12_REMOVE_PAYLOAD___RESOURCE_BIND_FLAG(__VA_ARGS__)\
+                >> NRHI_DRIVER_DIRECTX_12_ID_OFFSET___RESOURCE_BIND_FLAG\
+            )
+#define NRHI_DRIVER_DIRECTX_12_GENERATE___RESOURCE_BIND_FLAG(ID, ...) (\
+                NRHI_DRIVER_DIRECTX_12_REMOVE_ID___RESOURCE_BIND_FLAG(__VA_ARGS__)\
+                | NRHI_DRIVER_DIRECTX_12_REMOVE_PAYLOAD___RESOURCE_BIND_FLAG(__VA_ARGS__)\
+            )
+
+#define NRHI_DRIVER_DIRECTX_12_MAP___RESOURCE_BIND_FLAG___TO___RESOURCE_FLAG(...) (\
+                NRHI_DRIVER_DIRECTX_12_REMOVE_ID___RESOURCE_BIND_FLAG(__VA_ARGS__)\
+                ^ D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE\
+            )
+
 #pragma endregion
 
 

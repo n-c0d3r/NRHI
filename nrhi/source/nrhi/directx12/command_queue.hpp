@@ -54,6 +54,7 @@ namespace nrhi {
 
 	public:
 		NCPP_FORCE_INLINE ID3D12CommandQueue* d3d12_command_queue_p() noexcept { return d3d12_command_queue_p_; }
+		NCPP_FORCE_INLINE void set_d3d12_command_queue_p_unsafe(ID3D12CommandQueue* value) noexcept { d3d12_command_queue_p_ = value; }
 
 
 
@@ -70,7 +71,7 @@ namespace nrhi {
 	public:
 		static TU<A_command_queue> create(TKPA_valid<A_device> device_p, const F_command_queue_desc& desc);
 
-		static void ASYNC_signal(
+		static void async_signal(
 			TKPA_valid<A_command_queue> command_queue_p,
 			TKPA_valid<A_fence> fence_p,
 			u64 new_value

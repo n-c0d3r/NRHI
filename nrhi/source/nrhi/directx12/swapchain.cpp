@@ -196,7 +196,7 @@ namespace nrhi {
 		return dx12_swapchain_p->dxgi_swapchain_p_->GetCurrentBackBufferIndex();
 	}
 
-	void HD_directx12_swapchain::ASYNC_present(TKPA_valid<A_swapchain> swapchain_p){
+	void HD_directx12_swapchain::async_present(TKPA_valid<A_swapchain> swapchain_p){
 
 		auto dx12_swapchain_p = swapchain_p.T_cast<F_directx12_swapchain>();
 

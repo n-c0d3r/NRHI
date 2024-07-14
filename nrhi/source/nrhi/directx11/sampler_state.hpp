@@ -52,6 +52,7 @@ namespace nrhi {
 
 	public:
 		NCPP_FORCE_INLINE ID3D11SamplerState* d3d11_sampler_state_p() noexcept { return d3d11_sampler_state_p_; }
+		NCPP_FORCE_INLINE void set_d3d11_sampler_state_p_unsafe(ID3D11SamplerState* value) noexcept { d3d11_sampler_state_p_ = value; }
 
 
 

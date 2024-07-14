@@ -48,6 +48,7 @@ namespace nrhi {
 
 	public:
 		NCPP_FORCE_INLINE ID3DBlob* d3d_blob_p() noexcept { return d3d_blob_p_; }
+		NCPP_FORCE_INLINE void set_d3d_blob_p_unsafe(ID3DBlob* value) noexcept { d3d_blob_p_ = value; }
 
 
 

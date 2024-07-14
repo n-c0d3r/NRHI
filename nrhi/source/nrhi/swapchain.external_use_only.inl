@@ -57,10 +57,10 @@ namespace nrhi {
 #endif
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-	NCPP_FORCE_INLINE void A_swapchain::ASYNC_present() {
+	NCPP_FORCE_INLINE void A_swapchain::async_present() {
 
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
-			H_swapchain::ASYNC_present(NCPP_KTHIS());
+			H_swapchain::async_present(NCPP_KTHIS());
 		);
 	}
 #endif

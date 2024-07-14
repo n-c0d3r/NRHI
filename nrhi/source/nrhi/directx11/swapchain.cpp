@@ -164,7 +164,7 @@ namespace nrhi {
 
 			main_rtbuffer_p->Release();
 
-			d3d11_buffer_rtv_p->set_d3d11_view_p(main_rtview_p);
+			d3d11_buffer_rtv_p->set_d3d11_view_p_unsafe(main_rtview_p);
 
 			++inject_resource_generation(
 				NCPP_FOH_VALID(d3d11_buffer_p.T_cast<A_resource>())

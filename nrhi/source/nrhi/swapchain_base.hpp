@@ -107,7 +107,7 @@ namespace nrhi {
 #endif
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-		void ASYNC_present();
+		void async_present();
 #endif
 
     };

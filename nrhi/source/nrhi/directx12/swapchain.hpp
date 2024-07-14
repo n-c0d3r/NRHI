@@ -65,6 +65,7 @@ namespace nrhi {
 
 	public:
 		NCPP_FORCE_INLINE IDXGISwapChain3* dxgi_swapchain_p() noexcept { return dxgi_swapchain_p_; }
+		NCPP_FORCE_INLINE void set_dxgi_swapchain_p_unsafe(IDXGISwapChain3* value) noexcept { dxgi_swapchain_p_ = value; }
 
 
 
@@ -96,7 +97,7 @@ namespace nrhi {
 		static u8 current_back_rtv_index(TKPA_valid<A_swapchain>);
 
 	public:
-		static void ASYNC_present(TKPA_valid<A_swapchain>);
+		static void async_present(TKPA_valid<A_swapchain>);
 
 	};
 

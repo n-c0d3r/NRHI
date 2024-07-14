@@ -8,6 +8,9 @@ include(NRHI/Drivers/DirectX12/ImplementDescriptorRangeType)
 include(NRHI/Drivers/DirectX12/ImplementFormatHelper)
 include(NRHI/Drivers/DirectX12/ImplementCommandListType)
 include(NRHI/Drivers/DirectX12/ImplementFenceFlag)
+include(NRHI/Drivers/DirectX12/ImplementResourceBindFlag)
+include(NRHI/Drivers/DirectX12/ImplementResourceType)
+include(NRHI/Drivers/DirectX12/ImplementResourceUsage)
 
 
 
