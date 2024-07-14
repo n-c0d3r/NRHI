@@ -337,7 +337,7 @@ int main() {
 			{
 				command_list_p->clear_state();
 
-				command_list_p->bind_graphics_pipeline_state(
+				command_list_p->set_graphics_pipeline_state(
 					NCPP_FHANDLE_VALID(graphics_pipeline_state_p)
 				);
 

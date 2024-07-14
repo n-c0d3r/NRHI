@@ -102,9 +102,13 @@ namespace nrhi {
 
 
 	public:
+#ifdef NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
 		void present();
+#endif
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 		void ASYNC_present();
+#endif
 
     };
 

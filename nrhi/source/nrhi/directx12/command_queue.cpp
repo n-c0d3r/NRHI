@@ -33,7 +33,7 @@ namespace nrhi {
 		return TU<F_directx12_command_queue>()(device_p, desc);
 	}
 
-	void HD_directx12_command_queue::signal(
+	void HD_directx12_command_queue::ASYNC_signal(
 		TKPA_valid<A_command_queue> command_queue_p,
 		TKPA_valid<A_fence> fence_p,
 		u64 new_value

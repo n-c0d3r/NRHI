@@ -81,20 +81,21 @@ int main() {
 		if(!swapchain_p)
 			return;
 
-#ifndef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-	  	swapchain_p->present();
-#else
-	  	swapchain_p->ASYNC_present();
+		NRHI_DRIVER_ENABLE_IF_SUPPORT_SIMPLE_WORK_SUBMISSION(
+	  		swapchain_p->present();
+	 	)
+		else NRHI_DRIVER_ENABLE_IF_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			swapchain_p->ASYNC_present();
 
-		u64 target_fence_value = frame_counter;
-		command_queue_p->signal(
-			NCPP_FOH_VALID(fence_p),
-			target_fence_value
+			u64 target_fence_value = frame_counter;
+			command_queue_p->ASYNC_signal(
+				NCPP_FOH_VALID(fence_p),
+				target_fence_value
+			);
+			fence_p->wait(target_fence_value);
+
+			++frame_counter;
 		);
-		fence_p->wait(target_fence_value);
-
-		++frame_counter;
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 	});
 
 	return 0;

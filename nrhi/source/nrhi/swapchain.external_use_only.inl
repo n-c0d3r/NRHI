@@ -47,17 +47,21 @@ namespace nrhi {
 		return H_swapchain::current_back_rtv_index(NCPP_KTHIS().T_cast<A_swapchain>());
 	}
 
+#ifdef NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
 	NCPP_FORCE_INLINE void A_swapchain::present() {
 
-#ifndef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSIONs
-		H_swapchain::present(NCPP_KTHIS());
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+		NRHI_DRIVER_REQUIRE_SUPPORT_SIMPLE_WORK_SUBMISSION(
+			H_swapchain::present(NCPP_KTHIS());
+		);
 	}
-
-	NCPP_FORCE_INLINE void A_swapchain::ASYNC_present() {
+#endif
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-		H_swapchain::ASYNC_present(NCPP_KTHIS());
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+	NCPP_FORCE_INLINE void A_swapchain::ASYNC_present() {
+
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			H_swapchain::ASYNC_present(NCPP_KTHIS());
+		);
 	}
+#endif
 }

@@ -22,6 +22,9 @@ NRHI_FunctionHelper_CreateFunctionClass(
     ADDITIONAL_CODE
         ""
     VALUES
+        "is_support_simple_resource_binding" "bool()"
+        "is_support_simple_resource_management" "bool()"
+        "is_support_simple_work_submission" "bool()"
         "is_support_advanced_resource_binding" "bool()"
         "is_support_advanced_resource_management" "bool()"
         "is_support_advanced_work_submission" "bool()"

@@ -70,7 +70,7 @@ namespace nrhi {
 	public:
 		static TU<A_command_queue> create(TKPA_valid<A_device> device_p, const F_command_queue_desc& desc);
 
-		static void signal(
+		static void ASYNC_signal(
 			TKPA_valid<A_command_queue> command_queue_p,
 			TKPA_valid<A_fence> fence_p,
 			u64 new_value

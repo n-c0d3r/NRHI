@@ -25,7 +25,7 @@ NRHI_FunctionHelper_CreateFunctionClass(
         }"
     VALUES
         "create" "TU<A_command_queue>(TKPA_valid<A_device> device_p, const F_command_queue_desc& desc)"
-        "signal" "void(
+        "ASYNC_signal" "void(
 			TKPA_valid<A_command_queue> command_queue_p,
 			TKPA_valid<A_fence> fence_p,
 			u64 new_value

@@ -40,15 +40,15 @@ NRHI_FunctionHelper_CreateFunctionClass(
             f32 depth,
             u8 stencil
         )"
-        "bind_pipeline_state" "void(
+        "set_pipeline_state" "void(
             TKPA_valid<A_command_list> command_list_p,
             TKPA_valid<A_pipeline_state> pipeline_state_p
         )"
-        "bind_graphics_pipeline_state" "void(
+        "set_graphics_pipeline_state" "void(
             TKPA_valid<A_command_list> command_list_p,
             KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p
         )"
-        "bind_compute_pipeline_state" "void(
+        "set_compute_pipeline_state" "void(
             TKPA_valid<A_command_list> command_list_p,
             KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p
         )"

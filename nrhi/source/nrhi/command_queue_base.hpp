@@ -90,11 +90,13 @@ namespace nrhi {
 
 
 	public:
+#ifdef NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
 		void execute_command_lists(TG_span<TK_valid<A_command_list>> command_list_p_span);
 		void execute_command_list(TKPA_valid<A_command_list> command_list_p);
+#endif
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-		void signal(
+		void ASYNC_signal(
 			TKPA_valid<A_fence> fence_p,
 			u64 new_value
 		);
