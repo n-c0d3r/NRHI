@@ -79,6 +79,7 @@ namespace nrhi {}
 #ifdef NRHI_DRIVER_DIRECTX_12
 #include <d3d12.h>
 #include <nrhi/directx12/d3dx12.h>
+#include <wrl.h>
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////////

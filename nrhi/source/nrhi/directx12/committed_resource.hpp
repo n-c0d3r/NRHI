@@ -46,18 +46,15 @@ namespace nrhi {
 	public:
 		F_directx12_committed_resource(
 			TKPA_valid<A_device> device_p,
-			const F_initial_resource_data& initial_data,
 			const F_resource_desc& desc
 		);
 		F_directx12_committed_resource(
 			TKPA_valid<A_device> device_p,
-			const F_initial_resource_data& initial_data,
 			const F_resource_desc& desc,
 			ED_resource_type overrided_type
 		);
 		F_directx12_committed_resource(
 			TKPA_valid<A_device> device_p,
-			const F_initial_resource_data& initial_data,
 			const F_resource_desc& desc,
 			ED_resource_type overrided_type,
 			ID3D12Resource* d3d12_resource_p
@@ -67,9 +64,7 @@ namespace nrhi {
 	private:
 		static ID3D12Resource* create_d3d12_committed_resource(
 			TKPA_valid<A_device> device_p,
-			const F_initial_resource_data& initial_data,
-			const F_resource_desc& desc,
-			ED_resource_type overrided_type
+			const F_resource_desc& desc
 		);
 
 	};

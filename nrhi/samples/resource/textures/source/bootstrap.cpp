@@ -21,11 +21,21 @@ int main() {
 
 
 
-	// create buffer
-	auto buffer_p = H_buffer::create_committed(
+	// create texture 1d
+	auto texture_1d_p = H_texture::create_committed_1d(
+		NCPP_FOH_VALID(device_p),
+		128
+	);
+	auto texture_2d_p = H_texture::create_committed_2d(
 		NCPP_FOH_VALID(device_p),
 		128,
-		4
+		128
+	);
+	auto texture_3d_p = H_texture::create_committed_3d(
+		NCPP_FOH_VALID(device_p),
+		128,
+		128,
+		128
 	);
 
 	return 0;

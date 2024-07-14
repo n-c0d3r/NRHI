@@ -22,14 +22,40 @@ NRHI_FunctionHelper_CreateFunctionClass(
     ADDITIONAL_CODE
         ""
     VALUES
-        "create" "TU<A_resource>(
+        "create_committed" "TU<A_resource>(
             TKPA_valid<A_device> device_p,
-            const F_initial_resource_data& initial_data,
             const F_resource_desc& desc
         )"
-        "create_buffer" "U_buffer_handle(
+        "create_committed_buffer" "U_buffer_handle(
             TKPA_valid<A_device> device_p,
-            const F_initial_resource_data& initial_resource_data,
+            const F_resource_desc& desc
+        )"
+        "create_committed_indirect_buffer" "U_indirect_buffer_handle(
+            TKPA_valid<A_device> device_p,
+            const F_resource_desc& desc
+        )"
+        "create_committed_structured_buffer" "U_structured_buffer_handle(
+            TKPA_valid<A_device> device_p,
+            const F_resource_desc& desc
+        )"
+        "create_committed_texture_1d" "U_texture_1d_handle(
+            TKPA_valid<A_device> device_p,
+            const F_resource_desc& desc
+        )"
+        "create_committed_texture_2d" "U_texture_2d_handle(
+            TKPA_valid<A_device> device_p,
+            const F_resource_desc& desc
+        )"
+        "create_committed_texture_3d" "U_texture_3d_handle(
+            TKPA_valid<A_device> device_p,
+            const F_resource_desc& desc
+        )"
+        "create_committed_texture_2d_array" "U_texture_2d_array_handle(
+            TKPA_valid<A_device> device_p,
+            const F_resource_desc& desc
+        )"
+        "create_committed_texture_cube" "U_texture_cube_handle(
+            TKPA_valid<A_device> device_p,
             const F_resource_desc& desc
         )"
 )

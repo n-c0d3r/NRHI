@@ -61,13 +61,11 @@ namespace nrhi {
 	public:
 		F_directx12_resource(
 			TKPA_valid<A_device> device_p,
-			const F_initial_resource_data& initial_data,
 			const F_resource_desc& desc,
 			ED_resource_type overrided_type
 		);
 		F_directx12_resource(
 			TKPA_valid<A_device> device_p,
-			const F_initial_resource_data& initial_data,
 			const F_resource_desc& desc,
 			ED_resource_type overrided_type,
 			ID3D12Resource* d3d12_resource_p
@@ -81,16 +79,44 @@ namespace nrhi {
 	class NRHI_API HD_directx12_resource {
 
 	public:
-		static TU<A_resource> create(
+		static TU<A_resource> create_committed(
 			TKPA_valid<A_device> device_p,
-			const F_initial_resource_data& initial_resource_data,
 			const F_resource_desc& desc
 		);
 
 	public:
-		static U_buffer_handle create_buffer(
+		static U_buffer_handle create_committed_buffer(
 			TKPA_valid<A_device> device_p,
-			const F_initial_resource_data& initial_resource_data,
+			const F_resource_desc& desc
+		);
+		static U_structured_buffer_handle create_committed_structured_buffer(
+			TKPA_valid<A_device> device_p,
+			const F_resource_desc& desc
+		);
+		static U_indirect_buffer_handle create_committed_indirect_buffer(
+			TKPA_valid<A_device> device_p,
+			const F_resource_desc& desc
+		);
+
+	public:
+		static U_texture_1d_handle create_committed_texture_1d(
+			TKPA_valid<A_device> device_p,
+			const F_resource_desc& desc
+		);
+		static U_texture_2d_handle create_committed_texture_2d(
+			TKPA_valid<A_device> device_p,
+			const F_resource_desc& desc
+		);
+		static U_texture_3d_handle create_committed_texture_3d(
+			TKPA_valid<A_device> device_p,
+			const F_resource_desc& desc
+		);
+		static U_texture_2d_array_handle create_committed_texture_2d_array(
+			TKPA_valid<A_device> device_p,
+			const F_resource_desc& desc
+		);
+		static U_texture_cube_handle create_committed_texture_cube(
+			TKPA_valid<A_device> device_p,
 			const F_resource_desc& desc
 		);
 

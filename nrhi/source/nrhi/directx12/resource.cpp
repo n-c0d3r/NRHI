@@ -9,21 +9,19 @@ namespace nrhi {
 
 	F_directx12_resource::F_directx12_resource(
 		TKPA_valid<A_device> device_p,
-		const F_initial_resource_data& initial_data,
 		const F_resource_desc& desc,
 		ED_resource_type overrided_type
 	) :
-		A_resource(device_p, initial_data, desc, overrided_type)
+		A_resource(device_p, {}, desc, overrided_type)
 	{
 	}
 	F_directx12_resource::F_directx12_resource(
 		TKPA_valid<A_device> device_p,
-		const F_initial_resource_data& initial_data,
 		const F_resource_desc& desc,
 		ED_resource_type overrided_type,
 		ID3D12Resource* d3d12_resource_p
 	) :
-		A_resource(device_p, initial_data, desc, overrided_type),
+		A_resource(device_p, {}, desc, overrided_type),
 		d3d12_resource_p_(d3d12_resource_p)
 	{
 	}
@@ -35,27 +33,61 @@ namespace nrhi {
 
 
 
-	TU<A_resource> HD_directx12_resource::create(
+	TU<A_resource> HD_directx12_resource::create_committed(
 		TKPA_valid<A_device> device_p,
-		const F_initial_resource_data& initial_resource_data,
 		const F_resource_desc& desc
 	){
-		NRHI_ENUM_SWITCH(
-			desc.type,
-			NRHI_ENUM_CASE(
-				ED_resource_type::BUFFER,
-				return TU<F_directx12_committed_resource>()(device_p, initial_resource_data, desc);
-			)
-		);
-		return null;
+		return TU<F_directx12_committed_resource>()(device_p, desc);
 	}
 
-	U_buffer_handle HD_directx12_resource::create_buffer(
+	U_buffer_handle HD_directx12_resource::create_committed_buffer(
 		TKPA_valid<A_device> device_p,
-		const F_initial_resource_data& initial_resource_data,
 		const F_resource_desc& desc
 	)  {
-		return { TU<F_directx12_committed_resource>()(device_p, initial_resource_data, desc) };
+		return { TU<F_directx12_committed_resource>()(device_p, desc) };
+	}
+	U_structured_buffer_handle HD_directx12_resource::create_committed_structured_buffer(
+		TKPA_valid<A_device> device_p,
+		const F_resource_desc& desc
+	)  {
+		return { TU<F_directx12_committed_resource>()(device_p, desc) };
+	}
+	U_indirect_buffer_handle HD_directx12_resource::create_committed_indirect_buffer(
+		TKPA_valid<A_device> device_p,
+		const F_resource_desc& desc
+	)  {
+		return { TU<F_directx12_committed_resource>()(device_p, desc) };
+	}
+
+	U_texture_1d_handle HD_directx12_resource::create_committed_texture_1d(
+		TKPA_valid<A_device> device_p,
+		const F_resource_desc& desc
+	) {
+		return { TU<F_directx12_committed_resource>()(device_p, desc) };
+	}
+	U_texture_2d_handle HD_directx12_resource::create_committed_texture_2d(
+		TKPA_valid<A_device> device_p,
+		const F_resource_desc& desc
+	) {
+		return { TU<F_directx12_committed_resource>()(device_p, desc) };
+	}
+	U_texture_3d_handle HD_directx12_resource::create_committed_texture_3d(
+		TKPA_valid<A_device> device_p,
+		const F_resource_desc& desc
+	) {
+		return { TU<F_directx12_committed_resource>()(device_p, desc) };
+	}
+	U_texture_2d_array_handle HD_directx12_resource::create_committed_texture_2d_array(
+		TKPA_valid<A_device> device_p,
+		const F_resource_desc& desc
+	) {
+		return { TU<F_directx12_committed_resource>()(device_p, desc) };
+	}
+	U_texture_cube_handle HD_directx12_resource::create_committed_texture_cube(
+		TKPA_valid<A_device> device_p,
+		const F_resource_desc& desc
+	) {
+		return { TU<F_directx12_committed_resource>()(device_p, desc) };
 	}
 
 }

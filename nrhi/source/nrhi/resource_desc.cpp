@@ -10,6 +10,14 @@ namespace nrhi {
         u32 stride,
         ED_resource_bind_flag bind_flags,
         ED_resource_heap_type heap_type
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+		, ED_resource_state initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		, ED_resource_layout layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
     ) {
 
         return {
@@ -25,6 +33,14 @@ namespace nrhi {
 
             .type = ED_resource_type::BUFFER
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, .initial_state = initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, .layout = layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+
         };
     }
 
@@ -33,6 +49,14 @@ namespace nrhi {
         ED_format format,
         ED_resource_bind_flag bind_flags,
         ED_resource_heap_type heap_type
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+		, ED_resource_state initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		, ED_resource_layout layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
     ) {
 
 		u32 stride = H_format::stride(format);
@@ -51,6 +75,14 @@ namespace nrhi {
 
             .type = ED_resource_type::BUFFER
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, .initial_state = initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, .layout = layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+
         };
     }
 
@@ -59,6 +91,14 @@ namespace nrhi {
         u32 stride,
         ED_resource_bind_flag bind_flags,
         ED_resource_heap_type heap_type
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+		, ED_resource_state initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		, ED_resource_layout layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
     ) {
 
         return {
@@ -74,6 +114,14 @@ namespace nrhi {
 
             .type = ED_resource_type::STRUCTURED_BUFFER
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, .initial_state = initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, .layout = layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+
         };
     }
 
@@ -84,6 +132,14 @@ namespace nrhi {
         ED_resource_bind_flag bind_flags,
         ED_resource_heap_type heap_type,
 		b8 is_mip_map_generatable
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+		, ED_resource_state initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		, ED_resource_layout layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
     ) {
 
 		u32 stride = H_format::stride(format);
@@ -109,6 +165,14 @@ namespace nrhi {
 
             .type = ED_resource_type::TEXTURE_1D
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, .initial_state = initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, .layout = layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+
         };
     }
 
@@ -121,6 +185,14 @@ namespace nrhi {
         ED_resource_bind_flag bind_flags,
         ED_resource_heap_type heap_type,
 		b8 is_mip_map_generatable
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+		, ED_resource_state initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		, ED_resource_layout layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
     ) {
 
 		u32 stride = H_format::stride(format);
@@ -147,6 +219,14 @@ namespace nrhi {
 
             .type = ED_resource_type::TEXTURE_2D
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, .initial_state = initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, .layout = layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+
         };
     }
 
@@ -159,6 +239,14 @@ namespace nrhi {
         ED_resource_bind_flag bind_flags,
         ED_resource_heap_type heap_type,
 		b8 is_mip_map_generatable
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+		, ED_resource_state initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		, ED_resource_layout layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
     ) {
 
 		u32 stride = H_format::stride(format);
@@ -184,6 +272,14 @@ namespace nrhi {
 
             .type = ED_resource_type::TEXTURE_3D
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, .initial_state = initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, .layout = layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+
         };
     }
 
@@ -197,6 +293,14 @@ namespace nrhi {
 		ED_resource_bind_flag bind_flags,
 		ED_resource_heap_type heap_type,
 		b8 is_mip_map_generatable
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+		, ED_resource_state initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		, ED_resource_layout layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 
 		u32 stride = H_format::stride(format);
@@ -223,6 +327,14 @@ namespace nrhi {
 
 			.type = ED_resource_type::TEXTURE_2D
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, .initial_state = initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, .layout = layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+
 		};
 	}
 
@@ -234,6 +346,14 @@ namespace nrhi {
 		ED_resource_bind_flag bind_flags,
 		ED_resource_heap_type heap_type,
 		b8 is_mip_map_generatable
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+		, ED_resource_state initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		, ED_resource_layout layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 
 		u32 stride = H_format::stride(format);
@@ -260,6 +380,14 @@ namespace nrhi {
 
 			.type = ED_resource_type::TEXTURE_CUBE
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, .initial_state = initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, .layout = layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+
 		};
 	}
 
@@ -267,6 +395,14 @@ namespace nrhi {
 		u32 count,
 		ED_resource_bind_flag bind_flags,
 		ED_resource_heap_type heap_type
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+		, ED_resource_state initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		, ED_resource_layout layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 
 		return {
@@ -284,6 +420,14 @@ namespace nrhi {
 			.heap_type = heap_type,
 
 			.type = ED_resource_type::INDIRECT_BUFFER
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, .initial_state = initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, .layout = layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
 		};
 	}

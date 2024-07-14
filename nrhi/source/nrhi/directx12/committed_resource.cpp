@@ -9,51 +9,42 @@ namespace nrhi {
 
 	F_directx12_committed_resource::F_directx12_committed_resource(
 		TKPA_valid<A_device> device_p,
-		const F_initial_resource_data& initial_data,
 		const F_resource_desc& desc
 	) :
 		F_directx12_resource(
 			device_p,
-			initial_data,
 			desc,
 			desc.type,
 			create_d3d12_committed_resource(
 				device_p,
-				initial_data,
-				desc,
-				desc.type
+				desc
 			)
 		)
 	{
 	}
 	F_directx12_committed_resource::F_directx12_committed_resource(
 		TKPA_valid<A_device> device_p,
-		const F_initial_resource_data& initial_data,
 		const F_resource_desc& desc,
 		ED_resource_type overrided_type
 	) :
 		F_directx12_resource(
 			device_p,
-			initial_data,
 			desc,
 			overrided_type,
 			create_d3d12_committed_resource(
 				device_p,
-				initial_data,
-				desc,
-				overrided_type
+				desc
 			)
 		)
 	{
 	}
 	F_directx12_committed_resource::F_directx12_committed_resource(
 		TKPA_valid<A_device> device_p,
-		const F_initial_resource_data& initial_data,
 		const F_resource_desc& desc,
 		ED_resource_type overrided_type,
 		ID3D12Resource* d3d12_resource_p
 	) :
-		F_directx12_resource(device_p, initial_data, desc, overrided_type, d3d12_resource_p)
+		F_directx12_resource(device_p, desc, overrided_type, d3d12_resource_p)
 	{
 	}
 	F_directx12_committed_resource::~F_directx12_committed_resource() {
@@ -61,9 +52,7 @@ namespace nrhi {
 
 	ID3D12Resource* F_directx12_committed_resource::create_d3d12_committed_resource(
 		TKPA_valid<A_device> device_p,
-		const F_initial_resource_data& initial_data,
-		const F_resource_desc& desc,
-		ED_resource_type overrided_type
+		const F_resource_desc& desc
 	) {
 		ID3D12Device* d3d12_device_p = device_p.T_cast<F_directx12_device>()->d3d12_device_p();
 
@@ -81,7 +70,7 @@ namespace nrhi {
 		d3d12_resource_desc.Format = DXGI_FORMAT(desc.format);
 		d3d12_resource_desc.SampleDesc.Count = desc.sample_desc.count;
 		d3d12_resource_desc.SampleDesc.Quality = desc.sample_desc.quality;
-		d3d12_resource_desc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+		d3d12_resource_desc.Layout = D3D12_TEXTURE_LAYOUT(desc.layout);
 		d3d12_resource_desc.Flags = NRHI_DRIVER_DIRECTX_12_MAP___RESOURCE_BIND_FLAG___TO___RESOURCE_FLAG(desc.bind_flags);
 
 		D3D12_RESOURCE_STATES d3d12_resource_states = D3D12_RESOURCE_STATES(desc.initial_state);
@@ -95,11 +84,11 @@ namespace nrhi {
 		if(desc.heap_type == ED_resource_heap_type::GREAD_CWRITE)
 			d3d12_resource_states |= D3D12_RESOURCE_STATE_GENERIC_READ;
 
-		d3d12_device_p->CreateCommittedResource(
+		HRESULT hr = d3d12_device_p->CreateCommittedResource(
 			&d3d12_heap_properties,
 			D3D12_HEAP_FLAG_NONE,
 			&d3d12_resource_desc,
-			D3D12_RESOURCE_STATES(desc.initial_state),
+			d3d12_resource_states,
 			nullptr,
 			IID_PPV_ARGS(&d3d12_resource_p)
 		);
