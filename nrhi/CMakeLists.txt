@@ -94,6 +94,8 @@ file(WRITE "${NRHI_GENERATED_FILES_DIR}/functions.hpp" "#pragma once \n")
 file(WRITE "${NRHI_GENERATED_FILES_DIR}/enums.try_update_maps" "")
 file(WRITE "${NRHI_GENERATED_FILES_DIR}/functions.try_update_maps" "")
 
+include(NRHI/Drivers/Alternatives/Implement)
+
 if(NRHI_DRIVER_OPENGL)
     include(NRHI/Drivers/OpenGL/Implement)
 endif()
