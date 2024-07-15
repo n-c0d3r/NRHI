@@ -189,6 +189,7 @@ namespace nrhi {
 
 
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	public:
 		static U_texture_1d_handle create_committed_1d(
 			TKPA_valid<A_device> device_p,
@@ -386,6 +387,7 @@ namespace nrhi {
 			, ED_resource_layout layout = ED_resource_layout::UNKNOWN
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		);
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
     };
 

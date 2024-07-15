@@ -161,6 +161,7 @@ namespace nrhi {
 
 
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	U_buffer_handle H_buffer::create_committed(
 		TKPA_valid<A_device> device_p,
 		u32 count,
@@ -424,5 +425,6 @@ namespace nrhi {
 			)
 		);
 	}
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
 }
