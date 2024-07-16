@@ -345,6 +345,7 @@ namespace nrhi {
 		);
 	}
 
+#ifdef NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
 	NCPP_FORCE_INLINE void A_command_list::draw(
 		u32 vertex_count,
 		u32 base_vertex_location
@@ -453,6 +454,7 @@ namespace nrhi {
 			);
 		);
 	}
+#endif // NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
 
 	NCPP_FORCE_INLINE void A_command_list::update_resource_data(
 		TKPA_valid<A_resource> resource_p,

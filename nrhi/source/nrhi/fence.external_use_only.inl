@@ -47,15 +47,21 @@ namespace nrhi {
 
 	NCPP_FORCE_INLINE u64 A_fence::value() {
 
-		H_fence::value(NCPP_KTHIS());
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			return H_fence::value(NCPP_KTHIS());
+		);
 	}
 	NCPP_FORCE_INLINE void A_fence::wait(u64 target_value) {
 
-		H_fence::wait(NCPP_KTHIS(), target_value);
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			H_fence::wait(NCPP_KTHIS(), target_value);
+		);
 	}
 	NCPP_FORCE_INLINE b8 A_fence::is_completed(u64 target_value) {
 
-		return H_fence::is_completed(NCPP_KTHIS(), target_value);
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			return H_fence::is_completed(NCPP_KTHIS(), target_value);
+		);
 	}
 }
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION

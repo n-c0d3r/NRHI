@@ -238,6 +238,7 @@ namespace nrhi {
 			u32 slot_index
 		);
 
+#ifdef NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
 	public:
 		void draw(
 			u32 vertex_count,
@@ -280,6 +281,7 @@ namespace nrhi {
 
 	public:
 		void dispatch(PA_vector3_u32 thread_group_count_3d);
+#endif // NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
 
 	public:
 		void update_resource_data(
