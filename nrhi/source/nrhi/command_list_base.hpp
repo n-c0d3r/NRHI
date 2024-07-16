@@ -283,6 +283,7 @@ namespace nrhi {
 		void dispatch(PA_vector3_u32 thread_group_count_3d);
 #endif // NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
 
+#if defined(NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_MANAGEMENT) && defined(NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_BINDING) && defined(NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION)
 	public:
 		void update_resource_data(
 			TKPA_valid<A_resource> resource_p,
@@ -296,6 +297,7 @@ namespace nrhi {
 		void generate_mips(
 			KPA_valid_srv_handle srv_p
 		);
+#endif // NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_MANAGEMENT && NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_BINDING && NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
 
     };
 

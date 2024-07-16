@@ -76,6 +76,11 @@ namespace nrhi {
 			TKPA_valid<A_fence> fence_p,
 			u64 new_value
 		);
+		static void async_wait(
+			TKPA_valid<A_command_queue> command_queue_p,
+			TKPA_valid<A_fence> fence_p,
+			u64 value
+		);
 
 	};
 

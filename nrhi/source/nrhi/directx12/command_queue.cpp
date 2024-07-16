@@ -43,5 +43,15 @@ namespace nrhi {
 			new_value
 		);
 	}
+	void HD_directx12_command_queue::async_wait(
+		TKPA_valid<A_command_queue> command_queue_p,
+		TKPA_valid<A_fence> fence_p,
+		u64 value
+	) {
+		command_queue_p.T_cast<F_directx12_command_queue>()->d3d12_command_queue_p()->Wait(
+			fence_p.T_cast<F_directx12_fence>()->d3d12_fence_p(),
+			value
+		);
+	}
 
 }

@@ -456,6 +456,7 @@ namespace nrhi {
 	}
 #endif // NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
 
+#if defined(NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_MANAGEMENT) && defined(NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_BINDING) && defined(NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION)
 	NCPP_FORCE_INLINE void A_command_list::update_resource_data(
 		TKPA_valid<A_resource> resource_p,
 		void* data_p,
@@ -463,23 +464,36 @@ namespace nrhi {
 		u32 src_data_offset,
 		u32 dst_data_offset
 	) {
-		H_command_list::update_resource_data(
-			NCPP_KTHIS(),
-			resource_p,
-			data_p,
-			data_size,
-			src_data_offset,
-			dst_data_offset
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT(
+			NRHI_DRIVER_REQUIRE_SUPPORT_SIMPLE_RESOURCE_BINDING(
+				NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+					H_command_list::update_resource_data(
+						NCPP_KTHIS(),
+						resource_p,
+						data_p,
+						data_size,
+						src_data_offset,
+						dst_data_offset
+					);
+				);
+			);
 		);
 	}
 
 	NCPP_FORCE_INLINE void A_command_list::generate_mips(
 		KPA_valid_srv_handle srv_p
 	) {
-		H_command_list::generate_mips(
-			NCPP_KTHIS(),
-			srv_p
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT(
+			NRHI_DRIVER_REQUIRE_SUPPORT_SIMPLE_RESOURCE_BINDING(
+				NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+					H_command_list::generate_mips(
+						NCPP_KTHIS(),
+						srv_p
+					);
+				);
+			);
 		);
 	}
+#endif // NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_MANAGEMENT && NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_BINDING && NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
 
 }

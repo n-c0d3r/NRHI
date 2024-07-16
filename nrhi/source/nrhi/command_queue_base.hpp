@@ -100,6 +100,10 @@ namespace nrhi {
 			TKPA_valid<A_fence> fence_p,
 			u64 new_value
 		);
+		void async_wait(
+			TKPA_valid<A_fence> fence_p,
+			u64 value
+		);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 

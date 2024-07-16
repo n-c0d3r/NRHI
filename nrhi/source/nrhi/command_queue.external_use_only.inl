@@ -66,5 +66,13 @@ namespace nrhi {
 			H_command_queue::async_signal(NCPP_KTHIS(), fence_p, new_value);
 		);
 	}
+	NCPP_FORCE_INLINE void A_command_queue::async_wait(
+		TKPA_valid<A_fence> fence_p,
+		u64 value
+	) {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			H_command_queue::async_wait(NCPP_KTHIS(), fence_p, value);
+		);
+	}
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 }

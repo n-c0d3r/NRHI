@@ -30,6 +30,11 @@ NRHI_FunctionHelper_CreateFunctionClass(
 			TKPA_valid<A_fence> fence_p,
 			u64 new_value
 		)"
+        "async_wait" "void(
+			TKPA_valid<A_command_queue> command_queue_p,
+			TKPA_valid<A_fence> fence_p,
+			u64 value
+		)"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement command_queue done")
