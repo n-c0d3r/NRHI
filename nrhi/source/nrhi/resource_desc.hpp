@@ -36,9 +36,17 @@
 #include <nrhi/format.hpp>
 #include <nrhi/resource_heap_type.hpp>
 #include <nrhi/resource_bind_flag.hpp>
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 #include <nrhi/resource_state.hpp>
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
 #include <nrhi/resource_type.hpp>
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 #include <nrhi/resource_layout.hpp>
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+
 #include <nrhi/sample_desc.hpp>
 
 #pragma endregion
@@ -150,12 +158,18 @@ namespace nrhi {
 			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
         ) {
-
             return create_buffer_desc(
                 count,
                 sizeof(F_element__),
                 bind_flags,
                 heap_type
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+				, initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+				, layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
             );
         }
 
@@ -190,12 +204,18 @@ namespace nrhi {
 			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
         ) {
-
             return create_structured_buffer_desc(
                 count,
                 sizeof(F_element__),
                 bind_flags,
                 heap_type
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+				, initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+				, layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
             );
         }
 

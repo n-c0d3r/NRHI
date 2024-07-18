@@ -58,6 +58,9 @@ namespace nrhi { }
 #include <nrhi/shader_desc.hpp>
 #include <nrhi/frame_buffer_desc.hpp>
 
+#include <nrhi/buffer.hpp>
+#include <nrhi/texture.hpp>
+
 #include <nrhi/shader_factory.hpp>
 
 #include <nrhi/nsl_shader_compiler.hpp>

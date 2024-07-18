@@ -131,7 +131,7 @@ function(NRHI_FunctionHelper_CreateFunctionClass)
             set(
                 hppFileContent
                 "${hppFileContent}
-                namespace internal {
+                namespace ${PARGS_NAMESPACE}::internal {
                     struct ALTERNATIVE_${PARGS_NAME} {};
                 }
                 "
@@ -151,17 +151,6 @@ function(NRHI_FunctionHelper_CreateFunctionClass)
             "
         )
 
-        if(NOT isHasAlternative)
-            set(
-                hppFileContent
-                "${hppFileContent}
-                namespace internal {
-                    struct ALTERNATIVE_${PARGS_NAME} {};
-                }
-                "
-            )
-        endif()
-
         if(${NRHI_DRIVER_MULTIPLE})
             set(
                 hppFileContent
@@ -179,7 +168,7 @@ function(NRHI_FunctionHelper_CreateFunctionClass)
                 "${hppFileContent}
                     struct NRHI_API ${PARGS_NAME} : public ${PARGS_DRIVER_SPECIFIC_NAME} {
 
-                        using ALTERNATIVE = ALTERNATIVE_${PARGS_NAME};
+                        using ALTERNATIVE = internal::ALTERNATIVE_${PARGS_NAME};
                 "
             )
             set(

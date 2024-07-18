@@ -2,6 +2,7 @@
 
 
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 namespace nrhi {
 
 	A_command_allocator::A_command_allocator(TKPA_valid<A_device> device_p, const F_command_allocator_desc& desc) :
@@ -24,3 +25,4 @@ namespace nrhi {
 	}
 
 }
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION

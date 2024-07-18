@@ -284,8 +284,7 @@ namespace nrhi {
 		);
 	}
 
-
-
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	U_texture_1d_handle H_texture::create_committed_1d(
 		TKPA_valid<A_device> device_p,
 		u32 width,
@@ -679,5 +678,6 @@ namespace nrhi {
 			)
 		);
 	}
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
 }

@@ -34,8 +34,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/resource_base.hpp>
-#include <nrhi/buffer.hpp>
-#include <nrhi/texture.hpp>
+#include <nrhi/buffer_handle.hpp>
+#include <nrhi/texture_handle.hpp>
 
 #pragma endregion
 
