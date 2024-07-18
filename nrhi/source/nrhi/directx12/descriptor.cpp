@@ -154,18 +154,213 @@ namespace nrhi {
 		F_descriptor_cpu_address cpu_address,
 		const F_resource_view_desc& desc
 	) {
+		auto d3d12_descriptor_heap_p = heap_p.T_cast<F_directx12_descriptor_heap>()->d3d12_descriptor_heap_p();
+		auto d3d12_device_p = heap_p->device_p().T_cast<F_directx12_device>()->d3d12_device_p();
+
+		auto resource_p = desc.resource_p;
+
+		const auto& resource_desc = resource_p->desc();
+
+		NCPP_ASSERT(resource_desc.can_create_view) << "resource can't be used to create view";
+
+		NCPP_ASSERT(
+			u32(resource_desc.bind_flags)
+				& u32(ED_resource_bind_flag::UAV)
+		) << "resource bind flag is not conpatible";
+
+		ID3D12Resource* d3d12_resource_p = resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p();
+
+		ED_resource_type target_resource_type = desc.overrided_resource_type;
+		if(target_resource_type == ED_resource_type::NONE)
+			target_resource_type = resource_desc.type;
+
+		ED_format target_format = desc.overrided_format;
+		if(target_format == ED_format::NONE)
+			target_format = resource_desc.format;
+
+		D3D12_UNORDERED_ACCESS_VIEW_DESC d3d12_uav_desc = {};
+		d3d12_uav_desc.Format = DXGI_FORMAT(target_format);
+		NRHI_ENUM_SWITCH(
+			target_resource_type,
+			NRHI_ENUM_CASE(
+				ED_resource_type::BUFFER,
+				d3d12_uav_desc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
+				d3d12_uav_desc.Buffer.FirstElement = desc.mem_offset / resource_desc.stride;
+				d3d12_uav_desc.Buffer.NumElements = resource_desc.size / resource_desc.stride;
+				NRHI_ENUM_BREAK;
+			)
+			NRHI_ENUM_CASE(
+				ED_resource_type::STRUCTURED_BUFFER,
+				d3d12_uav_desc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
+				d3d12_uav_desc.Buffer.FirstElement = desc.mem_offset / resource_desc.stride;
+				d3d12_uav_desc.Buffer.NumElements = resource_desc.size / resource_desc.stride;
+				NRHI_ENUM_BREAK;
+			)
+			NRHI_ENUM_CASE(
+				ED_resource_type::TEXTURE_1D,
+				d3d12_uav_desc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE1D;
+				d3d12_uav_desc.Texture1D.MipSlice = desc.base_mip_level;
+				NRHI_ENUM_BREAK;
+			)
+			NRHI_ENUM_CASE(
+				ED_resource_type::TEXTURE_2D,
+				d3d12_uav_desc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE2D;
+				d3d12_uav_desc.Texture2D.MipSlice = desc.base_mip_level;
+				NRHI_ENUM_BREAK;
+			)
+			NRHI_ENUM_CASE(
+				ED_resource_type::TEXTURE_3D,
+				d3d12_uav_desc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE3D;
+				d3d12_uav_desc.Texture3D.MipSlice = desc.base_mip_level;
+				NRHI_ENUM_BREAK;
+			)
+			NRHI_ENUM_CASE(
+				ED_resource_type::TEXTURE_2D_ARRAY,
+				d3d12_uav_desc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE2DARRAY;
+				d3d12_uav_desc.Texture2DArray.MipSlice = desc.base_mip_level;
+				d3d12_uav_desc.Texture2DArray.FirstArraySlice = desc.index;
+				d3d12_uav_desc.Texture2DArray.ArraySize = desc.count;
+				NCPP_ASSERT(desc.count) << "texture 2d array size can't be zero";
+				NRHI_ENUM_BREAK;
+			)
+			NRHI_ENUM_DEFAULT(
+				NCPP_ASSERT(false) << "invalid resource type";
+				NRHI_ENUM_BREAK;
+			)
+		);
+
+		d3d12_device_p->CreateUnorderedAccessView(
+			d3d12_resource_p,
+			0,
+			&d3d12_uav_desc,
+			D3D12_CPU_DESCRIPTOR_HANDLE(cpu_address)
+		);
+		HRESULT hr = d3d12_device_p->GetDeviceRemovedReason();
+		NCPP_ASSERT(!FAILED(hr)) << "can't initialize uav descriptor";
 	}
 	void HD_directx12_descriptor::initialize_rtv(
 		TKPA_valid<A_descriptor_heap> heap_p,
 		F_descriptor_cpu_address cpu_address,
 		const F_resource_view_desc& desc
 	) {
+		auto d3d12_descriptor_heap_p = heap_p.T_cast<F_directx12_descriptor_heap>()->d3d12_descriptor_heap_p();
+		auto d3d12_device_p = heap_p->device_p().T_cast<F_directx12_device>()->d3d12_device_p();
+
+		auto resource_p = desc.resource_p;
+
+		const auto& resource_desc = resource_p->desc();
+
+		NCPP_ASSERT(resource_desc.can_create_view) << "resource can't be used to create view";
+
+		NCPP_ASSERT(
+			u32(resource_desc.bind_flags)
+				& u32(ED_resource_bind_flag::RTV)
+		) << "resource bind flag is not conpatible";
+
+		ID3D12Resource* d3d12_resource_p = resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p();
+
+		ED_resource_type target_resource_type = desc.overrided_resource_type;
+		if(target_resource_type == ED_resource_type::NONE)
+			target_resource_type = resource_desc.type;
+
+		ED_format target_format = desc.overrided_format;
+		if(target_format == ED_format::NONE)
+			target_format = resource_desc.format;
+
+		D3D12_RENDER_TARGET_VIEW_DESC d3d12_rtv_desc = {};
+		d3d12_rtv_desc.Format = DXGI_FORMAT(target_format);
+		NRHI_ENUM_SWITCH(
+			target_resource_type,
+			NRHI_ENUM_CASE(
+				ED_resource_type::TEXTURE_2D,
+				d3d12_rtv_desc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
+				d3d12_rtv_desc.Texture2D.MipSlice = desc.target_mip_level;
+				NRHI_ENUM_BREAK;
+			)
+			NRHI_ENUM_CASE(
+				ED_resource_type::TEXTURE_2D_ARRAY,
+				d3d12_rtv_desc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2DARRAY;
+				d3d12_rtv_desc.Texture2DArray.MipSlice = desc.base_mip_level;
+				d3d12_rtv_desc.Texture2DArray.FirstArraySlice = desc.index;
+				d3d12_rtv_desc.Texture2DArray.ArraySize = desc.count;
+				NCPP_ASSERT(desc.count) << "texture 2d array size can't be zero";
+				NRHI_ENUM_BREAK;
+			)
+			NRHI_ENUM_DEFAULT(
+				NCPP_ASSERT(false) << "invalid resource type";
+				NRHI_ENUM_BREAK;
+			)
+		);
+
+		d3d12_device_p->CreateRenderTargetView(
+			d3d12_resource_p,
+			&d3d12_rtv_desc,
+			D3D12_CPU_DESCRIPTOR_HANDLE(cpu_address)
+		);
+		HRESULT hr = d3d12_device_p->GetDeviceRemovedReason();
+		NCPP_ASSERT(!FAILED(hr)) << "can't initialize rtv descriptor";
 	}
 	void HD_directx12_descriptor::initialize_dsv(
 		TKPA_valid<A_descriptor_heap> heap_p,
 		F_descriptor_cpu_address cpu_address,
 		const F_resource_view_desc& desc
 	) {
+		auto d3d12_descriptor_heap_p = heap_p.T_cast<F_directx12_descriptor_heap>()->d3d12_descriptor_heap_p();
+		auto d3d12_device_p = heap_p->device_p().T_cast<F_directx12_device>()->d3d12_device_p();
+
+		auto resource_p = desc.resource_p;
+
+		const auto& resource_desc = resource_p->desc();
+
+		NCPP_ASSERT(resource_desc.can_create_view) << "resource can't be used to create view";
+
+		NCPP_ASSERT(
+			u32(resource_desc.bind_flags)
+				& u32(ED_resource_bind_flag::DSV)
+		) << "resource bind flag is not conpatible";
+
+		ID3D12Resource* d3d12_resource_p = resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p();
+
+		ED_resource_type target_resource_type = desc.overrided_resource_type;
+		if(target_resource_type == ED_resource_type::NONE)
+			target_resource_type = resource_desc.type;
+
+		ED_format target_format = desc.overrided_format;
+		if(target_format == ED_format::NONE)
+			target_format = resource_desc.format;
+
+		D3D12_DEPTH_STENCIL_VIEW_DESC d3d12_dsv_desc = {};
+		d3d12_dsv_desc.Format = DXGI_FORMAT(target_format);
+		NRHI_ENUM_SWITCH(
+			target_resource_type,
+			NRHI_ENUM_CASE(
+				ED_resource_type::TEXTURE_2D,
+				d3d12_dsv_desc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
+				d3d12_dsv_desc.Texture2D.MipSlice = desc.target_mip_level;
+				NRHI_ENUM_BREAK;
+			)
+			NRHI_ENUM_CASE(
+				ED_resource_type::TEXTURE_2D_ARRAY,
+				d3d12_dsv_desc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2DARRAY;
+				d3d12_dsv_desc.Texture2DArray.MipSlice = desc.base_mip_level;
+				d3d12_dsv_desc.Texture2DArray.FirstArraySlice = desc.index;
+				d3d12_dsv_desc.Texture2DArray.ArraySize = desc.count;
+				NCPP_ASSERT(desc.count) << "texture 2d array size can't be zero";
+				NRHI_ENUM_BREAK;
+			)
+			NRHI_ENUM_DEFAULT(
+				NCPP_ASSERT(false) << "invalid resource type";
+				NRHI_ENUM_BREAK;
+			)
+		);
+
+		d3d12_device_p->CreateDepthStencilView(
+			d3d12_resource_p,
+			&d3d12_dsv_desc,
+			D3D12_CPU_DESCRIPTOR_HANDLE(cpu_address)
+		);
+		HRESULT hr = d3d12_device_p->GetDeviceRemovedReason();
+		NCPP_ASSERT(!FAILED(hr)) << "can't initialize dsv descriptor";
 	}
 
 	void HD_directx12_descriptor::initialize_sampler_state(
