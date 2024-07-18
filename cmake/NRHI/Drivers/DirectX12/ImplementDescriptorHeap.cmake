@@ -28,6 +28,12 @@ NRHI_FunctionHelper_CreateFunctionClass(
             TKPA_valid<A_device> device_p,
             const F_descriptor_heap_desc& desc
         )"
+        "base_cpu_address" "F_descriptor_cpu_address(
+            TKPA_valid<A_descriptor_heap> heap_p
+        )"
+        "base_gpu_address" "F_descriptor_gpu_address(
+            TKPA_valid<A_descriptor_heap> heap_p
+        )"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement descriptor heap done")

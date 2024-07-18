@@ -69,6 +69,9 @@ namespace nrhi {
 
 	public:
 		virtual void rebuild() override;
+		virtual void rebuild(
+			const F_resource_view_desc& desc
+		) override;
 
     };
 

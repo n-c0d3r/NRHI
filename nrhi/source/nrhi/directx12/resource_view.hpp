@@ -66,6 +66,15 @@ namespace nrhi {
 
 	public:
 		virtual void rebuild() override;
+		virtual void rebuild(
+			const F_resource_view_desc& desc
+		) override;
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		virtual void rebuild(
+			const F_resource_view_desc& desc,
+			const F_descriptor& descriptor
+		) override;
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 	};
 

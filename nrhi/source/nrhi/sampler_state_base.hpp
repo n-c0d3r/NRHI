@@ -99,11 +99,23 @@ namespace nrhi {
 		virtual void rebuild(
 			const F_sampler_state_desc& desc
 		);
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		virtual void rebuild(
+			const F_sampler_state_desc& desc,
+			const F_descriptor& descriptor
+		);
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 	protected:
 		void finalize_rebuild(
 			const F_sampler_state_desc& desc
 		);
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		void finalize_rebuild(
+			const F_sampler_state_desc& desc,
+			const F_descriptor& descriptor
+		);
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 	};
 

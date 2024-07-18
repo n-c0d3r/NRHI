@@ -68,10 +68,13 @@ namespace nrhi {
 
 
 
+	using F_descriptor_cpu_address = u64;
+	using F_descriptor_gpu_address = u64;
+
 	struct F_descriptor_handle {
 
-		u64 cpu_address = 0;
-		u64 gpu_address = 0;
+		F_descriptor_cpu_address cpu_address = 0;
+		F_descriptor_gpu_address gpu_address = 0;
 
 	};
 

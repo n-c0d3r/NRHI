@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/device_base.hpp
+/** @file nrhi/device.external_use_only.inl
 *
-*   Implement device base class.
+*   Implement device inline functions that is only used by external.
 */
 
 
@@ -33,9 +33,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-#include <nrhi/descriptor_heap_type.hpp>
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+#include <nrhi/device_base.hpp>
+#include <nrhi/device.hpp>
 
 #pragma endregion
 
@@ -43,34 +42,14 @@
 
 namespace nrhi {
 
-    class A_adapter;
-
-
-
-    class NRHI_API A_device {
-
-    private:
-        TK_valid<A_adapter> adapter_p_;
-
-    public:
-        NCPP_FORCE_INLINE TK_valid<A_adapter> adapter_p() noexcept { return adapter_p_; }
-
-
-
-    protected:
-        A_device(TKPA_valid<A_adapter> adapter_p);
-
-    public:
-        virtual ~A_device();
-
-	public:
-		NCPP_OBJECT(A_device);
-
-	public:
-		u64 descriptor_increment_size(
-			ED_descriptor_heap_type descriptor_heap_type
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+	NCPP_FORCE_INLINE u64 A_device::descriptor_increment_size(
+		ED_descriptor_heap_type descriptor_heap_type
+	) {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
+			return H_device::descriptor_increment_size(NCPP_KTHIS(), descriptor_heap_type);
 		);
-
-    };
+	}
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 }

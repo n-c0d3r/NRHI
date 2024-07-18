@@ -80,6 +80,14 @@ namespace nrhi {
 			const F_descriptor_heap_desc& desc
 		);
 
+	public:
+		static F_descriptor_cpu_address base_cpu_address(
+			TKPA_valid<A_descriptor_heap> heap_p
+		);
+		static F_descriptor_gpu_address base_gpu_address(
+			TKPA_valid<A_descriptor_heap> heap_p
+		);
+
 	};
 
 }

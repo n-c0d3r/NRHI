@@ -25,6 +25,10 @@ NRHI_FunctionHelper_CreateFunctionClass(
         }"
     VALUES
         "create" "TU<A_device>(TKPA_valid<A_adapter> adapter_p)"
+        "descriptor_increment_size" "u64(
+			TKPA_valid<A_device> device_p,
+			ED_descriptor_heap_type descriptor_heap_type
+		)"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement device done")

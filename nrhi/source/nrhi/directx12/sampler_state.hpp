@@ -66,6 +66,12 @@ namespace nrhi {
 		virtual void rebuild(
 			const F_sampler_state_desc& desc
 		) override;
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		virtual void rebuild(
+			const F_sampler_state_desc& desc,
+			const F_descriptor& descriptor
+		) override;
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 	};
 

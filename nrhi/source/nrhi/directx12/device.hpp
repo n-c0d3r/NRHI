@@ -69,6 +69,12 @@ namespace nrhi {
     public:
         static TU<A_device> create(TKPA_valid<A_adapter> adapter_p);
 
+	public:
+		static u64 descriptor_increment_size(
+			TKPA_valid<A_device> device_p,
+			ED_descriptor_heap_type descriptor_heap_type
+		);
+
     };
 
 }

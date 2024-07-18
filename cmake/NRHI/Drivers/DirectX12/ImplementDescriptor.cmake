@@ -26,32 +26,32 @@ NRHI_FunctionHelper_CreateFunctionClass(
     VALUES
         "initialize_resource_view" "void(
             TKPA_valid<A_descriptor_heap> heap_p,
-            const F_descriptor_handle& handle,
+            F_descriptor_cpu_address cpu_address,
             const F_resource_view_desc& desc
         )"
         "initialize_srv" "void(
             TKPA_valid<A_descriptor_heap> heap_p,
-            const F_descriptor_handle& handle,
+            F_descriptor_cpu_address cpu_address,
             const F_resource_view_desc& desc
         )"
         "initialize_uav" "void(
             TKPA_valid<A_descriptor_heap> heap_p,
-            const F_descriptor_handle& handle,
+            F_descriptor_cpu_address cpu_address,
             const F_resource_view_desc& desc
         )"
         "initialize_rtv" "void(
             TKPA_valid<A_descriptor_heap> heap_p,
-            const F_descriptor_handle& handle,
+            F_descriptor_cpu_address cpu_address,
             const F_resource_view_desc& desc
         )"
         "initialize_dsv" "void(
             TKPA_valid<A_descriptor_heap> heap_p,
-            const F_descriptor_handle& handle,
+            F_descriptor_cpu_address cpu_address,
             const F_resource_view_desc& desc
         )"
         "initialize_sampler_state" "void(
             TKPA_valid<A_descriptor_heap> heap_p,
-            const F_descriptor_handle& handle,
+            F_descriptor_cpu_address cpu_address,
             const F_resource_view_desc& desc
         )"
 )

@@ -41,4 +41,11 @@ namespace nrhi {
         return TU<F_directx12_device>()(adapter_p);
     }
 
+	u64 HD_directx12_device::descriptor_increment_size(TKPA_valid<A_device> device_p, ED_descriptor_heap_type descriptor_heap_type) {
+
+		return device_p.T_cast<F_directx12_device>()->d3d12_device_p()->GetDescriptorHandleIncrementSize(
+			D3D12_DESCRIPTOR_HEAP_TYPE(descriptor_heap_type)
+		);
+	}
+
 }

@@ -79,6 +79,13 @@ namespace nrhi {
 	public:
 		virtual ~A_descriptor_heap();
 
+	public:
+		NCPP_OBJECT(A_descriptor_heap);
+
+	public:
+		F_descriptor_cpu_address base_cpu_address();
+		F_descriptor_gpu_address base_gpu_address();
+
 	};
 
 }

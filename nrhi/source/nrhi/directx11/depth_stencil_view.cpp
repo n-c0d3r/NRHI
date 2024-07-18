@@ -112,5 +112,19 @@ namespace nrhi {
 
 		finalize_rebuild();
 	}
+	void F_directx11_depth_stencil_view::rebuild(
+		const F_resource_view_desc& desc
+	) {
+		if(d3d11_view_p_)
+			d3d11_view_p_->Release();
+		d3d11_view_p_ = create_d3d11_depth_stencil_view(
+			device_p(),
+			desc
+		);
+
+		finalize_rebuild(
+			desc
+		);
+	}
 
 }

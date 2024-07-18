@@ -29,5 +29,23 @@ namespace nrhi {
 
 		finalize_rebuild();
 	}
+	void F_directx12_resource_view::rebuild(
+		const F_resource_view_desc& desc
+	) {
+		finalize_rebuild(
+			desc
+		);
+	}
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+	void F_directx12_resource_view::rebuild(
+		const F_resource_view_desc& desc,
+		const F_descriptor& descriptor
+	) {
+		finalize_rebuild(
+			desc,
+			descriptor
+		);
+	}
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 }

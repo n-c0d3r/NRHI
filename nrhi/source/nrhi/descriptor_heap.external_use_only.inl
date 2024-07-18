@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/device_base.hpp
+/** @file nrhi/descriptor_heap.external_use_only.inl
 *
-*   Implement device base class.
+*   Implement descriptor_heap inline functions that is only used by external.
 */
 
 
@@ -34,7 +34,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-#include <nrhi/descriptor_heap_type.hpp>
+#include <nrhi/descriptor_heap_base.hpp>
+#include <nrhi/descriptor_heap.hpp>
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 #pragma endregion
@@ -43,34 +44,17 @@
 
 namespace nrhi {
 
-    class A_adapter;
-
-
-
-    class NRHI_API A_device {
-
-    private:
-        TK_valid<A_adapter> adapter_p_;
-
-    public:
-        NCPP_FORCE_INLINE TK_valid<A_adapter> adapter_p() noexcept { return adapter_p_; }
-
-
-
-    protected:
-        A_device(TKPA_valid<A_adapter> adapter_p);
-
-    public:
-        virtual ~A_device();
-
-	public:
-		NCPP_OBJECT(A_device);
-
-	public:
-		u64 descriptor_increment_size(
-			ED_descriptor_heap_type descriptor_heap_type
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+	NCPP_FORCE_INLINE F_descriptor_cpu_address A_descriptor_heap::base_cpu_address() {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
+			return H_descriptor_heap::base_cpu_address(NCPP_KTHIS());
 		);
-
-    };
+	}
+	NCPP_FORCE_INLINE F_descriptor_gpu_address A_descriptor_heap::base_gpu_address() {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
+			return H_descriptor_heap::base_gpu_address(NCPP_KTHIS());
+		);
+	}
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 }
