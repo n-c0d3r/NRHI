@@ -83,7 +83,7 @@ namespace nrhi {
 		static void initialize_sampler_state(
 			TKPA_valid<A_descriptor_heap> heap_p,
 			F_descriptor_cpu_address cpu_address,
-			const F_resource_view_desc& desc
+			const F_sampler_state_desc& desc
 		);
 
 	};

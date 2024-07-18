@@ -53,12 +53,12 @@ namespace nrhi {
 	F_descriptor_cpu_address HD_directx12_descriptor_heap::base_cpu_address(
 		TKPA_valid<A_descriptor_heap> heap_p
 	) {
-		return heap_p.T_cast<F_directx12_descriptor_heap>()->d3d12_descriptor_heap_p()->GetGPUDescriptorHandleForHeapStart().ptr;
+		return heap_p.T_cast<F_directx12_descriptor_heap>()->d3d12_descriptor_heap_p()->GetCPUDescriptorHandleForHeapStart().ptr;
 	}
 	F_descriptor_gpu_address HD_directx12_descriptor_heap::base_gpu_address(
 		TKPA_valid<A_descriptor_heap> heap_p
 	) {
-		return heap_p.T_cast<F_directx12_descriptor_heap>()->d3d12_descriptor_heap_p()->GetCPUDescriptorHandleForHeapStart().ptr;
+		return heap_p.T_cast<F_directx12_descriptor_heap>()->d3d12_descriptor_heap_p()->GetGPUDescriptorHandleForHeapStart().ptr;
 	}
 
 }

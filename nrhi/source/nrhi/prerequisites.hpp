@@ -316,6 +316,10 @@ namespace nrhi {
 
 
 
+	using F_node_mask = u32;
+
+
+
     namespace internal {
 
         NRHI_API void try_update_map_enums();

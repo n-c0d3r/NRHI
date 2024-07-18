@@ -78,8 +78,8 @@ namespace nrhi {
 		if(target_format == ED_format::NONE)
 			target_format = resource_desc.format;
 
-		D3D12_SHADER_RESOURCE_VIEW_DESC d3d12_srv_desc;
-		memset(&d3d12_srv_desc, 0, sizeof(D3D12_SHADER_RESOURCE_VIEW_DESC));
+		D3D12_SHADER_RESOURCE_VIEW_DESC d3d12_srv_desc = {};
+		d3d12_srv_desc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 		d3d12_srv_desc.Format = DXGI_FORMAT(target_format);
 		NRHI_ENUM_SWITCH(
 			target_resource_type,
@@ -146,6 +146,8 @@ namespace nrhi {
 			&d3d12_srv_desc,
 			D3D12_CPU_DESCRIPTOR_HANDLE(cpu_address)
 		);
+		HRESULT hr = d3d12_device_p->GetDeviceRemovedReason();
+		NCPP_ASSERT(!FAILED(hr)) << "can't initialize srv descriptor";
 	}
 	void HD_directx12_descriptor::initialize_uav(
 		TKPA_valid<A_descriptor_heap> heap_p,
@@ -169,8 +171,27 @@ namespace nrhi {
 	void HD_directx12_descriptor::initialize_sampler_state(
 		TKPA_valid<A_descriptor_heap> heap_p,
 		F_descriptor_cpu_address cpu_address,
-		const F_resource_view_desc& desc
+		const F_sampler_state_desc& desc
 	) {
+		auto d3d12_descriptor_heap_p = heap_p.T_cast<F_directx12_descriptor_heap>()->d3d12_descriptor_heap_p();
+		auto d3d12_device_p = heap_p->device_p().T_cast<F_directx12_device>()->d3d12_device_p();
+
+		D3D12_SAMPLER_DESC d3d12_sampler_state_desc;
+		memset(&d3d12_sampler_state_desc, 0, sizeof(D3D12_SAMPLER_DESC));
+		d3d12_sampler_state_desc.Filter = D3D12_FILTER(desc.filter);
+		d3d12_sampler_state_desc.AddressU = D3D12_TEXTURE_ADDRESS_MODE(desc.texcoord_address_modes[0]);
+		d3d12_sampler_state_desc.AddressV = D3D12_TEXTURE_ADDRESS_MODE(desc.texcoord_address_modes[1]);
+		d3d12_sampler_state_desc.AddressW = D3D12_TEXTURE_ADDRESS_MODE(desc.texcoord_address_modes[2]);
+		d3d12_sampler_state_desc.MipLODBias = desc.lod_offset;
+		d3d12_sampler_state_desc.MinLOD = desc.min_lod;
+		d3d12_sampler_state_desc.MaxLOD = desc.max_lod;
+
+		d3d12_device_p->CreateSampler(
+			&d3d12_sampler_state_desc,
+			D3D12_CPU_DESCRIPTOR_HANDLE(cpu_address)
+		);
+		HRESULT hr = d3d12_device_p->GetDeviceRemovedReason();
+		NCPP_ASSERT(!FAILED(hr)) << "can't initialize sampler state descriptor";
 	}
 
 }
