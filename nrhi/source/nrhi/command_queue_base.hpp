@@ -33,6 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+#include <nrhi/device_child.hpp>
 #include <nrhi/command_list_type.hpp>
 
 #pragma endregion
@@ -60,17 +61,15 @@ namespace nrhi {
 
 
 
-    class NRHI_API A_command_queue {
+    class NRHI_API A_command_queue : public A_device_child {
 
     private:
-        TK_valid<A_device> device_p_;
         F_command_queue_desc desc_;
 		b8 supports_graphics_ = false;
 		b8 supports_compute_ = false;
 		b8 supports_blit_ = false;
 
     public:
-        NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
         NCPP_FORCE_INLINE const F_command_queue_desc& desc() const noexcept { return desc_; }
 		NCPP_FORCE_INLINE b8 supports_graphics() const noexcept { return supports_graphics_; }
 		NCPP_FORCE_INLINE b8 supports_compute() const noexcept { return supports_compute_; }

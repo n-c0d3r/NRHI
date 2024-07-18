@@ -34,6 +34,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+#include <nrhi/device_child.hpp>
 #include <nrhi/fence_flag.hpp>
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
@@ -57,10 +58,9 @@ namespace nrhi {
 
 
 
-	class NRHI_API A_fence {
+	class NRHI_API A_fence : public A_device_child {
 
 	private:
-		TK_valid<A_device> device_p_;
 		F_fence_desc desc_;
 
 	public:

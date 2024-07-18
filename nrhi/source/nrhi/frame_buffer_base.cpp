@@ -8,7 +8,7 @@ namespace nrhi {
 		TKPA_valid<A_device> device_p,
 		const F_frame_buffer_desc& desc
 	) :
-		device_p_(device_p),
+		A_device_child(device_p),
 		desc_(desc),
 
 		is_has_dsv_(desc.depth_stencil_attachment.is_valid())

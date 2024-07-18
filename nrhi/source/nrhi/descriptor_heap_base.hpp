@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/resource_view_base.hpp
+/** @file nrhi/descriptor.hpp
 *
-*   Implement resource view base class.
+*   Implement descriptor.
 */
 
 
@@ -33,14 +33,11 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/device_child.hpp>
-#include <nrhi/resource_base.hpp>
-#include <nrhi/resource_desc.hpp>
-#include <nrhi/resource_view_desc.hpp>
-#include <nrhi/resource_view_type.hpp>
-#include <nrhi/resource_view_handle.hpp>
-
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+#include <nrhi/device_child.hpp>
+#include <nrhi/descriptor_range_type.hpp>
+#include <nrhi/descriptor_heap_type.hpp>
+#include <nrhi/descriptor_heap_flag.hpp>
 #include <nrhi/descriptor_base.hpp>
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
@@ -48,95 +45,41 @@
 
 
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 namespace nrhi {
 
-    class A_device;
-    class A_resource;
-    class A_resource_view;
+	class A_device;
+	class A_descriptor_heap;
 
 
 
-	u64& inject_resource_view_generation(TKPA_valid<A_resource_view> resource_view_p) noexcept;
+	struct F_descriptor_heap_desc {
+
+		ED_descriptor_heap_type type;
+		ED_descriptor_heap_flag flags = ED_descriptor_heap_flag::NONE;
+		u32 descriptor_count = 0;
+
+	};
 
 
 
-    class NRHI_API A_resource_view : public A_device_child
-	{
+	class NRHI_API A_descriptor_heap : public A_device_child {
+
+	private:
+		F_descriptor_heap_desc desc_;
 
 	public:
-		friend u64& nrhi::inject_resource_view_generation(TKPA_valid<A_resource_view> resource_view_p) noexcept;
+		NCPP_FORCE_INLINE const F_descriptor_heap_desc& desc() const noexcept { return desc_; }
 
 
-
-    private:
-        F_resource_view_desc desc_;
-		ED_resource_type resource_type_;
 
 	protected:
-		u64 generation_ = 0;
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		F_descriptor descriptor_;
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-
-    public:
-        NCPP_FORCE_INLINE const F_resource_view_desc& desc() const noexcept { return desc_; }
-        NCPP_FORCE_INLINE ED_resource_type resource_type() const noexcept { return resource_type_; }
-
-		NCPP_FORCE_INLINE u64 generation() const noexcept { return generation_; }
-		NCPP_FORCE_INLINE b8 is_valid_generation() const noexcept {
-
-			return (generation_ == desc_.resource_p->generation());
-		}
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		NCPP_FORCE_INLINE const F_descriptor& descriptor() const noexcept {
-
-			return descriptor_;
-		}
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-
-
-
-    protected:
-        A_resource_view(
-            TKPA_valid<A_device> device_p,
-            const F_resource_view_desc& desc,
-            ED_resource_view_type overrided_type
-        );
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		A_resource_view(
-			TKPA_valid<A_device> device_p,
-			const F_resource_view_desc& desc,
-			const F_descriptor& descriptor,
-			ED_resource_view_type overrided_type
-		);
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-
-    public:
-        virtual ~A_resource_view();
+		A_descriptor_heap(TK_valid<A_device> device_p, const F_descriptor_heap_desc& desc);
 
 	public:
-		NCPP_OBJECT(A_resource_view);
+		virtual ~A_descriptor_heap();
 
-	public:
-		virtual void rebuild();
-		void guarantee_generation();
-
-	protected:
-		void finalize_rebuild();
-
-    };
-
-
-
-	NCPP_FORCE_INLINE F_resource_view_desc& inject_resource_view_desc(TKPA_valid<A_resource_view> resource_view_p) noexcept {
-
-		return (F_resource_view_desc&)(resource_view_p->desc());
-	}
-	NCPP_FORCE_INLINE u64& inject_resource_view_generation(TKPA_valid<A_resource_view> resource_view_p) noexcept {
-
-		return resource_view_p->generation_;
-	}
+	};
 
 }
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING

@@ -6,7 +6,7 @@
 namespace nrhi {
 
     A_command_queue::A_command_queue(TKPA_valid<A_device> device_p, const F_command_queue_desc& desc) :
-        device_p_(device_p),
+        A_device_child(device_p),
         desc_(desc),
 		supports_graphics_(
 			(desc.type == ED_command_list_type::DIRECT)
@@ -20,10 +20,8 @@ namespace nrhi {
 			|| (desc.type == ED_command_list_type::BLIT)
 		)
     {
-
     }
     A_command_queue::~A_command_queue(){
-
     }
 
 

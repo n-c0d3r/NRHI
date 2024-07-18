@@ -11,7 +11,7 @@ namespace nrhi {
 		const F_pipeline_state_desc& desc,
 		ED_pipeline_state_type overrided_type
 	) :
-		device_p_(device_p),
+		A_device_child(device_p),
 		desc_(desc)
 	{
 		desc_.type = overrided_type;

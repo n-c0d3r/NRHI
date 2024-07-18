@@ -9,7 +9,7 @@ namespace nrhi {
 		TKPA_valid<A_device> device_p,
 		const F_shader_desc& desc
 	) :
-		device_p_(device_p),
+		A_device_child(device_p),
 		desc_(desc),
 		type_(desc.blob_p->desc().type),
 		input_assembler_desc_(desc.blob_p->desc().input_assembler_desc)

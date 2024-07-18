@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/command_allocator_base.hpp
+/** @file nrhi/directx12/resource.hpp
 *
-*   Implement command allocator base class.
+*   Implement directx12 resource.
 */
 
 
@@ -33,56 +33,59 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-#include <nrhi/device_child.hpp>
-#include <nrhi/command_list_type.hpp>
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+#include <nrhi/descriptor_base.hpp>
+#include <nrhi/descriptor_heap_base.hpp>
+#include <nrhi/resource_view_base.hpp>
+#include <nrhi/sampler_state_base.hpp>
 
 #pragma endregion
 
 
 
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 namespace nrhi {
 
 	class A_device;
 
 
 
-	struct F_command_allocator_desc {
-
-		ED_command_list_type type = ED_command_list_type::DIRECT;
-
-	};
-
-
-
-	class NRHI_API A_command_allocator : public A_device_child {
-
-	private:
-		F_command_allocator_desc desc_;
-		b8 supports_graphics_ = false;
-		b8 supports_compute_ = false;
-		b8 supports_blit_ = false;
+	class NRHI_API HD_directx12_descriptor {
 
 	public:
-		NCPP_FORCE_INLINE const F_command_allocator_desc& desc() const noexcept { return desc_; }
-		NCPP_FORCE_INLINE b8 supports_graphics() const noexcept { return supports_graphics_; }
-		NCPP_FORCE_INLINE b8 supports_compute() const noexcept { return supports_compute_; }
-		NCPP_FORCE_INLINE b8 supports_blit() const noexcept { return supports_blit_; }
-
-
-
-	protected:
-		A_command_allocator(TKPA_valid<A_device> device_p, const F_command_allocator_desc& desc);
+		static void initialize_resource_view(
+			TKPA_valid<A_descriptor_heap> heap_p,
+			const F_descriptor_handle& handle,
+			const F_resource_view_desc& desc
+		);
 
 	public:
-		virtual ~A_command_allocator();
+		static void initialize_srv(
+			TKPA_valid<A_descriptor_heap> heap_p,
+			const F_descriptor_handle& handle,
+			const F_resource_view_desc& desc
+		);
+		static void initialize_uav(
+			TKPA_valid<A_descriptor_heap> heap_p,
+			const F_descriptor_handle& handle,
+			const F_resource_view_desc& desc
+		);
+		static void initialize_rtv(
+			TKPA_valid<A_descriptor_heap> heap_p,
+			const F_descriptor_handle& handle,
+			const F_resource_view_desc& desc
+		);
+		static void initialize_dsv(
+			TKPA_valid<A_descriptor_heap> heap_p,
+			const F_descriptor_handle& handle,
+			const F_resource_view_desc& desc
+		);
 
 	public:
-		NCPP_OBJECT(A_command_allocator);
+		static void initialize_sampler_state(
+			TKPA_valid<A_descriptor_heap> heap_p,
+			const F_descriptor_handle& handle,
+			const F_resource_view_desc& desc
+		);
 
 	};
 
 }
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION

@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/command_allocator_base.hpp
+/** @file nrhi/directx12/sampler_state.hpp
 *
-*   Implement command allocator base class.
+*   Implement directx12 sampler state.
 */
 
 
@@ -33,56 +33,48 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-#include <nrhi/device_child.hpp>
-#include <nrhi/command_list_type.hpp>
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+#include <nrhi/sampler_state_base.hpp>
 
 #pragma endregion
 
 
 
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 namespace nrhi {
 
 	class A_device;
 
 
 
-	struct F_command_allocator_desc {
+	class NRHI_API F_directx12_sampler_state : public A_sampler_state {
 
-		ED_command_list_type type = ED_command_list_type::DIRECT;
+	public:
+		F_directx12_sampler_state(
+			TKPA_valid<A_device> device_p,
+			const F_sampler_state_desc& desc
+		);
+		F_directx12_sampler_state(
+			TKPA_valid<A_device> device_p,
+			const F_sampler_state_desc& desc,
+			const F_descriptor& descriptor
+		);
+		virtual ~F_directx12_sampler_state();
+
+	public:
+		NCPP_OBJECT(F_directx12_sampler_state);
+
+	public:
+		virtual void rebuild(
+			const F_sampler_state_desc& desc
+		) override;
 
 	};
 
 
 
-	class NRHI_API A_command_allocator : public A_device_child {
-
-	private:
-		F_command_allocator_desc desc_;
-		b8 supports_graphics_ = false;
-		b8 supports_compute_ = false;
-		b8 supports_blit_ = false;
+	class NRHI_API HD_directx12_sampler_state {
 
 	public:
-		NCPP_FORCE_INLINE const F_command_allocator_desc& desc() const noexcept { return desc_; }
-		NCPP_FORCE_INLINE b8 supports_graphics() const noexcept { return supports_graphics_; }
-		NCPP_FORCE_INLINE b8 supports_compute() const noexcept { return supports_compute_; }
-		NCPP_FORCE_INLINE b8 supports_blit() const noexcept { return supports_blit_; }
-
-
-
-	protected:
-		A_command_allocator(TKPA_valid<A_device> device_p, const F_command_allocator_desc& desc);
-
-	public:
-		virtual ~A_command_allocator();
-
-	public:
-		NCPP_OBJECT(A_command_allocator);
 
 	};
 
 }
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION

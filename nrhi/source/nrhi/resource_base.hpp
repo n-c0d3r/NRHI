@@ -33,6 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+#include <nrhi/device_child.hpp>
 #include <nrhi/resource_desc.hpp>
 #include <nrhi/resource_type.hpp>
 
@@ -51,7 +52,7 @@ namespace nrhi {
 
 
 
-    class NRHI_API A_resource {
+    class NRHI_API A_resource : public A_device_child {
 
 	public:
 		friend u64& nrhi::inject_resource_generation(TKPA_valid<A_resource> resource_p) noexcept;
@@ -59,7 +60,6 @@ namespace nrhi {
 
 
     private:
-        TK_valid<A_device> device_p_;
         F_resource_desc desc_;
         F_initial_resource_data initial_data_;
 
@@ -67,7 +67,6 @@ namespace nrhi {
 		u64 generation_ = 0;
 
     public:
-        NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
         NCPP_FORCE_INLINE const F_resource_desc& desc() const noexcept { return desc_; }
         NCPP_FORCE_INLINE const F_initial_resource_data& initial_data() const noexcept { return initial_data_; }
 

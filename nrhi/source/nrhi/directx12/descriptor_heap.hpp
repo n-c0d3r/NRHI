@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/command_allocator_base.hpp
+/** @file nrhi/directx12/resource.hpp
 *
-*   Implement command allocator base class.
+*   Implement directx12 resource.
 */
 
 
@@ -33,56 +33,53 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-#include <nrhi/device_child.hpp>
-#include <nrhi/command_list_type.hpp>
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+#include <nrhi/descriptor_heap_base.hpp>
 
 #pragma endregion
 
 
 
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 namespace nrhi {
 
 	class A_device;
 
 
 
-	struct F_command_allocator_desc {
+	class NRHI_API F_directx12_descriptor_heap : public A_descriptor_heap {
 
-		ED_command_list_type type = ED_command_list_type::DIRECT;
+	protected:
+		ID3D12DescriptorHeap* d3d12_descriptor_heap_p_ = 0;
+
+	public:
+		NCPP_FORCE_INLINE ID3D12DescriptorHeap* d3d12_descriptor_heap_p() noexcept { return d3d12_descriptor_heap_p_; }
+		NCPP_FORCE_INLINE void set_d3d12_descriptor_heap_p_unsafe(ID3D12DescriptorHeap* value) noexcept {
+			d3d12_descriptor_heap_p_ = value;
+		}
+
+	public:
+		F_directx12_descriptor_heap(
+			TKPA_valid<A_device> device_p,
+			const F_descriptor_heap_desc& desc
+		);
+		F_directx12_descriptor_heap(
+			TKPA_valid<A_device> device_p,
+			const F_descriptor_heap_desc& desc,
+			ID3D12DescriptorHeap* d3d12_descriptor_heap_p
+		);
+		virtual ~F_directx12_descriptor_heap();
 
 	};
 
 
 
-	class NRHI_API A_command_allocator : public A_device_child {
-
-	private:
-		F_command_allocator_desc desc_;
-		b8 supports_graphics_ = false;
-		b8 supports_compute_ = false;
-		b8 supports_blit_ = false;
+	class NRHI_API HD_directx12_descriptor_heap {
 
 	public:
-		NCPP_FORCE_INLINE const F_command_allocator_desc& desc() const noexcept { return desc_; }
-		NCPP_FORCE_INLINE b8 supports_graphics() const noexcept { return supports_graphics_; }
-		NCPP_FORCE_INLINE b8 supports_compute() const noexcept { return supports_compute_; }
-		NCPP_FORCE_INLINE b8 supports_blit() const noexcept { return supports_blit_; }
-
-
-
-	protected:
-		A_command_allocator(TKPA_valid<A_device> device_p, const F_command_allocator_desc& desc);
-
-	public:
-		virtual ~A_command_allocator();
-
-	public:
-		NCPP_OBJECT(A_command_allocator);
+		static TU<A_descriptor_heap> create(
+			TKPA_valid<A_device> device_p,
+			const F_descriptor_heap_desc& desc
+		);
 
 	};
 
 }
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION

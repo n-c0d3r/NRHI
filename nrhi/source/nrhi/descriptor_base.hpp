@@ -34,6 +34,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+#include <nrhi/device_child.hpp>
 #include <nrhi/descriptor_range_type.hpp>
 #include <nrhi/descriptor_heap_type.hpp>
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
@@ -67,33 +68,19 @@ namespace nrhi {
 
 
 
-    struct F_descriptor_heap_desc {
+	struct F_descriptor_handle {
 
-        ED_descriptor_heap_type type;
+		u64 cpu_address = 0;
+		u64 gpu_address = 0;
 
-    };
+	};
 
+	struct F_descriptor {
 
+		F_descriptor_handle handle;
+		TK<A_descriptor_heap> heap_p;
 
-    class NRHI_API A_descriptor_heap {
-
-    private:
-        TK_valid<A_device> device_p_;
-        F_descriptor_heap_desc desc_;
-
-    public:
-        NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
-        NCPP_FORCE_INLINE const F_descriptor_heap_desc& desc() const noexcept { return desc_; }
-
-
-
-    protected:
-        A_descriptor_heap(TK_valid<A_device> device_p, const F_descriptor_heap_desc& desc);
-
-    public:
-        virtual ~A_descriptor_heap();
-
-    };
+	};
 
 }
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING

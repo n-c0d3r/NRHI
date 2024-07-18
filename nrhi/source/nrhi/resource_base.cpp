@@ -10,7 +10,7 @@ namespace nrhi {
         const F_resource_desc& desc,
         ED_resource_type overrided_type
     ) :
-        device_p_(device_p),
+        A_device_child(device_p),
         desc_(desc),
         initial_data_(initial_data)
     {
