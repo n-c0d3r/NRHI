@@ -389,4 +389,43 @@ namespace nrhi {
 		NCPP_ASSERT(!FAILED(hr)) << "can't initialize sampler state descriptor";
 	}
 
+	void HD_directx12_descriptor::copy_descriptor_ranges(
+		TKPA_valid<A_device> device_p,
+		TG_span<F_descriptor_cpu_address> dest_cpu_addresses,
+		TG_span<F_descriptor_cpu_address> src_cpu_addresses,
+		TG_span<u32> descriptor_counts,
+		u32 range_count,
+		ED_descriptor_heap_type heap_type
+	) {
+		auto d3d12_device_p = device_p.T_cast<F_directx12_device>()->d3d12_device_p();
+
+		const u32* descriptor_counts_p = descriptor_counts.data();
+
+		d3d12_device_p->CopyDescriptors(
+			range_count,
+			(const D3D12_CPU_DESCRIPTOR_HANDLE*)(dest_cpu_addresses.data()),
+			descriptor_counts_p,
+			range_count,
+			(const D3D12_CPU_DESCRIPTOR_HANDLE*)(src_cpu_addresses.data()),
+			descriptor_counts_p,
+			D3D12_DESCRIPTOR_HEAP_TYPE(heap_type)
+		);
+	}
+	void HD_directx12_descriptor::copy_descriptors(
+		TKPA_valid<A_device> device_p,
+		F_descriptor_cpu_address dest_cpu_address,
+		F_descriptor_cpu_address src_cpu_address,
+		u32 descriptor_count,
+		ED_descriptor_heap_type heap_type
+	) {
+		auto d3d12_device_p = device_p.T_cast<F_directx12_device>()->d3d12_device_p();
+
+		d3d12_device_p->CopyDescriptorsSimple(
+			descriptor_count,
+			D3D12_CPU_DESCRIPTOR_HANDLE(dest_cpu_address),
+			D3D12_CPU_DESCRIPTOR_HANDLE(src_cpu_address),
+			D3D12_DESCRIPTOR_HEAP_TYPE(heap_type)
+		);
+	}
+
 }

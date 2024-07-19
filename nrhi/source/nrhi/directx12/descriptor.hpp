@@ -86,6 +86,23 @@ namespace nrhi {
 			const F_sampler_state_desc& desc
 		);
 
+	public:
+		static void copy_descriptor_ranges(
+			TKPA_valid<A_device> device_p,
+			TG_span<F_descriptor_cpu_address> dest_cpu_addresses,
+			TG_span<F_descriptor_cpu_address> src_cpu_addresses,
+			TG_span<u32> descriptor_counts,
+			u32 range_count,
+			ED_descriptor_heap_type heap_type
+		);
+		static void copy_descriptors(
+			TKPA_valid<A_device> device_p,
+			F_descriptor_cpu_address dest_cpu_address,
+			F_descriptor_cpu_address src_cpu_address,
+			u32 descriptor_count,
+			ED_descriptor_heap_type heap_type
+		);
+
 	};
 
 }
