@@ -10,6 +10,11 @@ namespace nrhi {
 
 		u32 shader_count = reflection.shaders.size();
 
+		NCPP_ASSERT((0 <= shader_index) && (shader_index <= shader_count)) << "shader index is out of bound";
+
+		auto& shader = reflection.shaders[shader_index];
+		NCPP_ASSERT(shader.type != ED_shader_type::NONE) << "invalid shader type";
+
 		// define shader index
 		{
 			NCPP_ASSERT(shader_index < shader_count)
@@ -17,7 +22,7 @@ namespace nrhi {
 
 			result += (
 				"#define NSL_SHADER_"
-				+ reflection.shaders[shader_index].name
+				+ shader.name
 				+ "\n"
 			);
 			result += (
@@ -25,10 +30,24 @@ namespace nrhi {
 				+ G_to_string(shader_index)
 				+ "\n"
 			);
-			result += (
-				"#define NSL_SHADER_INDEX "
-				+ G_to_string(shader_index)
-				+ "\n"
+		}
+
+		// define shader type
+		{
+			NRHI_ENUM_SWITCH(
+				shader.type,
+				NRHI_ENUM_CASE(
+					ED_shader_type::VERTEX,
+					result += "#define NSL_SHADER_TYPE_VERTEX \n";
+				)
+				NRHI_ENUM_CASE(
+					ED_shader_type::PIXEL,
+					result += "#define NSL_SHADER_TYPE_PIXEL \n";
+				)
+				NRHI_ENUM_CASE(
+					ED_shader_type::COMPUTE,
+					result += "#define NSL_SHADER_TYPE_COMPUTE \n";
+				)
 			);
 		}
 
