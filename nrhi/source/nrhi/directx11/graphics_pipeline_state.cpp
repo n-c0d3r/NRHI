@@ -1,6 +1,5 @@
 #include <nrhi/directx11/graphics_pipeline_state.hpp>
 #include <nrhi/directx11/shader.hpp>
-#include <nrhi/directx11/shader_blob.hpp>
 #include <nrhi/directx11/device.hpp>
 #include <nrhi/shader_type.hpp>
 
@@ -80,8 +79,10 @@ namespace nrhi {
 		// get d3d11 shaders
 		for(auto shader_p : desc.shader_p_vector) {
 
+			const auto& shader_desc = shader_p->desc();
+
 			NRHI_ENUM_SWITCH(
-				shader_p->type(),
+				shader_desc.type,
 				NRHI_ENUM_CASE(
 					ED_shader_type::VERTEX,
 					NCPP_ASSERT(!d3d11_vertex_shader_p_) << "only accept 1 vertex shader";

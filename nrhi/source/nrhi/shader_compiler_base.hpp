@@ -34,7 +34,6 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/shader_type.hpp>
-#include <nrhi/shader_blob_desc.hpp>
 
 #pragma endregion
 
@@ -43,6 +42,5 @@
 namespace nrhi {
 
 	class A_shader;
-	class A_shader_class;
 
 }

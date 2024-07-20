@@ -232,43 +232,47 @@ int main() {
 		}
 	};
 
-	// create demo shader class
-	auto shader_class_p = H_shader_compiler::compile_hlsl_from_src_content(
-		// shader class name
-		"DemoShaderClass",
-		// shader class source content
+	// demo shader src
+	G_string demo_shader_src = ""
 		"cbuffer uniform_data : register(b0) { float4 output_color; };"
-		"float4 vmain(float4 vertex_pos : VERTEX_POSITION, float4 instance_pos : INSTANCE_POSITION) : SV_POSITION"
-		"{ return float4(instance_pos.xyz + vertex_pos.xyz, 1); }"
-		"float4 pmain(float4 pos : SV_POSITION) : SV_TARGET"
-		"{ return output_color; }",
-		"", // empty abs_path
-		// shader kernel descriptors (each kernel has 1 entry point function and is compiled to 1 shader blob)
-		NCPP_INIL_SPAN(
-			F_shader_kernel_desc {
-				.name = "vmain",
-				.type = ED_shader_type::VERTEX,
-				.input_assembler_desc = input_assembler_desc
-			},
-			F_shader_kernel_desc {
-				.name = "pmain",
-				.type = ED_shader_type::PIXEL
-			}
-		)
-	);
+	   	"float4 vmain(float4 vertex_pos : VERTEX_POSITION, float4 instance_pos : INSTANCE_POSITION) : SV_POSITION"
+	   	"{ return float4(instance_pos.xyz + vertex_pos.xyz, 1); }"
+	   	"float4 pmain(float4 pos : SV_POSITION) : SV_TARGET"
+	   	"{ return output_color; }";
 
-	// create vertex shader from vertex shader blob
+	// create vertex shader
+	auto vshader_binary = H_shader_compiler::compile_hlsl_from_src_content(
+		"DemoShaderClass",
+		"vmain",
+		demo_shader_src,
+		"",
+		ED_shader_type::VERTEX
+	);
 	auto vshader_p = H_vertex_shader::create(
 		NCPP_FOREF_VALID(device_p),
-		NCPP_FOREF_VALID(shader_class_p),
-		"vmain"
+		{
+			.name = "DemoShaderClass::vmain",
+			.binary = vshader_binary,
+			.type = ED_shader_type::VERTEX,
+			.input_assembler_desc = input_assembler_desc
+		}
 	);
 
-	// create pixel shader from pixel shader blob
+	// create pixel shader
+	auto pshader_binary = H_shader_compiler::compile_hlsl_from_src_content(
+		"DemoShaderClass",
+		"pmain",
+		demo_shader_src,
+		"",
+		ED_shader_type::PIXEL
+	);
 	auto pshader_p = H_pixel_shader::create(
 		NCPP_FOREF_VALID(device_p),
-		NCPP_FOREF_VALID(shader_class_p),
-		"pmain"
+		{
+			.name = "DemoShaderClass::pmain",
+			.binary = pshader_binary,
+			.type = ED_shader_type::PIXEL
+		}
 	);
 
 	// create frame buffer

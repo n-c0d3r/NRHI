@@ -23,16 +23,18 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "namespace nrhi {
         }"
     VALUES
-        "compile_hlsl_from_src_content" "TU<A_shader_class>(
-            const G_string& name,
+        "compile_hlsl_from_src_content" "TG_vector<u8>(
+			const G_string& class_name,
+			const G_string& entry_point_name,
             const G_string& src_content,
             const G_string& abs_path,
-            TG_span<F_shader_kernel_desc> kernel_descs
+			ED_shader_type type
         )"
-        "compile_hlsl" "TU<A_shader_class>(
-            const G_string& name,
+        "compile_hlsl" "TG_vector<u8>(
+			const G_string& class_name,
+			const G_string& entry_point_name,
             const G_string& abs_path,
-            TG_span<F_shader_kernel_desc> kernel_descs
+			ED_shader_type type
         )"
 )
 

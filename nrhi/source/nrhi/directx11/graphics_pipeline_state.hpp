@@ -35,7 +35,6 @@
 
 #include <nrhi/directx11/pipeline_state.hpp>
 #include <nrhi/utilities/platform_object_pool.hpp>
-#include <nrhi/shader_blob_desc.hpp>
 
 #pragma endregion
 

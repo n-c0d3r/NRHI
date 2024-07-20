@@ -39,7 +39,6 @@
 #include <nrhi/compute_pipeline_state.hpp>
 #include <nrhi/buffer_handle.hpp>
 #include <nrhi/clear_flag.hpp>
-#include <nrhi/shader_blob_desc.hpp>
 #include <nrhi/resource_view_handle.hpp>
 
 #pragma endregion

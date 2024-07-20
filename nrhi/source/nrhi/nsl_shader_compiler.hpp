@@ -34,8 +34,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/shader_compiler_base.hpp>
-#include <nrhi/shader_class_base.hpp>
-#include <nrhi/shader_blob_desc.hpp>
+#include <nrhi/shader_desc.hpp>
 #include <nrhi/sampler_state_desc.hpp>
 #include <nrhi/cull_mode.hpp>
 #include <nrhi/fill_mode.hpp>

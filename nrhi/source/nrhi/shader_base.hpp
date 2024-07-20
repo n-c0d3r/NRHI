@@ -36,7 +36,6 @@
 #include <nrhi/device_child.hpp>
 #include <nrhi/shader_desc.hpp>
 #include <nrhi/shader_type.hpp>
-#include <nrhi/shader_blob_desc.hpp>
 
 #pragma endregion
 
@@ -100,12 +99,10 @@ namespace nrhi {
 
 	private:
 		F_shader_desc desc_;
-		ED_shader_type type_ = ED_shader_type::NONE;
 		F_input_assembler_desc input_assembler_desc_;
 
 	public:
 		NCPP_FORCE_INLINE const F_shader_desc& desc() const noexcept { return desc_; }
-		NCPP_FORCE_INLINE ED_shader_type type() const noexcept { return type_; }
 		NCPP_FORCE_INLINE const auto& input_assembler_desc() const noexcept { return input_assembler_desc_; }
 
 
