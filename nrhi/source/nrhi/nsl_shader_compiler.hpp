@@ -66,7 +66,7 @@ namespace nrhi {
 	enum class E_nsl_output_language {
 
 		NONE = 0,
-		HLSL = 0x1
+		HLSL_4 = 0x1
 
 	};
 
@@ -3162,6 +3162,9 @@ namespace nrhi {
 		G_string register_slot_macro(const G_string& name);
 
 	public:
+		virtual eastl::optional<G_string> src_header() = 0;
+
+	public:
 		virtual eastl::optional<G_string> define_to_string(
 			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 			const G_string& name,
@@ -3196,16 +3199,37 @@ namespace nrhi {
 
 
 
-	class NRHI_API F_nsl_output_hlsl : public A_nsl_output_language {
+	class NRHI_API A_nsl_output_hlsl : public A_nsl_output_language {
+
+	protected:
+		A_nsl_output_hlsl(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			E_nsl_output_language output_language_as_enum
+		);
 
 	public:
-		F_nsl_output_hlsl(
+		virtual ~A_nsl_output_hlsl();
+
+	public:
+		NCPP_OBJECT(A_nsl_output_hlsl);
+
+	public:
+		virtual eastl::optional<G_string> src_header() override;
+
+	};
+
+
+
+	class NRHI_API F_nsl_output_hlsl_4 : public A_nsl_output_hlsl {
+
+	public:
+		F_nsl_output_hlsl_4(
 			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
 		);
-		virtual ~F_nsl_output_hlsl();
+		virtual ~F_nsl_output_hlsl_4();
 
 	public:
-		NCPP_OBJECT(F_nsl_output_hlsl);
+		NCPP_OBJECT(F_nsl_output_hlsl_4);
 
 	private:
 		void register_data_types_internal();

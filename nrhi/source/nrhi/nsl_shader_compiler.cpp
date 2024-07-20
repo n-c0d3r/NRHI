@@ -6491,6 +6491,16 @@ namespace nrhi {
 	}
 	b8 F_nsl_translation_unit_compiler::apply_internal() {
 
+		// output language src header
+		{
+			auto src_header_opt = shader_compiler_p_->output_language_p()->src_header();
+
+			if(!src_header_opt)
+				return false;
+
+			compiled_result_.src_content += src_header_opt.value();
+		}
+
 		for(auto& unit_p : sorted_unit_p_vector_) {
 
 			auto compiled_result_opt_from_ast_tree = ast_trees_to_string(
@@ -6944,22 +6954,47 @@ namespace nrhi {
 
 
 
-	F_nsl_output_hlsl::F_nsl_output_hlsl(
+	A_nsl_output_hlsl::A_nsl_output_hlsl(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		E_nsl_output_language output_language_as_enum
+	) :
+		A_nsl_output_language(shader_compiler_p, output_language_as_enum)
+	{
+	}
+	A_nsl_output_hlsl::~A_nsl_output_hlsl() {
+	}
+
+	eastl::optional<G_string> A_nsl_output_hlsl::src_header() {
+
+		auto name_manager_p = shader_compiler_p()->name_manager_p();
+
+		G_string result;
+
+		result += "#define NSL_HLSL\n";
+		result += "#deinfe NSL_HLSL_MAJOR " + name_manager_p->target("NSL_HLSL_MAJOR") + "\n";
+
+		return std::move(result);
+	}
+
+
+
+	F_nsl_output_hlsl_4::F_nsl_output_hlsl_4(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
 	) :
-		A_nsl_output_language(shader_compiler_p, E_nsl_output_language::HLSL)
+		A_nsl_output_hlsl(shader_compiler_p, E_nsl_output_language::HLSL_4)
 	{
 		register_data_types_internal();
 	}
-	F_nsl_output_hlsl::~F_nsl_output_hlsl() {
+	F_nsl_output_hlsl_4::~F_nsl_output_hlsl_4() {
 	}
 
-	void F_nsl_output_hlsl::register_data_types_internal() {
+	void F_nsl_output_hlsl_4::register_data_types_internal() {
 
 		auto name_manager_p = shader_compiler_p()->name_manager_p();
 		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
 
-		name_manager_p->register_name("NSL_OUTPUT_HLSL");
+		name_manager_p->register_name("NSL_HLSL");
+		name_manager_p->register_name("NSL_HLSL_MAJOR", "4");
 
 		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("ConstantBuffer");
 		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("Buffer");
@@ -7438,20 +7473,20 @@ namespace nrhi {
 		);
 	}
 
-	eastl::optional<G_string> F_nsl_output_hlsl::define_to_string(
+	eastl::optional<G_string> F_nsl_output_hlsl_4::define_to_string(
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 		const G_string& name,
 		const G_string& target
 	) {
 		return "#define " + name + " " + G_replace_all(target, "\n", "\\\n") + "\n";
 	}
-	eastl::optional<G_string> F_nsl_output_hlsl::undef_to_string(
+	eastl::optional<G_string> F_nsl_output_hlsl_4::undef_to_string(
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 		const G_string& name
 	) {
 		return "#undef " + name;
 	}
-	eastl::optional<G_string> F_nsl_output_hlsl::sampler_state_to_string(
+	eastl::optional<G_string> F_nsl_output_hlsl_4::sampler_state_to_string(
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 		const F_nsl_sampler_state& sampler_state
 	) {
@@ -7484,7 +7519,7 @@ namespace nrhi {
 
 		return std::move(result);
 	}
-	eastl::optional<G_string> F_nsl_output_hlsl::resource_to_string(
+	eastl::optional<G_string> F_nsl_output_hlsl_4::resource_to_string(
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 		const F_nsl_resource& resource
 	) {
@@ -7595,7 +7630,7 @@ namespace nrhi {
 
 		return std::move(result);
 	}
-	eastl::optional<G_string> F_nsl_output_hlsl::structure_to_string(
+	eastl::optional<G_string> F_nsl_output_hlsl_4::structure_to_string(
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 		const F_nsl_structure& structure
 	) {
@@ -7637,7 +7672,7 @@ namespace nrhi {
 			+ "\n};\n"
 		);
 	}
-	eastl::optional<G_string> F_nsl_output_hlsl::enumeration_to_string(
+	eastl::optional<G_string> F_nsl_output_hlsl_4::enumeration_to_string(
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 		const F_nsl_enumeration& enumeration
 	) {
@@ -7667,7 +7702,7 @@ namespace nrhi {
 			+ "\n"
 		);
 	}
-	eastl::optional<G_string> F_nsl_output_hlsl::shader_object_to_string(
+	eastl::optional<G_string> F_nsl_output_hlsl_4::shader_object_to_string(
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 		TKPA_valid<A_nsl_shader_object> shader_object_p
 	) {
@@ -8779,8 +8814,8 @@ namespace nrhi {
 
 		switch (output_language_enum)
 		{
-		case E_nsl_output_language::HLSL:
-			return TU<F_nsl_output_hlsl>()(
+		case E_nsl_output_language::HLSL_4:
+			return TU<F_nsl_output_hlsl_4>()(
 				NCPP_KTHIS()
 			);
 		default:
