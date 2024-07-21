@@ -12,6 +12,8 @@ namespace nrhi {
 		const G_string& entry_point_name,
 		const G_string& src_content,
 		const G_string& abs_path,
+		u32 model_major,
+		u32 model_minor,
 		ED_shader_type type
 	) {
 		ID3DBlob* d3d11_shader_blob_p = 0;
@@ -21,10 +23,13 @@ namespace nrhi {
 
 		G_string src_name = class_name + entry_point_name;
 
+		G_string model = G_to_string(model_major) + "_" + G_to_string(model_minor);
+
 		NRHI_ENUM_SWITCH(
 			type,
 			NRHI_ENUM_CASE(
 				ED_shader_type::VERTEX,
+				model = "vs_" + model;
 				hr = D3DCompile(
 					src_content.data(),
 					src_content.size() * sizeof(char),
@@ -32,7 +37,7 @@ namespace nrhi {
 					0,
 					0,
 					entry_point_name.data(),
-					"vs_5_0",
+					model.c_str(),
 					0,
 					0,
 					&d3d11_shader_blob_p,
@@ -50,6 +55,7 @@ namespace nrhi {
 			)
 			NRHI_ENUM_CASE(
 				ED_shader_type::PIXEL,
+				model = "ps_" + model;
 				hr = D3DCompile(
 					src_content.data(),
 					src_content.size() * sizeof(char),
@@ -57,7 +63,7 @@ namespace nrhi {
 					0,
 					0,
 					entry_point_name.data(),
-					"ps_5_0",
+					model.c_str(),
 					0,
 					0,
 					&d3d11_shader_blob_p,
@@ -75,6 +81,7 @@ namespace nrhi {
 			)
 			NRHI_ENUM_CASE(
 				ED_shader_type::COMPUTE,
+				model = "cs_" + model;
 				hr = D3DCompile(
 					src_content.data(),
 					src_content.size() * sizeof(char),
@@ -82,7 +89,7 @@ namespace nrhi {
 					0,
 					0,
 					entry_point_name.data(),
-					"cs_5_0",
+					model.c_str(),
 					0,
 					0,
 					&d3d11_shader_blob_p,
@@ -113,6 +120,8 @@ namespace nrhi {
 		const G_string& class_name,
 		const G_string& entry_point_name,
 		const G_string& abs_path,
+		u32 model_major,
+		u32 model_minor,
 		ED_shader_type type
 	) {
 		ID3DBlob* d3d11_shader_blob_p = 0;
@@ -124,16 +133,19 @@ namespace nrhi {
 
 		G_wstring abs_wpath = G_to_wstring(abs_path);
 
+		G_string model = G_to_string(model_major) + "_" + G_to_string(model_minor);
+
 		NRHI_ENUM_SWITCH(
 			type,
 			NRHI_ENUM_CASE(
 				ED_shader_type::VERTEX,
+				model = "vs_" + model;
 				hr = D3DCompileFromFile(
 					abs_wpath.data(),
 					0,
 					D3D_COMPILE_STANDARD_FILE_INCLUDE,
 					entry_point_name.data(),
-					"vs_5_0",
+					model.c_str(),
 					0,
 					0,
 					&d3d11_shader_blob_p,
@@ -151,12 +163,13 @@ namespace nrhi {
 			)
 			NRHI_ENUM_CASE(
 				ED_shader_type::PIXEL,
+				model = "ps_" + model;
 				hr = D3DCompileFromFile(
 					abs_wpath.data(),
 					0,
 					D3D_COMPILE_STANDARD_FILE_INCLUDE,
 					entry_point_name.data(),
-					"ps_5_0",
+					model.c_str(),
 					0,
 					0,
 					&d3d11_shader_blob_p,
@@ -174,12 +187,13 @@ namespace nrhi {
 			)
 			NRHI_ENUM_CASE(
 				ED_shader_type::COMPUTE,
+				model = "cs_" + model;
 				hr = D3DCompileFromFile(
 					abs_wpath.data(),
 					0,
 					D3D_COMPILE_STANDARD_FILE_INCLUDE,
 					entry_point_name.data(),
-					"cs_5_0",
+					model.c_str(),
 					0,
 					0,
 					&d3d11_shader_blob_p,

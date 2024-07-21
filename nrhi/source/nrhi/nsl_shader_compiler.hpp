@@ -66,9 +66,19 @@ namespace nrhi {
 	enum class E_nsl_output_language {
 
 		NONE = 0,
-		HLSL_4 = 0x1
+		HLSL_4 = 1,
+		HLSL_5 = 2,
+		HLSL_5_1 = 3
 
 	};
+
+	enum class E_nsl_feature {
+
+		RESOURCE_ARRAY
+
+	};
+
+	using F_resource_dimension_sizes = TG_array<u32, 16>;
 
 	struct F_nsl_error {
 		G_string description;
@@ -355,6 +365,10 @@ namespace nrhi {
 
 		TG_vector<G_string> uniforms;
 		u32 constant_size = NCPP_U32_MAX;
+
+		F_resource_dimension_sizes dimension_sizes = { 1 };
+		u32 dimension_count = 1;
+		u32 is_array = false;
 
 		TG_unordered_set<G_string> shader_filters = { "*" };
 
@@ -778,6 +792,10 @@ namespace nrhi {
 		E_nsl_resource_type type = E_nsl_resource_type::NONE;
 		E_nsl_resource_type_class type_class = E_nsl_resource_type_class::NONE;
 		TG_vector<G_string> type_args;
+
+		F_resource_dimension_sizes dimension_sizes = { 1 };
+		u32 dimension_count = 1;
+		u32 is_array = false;
 
 		TG_vector<u32> actual_slots;
 
@@ -3162,6 +3180,9 @@ namespace nrhi {
 		G_string register_slot_macro(const G_string& name);
 
 	public:
+		virtual b8 is_support(E_nsl_feature feature);
+
+	public:
 		virtual eastl::optional<G_string> src_header() = 0;
 
 	public:
@@ -3213,26 +3234,11 @@ namespace nrhi {
 	public:
 		NCPP_OBJECT(A_nsl_output_hlsl);
 
-	public:
-		virtual eastl::optional<G_string> src_header() override;
-
-	};
-
-
-
-	class NRHI_API F_nsl_output_hlsl_4 : public A_nsl_output_hlsl {
-
-	public:
-		F_nsl_output_hlsl_4(
-			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
-		);
-		virtual ~F_nsl_output_hlsl_4();
-
-	public:
-		NCPP_OBJECT(F_nsl_output_hlsl_4);
-
 	private:
 		void register_data_types_internal();
+
+	public:
+		virtual eastl::optional<G_string> src_header() override;
 
 	public:
 		virtual eastl::optional<G_string> define_to_string(
@@ -3263,6 +3269,76 @@ namespace nrhi {
 		virtual eastl::optional<G_string> shader_object_to_string(
 			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 			TKPA_valid<A_nsl_shader_object> shader_object_p
+		) override;
+
+	protected:
+		eastl::optional<G_string> resource_to_string_with_customization(
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			const F_nsl_resource& resource,
+			const G_string& sub_name_keyword = ""
+		);
+
+	};
+
+
+
+	class NRHI_API F_nsl_output_hlsl_4 : public A_nsl_output_hlsl {
+
+	public:
+		F_nsl_output_hlsl_4(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			E_nsl_output_language output_language_as_enum = E_nsl_output_language::HLSL_4
+		);
+		virtual ~F_nsl_output_hlsl_4();
+
+	public:
+		NCPP_OBJECT(F_nsl_output_hlsl_4);
+
+	private:
+		void register_data_types_internal();
+
+	};
+
+
+
+	class NRHI_API F_nsl_output_hlsl_5 : public F_nsl_output_hlsl_4 {
+
+	public:
+		F_nsl_output_hlsl_5(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			E_nsl_output_language output_language_as_enum = E_nsl_output_language::HLSL_5
+		);
+		virtual ~F_nsl_output_hlsl_5();
+
+	public:
+		NCPP_OBJECT(F_nsl_output_hlsl_5);
+
+	private:
+		void register_data_types_internal();
+
+	};
+
+
+
+	class NRHI_API F_nsl_output_hlsl_5_1 : public F_nsl_output_hlsl_5 {
+
+	public:
+		F_nsl_output_hlsl_5_1(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			E_nsl_output_language output_language_as_enum = E_nsl_output_language::HLSL_5_1
+		);
+		virtual ~F_nsl_output_hlsl_5_1();
+
+	public:
+		NCPP_OBJECT(F_nsl_output_hlsl_5_1);
+
+	private:
+		void register_data_types_internal();
+
+	public:
+		virtual eastl::optional<G_string> resource_to_string(
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			const F_nsl_resource& resource
 		) override;
 
 	};
@@ -3806,9 +3882,8 @@ namespace nrhi {
 
 
 	public:
-		F_nsl_shader_compiler();
 		F_nsl_shader_compiler(
-			const F_nsl_shader_compiler_customizer& customizer
+			const F_nsl_shader_compiler_customizer& customizer = {}
 		);
 		virtual ~F_nsl_shader_compiler();
 
