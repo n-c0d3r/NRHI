@@ -246,6 +246,8 @@ int main() {
 		"vmain",
 		demo_shader_src,
 		"",
+		5,
+		0,
 		ED_shader_type::VERTEX
 	);
 	auto vshader_p = H_vertex_shader::create(
@@ -264,6 +266,8 @@ int main() {
 		"pmain",
 		demo_shader_src,
 		"",
+		5,
+		0,
 		ED_shader_type::PIXEL
 	);
 	auto pshader_p = H_pixel_shader::create(
