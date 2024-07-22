@@ -47,22 +47,35 @@ namespace nrhi {
 
 	class NRHI_API F_directx12_compute_pipeline_state : public F_directx12_pipeline_state {
 
-	private:
-		ID3D12ComputeShader* d3d12_compute_shader_p_ = 0;
-
-	public:
-		NCPP_FORCE_INLINE ID3D12ComputeShader* d3d12_compute_shader_p() const noexcept { return d3d12_compute_shader_p_; }
-		NCPP_FORCE_INLINE void set_d3d12_compute_shader_p_unsafe(ID3D12ComputeShader* value) noexcept { d3d12_compute_shader_p_ = value; }
-
-
-
 	public:
 		F_directx12_compute_pipeline_state(
 			TKPA_valid<A_device> device_p,
 			const F_pipeline_state_desc& desc,
 			ED_pipeline_state_type overrided_type = ED_pipeline_state_type::COMPUTE
 		);
+		F_directx12_compute_pipeline_state(
+			TKPA_valid<A_device> device_p,
+			const F_pipeline_state_desc& desc,
+			F_directx12_pipeline_state_direct_flag,
+			ED_pipeline_state_type overrided_type = ED_pipeline_state_type::COMPUTE
+		);
+		F_directx12_compute_pipeline_state(
+			TKPA_valid<A_device> device_p,
+			const F_pipeline_state_desc& desc,
+			ED_pipeline_state_type overrided_type,
+			ID3D12PipelineState* d3d12_pipeline_state_p
+		);
 		virtual ~F_directx12_compute_pipeline_state();
+
+	private:
+		static ID3D12PipelineState* create_d3d12_compute_pipeline_state(
+			TKPA_valid<A_device> device_p,
+			const F_pipeline_state_desc& desc
+		);
+		static ID3D12PipelineState* create_d3d12_compute_pipeline_state_direct(
+			TKPA_valid<A_device> device_p,
+			const F_pipeline_state_desc& desc
+		);
 
 	};
 
