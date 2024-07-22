@@ -12,5 +12,7 @@ add_subdirectory(fence)
 add_subdirectory(swapchain)
 add_subdirectory(resource)
 add_subdirectory(resource_binding)
+add_subdirectory(shader)
+add_subdirectory(pipeline_state)
 
 add_subdirectory(nsl)

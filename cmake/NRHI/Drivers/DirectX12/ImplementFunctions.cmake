@@ -15,5 +15,8 @@ include(NRHI/Drivers/DirectX12/ImplementDescriptor)
 include(NRHI/Drivers/DirectX12/ImplementDescriptorHeap)
 include(NRHI/Drivers/DirectX12/ImplementResourceView)
 include(NRHI/Drivers/DirectX12/ImplementSamplerState)
+include(NRHI/Drivers/DirectX12/ImplementPipelineState)
+include(NRHI/Drivers/DirectX12/ImplementShader)
+include(NRHI/Drivers/DirectX12/ImplementShaderCompiler)
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement functions done")

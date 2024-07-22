@@ -40,6 +40,7 @@
 #include <nrhi/fill_mode.hpp>
 #include <nrhi/depth_comparison_func.hpp>
 #include <nrhi/primitive_topology.hpp>
+#include <nrhi/shader_desc.hpp>
 #include <nrhi/utilities/platform_object_pool.hpp>
 
 #pragma endregion
@@ -106,6 +107,10 @@ namespace nrhi {
 		ED_primitive_topology primitive_topology = ED_primitive_topology::TRIANGLE_LIST;
 
 		TG_vector<TK_valid<A_shader>> shader_p_vector;
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		TG_vector<F_shader_desc> direct_shader_descs;
+#endif // NRHI_SUPPORT_DRIVER_ADVANCED_RESOURCE_BINDING
 
 	};
 

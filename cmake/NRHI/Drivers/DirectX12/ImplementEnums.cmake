@@ -17,6 +17,10 @@ include(NRHI/Drivers/DirectX12/ImplementResourceLayout)
 include(NRHI/Drivers/DirectX12/ImplementResourceViewType)
 include(NRHI/Drivers/DirectX12/ImplementFilter)
 include(NRHI/Drivers/DirectX12/ImplementTexCoordAddressMode)
+include(NRHI/Drivers/DirectX12/ImplementPipelineStateType)
+include(NRHI/Drivers/DirectX12/ImplementPrimitiveTopology)
+include(NRHI/Drivers/DirectX12/ImplementShaderType)
+include(NRHI/Drivers/DirectX12/ImplementShaderVisibility)
 
 
 
