@@ -3811,9 +3811,18 @@ namespace nrhi {
 			return eastl::nullopt;
 		}
 
+		// setup child info trees reader
+		F_nsl_info_tree_reader child_info_trees_reader(
+			shader_compiler_p(),
+			child_info_trees,
+			object_implementation.bodies[0].begin_location,
+			&(unit_p->error_group_p()->stack())
+		);
+
+		// get info about resource type,...
 		auto& type_child_info_tree = child_info_trees[0];
 
-		TG_vector<F_nsl_ast_tree> child_trees(1);
+		TG_vector<F_nsl_ast_tree> child_trees(child_info_trees.size());
 		child_trees[0] = F_nsl_ast_tree {
 			.type = E_nsl_ast_tree_type::INFO_TREE,
 			.info_tree = type_child_info_tree,
@@ -3833,6 +3842,36 @@ namespace nrhi {
 
 		resource_info.type = name_manager_p->target(type_child_info_tree.name);
 		resource_info.type_args = type_args;
+
+		// check for dimension sizes and dimension count
+		{
+			u32 dimension_count = child_info_trees.size() - 1;
+
+			for(u32 i = 1; i <= dimension_count; ++i) {
+
+				auto& dimension_size_child_info_tree = child_info_trees[i];
+
+				auto value_opt = child_info_trees_reader.read_u32(i);
+
+				if(!value_opt)
+					return eastl::nullopt;
+
+				resource_info.dimension_sizes[i - 1] = value_opt.value();
+
+				child_trees[i] = F_nsl_ast_tree {
+					.type = E_nsl_ast_tree_type::INFO_TREE,
+					.info_tree = dimension_size_child_info_tree,
+					.begin_location = dimension_size_child_info_tree.begin_location,
+					.end_location = dimension_size_child_info_tree.end_location
+				};
+			}
+
+			if(dimension_count)
+			{
+				resource_info.dimension_count = dimension_count;
+				resource_info.is_array = true;
+			}
+		}
 
 		// check for slot annotation
 		{
@@ -6971,6 +7010,11 @@ namespace nrhi {
 		return "NSL_REGISTER_SLOT_" + name;
 	}
 
+	b8 A_nsl_output_language::is_support(E_nsl_feature feature) {
+
+		return true;
+	}
+
 
 
 	A_nsl_output_hlsl::A_nsl_output_hlsl(
@@ -6979,6 +7023,7 @@ namespace nrhi {
 	) :
 		A_nsl_output_language(shader_compiler_p, output_language_as_enum)
 	{
+		register_data_types_internal();
 	}
 	A_nsl_output_hlsl::~A_nsl_output_hlsl() {
 	}
@@ -6991,29 +7036,19 @@ namespace nrhi {
 
 		result += "#define NSL_HLSL\n";
 		result += "#deinfe NSL_HLSL_MAJOR " + name_manager_p->target("NSL_HLSL_MAJOR") + "\n";
+		result += "#deinfe NSL_HLSL_MINOR " + name_manager_p->target("NSL_HLSL_MINOR") + "\n";
 
 		return std::move(result);
 	}
 
-
-
-	F_nsl_output_hlsl_4::F_nsl_output_hlsl_4(
-		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
-	) :
-		A_nsl_output_hlsl(shader_compiler_p, E_nsl_output_language::HLSL_4)
-	{
-		register_data_types_internal();
-	}
-	F_nsl_output_hlsl_4::~F_nsl_output_hlsl_4() {
-	}
-
-	void F_nsl_output_hlsl_4::register_data_types_internal() {
+	void A_nsl_output_hlsl::register_data_types_internal() {
 
 		auto name_manager_p = shader_compiler_p()->name_manager_p();
 		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
 
 		name_manager_p->register_name("NSL_HLSL");
-		name_manager_p->register_name("NSL_HLSL_MAJOR", "4");
+		name_manager_p->register_name("NSL_HLSL_MAJOR", "0");
+		name_manager_p->register_name("NSL_HLSL_MINOR", "0");
 
 		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("ConstantBuffer");
 		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("Buffer");
@@ -7492,20 +7527,20 @@ namespace nrhi {
 		);
 	}
 
-	eastl::optional<G_string> F_nsl_output_hlsl_4::define_to_string(
+	eastl::optional<G_string> A_nsl_output_hlsl::define_to_string(
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 		const G_string& name,
 		const G_string& target
 	) {
 		return "#define " + name + " " + G_replace_all(target, "\n", "\\\n") + "\n";
 	}
-	eastl::optional<G_string> F_nsl_output_hlsl_4::undef_to_string(
+	eastl::optional<G_string> A_nsl_output_hlsl::undef_to_string(
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 		const G_string& name
 	) {
 		return "#undef " + name;
 	}
-	eastl::optional<G_string> F_nsl_output_hlsl_4::sampler_state_to_string(
+	eastl::optional<G_string> A_nsl_output_hlsl::sampler_state_to_string(
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 		const F_nsl_sampler_state& sampler_state
 	) {
@@ -7538,9 +7573,143 @@ namespace nrhi {
 
 		return std::move(result);
 	}
-	eastl::optional<G_string> F_nsl_output_hlsl_4::resource_to_string(
+	eastl::optional<G_string> A_nsl_output_hlsl::resource_to_string(
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 		const F_nsl_resource& resource
+	) {
+		return resource_to_string_with_customization(translation_unit_p, resource);
+	}
+	eastl::optional<G_string> A_nsl_output_hlsl::structure_to_string(
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const F_nsl_structure& structure
+	) {
+		G_string argument_member_declarations;
+
+		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
+
+		for(const auto& argument_member : structure.second.argument_members) {
+
+			G_string argument_type = argument_member.argument.type;
+
+			b8 is_semantic = data_type_manager_p->is_name_has_semantic_info(argument_member.argument.type);
+
+			G_string semantic_option;
+
+			if(is_semantic) {
+
+				const auto& semantic_info = data_type_manager_p->semantic_info(argument_type);
+
+				semantic_option = ": " + semantic_info.target_binding;
+
+				argument_type = semantic_info.target_type;
+			}
+
+			argument_member_declarations += (
+				argument_type
+				+ " "
+				+ argument_member.argument.name
+				+ semantic_option
+				+ ";\n"
+			);
+		}
+
+		return (
+			"struct "
+			+ structure.first
+			+ " {\n"
+			+ argument_member_declarations
+			+ "\n};\n"
+		);
+	}
+	eastl::optional<G_string> A_nsl_output_hlsl::enumeration_to_string(
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const F_nsl_enumeration& enumeration
+	) {
+		G_string value_declarations;
+
+		u32 value_count = enumeration.second.values.size();
+
+		for(u32 i = 0; i < value_count; ++i) {
+
+			const auto& value = enumeration.second.values[i];
+
+			if(i != 0)
+				value_declarations += "\n";
+
+			value_declarations += (
+				"#define "
+				+ value.first()
+				+ " "
+				+ G_to_string(value.second())
+			);
+		}
+
+		return (
+			"#define " + enumeration.first + " " + enumeration.second.value_type
+			+ "\n"
+			+ value_declarations
+			+ "\n"
+		);
+	}
+	eastl::optional<G_string> A_nsl_output_hlsl::shader_object_to_string(
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		TKPA_valid<A_nsl_shader_object> shader_object_p
+	) {
+		G_string data_param_declarations;
+
+		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
+
+		b8 is_first_data_param = true;
+		for(const auto& data_param : shader_object_p->data_params()) {
+
+			G_string argument_type = data_param.argument.type;
+
+			b8 is_semantic = data_type_manager_p->is_name_has_semantic_info(argument_type);
+
+			G_string semantic_option;
+
+			if(is_semantic) {
+
+				const auto& semantic_info = data_type_manager_p->semantic_info(argument_type);
+
+				semantic_option = ": " + semantic_info.target_binding;
+
+				argument_type = semantic_info.target_type;
+			}
+
+			if(!is_first_data_param) {
+
+				data_param_declarations += ",\n";
+			}
+			is_first_data_param = false;
+
+			if(data_param.is_out && data_param.is_in)
+				data_param_declarations += "inout ";
+			if(data_param.is_out && !data_param.is_in)
+				data_param_declarations += "out ";
+
+			data_param_declarations += (
+				argument_type
+				+ " "
+				+ data_param.argument.name
+				+ semantic_option
+			);
+		}
+
+		return (
+			"#ifdef NSL_SHADER_" + shader_object_p->name() + "\n"
+			+ "void main(\n"
+			+ data_param_declarations
+			+ "\n){\n"
+			+ "}\n"
+			+ "#endif\n"
+		);
+	}
+
+	eastl::optional<G_string> A_nsl_output_hlsl::resource_to_string_with_customization(
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const F_nsl_resource& resource,
+		const G_string& sub_name_keyword
 	) {
 		char register_type;
 		switch (resource.second.type_class)
@@ -7624,6 +7793,9 @@ namespace nrhi {
 				// resource name
 				+ resource.first
 
+				// sub name keyword
+				+ sub_name_keyword
+
 				// register
 				+ " : NSL_REGISTER_"
 				+ resource.first
@@ -7635,6 +7807,9 @@ namespace nrhi {
 
 				// resource name
 				+ resource.first
+
+				// sub name keyword
+				+ sub_name_keyword
 
 				// register
 				+ " : NSL_REGISTER_"
@@ -7649,130 +7824,93 @@ namespace nrhi {
 
 		return std::move(result);
 	}
-	eastl::optional<G_string> F_nsl_output_hlsl_4::structure_to_string(
-		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
-		const F_nsl_structure& structure
-	) {
-		G_string argument_member_declarations;
 
+
+
+	F_nsl_output_hlsl_4::F_nsl_output_hlsl_4(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		E_nsl_output_language output_language_as_enum
+	) :
+		A_nsl_output_hlsl(shader_compiler_p, output_language_as_enum)
+	{
+		register_data_types_internal();
+	}
+	F_nsl_output_hlsl_4::~F_nsl_output_hlsl_4() {
+	}
+
+	void F_nsl_output_hlsl_4::register_data_types_internal() {
+
+		auto name_manager_p = shader_compiler_p()->name_manager_p();
 		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
 
-		for(const auto& argument_member : structure.second.argument_members) {
-
-			G_string argument_type = argument_member.argument.type;
-
-			b8 is_semantic = data_type_manager_p->is_name_has_semantic_info(argument_member.argument.type);
-
-			G_string semantic_option;
-
-			if(is_semantic) {
-
-				const auto& semantic_info = data_type_manager_p->semantic_info(argument_type);
-
-				semantic_option = ": " + semantic_info.target_binding;
-
-				argument_type = semantic_info.target_type;
-			}
-
-			argument_member_declarations += (
-				argument_type
-				+ " "
-				+ argument_member.argument.name
-				+ semantic_option
-				+ ";\n"
-			);
-		}
-
-		return (
-			"struct "
-			+ structure.first
-			+ " {\n"
-			+ argument_member_declarations
-			+ "\n};\n"
-		);
+		name_manager_p->deregister_name("NSL_HLSL_MAJOR");
+		name_manager_p->register_name("NSL_HLSL_MAJOR", "4");
 	}
-	eastl::optional<G_string> F_nsl_output_hlsl_4::enumeration_to_string(
-		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
-		const F_nsl_enumeration& enumeration
-	) {
-		G_string value_declarations;
 
-		u32 value_count = enumeration.second.values.size();
 
-		for(u32 i = 0; i < value_count; ++i) {
 
-			const auto& value = enumeration.second.values[i];
-
-			if(i != 0)
-				value_declarations += "\n";
-
-			value_declarations += (
-				"#define "
-				+ value.first()
-				+ " "
-				+ G_to_string(value.second())
-			);
-		}
-
-		return (
-			"#define " + enumeration.first + " " + enumeration.second.value_type
-			+ "\n"
-			+ value_declarations
-			+ "\n"
-		);
+	F_nsl_output_hlsl_5::F_nsl_output_hlsl_5(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		E_nsl_output_language output_language_as_enum
+	) :
+		F_nsl_output_hlsl_4(shader_compiler_p, output_language_as_enum)
+	{
+		register_data_types_internal();
 	}
-	eastl::optional<G_string> F_nsl_output_hlsl_4::shader_object_to_string(
-		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
-		TKPA_valid<A_nsl_shader_object> shader_object_p
-	) {
-		G_string data_param_declarations;
+	F_nsl_output_hlsl_5::~F_nsl_output_hlsl_5() {
+	}
 
+	void F_nsl_output_hlsl_5::register_data_types_internal() {
+
+		auto name_manager_p = shader_compiler_p()->name_manager_p();
 		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
 
-		b8 is_first_data_param = true;
-		for(const auto& data_param : shader_object_p->data_params()) {
+		name_manager_p->deregister_name("NSL_HLSL_MAJOR");
+		name_manager_p->register_name("NSL_HLSL_MAJOR", "5");
+	}
 
-			G_string argument_type = data_param.argument.type;
 
-			b8 is_semantic = data_type_manager_p->is_name_has_semantic_info(argument_type);
 
-			G_string semantic_option;
+	F_nsl_output_hlsl_5_1::F_nsl_output_hlsl_5_1(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		E_nsl_output_language output_language_as_enum
+	) :
+		F_nsl_output_hlsl_5(shader_compiler_p, output_language_as_enum)
+	{
+		register_data_types_internal();
+	}
+	F_nsl_output_hlsl_5_1::~F_nsl_output_hlsl_5_1() {
+	}
 
-			if(is_semantic) {
+	void F_nsl_output_hlsl_5_1::register_data_types_internal() {
 
-				const auto& semantic_info = data_type_manager_p->semantic_info(argument_type);
+		auto name_manager_p = shader_compiler_p()->name_manager_p();
+		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
 
-				semantic_option = ": " + semantic_info.target_binding;
+		name_manager_p->deregister_name("NSL_HLSL_MINOR");
+		name_manager_p->register_name("NSL_HLSL_MINOR", "1");
+	}
 
-				argument_type = semantic_info.target_type;
+	eastl::optional<G_string> F_nsl_output_hlsl_5_1::resource_to_string(
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const F_nsl_resource& resource
+	) {
+		G_string sub_name_keyword;
+
+		const auto& resource_info = resource.second;
+
+		if(resource_info.is_array)
+			for(u32 i = 0; i < resource_info.dimension_count; ++i) {
+
+				sub_name_keyword += "[";
+				sub_name_keyword += G_to_string(resource_info.dimension_sizes[i]);
+				sub_name_keyword += "]";
 			}
 
-			if(!is_first_data_param) {
-
-				data_param_declarations += ",\n";
-			}
-			is_first_data_param = false;
-
-			if(data_param.is_out && data_param.is_in)
-				data_param_declarations += "inout ";
-			if(data_param.is_out && !data_param.is_in)
-				data_param_declarations += "out ";
-
-			data_param_declarations += (
-				argument_type
-				+ " "
-				+ data_param.argument.name
-				+ semantic_option
-			);
-		}
-
-		return (
-			"#ifdef NSL_SHADER_" + shader_object_p->name() + "\n"
-			+ "void main(\n"
-			+ data_param_declarations
-			+ "\n){\n"
-			+ "}\n"
-			+ "#endif\n"
+		return resource_to_string_with_customization(
+			translation_unit_p,
+			resource,
+			sub_name_keyword
 		);
 	}
 
@@ -8747,6 +8885,9 @@ namespace nrhi {
 					.type = resource_info.type_as_enum,
 					.type_class = resource_info.type_class,
 					.type_args = resource_info.type_args,
+					.dimension_sizes = resource_info.dimension_sizes,
+					.dimension_count = resource_info.dimension_count,
+					.is_array = resource_info.is_array,
 					.actual_slots = resource_info.actual_slots,
 					.data_arguments = std::move(data_arguments),
 					.constant_size = resource_info.constant_size
@@ -8762,51 +8903,6 @@ namespace nrhi {
 
 
 
-	F_nsl_shader_compiler::F_nsl_shader_compiler() :
-		shader_module_manager_p_(
-			TU<F_nsl_shader_module_manager>()(NCPP_KTHIS())
-		),
-		translation_unit_manager_p_(
-			TU<F_nsl_translation_unit_manager>()(NCPP_KTHIS())
-		),
-		translation_unit_compiler_p_(
-			TU<F_nsl_translation_unit_compiler>()(NCPP_KTHIS())
-		),
-		error_storage_p_(
-			TU<F_nsl_error_storage>()(NCPP_KTHIS())
-		),
-		object_manager_p_(
-			TU<F_nsl_object_manager>()(NCPP_KTHIS())
-		),
-		name_manager_p_(
-			TU<F_nsl_name_manager>()(NCPP_KTHIS())
-		),
-		data_type_manager_p_(
-			TU<F_nsl_data_type_manager>()(NCPP_KTHIS())
-		),
-		shader_manager_p_(
-			TU<F_nsl_shader_manager>()(NCPP_KTHIS())
-		),
-		resource_manager_p_(
-			TU<F_nsl_resource_manager>()(NCPP_KTHIS())
-		),
-		uniform_manager_p_(
-			TU<F_nsl_uniform_manager>()(NCPP_KTHIS())
-		),
-		sampler_state_manager_p_(
-			TU<F_nsl_sampler_state_manager>()(NCPP_KTHIS())
-		),
-		pipeline_state_manager_p_(
-			TU<F_nsl_pipeline_state_manager>()(NCPP_KTHIS())
-		),
-		input_assembler_manager_p_(
-			TU<F_nsl_input_assembler_manager>()(NCPP_KTHIS())
-		),
-		reflector_p_(
-			TU<F_nsl_reflector>()(NCPP_KTHIS())
-		)
-	{
-	}
 	F_nsl_shader_compiler::F_nsl_shader_compiler(
 		const F_nsl_shader_compiler_customizer& customizer
 	) :
@@ -8835,6 +8931,14 @@ namespace nrhi {
 		{
 		case E_nsl_output_language::HLSL_4:
 			return TU<F_nsl_output_hlsl_4>()(
+				NCPP_KTHIS()
+			);
+		case E_nsl_output_language::HLSL_5:
+			return TU<F_nsl_output_hlsl_5>()(
+				NCPP_KTHIS()
+			);
+		case E_nsl_output_language::HLSL_5_1:
+			return TU<F_nsl_output_hlsl_5_1>()(
 				NCPP_KTHIS()
 			);
 		default:

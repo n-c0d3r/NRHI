@@ -55,12 +55,16 @@ namespace nrhi {
 			const G_string& entry_point_name,
 			const G_string& src_content,
 			const G_string& abs_path,
+			u32 model_major,
+			u32 model_minor,
 			ED_shader_type type
 		);
 		static TG_vector<u8> compile_hlsl(
 			const G_string& shader_class_name,
 			const G_string& entry_point_name,
 			const G_string& abs_path,
+			u32 model_major,
+			u32 model_minor,
 			ED_shader_type type
 		);
 
