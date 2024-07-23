@@ -3213,7 +3213,8 @@ namespace nrhi {
 		) = 0;
 		virtual eastl::optional<G_string> shader_object_to_string(
 			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
-			TKPA_valid<A_nsl_shader_object> shader_object_p
+			TKPA_valid<A_nsl_shader_object> shader_object_p,
+			const G_string& body
 		) = 0;
 
 	};
@@ -3268,7 +3269,8 @@ namespace nrhi {
 		) override;
 		virtual eastl::optional<G_string> shader_object_to_string(
 			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
-			TKPA_valid<A_nsl_shader_object> shader_object_p
+			TKPA_valid<A_nsl_shader_object> shader_object_p,
+			const G_string& body
 		) override;
 
 	protected:
@@ -3883,7 +3885,7 @@ namespace nrhi {
 
 	public:
 		F_nsl_shader_compiler(
-			const F_nsl_shader_compiler_customizer& customizer = {}
+			const F_nsl_shader_compiler_customizer& customizer = F_nsl_shader_compiler_customizer {}
 		);
 		virtual ~F_nsl_shader_compiler();
 
@@ -3896,7 +3898,7 @@ namespace nrhi {
 	public:
 		eastl::optional<F_nsl_compiled_result> compile(
 			const G_string& raw_src_content,
-			E_nsl_output_language output_language_enum,
+			E_nsl_output_language output_language_enum = E_nsl_output_language::NONE,
 			const G_string& abs_path = ""
 		);
 

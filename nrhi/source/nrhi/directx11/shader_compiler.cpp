@@ -220,5 +220,37 @@ namespace nrhi {
 		
 		return std::move(result);
 	}
+	TG_vector<u8> HD_directx11_shader_compiler::compile_nsl(
+		const G_string& shader_class_name,
+		const F_nsl_compiled_result& compiled_result,
+		u32 shader_index
+	) {
+		u32 model_major = 0;
+		u32 model_minor = 0;
+
+		switch (compiled_result.output_language_enum)
+		{
+		case E_nsl_output_language::HLSL_4:
+			model_major = 4;
+			break;
+		case E_nsl_output_language::HLSL_5:
+			model_major = 5;
+			break;
+		case E_nsl_output_language::HLSL_5_1:
+			model_major = 5;
+			model_minor = 1;
+			break;
+		}
+
+		return compile_hlsl_from_src_content(
+			shader_class_name,
+			"main",
+			compiled_result.build(shader_index),
+			"",
+			model_major,
+			model_minor,
+			compiled_result.reflection.shaders[shader_index].type
+		);
+	}
 
 }

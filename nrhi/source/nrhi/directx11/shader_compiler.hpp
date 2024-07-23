@@ -35,6 +35,7 @@
 
 #include <nrhi/shader_compiler_base.hpp>
 #include <nrhi/shader_desc.hpp>
+#include <nrhi/nsl_shader_compiler.hpp>
 
 #pragma endregion
 
@@ -66,6 +67,11 @@ namespace nrhi {
 			u32 model_major,
 			u32 model_minor,
 			ED_shader_type type
+		);
+		static TG_vector<u8> compile_nsl(
+			const G_string& shader_class_name,
+			const F_nsl_compiled_result& compiled_result,
+			u32 shader_index
 		);
 
 	};

@@ -40,6 +40,11 @@ NRHI_FunctionHelper_CreateFunctionClass(
 			u32 model_minor,
 			ED_shader_type type
         )"
+        "compile_nsl" "TG_vector<u8>(
+			const G_string& shader_class_name,
+			const F_nsl_compiled_result& compiled_result,
+			u32 shader_index
+		)"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement shader compiler done")
