@@ -21,6 +21,7 @@ include(NRHI/Drivers/DirectX12/ImplementPipelineStateType)
 include(NRHI/Drivers/DirectX12/ImplementPrimitiveTopology)
 include(NRHI/Drivers/DirectX12/ImplementShaderType)
 include(NRHI/Drivers/DirectX12/ImplementShaderVisibility)
+include(NRHI/Drivers/DirectX12/ImplementRootSignatureFlag)
 
 
 

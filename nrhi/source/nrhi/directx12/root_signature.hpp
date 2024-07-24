@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/graphics_pipeline_state.hpp
+/** @file nrhi/directx12/root_signature.hpp
 *
-*   Implement graphics pipeline_state.
+*   Implement directx12 root_signature.
 */
 
 
@@ -33,8 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/pipeline_state_base.hpp>
-#include <nrhi/graphics_pipeline_state_handle.hpp>
+#include <nrhi/root_signature_base.hpp>
 
 #pragma endregion
 
@@ -42,21 +41,54 @@
 
 namespace nrhi {
 
-	class NRHI_API H_graphics_pipeline_state {
+	class A_device;
+
+
+
+	struct F_directx12_root_signature_direct_flag {};
+
+
+
+	class NRHI_API F_directx12_root_signature : public A_root_signature {
+
+	protected:
+		ID3D12RootSignature* d3d12_root_signature_p_ = 0;
 
 	public:
-#ifdef NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_BINDING
-		static U_graphics_pipeline_state_handle create(
+		NCPP_FORCE_INLINE ID3D12RootSignature* d3d12_root_signature_p() noexcept { return d3d12_root_signature_p_; }
+		NCPP_FORCE_INLINE void set_d3d12_root_signature_p_unsafe(ID3D12RootSignature* value) noexcept { d3d12_root_signature_p_ = value; }
+
+
+
+	public:
+		F_directx12_root_signature(
 			TKPA_valid<A_device> device_p,
-			const F_pipeline_state_desc& desc
+			const F_root_signature_desc& desc
 		);
-#endif // NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_BINDING
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		static U_graphics_pipeline_state_handle create_direct(
+		F_directx12_root_signature(
 			TKPA_valid<A_device> device_p,
-			const F_pipeline_state_desc& desc
+			const F_root_signature_desc& desc,
+			ID3D12RootSignature* d3d12_root_signature_p
 		);
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		virtual ~F_directx12_root_signature();
+
+	private:
+		static ID3D12RootSignature* create_d3d12_root_signature(
+			TKPA_valid<A_device> device_p,
+			const F_root_signature_desc& desc
+		);
+
+	};
+
+
+
+	class NRHI_API HD_directx12_root_signature {
+
+	public:
+		static TU<A_root_signature> create(
+			TKPA_valid<A_device> device_p,
+			const F_root_signature_desc& desc
+		);
 
 	};
 

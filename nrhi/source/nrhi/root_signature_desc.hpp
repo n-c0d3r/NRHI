@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/graphics_pipeline_state.hpp
+/** @file nrhi/root_signature_desc.hpp
 *
-*   Implement graphics pipeline_state.
+*   Implement root_signature_desc.
 */
 
 
@@ -33,31 +33,86 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/pipeline_state_base.hpp>
-#include <nrhi/graphics_pipeline_state_handle.hpp>
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+#include <nrhi/root_param_type.hpp>
+#include <nrhi/root_signature_flag.hpp>
+#include <nrhi/descriptor_base.hpp>
+#include <nrhi/descriptor_range_type.hpp>
+#include <nrhi/sampler_state_desc.hpp>
+#include <nrhi/shader_visibility.hpp>
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 #pragma endregion
 
 
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 namespace nrhi {
 
-	class NRHI_API H_graphics_pipeline_state {
+	static constexpr u32 offset_in_descriptors_from_table_start_append = NCPP_U32_MAX;
 
-	public:
-#ifdef NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_BINDING
-		static U_graphics_pipeline_state_handle create(
-			TKPA_valid<A_device> device_p,
-			const F_pipeline_state_desc& desc
-		);
-#endif // NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_BINDING
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		static U_graphics_pipeline_state_handle create_direct(
-			TKPA_valid<A_device> device_p,
-			const F_pipeline_state_desc& desc
-		);
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+	struct F_descriptor_range_desc {
+
+		ED_descriptor_range_type type;
+
+		u32 descriptor_count = 0;
+		u32 offset_in_descriptors_from_table_start = offset_in_descriptors_from_table_start_append;
+
+		u32 base_register = 0;
+		u32 register_space = 0;
+
+	};
+	struct F_root_descriptor_table_desc {
+
+		TG_span<F_descriptor_range_desc> range_descs;
 
 	};
 
+	struct F_root_descriptor_desc {
+
+		u32 base_register = 0;
+		u32 register_space = 0;
+
+	};
+
+	struct F_root_constant_desc {
+
+		u32 base_register = 0;
+		u32 register_space = 0;
+		u32 value = 0;
+
+	};
+
+	struct F_root_param_desc {
+
+		ED_root_param_type type;
+		ED_shader_visibility shader_visibility = ED_shader_visibility::ALL;
+
+		union {
+
+			F_root_descriptor_table_desc descriptor_table_desc;
+			F_root_descriptor_desc descriptor_desc;
+			F_root_constant_desc constant_desc;
+
+		};
+
+	};
+
+	struct F_static_sampler_state_desc {
+
+		u32 base_register = 0;
+		u32 register_space = 0;
+		F_sampler_state_desc sampler_state_desc;
+		ED_shader_visibility shader_visibility = ED_shader_visibility::ALL;
+
+	};
+
+	struct F_root_signature_desc {
+
+		TG_vector<F_root_param_desc> param_descs;
+		TG_vector<F_static_sampler_state_desc> static_sampler_state_descs;
+		ED_root_signature_flag flags = ED_root_signature_flag::NONE;
+
+	};
 }
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING

@@ -78,22 +78,6 @@ namespace nrhi {
 	class NRHI_API HD_directx12_pipeline_state {
 
 	public:
-		static TU<A_pipeline_state> create(
-			TKPA_valid<A_device> device_p,
-			const F_pipeline_state_desc& desc
-		);
-
-	public:
-		static U_graphics_pipeline_state_handle create_graphics_pipeline_state(
-			TKPA_valid<A_device> device_p,
-			const F_pipeline_state_desc& desc
-		);
-		static U_compute_pipeline_state_handle create_compute_pipeline_state(
-			TKPA_valid<A_device> device_p,
-			const F_pipeline_state_desc& desc
-		);
-
-	public:
 		static TU<A_pipeline_state> create_direct(
 			TKPA_valid<A_device> device_p,
 			const F_pipeline_state_desc& desc

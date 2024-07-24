@@ -14,7 +14,7 @@ namespace nrhi {
 		D3D11_RASTERIZER_DESC d3d11_rs_desc;
 		d3d11_rs_desc.FillMode = D3D11_FILL_MODE(desc.fill_mode);
 		d3d11_rs_desc.CullMode = D3D11_CULL_MODE(desc.cull_mode);
-		d3d11_rs_desc.FrontCounterClockwise = desc.font_counter_clock_wise;
+		d3d11_rs_desc.FrontCounterClockwise = desc.front_counter_clock_wise;
 		d3d11_rs_desc.DepthBias = 0;
 		d3d11_rs_desc.SlopeScaledDepthBias = 0.0f;
 		d3d11_rs_desc.DepthClipEnable = true;

@@ -91,22 +91,25 @@ int main() {
 		0
 	);
 
-	auto shader_p = H_shader::create_vertex_shader(
+	auto root_signature_p = H_root_signature::create(
 		NCPP_FOH_VALID(device_p),
 		{
-			.name = "demo_shader::vs_main",
-			.binary = shader_binary,
-			.type = nsl_shader_reflection.type,
-			.input_assembler_desc = nsl_input_assembler_reflection.desc
+			.flags = ED_root_signature_flag::ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT
 		}
 	);
 
-	auto pipeline_state_p = H_graphics_pipeline_state::create(
+	auto pipeline_state_p = H_graphics_pipeline_state::create_direct(
 		NCPP_FOH_VALID(device_p),
 		{
-			.shader_p_vector = {
-				NCPP_AOH_VALID(shader_p)
-			}
+			.direct_shader_descs = {
+				F_shader_desc {
+					.name = "demo_shader::vs_main",
+					.binary = shader_binary,
+					.type = nsl_shader_reflection.type,
+					.input_assembler_desc = nsl_input_assembler_reflection.desc
+				}
+			},
+			.root_signature_p = root_signature_p.keyed()
 		}
 	);
 

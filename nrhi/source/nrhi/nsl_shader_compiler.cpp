@@ -4679,9 +4679,9 @@ namespace nrhi {
 					}
 				}
 
-				// font_counter_clock_wise attribute
+				// front_counter_clock_wise attribute
 				{
-					auto sub_info_tree_reader_opt = info_tree_reader.read_sub("font_counter_clock_wise", false);
+					auto sub_info_tree_reader_opt = info_tree_reader.read_sub("front_counter_clock_wise", false);
 
 					if(sub_info_tree_reader_opt) {
 
@@ -4692,7 +4692,7 @@ namespace nrhi {
 						if(!value_opt)
 							return eastl::nullopt;
 
-						pipeline_state_info.desc.rasterizer_desc.font_counter_clock_wise = value_opt.value();
+						pipeline_state_info.desc.rasterizer_desc.front_counter_clock_wise = value_opt.value();
 					}
 				}
 			}
@@ -4939,9 +4939,9 @@ namespace nrhi {
 					}
 				}
 
-				// font_counter_clock_wise attribute
+				// front_counter_clock_wise attribute
 				{
-					auto sub_info_tree_reader_opt = info_tree_reader.read_sub("font_counter_clock_wise", false);
+					auto sub_info_tree_reader_opt = info_tree_reader.read_sub("front_counter_clock_wise", false);
 
 					if(sub_info_tree_reader_opt) {
 
@@ -4952,7 +4952,7 @@ namespace nrhi {
 						if(!value_opt)
 							return eastl::nullopt;
 
-						default_pipeline_state_desc.rasterizer_desc.font_counter_clock_wise = value_opt.value();
+						default_pipeline_state_desc.rasterizer_desc.front_counter_clock_wise = value_opt.value();
 					}
 				}
 			}
