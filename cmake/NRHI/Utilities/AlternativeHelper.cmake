@@ -101,7 +101,7 @@ function(NRHI_AlternativeHelper_CreateAlternative)
                 hppFileContent
                 "${hppFileContent}
                 public:
-                    static ncpp::TF_first_template_targ<${funcTypeValue}>* ${name};
+                    static ncpp::TF_first_template_targ<${funcTypeValue}> ${name};
                 "
             )
         endforeach()
@@ -110,24 +110,24 @@ function(NRHI_AlternativeHelper_CreateAlternative)
 
 
     # Define values
-    if(${valueCount})
-        foreach(indexPlus1 RANGE 1 ${valueCount} ${step})
-            math(EXPR nameIndex "${indexPlus1} - 1")
-            math(EXPR funcTypeValueIndex "${nameIndex} + 1")
-
-            list(GET PARGS_VALUES ${nameIndex} name)
-            list(GET PARGS_VALUES ${funcTypeValueIndex} funcTypeValue)
-
-            math(EXPR nameIndexDivStep "${nameIndex} / ${step}")
-
-            set(
-                cppFileContent
-                "${cppFileContent}
-                ncpp::TF_first_template_targ<${funcTypeValue}>* ALTERNATIVE_${PARGS_NAME}::${name} = 0;
-                "
-            )
-        endforeach()
-    endif()
+#    if(${valueCount})
+#        foreach(indexPlus1 RANGE 1 ${valueCount} ${step})
+#            math(EXPR nameIndex "${indexPlus1} - 1")
+#            math(EXPR funcTypeValueIndex "${nameIndex} + 1")
+#
+#            list(GET PARGS_VALUES ${nameIndex} name)
+#            list(GET PARGS_VALUES ${funcTypeValueIndex} funcTypeValue)
+#
+#            math(EXPR nameIndexDivStep "${nameIndex} / ${step}")
+#
+#            set(
+#                cppFileContent
+#                "${cppFileContent}
+#                ncpp::TF_first_template_targ<${funcTypeValue}>* ALTERNATIVE_${PARGS_NAME}::${name} = 0;
+#                "
+#            )
+#        endforeach()
+#    endif()
 
 
 
