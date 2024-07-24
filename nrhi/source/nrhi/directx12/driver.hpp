@@ -56,9 +56,9 @@ namespace nrhi {
 		static constexpr b8 is_full_support_advanced_resource_binding() { return true; }
 		static constexpr b8 is_full_support_advanced_resource_management() { return true; }
 		static constexpr b8 is_full_support_advanced_work_submission() { return true; }
-		static constexpr b8 is_support_simple_resource_binding() { return false; }
-		static constexpr b8 is_support_simple_resource_management() { return false; }
-		static constexpr b8 is_support_simple_work_submission() { return false; }
+		static constexpr b8 is_support_simple_resource_binding() { return NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS; }
+		static constexpr b8 is_support_simple_resource_management() { return NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS; }
+		static constexpr b8 is_support_simple_work_submission() { return NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS; }
         static constexpr b8 is_support_advanced_resource_binding() { return true; }
         static constexpr b8 is_support_advanced_resource_management() { return true; }
         static constexpr b8 is_support_advanced_work_submission() { return true; }
