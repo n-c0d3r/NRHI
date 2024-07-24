@@ -15,6 +15,9 @@ NCoder's Learning Aimed C++ Render Hardware Interface Library.
 + Shading languages:
   + HLSL
   + NSL (`NCoder's shading language`)
+    + HLSL 4
+    + HLSL 5
+    + HLSL 5.1
 
 ---
 ![alt text](./nrhi/resources/textures/screenshots/hello_nrhi.png)
