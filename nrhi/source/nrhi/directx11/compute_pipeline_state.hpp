@@ -51,7 +51,8 @@ namespace nrhi {
 		ID3D11ComputeShader* d3d11_compute_shader_p_ = 0;
 
 	public:
-		ID3D11ComputeShader* d3d11_compute_shader_p() const noexcept { return d3d11_compute_shader_p_; }
+		NCPP_FORCE_INLINE ID3D11ComputeShader* d3d11_compute_shader_p() const noexcept { return d3d11_compute_shader_p_; }
+		NCPP_FORCE_INLINE void set_d3d11_compute_shader_p_unsafe(ID3D11ComputeShader* value) noexcept { d3d11_compute_shader_p_ = value; }
 
 
 

@@ -1,4 +1,7 @@
 
+include(NCPP/Utilities/SetGlobal)
+include(NCPP/Utilities/ApplyGlobal)
+
 function(NRHI_FunctionHelper_CreateFunctionClass)
 
     cmake_parse_arguments(
@@ -58,6 +61,7 @@ function(NRHI_FunctionHelper_CreateFunctionClass)
 
 
     # Prepare or read files
+    set(isHasAlternative OFF)
     if(isFirstImplementation)
         set(hppFileContent "#pragma once \n #include \"${TARGET_LAST_DRIVER_INDEX_FILE_PATH}\" \n")
         set(cppFileContent "#include \"${targetHPPFilePathParsed}\" \n")
@@ -65,6 +69,10 @@ function(NRHI_FunctionHelper_CreateFunctionClass)
         set(maxValueCountDivStep "0")
         set(includesFileContent "#pragma once \n #include \"${TARGET_LAST_DRIVER_INDEX_FILE_PATH}\" \n")
         set(prepared_value_names "")
+
+        if(EXISTS "${PARGS_TARGET_HPP_FILE_PATH}.alternative")
+            set(isHasAlternative ON)
+        endif()
     else()
         file(READ "${PARGS_TARGET_HPP_FILE_PATH}" hppFileContent)
         file(READ "${PARGS_TARGET_CPP_FILE_PATH}" cppFileContent)
@@ -103,12 +111,36 @@ function(NRHI_FunctionHelper_CreateFunctionClass)
 
     # Add file headers
     if(isFirstImplementation)
+
         set(
             hppFileContent
             "${hppFileContent}
-                #include <nrhi/prerequisites.hpp>
-                #include \"${TARGET_INCLUDES_FILE_PATH}\"
+            #include <nrhi/prerequisites.hpp>
+            #include \"${TARGET_INCLUDES_FILE_PATH}\"
+            "
+        )
 
+        if(isHasAlternative)
+            set(
+                hppFileContent
+                "${hppFileContent}
+                #include \"${PARGS_TARGET_HPP_FILE_PATH}.alternative\"
+                "
+            )
+        else()
+            set(
+                hppFileContent
+                "${hppFileContent}
+                namespace ${PARGS_NAMESPACE}::internal {
+                    struct ALTERNATIVE_${PARGS_NAME} {};
+                }
+                "
+            )
+        endif()
+
+        set(
+            hppFileContent
+            "${hppFileContent}
                 namespace ${PARGS_NAMESPACE} {
             "
         )
@@ -125,6 +157,8 @@ function(NRHI_FunctionHelper_CreateFunctionClass)
                 "${hppFileContent}
                     struct NRHI_API ${PARGS_NAME} {
 
+                        using ALTERNATIVE = internal::ALTERNATIVE_${PARGS_NAME};
+
                         static void update_map(bool clear = false);
                 "
             )
@@ -134,7 +168,7 @@ function(NRHI_FunctionHelper_CreateFunctionClass)
                 "${hppFileContent}
                     struct NRHI_API ${PARGS_NAME} : public ${PARGS_DRIVER_SPECIFIC_NAME} {
 
-
+                        using ALTERNATIVE = internal::ALTERNATIVE_${PARGS_NAME};
                 "
             )
             set(

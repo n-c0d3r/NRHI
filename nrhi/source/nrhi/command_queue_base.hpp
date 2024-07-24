@@ -33,6 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+#include <nrhi/device_child.hpp>
 #include <nrhi/command_list_type.hpp>
 
 #pragma endregion
@@ -43,6 +44,10 @@ namespace nrhi {
 
     class A_device;
     class A_command_list;
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+    class A_fence;
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 
 
@@ -56,17 +61,15 @@ namespace nrhi {
 
 
 
-    class NRHI_API A_command_queue {
+    class NRHI_API A_command_queue : public A_device_child {
 
     private:
-        TK_valid<A_device> device_p_;
         F_command_queue_desc desc_;
 		b8 supports_graphics_ = false;
 		b8 supports_compute_ = false;
 		b8 supports_blit_ = false;
 
     public:
-        NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
         NCPP_FORCE_INLINE const F_command_queue_desc& desc() const noexcept { return desc_; }
 		NCPP_FORCE_INLINE b8 supports_graphics() const noexcept { return supports_graphics_; }
 		NCPP_FORCE_INLINE b8 supports_compute() const noexcept { return supports_compute_; }
@@ -86,8 +89,21 @@ namespace nrhi {
 
 
 	public:
+#ifdef NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
 		void execute_command_lists(TG_span<TK_valid<A_command_list>> command_list_p_span);
 		void execute_command_list(TKPA_valid<A_command_list> command_list_p);
+#endif
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+		void async_signal(
+			TKPA_valid<A_fence> fence_p,
+			u64 new_value
+		);
+		void async_wait(
+			TKPA_valid<A_fence> fence_p,
+			u64 value
+		);
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 
 

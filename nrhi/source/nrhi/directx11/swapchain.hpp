@@ -52,12 +52,21 @@ namespace nrhi {
 
     class NRHI_API F_directx11_swapchain : public A_swapchain {
 
+	public:
+		friend class HD_directx11_swapchain;
+
+
+
     private:
         IDXGISwapChain* dxgi_swapchain_p_ = 0;
         typename F_event::F_listener_handle surface_resize_handle_;
 
+		TG_vector<U_texture_2d_handle> buffer_p_vector_;
+		u8 current_back_rtv_index_ = 0;
+
     public:
         NCPP_FORCE_INLINE IDXGISwapChain* dxgi_swapchain_p() noexcept { return dxgi_swapchain_p_; }
+		NCPP_FORCE_INLINE void set_dxgi_swapchain_p_unsafe(IDXGISwapChain* value) noexcept { dxgi_swapchain_p_ = value; }
 
 
 
@@ -70,7 +79,7 @@ namespace nrhi {
         ~F_directx11_swapchain();
 
     private:
-        void update_d3d11_object_for_back_rtv();
+        void update_d3d11_object_for_buffer_rtvs();
 
     };
 
@@ -84,6 +93,9 @@ namespace nrhi {
             TKPA_valid<F_surface> surface_p,
             const F_swapchain_desc& desc
         );
+
+	public:
+		static u8 current_back_rtv_index(TKPA_valid<A_swapchain>);
 
 	public:
 		static void present(TKPA_valid<A_swapchain>);

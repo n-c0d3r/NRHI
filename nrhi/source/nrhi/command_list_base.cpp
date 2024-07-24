@@ -5,11 +5,10 @@
 namespace nrhi {
 
     A_command_list::A_command_list(TKPA_valid<A_device> device_p, const F_command_list_desc& desc) :
-        device_p_(device_p),
+        A_device_child(device_p),
         desc_(desc),
 		supports_graphics_(
 			(desc.type == ED_command_list_type::DIRECT)
-			|| (desc.type == ED_command_list_type::GRAPHICS)
 		),
 		supports_compute_(
 			(desc.type == ED_command_list_type::DIRECT)

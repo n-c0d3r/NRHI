@@ -96,7 +96,7 @@ namespace nrhi {
 				.overrided_resource_type = ED_resource_type::TEXTURE_CUBE,
 				.resource_p = NCPP_FOH_VALID(oref),
 				.base_mip_level = base_mip_level,
-				.index = (u32)D3D11_TEXTURECUBE_FACE(face),
+				.index = (u32)face,
 				.count = 1
 			}
 		);
@@ -110,7 +110,7 @@ namespace nrhi {
 				.overrided_resource_type = ED_resource_type::TEXTURE_2D_ARRAY,
 				.resource_p = NCPP_FOH_VALID(oref),
 				.base_mip_level = base_mip_level,
-				.index = (u32)D3D11_TEXTURECUBE_FACE(face),
+				.index = (u32)face,
 				.count = 1
 			}
 		);
@@ -124,7 +124,7 @@ namespace nrhi {
 				.overrided_resource_type = ED_resource_type::TEXTURE_2D_ARRAY,
 				.resource_p = NCPP_FOH_VALID(oref),
 				.base_mip_level = base_mip_level,
-				.index = (u32)D3D11_TEXTURECUBE_FACE(face),
+				.index = (u32)face,
 				.count = 1
 			}
 		);

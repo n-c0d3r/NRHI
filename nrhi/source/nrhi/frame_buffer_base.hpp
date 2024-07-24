@@ -33,6 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+#include <nrhi/device_child.hpp>
 #include <nrhi/frame_buffer_desc.hpp>
 #include <nrhi/texture.hpp>
 #include <nrhi/resource_view_base.hpp>
@@ -48,10 +49,9 @@ namespace nrhi {
 
 
 
-	class NRHI_API A_frame_buffer {
+	class NRHI_API A_frame_buffer : public A_device_child {
 
 	private:
-		TK_valid<A_device> device_p_;
 		F_frame_buffer_desc desc_;
 
 		b8 is_has_dsv_;
@@ -61,7 +61,6 @@ namespace nrhi {
 		u64 depth_stencil_attachment_generation_ = 0xFFFFFFFFFFFFFFFF;
 
 	public:
-		NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
 		NCPP_FORCE_INLINE const F_frame_buffer_desc& desc() const noexcept { return desc_; }
 
 		NCPP_FORCE_INLINE b8 is_has_dsv() const noexcept { return is_has_dsv_; }

@@ -60,7 +60,7 @@ namespace nrhi {
 
 			return d3d11_view_p_;
 		}
-        NCPP_FORCE_INLINE void set_d3d11_view_p(ID3D11View* value) noexcept {
+        NCPP_FORCE_INLINE void set_d3d11_view_p_unsafe(ID3D11View* value) noexcept {
             d3d11_view_p_ = value;
         }
 

@@ -33,6 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+#include <nrhi/device_child.hpp>
 #include <nrhi/command_list_type.hpp>
 #include <nrhi/graphics_pipeline_state_handle.hpp>
 #include <nrhi/compute_pipeline_state_handle.hpp>
@@ -50,31 +51,48 @@ namespace nrhi {
     class A_frame_buffer;
     class A_sampler_state;
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+    class A_command_allocator;
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
 
 
     struct F_command_list_desc {
 
         ED_command_list_type type = ED_command_list_type::DIRECT;
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+		TK<A_command_allocator> manual_command_allocator_p;
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
     };
 
 
 
-    class NRHI_API A_command_list {
+    class NRHI_API A_command_list : public A_device_child {
 
     private:
-        TK_valid<A_device> device_p_;
         F_command_list_desc desc_;
 		b8 supports_graphics_ = false;
 		b8 supports_compute_ = false;
 		b8 supports_blit_ = false;
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+	protected:
+		TU<A_command_allocator> owned_command_allocator_p_;
+		TK<A_command_allocator> command_allocator_p_;
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
     public:
-        NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
         NCPP_FORCE_INLINE const F_command_list_desc& desc() const noexcept { return desc_; }
         NCPP_FORCE_INLINE b8 supports_graphics() const noexcept { return supports_graphics_; }
         NCPP_FORCE_INLINE b8 supports_compute() const noexcept { return supports_compute_; }
         NCPP_FORCE_INLINE b8 supports_blit() const noexcept { return supports_blit_; }
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+        NCPP_FORCE_INLINE TK<A_command_allocator> owned_command_allocator_p() const noexcept { return owned_command_allocator_p_.keyed(); }
+        NCPP_FORCE_INLINE TK_valid<A_command_allocator> command_allocator_p() const noexcept { return NCPP_FOH_VALID(command_allocator_p_); }
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 
 
@@ -100,9 +118,9 @@ namespace nrhi {
 		);
 
 	public:
-		void bind_pipeline_state(TKPA_valid<A_pipeline_state> pipeline_state_p);
-		void bind_graphics_pipeline_state(KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p);
-		void bind_compute_pipeline_state(KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p);
+		void set_pipeline_state(TKPA_valid<A_pipeline_state> pipeline_state_p);
+		void set_graphics_pipeline_state(KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p);
+		void set_compute_pipeline_state(KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p);
 
 	public:
 		void ZIA_bind_index_buffer(
@@ -219,6 +237,7 @@ namespace nrhi {
 			u32 slot_index
 		);
 
+#ifdef NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
 	public:
 		void draw(
 			u32 vertex_count,
@@ -261,7 +280,9 @@ namespace nrhi {
 
 	public:
 		void dispatch(PA_vector3_u32 thread_group_count_3d);
+#endif // NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
 
+#if defined(NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_MANAGEMENT) && defined(NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_BINDING) && defined(NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION)
 	public:
 		void update_resource_data(
 			TKPA_valid<A_resource> resource_p,
@@ -275,6 +296,7 @@ namespace nrhi {
 		void generate_mips(
 			KPA_valid_srv_handle srv_p
 		);
+#endif // NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_MANAGEMENT && NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_BINDING && NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
 
     };
 

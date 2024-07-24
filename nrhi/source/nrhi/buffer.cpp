@@ -159,4 +159,272 @@ namespace nrhi {
 		);
 	}
 
+
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+	U_buffer_handle H_buffer::create_committed(
+		TKPA_valid<A_device> device_p,
+		u32 count,
+		u32 stride,
+		ED_resource_bind_flag bind_flags,
+		ED_resource_heap_type heap_type
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+		, ED_resource_state initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		, ED_resource_layout layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+	) {
+		return H_resource::create_committed_buffer(
+			device_p,
+			H_resource_desc::create_buffer_desc(
+				count,
+				stride,
+				bind_flags,
+				heap_type
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+				, initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+				, layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			)
+		);
+	}
+	U_buffer_handle H_buffer::create_committed(
+		TKPA_valid<A_device> device_p,
+		u32 count,
+		ED_format format,
+		ED_resource_bind_flag bind_flags,
+		ED_resource_heap_type heap_type
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+		, ED_resource_state initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		, ED_resource_layout layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+	) {
+		return H_resource::create_committed_buffer(
+			device_p,
+			H_resource_desc::create_buffer_desc(
+				count,
+				format,
+				bind_flags,
+				heap_type
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+				, initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+				, layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			)
+		);
+	}
+	U_structured_buffer_handle H_buffer::create_committed_structured(
+		TKPA_valid<A_device> device_p,
+		u32 count,
+		u32 stride,
+		ED_resource_bind_flag bind_flags,
+		ED_resource_heap_type heap_type
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+		, ED_resource_state initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		, ED_resource_layout layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+	) {
+		return H_resource::create_committed_structured_buffer(
+			device_p,
+			H_resource_desc::create_structured_buffer_desc(
+				count,
+				stride,
+				bind_flags,
+				heap_type
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+				, initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+				, layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			)
+		);
+	}
+	U_indirect_buffer_handle H_buffer::create_committed_indirect(
+		TKPA_valid<A_device> device_p,
+		u32 count,
+		ED_resource_bind_flag bind_flags,
+		ED_resource_heap_type heap_type
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+		, ED_resource_state initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		, ED_resource_layout layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+	) {
+		return H_resource::create_committed_indirect_buffer(
+			device_p,
+			H_resource_desc::create_indirect_buffer_desc(
+				count,
+				bind_flags,
+				heap_type
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+				, initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+				, layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			)
+		);
+	}
+
+
+
+	void H_buffer::rebuild_committed(
+		KPA_valid_buffer_handle buffer_p,
+		u32 count,
+		u32 stride,
+		ED_resource_bind_flag bind_flags,
+		ED_resource_heap_type heap_type
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+		, ED_resource_state initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		, ED_resource_layout layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+	) {
+		buffer_p->rebuild(
+			{},
+			H_resource_desc::create_buffer_desc(
+				count,
+				stride,
+				bind_flags,
+				heap_type
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+				, initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+				, layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			)
+		);
+	}
+	void H_buffer::rebuild_committed(
+		KPA_valid_buffer_handle buffer_p,
+		u32 count,
+		ED_format format,
+		ED_resource_bind_flag bind_flags,
+		ED_resource_heap_type heap_type
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+		, ED_resource_state initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		, ED_resource_layout layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+	) {
+		buffer_p->rebuild(
+			{},
+			H_resource_desc::create_buffer_desc(
+				count,
+				format,
+				bind_flags,
+				heap_type
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+				, initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+				, layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			)
+		);
+	}
+	void H_buffer::rebuild_committed_structured(
+		KPA_valid_structured_buffer_handle structured_buffer_p,
+		u32 count,
+		u32 stride,
+		ED_resource_bind_flag bind_flags,
+		ED_resource_heap_type heap_type
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+		, ED_resource_state initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		, ED_resource_layout layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+	) {
+		structured_buffer_p->rebuild(
+			{},
+			H_resource_desc::create_structured_buffer_desc(
+				count,
+				stride,
+				bind_flags,
+				heap_type
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+				, initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+				, layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			)
+		);
+	}
+	void H_buffer::rebuild_committed_indirect(
+		KPA_valid_indirect_buffer_handle indirect_buffer_p,
+		u32 count,
+		ED_resource_bind_flag bind_flags,
+		ED_resource_heap_type heap_type
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+		, ED_resource_state initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		, ED_resource_layout layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+	) {
+		indirect_buffer_p->rebuild(
+			{},
+			H_resource_desc::create_indirect_buffer_desc(
+				count,
+				bind_flags,
+				heap_type
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+				, initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+				, layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			)
+		);
+	}
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+
 }

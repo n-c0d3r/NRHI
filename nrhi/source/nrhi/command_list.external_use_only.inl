@@ -56,7 +56,6 @@ namespace nrhi {
 		f32 depth,
 		u8 stencil
 	) {
-
 		H_command_list::clear_dsv(
 			NCPP_KTHIS(),
 			dsv_p,
@@ -66,24 +65,23 @@ namespace nrhi {
 		);
 	}
 
-	NCPP_FORCE_INLINE void A_command_list::bind_pipeline_state(TKPA_valid<A_pipeline_state> pipeline_state_p) {
+	NCPP_FORCE_INLINE void A_command_list::set_pipeline_state(TKPA_valid<A_pipeline_state> pipeline_state_p) {
 
-		H_command_list::bind_pipeline_state(NCPP_KTHIS(), pipeline_state_p);
+		H_command_list::set_pipeline_state(NCPP_KTHIS(), pipeline_state_p);
 	}
-	NCPP_FORCE_INLINE void A_command_list::bind_graphics_pipeline_state(KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p) {
+	NCPP_FORCE_INLINE void A_command_list::set_graphics_pipeline_state(KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p) {
 
-		H_command_list::bind_graphics_pipeline_state(NCPP_KTHIS(), graphics_pipeline_state_p);
+		H_command_list::set_graphics_pipeline_state(NCPP_KTHIS(), graphics_pipeline_state_p);
 	}
-	NCPP_FORCE_INLINE void A_command_list::bind_compute_pipeline_state(KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p) {
+	NCPP_FORCE_INLINE void A_command_list::set_compute_pipeline_state(KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p) {
 
-		H_command_list::bind_compute_pipeline_state(NCPP_KTHIS(), compute_pipeline_state_p);
+		H_command_list::set_compute_pipeline_state(NCPP_KTHIS(), compute_pipeline_state_p);
 	}
 
 	NCPP_FORCE_INLINE void A_command_list::ZIA_bind_index_buffer(
 		KPA_valid_buffer_handle index_buffer_p,
 		u32 offset
 	) {
-
 		H_command_list::ZIA_bind_index_buffer(
 			NCPP_KTHIS(),
 			index_buffer_p,
@@ -95,7 +93,6 @@ namespace nrhi {
 		const TG_span<u32>& offset_span,
 		u32 base_slot_index
 	) {
-
 		H_command_list::ZIA_bind_vertex_buffers(
 			NCPP_KTHIS(),
 			vertex_buffer_p_span,
@@ -108,7 +105,6 @@ namespace nrhi {
 		u32 offset,
 		u32 slot_index
 	) {
-
 		H_command_list::ZIA_bind_vertex_buffer(
 			NCPP_KTHIS(),
 			vertex_buffer_p,
@@ -121,7 +117,6 @@ namespace nrhi {
 		const TG_span<u32>& offset_span,
 		u32 base_slot_index
 	) {
-
 		H_command_list::ZIA_bind_instance_buffers(
 			NCPP_KTHIS(),
 			instance_buffer_p_span,
@@ -134,7 +129,6 @@ namespace nrhi {
 		u32 offset,
 		u32 slot_index
 	) {
-
 		H_command_list::ZIA_bind_instance_buffer(
 			NCPP_KTHIS(),
 			instance_buffer_p,
@@ -147,7 +141,6 @@ namespace nrhi {
 		const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
 		u32 base_slot_index
 	) {
-
 		H_command_list::ZVS_bind_constant_buffers(
 			NCPP_KTHIS(),
 			constant_buffer_p_span,
@@ -158,7 +151,6 @@ namespace nrhi {
 		KPA_valid_buffer_handle constant_buffer_p,
 		u32 slot_index
 	) {
-
 		H_command_list::ZVS_bind_constant_buffer(
 			NCPP_KTHIS(),
 			constant_buffer_p,
@@ -169,7 +161,6 @@ namespace nrhi {
 		const TG_span<K_valid_srv_handle>& srv_p_span,
 		u32 base_slot_index
 	) {
-
 		H_command_list::ZVS_bind_srvs(
 			NCPP_KTHIS(),
 			srv_p_span,
@@ -180,7 +171,6 @@ namespace nrhi {
 		KPA_valid_srv_handle srv_p,
 		u32 slot_index
 	) {
-
 		H_command_list::ZVS_bind_srv(
 			NCPP_KTHIS(),
 			srv_p,
@@ -191,7 +181,6 @@ namespace nrhi {
 		const TG_span<TK_valid<A_sampler_state>>& sampler_state_p_span,
 		u32 base_slot_index
 	) {
-
 		H_command_list::ZVS_bind_sampler_states(
 			NCPP_KTHIS(),
 			sampler_state_p_span,
@@ -202,7 +191,6 @@ namespace nrhi {
 		TKPA_valid<A_sampler_state> sampler_state_p,
 		u32 slot_index
 	) {
-
 		H_command_list::ZVS_bind_sampler_state(
 			NCPP_KTHIS(),
 			sampler_state_p,
@@ -214,7 +202,6 @@ namespace nrhi {
 		const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
 		u32 base_slot_index
 	) {
-
 		H_command_list::ZPS_bind_constant_buffers(
 			NCPP_KTHIS(),
 			constant_buffer_p_span,
@@ -225,7 +212,6 @@ namespace nrhi {
 		KPA_valid_buffer_handle constant_buffer_p,
 		u32 slot_index
 	) {
-
 		H_command_list::ZPS_bind_constant_buffer(
 			NCPP_KTHIS(),
 			constant_buffer_p,
@@ -236,7 +222,6 @@ namespace nrhi {
 		const TG_span<K_valid_srv_handle>& srv_p_span,
 		u32 base_slot_index
 	) {
-
 		H_command_list::ZPS_bind_srvs(
 			NCPP_KTHIS(),
 			srv_p_span,
@@ -247,7 +232,6 @@ namespace nrhi {
 		KPA_valid_srv_handle srv_p,
 		u32 slot_index
 	) {
-
 		H_command_list::ZPS_bind_srv(
 			NCPP_KTHIS(),
 			srv_p,
@@ -258,7 +242,6 @@ namespace nrhi {
 		const TG_span<TK_valid<A_sampler_state>>& sampler_state_p_span,
 		u32 base_slot_index
 	) {
-
 		H_command_list::ZPS_bind_sampler_states(
 			NCPP_KTHIS(),
 			sampler_state_p_span,
@@ -269,7 +252,6 @@ namespace nrhi {
 		TKPA_valid<A_sampler_state> sampler_state_p,
 		u32 slot_index
 	) {
-
 		H_command_list::ZPS_bind_sampler_state(
 			NCPP_KTHIS(),
 			sampler_state_p,
@@ -286,7 +268,6 @@ namespace nrhi {
 		const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
 		u32 base_slot_index
 	) {
-
 		H_command_list::ZCS_bind_constant_buffers(
 			NCPP_KTHIS(),
 			constant_buffer_p_span,
@@ -297,7 +278,6 @@ namespace nrhi {
 		KPA_valid_buffer_handle constant_buffer_p,
 		u32 slot_index
 	) {
-
 		H_command_list::ZCS_bind_constant_buffer(
 			NCPP_KTHIS(),
 			constant_buffer_p,
@@ -308,7 +288,6 @@ namespace nrhi {
 		const TG_span<K_valid_srv_handle>& srv_p_span,
 		u32 base_slot_index
 	) {
-
 		H_command_list::ZCS_bind_srvs(
 			NCPP_KTHIS(),
 			srv_p_span,
@@ -319,7 +298,6 @@ namespace nrhi {
 		KPA_valid_srv_handle srv_p,
 		u32 slot_index
 	) {
-
 		H_command_list::ZCS_bind_srv(
 			NCPP_KTHIS(),
 			srv_p,
@@ -330,7 +308,6 @@ namespace nrhi {
 		const TG_span<K_valid_uav_handle>& uav_p_span,
 		u32 base_slot_index
 	) {
-
 		H_command_list::ZCS_bind_uavs(
 			NCPP_KTHIS(),
 			uav_p_span,
@@ -341,7 +318,6 @@ namespace nrhi {
 		KPA_valid_uav_handle uav_p,
 		u32 slot_index
 	) {
-
 		H_command_list::ZCS_bind_uav(
 			NCPP_KTHIS(),
 			uav_p,
@@ -352,7 +328,6 @@ namespace nrhi {
 		const TG_span<TK_valid<A_sampler_state>>& sampler_state_p_span,
 		u32 base_slot_index
 	) {
-
 		H_command_list::ZCS_bind_sampler_states(
 			NCPP_KTHIS(),
 			sampler_state_p_span,
@@ -363,7 +338,6 @@ namespace nrhi {
 		TKPA_valid<A_sampler_state> sampler_state_p,
 		u32 slot_index
 	) {
-
 		H_command_list::ZCS_bind_sampler_state(
 			NCPP_KTHIS(),
 			sampler_state_p,
@@ -371,15 +345,17 @@ namespace nrhi {
 		);
 	}
 
+#ifdef NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
 	NCPP_FORCE_INLINE void A_command_list::draw(
 		u32 vertex_count,
 		u32 base_vertex_location
 	) {
-
-		H_command_list::draw(
-			NCPP_KTHIS(),
-			vertex_count,
-			base_vertex_location
+		NRHI_DRIVER_REQUIRE_SUPPORT_SIMPLE_WORK_SUBMISSION(
+			H_command_list::draw(
+				NCPP_KTHIS(),
+				vertex_count,
+				base_vertex_location
+			);
 		);
 	}
 	NCPP_FORCE_INLINE void A_command_list::draw_instanced(
@@ -388,13 +364,14 @@ namespace nrhi {
 		u32 base_vertex_location,
 		u32 base_instance_location
 	) {
-
-		H_command_list::draw_instanced(
-			NCPP_KTHIS(),
-			vertex_count_per_instance,
-			instance_count,
-			base_vertex_location,
-			base_instance_location
+		NRHI_DRIVER_REQUIRE_SUPPORT_SIMPLE_WORK_SUBMISSION(
+			H_command_list::draw_instanced(
+				NCPP_KTHIS(),
+				vertex_count_per_instance,
+				instance_count,
+				base_vertex_location,
+				base_instance_location
+			);
 		);
 	}
 	NCPP_FORCE_INLINE void A_command_list::draw_indexed(
@@ -402,12 +379,13 @@ namespace nrhi {
 		u32 base_index_location,
 		u32 base_vertex_location
 	) {
-
-		H_command_list::draw_indexed(
-			NCPP_KTHIS(),
-			index_count,
-			base_index_location,
-			base_vertex_location
+		NRHI_DRIVER_REQUIRE_SUPPORT_SIMPLE_WORK_SUBMISSION(
+			H_command_list::draw_indexed(
+				NCPP_KTHIS(),
+				index_count,
+				base_index_location,
+				base_vertex_location
+			);
 		);
 	}
 	NCPP_FORCE_INLINE void A_command_list::draw_indexed_instanced(
@@ -417,14 +395,15 @@ namespace nrhi {
 		u32 base_vertex_location,
 		u32 base_instance_location
 	) {
-
-		H_command_list::draw_indexed_instanced(
-			NCPP_KTHIS(),
-			index_count_per_instance,
-			instance_count,
-			base_index_location,
-			base_vertex_location,
-			base_instance_location
+		NRHI_DRIVER_REQUIRE_SUPPORT_SIMPLE_WORK_SUBMISSION(
+			H_command_list::draw_indexed_instanced(
+				NCPP_KTHIS(),
+				index_count_per_instance,
+				instance_count,
+				base_index_location,
+				base_vertex_location,
+				base_instance_location
+			);
 		);
 	}
 
@@ -432,22 +411,24 @@ namespace nrhi {
 		KPA_indirect_buffer_handle indirect_buffer_p,
 		u32 indirect_buffer_offset
 	) {
-
-		H_command_list::draw_instanced_indirect(
-			NCPP_KTHIS(),
-			indirect_buffer_p,
-			indirect_buffer_offset
+		NRHI_DRIVER_REQUIRE_SUPPORT_SIMPLE_WORK_SUBMISSION(
+			H_command_list::draw_instanced_indirect(
+				NCPP_KTHIS(),
+				indirect_buffer_p,
+				indirect_buffer_offset
+			);
 		);
 	}
 	NCPP_FORCE_INLINE void A_command_list::draw_indexed_instanced_indirect(
 		KPA_indirect_buffer_handle indirect_buffer_p,
 		u32 indirect_buffer_offset
 	) {
-
-		H_command_list::draw_indexed_instanced_indirect(
-			NCPP_KTHIS(),
-			indirect_buffer_p,
-			indirect_buffer_offset
+		NRHI_DRIVER_REQUIRE_SUPPORT_SIMPLE_WORK_SUBMISSION(
+			H_command_list::draw_indexed_instanced_indirect(
+				NCPP_KTHIS(),
+				indirect_buffer_p,
+				indirect_buffer_offset
+			);
 		);
 	}
 
@@ -455,22 +436,27 @@ namespace nrhi {
 		KPA_indirect_buffer_handle indirect_buffer_p,
 		u32 indirect_buffer_offset
 	) {
-
-		H_command_list::dispatch_indirect(
-			NCPP_KTHIS(),
-			indirect_buffer_p,
-			indirect_buffer_offset
+		NRHI_DRIVER_REQUIRE_SUPPORT_SIMPLE_WORK_SUBMISSION(
+			H_command_list::dispatch_indirect(
+				NCPP_KTHIS(),
+				indirect_buffer_p,
+				indirect_buffer_offset
+			);
 		);
 	}
 
 	NCPP_FORCE_INLINE void A_command_list::dispatch(PA_vector3_u32 thread_group_count_3d) {
 
-		H_command_list::dispatch(
-			NCPP_KTHIS(),
-			thread_group_count_3d
+		NRHI_DRIVER_REQUIRE_SUPPORT_SIMPLE_WORK_SUBMISSION(
+			H_command_list::dispatch(
+				NCPP_KTHIS(),
+				thread_group_count_3d
+			);
 		);
 	}
+#endif // NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
 
+#if defined(NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_MANAGEMENT) && defined(NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_BINDING) && defined(NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION)
 	NCPP_FORCE_INLINE void A_command_list::update_resource_data(
 		TKPA_valid<A_resource> resource_p,
 		void* data_p,
@@ -478,24 +464,36 @@ namespace nrhi {
 		u32 src_data_offset,
 		u32 dst_data_offset
 	) {
-
-		H_command_list::update_resource_data(
-			NCPP_KTHIS(),
-			resource_p,
-			data_p,
-			data_size,
-			src_data_offset,
-			dst_data_offset
+		NRHI_DRIVER_REQUIRE_SUPPORT_SIMPLE_RESOURCE_MANAGEMENT(
+			NRHI_DRIVER_REQUIRE_SUPPORT_SIMPLE_RESOURCE_BINDING(
+				NRHI_DRIVER_REQUIRE_SUPPORT_SIMPLE_WORK_SUBMISSION(
+					H_command_list::update_resource_data(
+						NCPP_KTHIS(),
+						resource_p,
+						data_p,
+						data_size,
+						src_data_offset,
+						dst_data_offset
+					);
+				);
+			);
 		);
 	}
 
 	NCPP_FORCE_INLINE void A_command_list::generate_mips(
 		KPA_valid_srv_handle srv_p
 	) {
-		H_command_list::generate_mips(
-			NCPP_KTHIS(),
-			srv_p
+		NRHI_DRIVER_REQUIRE_SUPPORT_SIMPLE_RESOURCE_MANAGEMENT(
+			NRHI_DRIVER_REQUIRE_SUPPORT_SIMPLE_RESOURCE_BINDING(
+				NRHI_DRIVER_REQUIRE_SUPPORT_SIMPLE_WORK_SUBMISSION(
+					H_command_list::generate_mips(
+						NCPP_KTHIS(),
+						srv_p
+					);
+				);
+			);
 		);
 	}
+#endif // NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_MANAGEMENT && NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_BINDING && NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
 
 }

@@ -36,7 +36,17 @@
 #include <nrhi/format.hpp>
 #include <nrhi/resource_heap_type.hpp>
 #include <nrhi/resource_bind_flag.hpp>
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+#include <nrhi/resource_state.hpp>
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
 #include <nrhi/resource_type.hpp>
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+#include <nrhi/resource_layout.hpp>
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+
 #include <nrhi/sample_desc.hpp>
 
 #pragma endregion
@@ -89,6 +99,14 @@ namespace nrhi {
 
         b8 can_create_view = true;
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+		ED_resource_state initial_state = ED_resource_state::COMMON;
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		ED_resource_layout layout = ED_resource_layout::UNKNOWN;
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+
     };
 
     class NRHI_API H_resource_desc {
@@ -99,6 +117,14 @@ namespace nrhi {
             u32 stride,
             ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
             ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, ED_resource_state initial_state = ED_resource_state::COMMON
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
         );
 
     public:
@@ -107,6 +133,14 @@ namespace nrhi {
             ED_format format,
             ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
             ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, ED_resource_state initial_state = ED_resource_state::COMMON
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
         );
 
     public:
@@ -115,13 +149,27 @@ namespace nrhi {
             u32 count,
             ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
             ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
-        ) {
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, ED_resource_state initial_state = ED_resource_state::COMMON
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+        ) {
             return create_buffer_desc(
                 count,
                 sizeof(F_element__),
                 bind_flags,
                 heap_type
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+				, initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+				, layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
             );
         }
 
@@ -131,6 +179,14 @@ namespace nrhi {
             u32 stride,
             ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
             ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, ED_resource_state initial_state = ED_resource_state::COMMON
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
         );
 
     public:
@@ -139,13 +195,27 @@ namespace nrhi {
             u32 count,
             ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
             ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
-        ) {
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, ED_resource_state initial_state = ED_resource_state::COMMON
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+        ) {
             return create_structured_buffer_desc(
                 count,
                 sizeof(F_element__),
                 bind_flags,
                 heap_type
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+				, initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+				, layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
             );
         }
 
@@ -157,6 +227,14 @@ namespace nrhi {
             ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
             ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE,
 			b8 is_mip_map_generatable = false
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, ED_resource_state initial_state = ED_resource_state::COMMON
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, ED_resource_layout layout = ED_resource_layout::UNKNOWN
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
         );
 
     public:
@@ -169,6 +247,14 @@ namespace nrhi {
             ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
             ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE,
 			b8 is_mip_map_generatable = false
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, ED_resource_state initial_state = ED_resource_state::COMMON
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, ED_resource_layout layout = ED_resource_layout::UNKNOWN
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
         );
 
     public:
@@ -181,6 +267,14 @@ namespace nrhi {
             ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
             ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE,
 			b8 is_mip_map_generatable = false
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, ED_resource_state initial_state = ED_resource_state::COMMON
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, ED_resource_layout layout = ED_resource_layout::UNKNOWN
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
         );
 
 	public:
@@ -194,6 +288,14 @@ namespace nrhi {
 			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
 			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE,
 			b8 is_mip_map_generatable = false
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, ED_resource_state initial_state = ED_resource_state::COMMON
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, ED_resource_layout layout = ED_resource_layout::UNKNOWN
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		);
 
 	public:
@@ -205,6 +307,14 @@ namespace nrhi {
 			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
 			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE,
 			b8 is_mip_map_generatable = false
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, ED_resource_state initial_state = ED_resource_state::COMMON
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, ED_resource_layout layout = ED_resource_layout::UNKNOWN
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		);
 
 	public:
@@ -212,6 +322,14 @@ namespace nrhi {
 			u32 count,
 			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
 			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, ED_resource_state initial_state = ED_resource_state::COMMON
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		);
 
     };

@@ -57,6 +57,10 @@ namespace nrhi { }
 #include <nrhi/pipeline_state_desc.hpp>
 #include <nrhi/shader_desc.hpp>
 #include <nrhi/frame_buffer_desc.hpp>
+#include <nrhi/root_signature_desc.hpp>
+
+#include <nrhi/buffer.hpp>
+#include <nrhi/texture.hpp>
 
 #include <nrhi/shader_factory.hpp>
 
@@ -72,10 +76,20 @@ namespace nrhi { }
 #include <nrhi/directx11/compute_pipeline_state.hpp>
 #endif
 
+#ifdef NRHI_DRIVER_DIRECTX_12
+#include <nrhi/directx12/committed_resource.hpp>
+#endif
+
+#include <nrhi/device.external_use_only.inl>
 #include <nrhi/command_list.external_use_only.inl>
 #include <nrhi/command_queue.external_use_only.inl>
 #include <nrhi/swapchain.external_use_only.inl>
 #include <nrhi/frame_buffer.external_use_only.inl>
+#include <nrhi/fence.external_use_only.inl>
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+#include <nrhi/descriptor_heap.external_use_only.inl>
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 #include <nrhi/texture_handle.external_use_only.inl>
 
@@ -101,7 +115,7 @@ namespace nrhi {
 
     NRHI_USING_NLIB_NAMESPACES();
 
-    NRHI_API void initialize_system(u32 driver_index = 0);
+    NRHI_API void initialize_system(u32 driver_index = NRHI_DRIVER_INDEX_DEFAULT);
     NRHI_API void release_system();
 
 }

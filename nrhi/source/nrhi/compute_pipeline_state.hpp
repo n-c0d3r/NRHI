@@ -45,10 +45,18 @@ namespace nrhi {
 	class NRHI_API H_compute_pipeline_state {
 
 	public:
+#ifdef NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_BINDING
 		static U_compute_pipeline_state_handle create(
 			TKPA_valid<A_device> device_p,
 			const F_pipeline_state_desc& desc
 		);
+#endif // NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_BINDING
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		static U_compute_pipeline_state_handle create_direct(
+			TKPA_valid<A_device> device_p,
+			const F_pipeline_state_desc& desc
+		);
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 	};
 	

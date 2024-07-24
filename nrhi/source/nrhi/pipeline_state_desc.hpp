@@ -40,6 +40,7 @@
 #include <nrhi/fill_mode.hpp>
 #include <nrhi/depth_comparison_func.hpp>
 #include <nrhi/primitive_topology.hpp>
+#include <nrhi/shader_desc.hpp>
 #include <nrhi/utilities/platform_object_pool.hpp>
 
 #pragma endregion
@@ -52,6 +53,7 @@ namespace nrhi {
 	class A_pipeline_state;
 	class A_frame_buffer;
 	class A_shader;
+	class A_root_signature;
 
 
 
@@ -60,14 +62,14 @@ namespace nrhi {
 		ED_cull_mode cull_mode = ED_cull_mode::BACK;
 		ED_fill_mode fill_mode = ED_fill_mode::SOLID;
 
-		b8 font_counter_clock_wise = false;
+		b8 front_counter_clock_wise = false;
 
 		NCPP_FORCE_INLINE b8 operator == (const F_rasterizer_desc& b) noexcept {
 
 			return (
 				(cull_mode == b.cull_mode)
 				&& (fill_mode == b.fill_mode)
-				&& (font_counter_clock_wise == b.font_counter_clock_wise)
+				&& (front_counter_clock_wise == b.front_counter_clock_wise)
 			);
 		}
 
@@ -106,6 +108,11 @@ namespace nrhi {
 		ED_primitive_topology primitive_topology = ED_primitive_topology::TRIANGLE_LIST;
 
 		TG_vector<TK_valid<A_shader>> shader_p_vector;
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		TG_vector<F_shader_desc> direct_shader_descs;
+		TK<A_root_signature> root_signature_p;
+#endif // NRHI_SUPPORT_DRIVER_ADVANCED_RESOURCE_BINDING
 
 	};
 

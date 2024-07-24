@@ -47,6 +47,15 @@ namespace nrhi {
 
     class NRHI_API F_directx12_device : public A_device {
 
+	private:
+		ID3D12Device* d3d12_device_p_ = 0;
+
+	public:
+		NCPP_FORCE_INLINE ID3D12Device* d3d12_device_p() noexcept { return d3d12_device_p_; }
+		NCPP_FORCE_INLINE void set_d3d12_device_p_unsafe(ID3D12Device* value) noexcept { d3d12_device_p_ = value; }
+
+
+
     public:
         F_directx12_device(TK_valid<A_adapter> adapter_p);
         ~F_directx12_device();
@@ -59,6 +68,12 @@ namespace nrhi {
 
     public:
         static TU<A_device> create(TKPA_valid<A_adapter> adapter_p);
+
+	public:
+		static u64 descriptor_increment_size(
+			TKPA_valid<A_device> device_p,
+			ED_descriptor_heap_type descriptor_heap_type
+		);
 
     };
 
