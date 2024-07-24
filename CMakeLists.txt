@@ -62,7 +62,7 @@ NCPP_VersionHelper_CreateVersionMacros(
     PROJECT_NAME NRHI
     OUTPUT_FILE "${NRHI_GENERATED_FILES_DIR}/version.hpp"
     MAJOR 0
-    MINOR 0
+    MINOR 1
     PATCH 0
 )
 
