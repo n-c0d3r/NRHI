@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/directx12/shader_compiler.hpp
+/** @file nrhi/directx12/root_signature.hpp
 *
-*   Implement directx12 shader compiler.
+*   Implement directx12 root_signature.
 */
 
 
@@ -33,9 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/shader_compiler_base.hpp>
-#include <nrhi/shader_desc.hpp>
-#include <nrhi/nsl_shader_compiler.hpp>
+#include <nrhi/root_signature_base.hpp>
 
 #pragma endregion
 
@@ -44,34 +42,52 @@
 namespace nrhi {
 
 	class A_device;
-	class A_shader_class;
 
 
 
-	class NRHI_API HD_directx12_shader_compiler {
+	struct F_directx12_root_signature_direct_flag {};
+
+
+
+	class NRHI_API F_directx12_root_signature : public A_root_signature {
+
+	protected:
+		ID3D12RootSignature* d3d12_root_signature_p_ = 0;
 
 	public:
-		static TG_vector<u8> compile_hlsl_from_src_content(
-			const G_string& shader_class_name,
-			const G_string& entry_point_name,
-			const G_string& src_content,
-			const G_string& abs_path,
-			u32 model_major,
-			u32 model_minor,
-			ED_shader_type type
+		NCPP_FORCE_INLINE ID3D12RootSignature* d3d12_root_signature_p() noexcept { return d3d12_root_signature_p_; }
+		NCPP_FORCE_INLINE void set_d3d12_root_signature_p_unsafe(ID3D12RootSignature* value) noexcept { d3d12_root_signature_p_ = value; }
+
+
+
+	public:
+		F_directx12_root_signature(
+			TKPA_valid<A_device> device_p,
+			const F_root_signature_desc& desc
 		);
-		static TG_vector<u8> compile_hlsl(
-			const G_string& shader_class_name,
-			const G_string& entry_point_name,
-			const G_string& abs_path,
-			u32 model_major,
-			u32 model_minor,
-			ED_shader_type type
+		F_directx12_root_signature(
+			TKPA_valid<A_device> device_p,
+			const F_root_signature_desc& desc,
+			ID3D12RootSignature* d3d12_root_signature_p
 		);
-		static TG_vector<u8> compile_nsl(
-			const G_string& shader_class_name,
-			const F_nsl_compiled_result& compiled_result,
-			u32 shader_index
+		virtual ~F_directx12_root_signature();
+
+	private:
+		static ID3D12RootSignature* create_d3d12_root_signature(
+			TKPA_valid<A_device> device_p,
+			const F_root_signature_desc& desc
+		);
+
+	};
+
+
+
+	class NRHI_API HD_directx12_root_signature {
+
+	public:
+		static TU<A_root_signature> create(
+			TKPA_valid<A_device> device_p,
+			const F_root_signature_desc& desc
 		);
 
 	};

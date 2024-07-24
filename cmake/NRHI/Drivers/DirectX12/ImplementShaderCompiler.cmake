@@ -1,5 +1,5 @@
 
-message(STATUS "<NRHI::Drivers::DirectX11> Start implementing shader compiler")
+message(STATUS "<NRHI::Drivers::DirectX12> Start implementing shader compiler")
 
 include(NRHI/Utilities/FunctionHelper)
 
@@ -13,12 +13,12 @@ NCPP_SetGlobal(NRHI_SHADER_COMPILER_CPP_FILE_PATH "${NRHI_GENERATED_FILES_DIR}/s
 NRHI_FunctionHelper_CreateFunctionClass(
     NAMESPACE "nrhi"
     NAME "H_shader_compiler"
-    DRIVER_SPECIFIC_NAME "HD_directx11_shader_compiler"
-    DRIVER_UPPER_CASE_NAME "DIRECTX_11"
+    DRIVER_SPECIFIC_NAME "HD_directx12_shader_compiler"
+    DRIVER_UPPER_CASE_NAME "DIRECTX_12"
     TARGET_HPP_FILE_PATH "${NRHI_SHADER_COMPILER_HPP_FILE_PATH}"
     TARGET_CPP_FILE_PATH "${NRHI_SHADER_COMPILER_CPP_FILE_PATH}"
     INCLUDES
-        "<nrhi/directx11/shader_compiler.hpp>"
+        "<nrhi/directx12/shader_compiler.hpp>"
     ADDITIONAL_CODE
         "namespace nrhi {
         }"
@@ -47,4 +47,4 @@ NRHI_FunctionHelper_CreateFunctionClass(
 		)"
 )
 
-message(STATUS "<NRHI::Drivers::DirectX11> Implement shader compiler done")
+message(STATUS "<NRHI::Drivers::DirectX12> Implement shader compiler done")

@@ -4679,9 +4679,9 @@ namespace nrhi {
 					}
 				}
 
-				// font_counter_clock_wise attribute
+				// front_counter_clock_wise attribute
 				{
-					auto sub_info_tree_reader_opt = info_tree_reader.read_sub("font_counter_clock_wise", false);
+					auto sub_info_tree_reader_opt = info_tree_reader.read_sub("front_counter_clock_wise", false);
 
 					if(sub_info_tree_reader_opt) {
 
@@ -4692,7 +4692,7 @@ namespace nrhi {
 						if(!value_opt)
 							return eastl::nullopt;
 
-						pipeline_state_info.desc.rasterizer_desc.font_counter_clock_wise = value_opt.value();
+						pipeline_state_info.desc.rasterizer_desc.front_counter_clock_wise = value_opt.value();
 					}
 				}
 			}
@@ -4939,9 +4939,9 @@ namespace nrhi {
 					}
 				}
 
-				// font_counter_clock_wise attribute
+				// front_counter_clock_wise attribute
 				{
-					auto sub_info_tree_reader_opt = info_tree_reader.read_sub("font_counter_clock_wise", false);
+					auto sub_info_tree_reader_opt = info_tree_reader.read_sub("front_counter_clock_wise", false);
 
 					if(sub_info_tree_reader_opt) {
 
@@ -4952,7 +4952,7 @@ namespace nrhi {
 						if(!value_opt)
 							return eastl::nullopt;
 
-						default_pipeline_state_desc.rasterizer_desc.font_counter_clock_wise = value_opt.value();
+						default_pipeline_state_desc.rasterizer_desc.front_counter_clock_wise = value_opt.value();
 					}
 				}
 			}
@@ -5225,6 +5225,29 @@ namespace nrhi {
 	A_nsl_shader_object::~A_nsl_shader_object() {
 	}
 
+	eastl::optional<G_string> A_nsl_shader_object::apply_shader_with_customizations(
+		const F_nsl_ast_tree& tree,
+		const G_string& pre_shader_keyword
+	) {
+		auto output_language_p = shader_compiler_p()->output_language_p();
+		auto translation_unit_compiler_p = shader_compiler_p()->translation_unit_compiler_p();
+
+		auto childs_to_string_opt = translation_unit_compiler_p->ast_trees_to_string(
+			tree.childs
+		);
+		if(!childs_to_string_opt)
+			return childs_to_string_opt.value();
+
+		G_string childs_to_string = childs_to_string_opt.value();
+
+		return output_language_p->shader_object_to_string(
+			translation_unit_p(),
+			NCPP_KTHIS(),
+			childs_to_string,
+			pre_shader_keyword
+		);
+	}
+
 	eastl::optional<TG_vector<F_nsl_ast_tree>> A_nsl_shader_object::recursive_build_ast_tree(
 		F_nsl_context& context,
 		TK_valid<F_nsl_translation_unit> unit_p,
@@ -5404,11 +5427,8 @@ namespace nrhi {
 	eastl::optional<G_string> A_nsl_shader_object::apply(
 		const F_nsl_ast_tree& tree
 	) {
-		auto output_language_p = shader_compiler_p()->output_language_p();
-
-		return output_language_p->shader_object_to_string(
-			translation_unit_p(),
-			NCPP_KTHIS()
+		return apply_shader_with_customizations(
+			tree
 		);
 	}
 
@@ -5643,6 +5663,20 @@ namespace nrhi {
 		}
 
 		return std::move(childs);
+	}
+	eastl::optional<G_string> F_nsl_compute_shader_object::apply(
+		const F_nsl_ast_tree& tree
+	) {
+		return apply_shader_with_customizations(
+			tree,
+			G_string("[numthreads(")
+			+ G_to_string(thread_group_size_.x)
+			+ ","
+			+ G_to_string(thread_group_size_.y)
+			+ ","
+			+ G_to_string(thread_group_size_.z)
+			+ ")]\n"
+		);
 	}
 
 
@@ -6050,6 +6084,17 @@ namespace nrhi {
 		// bind actual slots in shaders
 		for(auto& [shader_name, sampler_state_iterators] : shader_name_to_sampler_state_iterators_map) {
 
+			if(name_to_shader_object_p_map.find(shader_name) == name_to_shader_object_p_map.end()) {
+
+				for(auto resource_it : sampler_state_iterators)
+					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+						&(resource_it->second.translation_unit_p->error_group_p()->stack()),
+						resource_it->second.begin_location,
+						"not found shader \"" + shader_name + "\""
+					);
+				return false;
+			}
+
 			auto shader_object_p = name_to_shader_object_p_map[shader_name];
 			u32 shader_index = shader_object_p->index;
 
@@ -6158,6 +6203,17 @@ namespace nrhi {
 
 		// bind actual slots in shaders
 		for(auto& [shader_name, resource_iterators] : shader_name_to_resource_iterators_map) {
+
+			if(name_to_shader_object_p_map.find(shader_name) == name_to_shader_object_p_map.end()) {
+
+				for(auto resource_it : resource_iterators)
+					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+						&(resource_it->second.translation_unit_p->error_group_p()->stack()),
+						resource_it->second.begin_location,
+						"not found shader \"" + shader_name + "\""
+					);
+				return false;
+			}
 
 			auto shader_object_p = name_to_shader_object_p_map[shader_name];
 			u32 shader_index = shader_object_p->index;
@@ -6268,6 +6324,17 @@ namespace nrhi {
 		// bind actual slots in shaders
 		for(auto& [shader_name, resource_iterators] : shader_name_to_resource_iterators_map) {
 
+			if(name_to_shader_object_p_map.find(shader_name) == name_to_shader_object_p_map.end()) {
+
+				for(auto resource_it : resource_iterators)
+					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+						&(resource_it->second.translation_unit_p->error_group_p()->stack()),
+						resource_it->second.begin_location,
+						"not found shader \"" + shader_name + "\""
+					);
+				return false;
+			}
+
 			auto shader_object_p = name_to_shader_object_p_map[shader_name];
 			u32 shader_index = shader_object_p->index;
 
@@ -6376,6 +6443,17 @@ namespace nrhi {
 
 		// bind actual slots in shaders
 		for(auto& [shader_name, resource_iterators] : shader_name_to_resource_iterators_map) {
+
+			if(name_to_shader_object_p_map.find(shader_name) == name_to_shader_object_p_map.end()) {
+
+				for(auto resource_it : resource_iterators)
+					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+						&(resource_it->second.translation_unit_p->error_group_p()->stack()),
+						resource_it->second.begin_location,
+						"not found shader \"" + shader_name + "\""
+					);
+				return false;
+			}
 
 			auto shader_object_p = name_to_shader_object_p_map[shader_name];
 			u32 shader_index = shader_object_p->index;
@@ -7035,8 +7113,109 @@ namespace nrhi {
 		G_string result;
 
 		result += "#define NSL_HLSL\n";
-		result += "#deinfe NSL_HLSL_MAJOR " + name_manager_p->target("NSL_HLSL_MAJOR") + "\n";
-		result += "#deinfe NSL_HLSL_MINOR " + name_manager_p->target("NSL_HLSL_MINOR") + "\n";
+		result += "#define NSL_HLSL_MAJOR " + name_manager_p->target("NSL_HLSL_MAJOR") + "\n";
+		result += "#define NSL_HLSL_MINOR " + name_manager_p->target("NSL_HLSL_MINOR") + "\n";
+
+		result += G_string("#define b8 bool\n");
+		result += G_string("#define i32 int\n");
+		result += G_string("#define u32 uint\n");
+		result += G_string("#define f16 half\n");
+		result += G_string("#define f32 float\n");
+		result += G_string("#define f64 double\n");
+
+		result += G_string("#define F_vector2_b8 bool2\n");
+		result += G_string("#define F_vector2_i32 int2\n");
+		result += G_string("#define F_vector2_u32 uint2\n");
+		result += G_string("#define F_vector2_f16 half2\n");
+		result += G_string("#define F_vector2_f32 float2\n");
+		result += G_string("#define F_vector2_f64 double2\n");
+
+		result += G_string("#define b8x2 bool2\n");
+		result += G_string("#define i32x2 int2\n");
+		result += G_string("#define u32x2 uint2\n");
+		result += G_string("#define f16x2 half2\n");
+		result += G_string("#define f32x2 float2\n");
+		result += G_string("#define f64x2 double2\n");
+
+		result += G_string("#define F_vector3_b8 bool3\n");
+		result += G_string("#define F_vector3_i32 int3\n");
+		result += G_string("#define F_vector3_u32 uint3\n");
+		result += G_string("#define F_vector3_f16 half3\n");
+		result += G_string("#define F_vector3_f32 float3\n");
+		result += G_string("#define F_vector3_f64 double3\n");
+
+		result += G_string("#define b8x3 bool3\n");
+		result += G_string("#define i32x3 int3\n");
+		result += G_string("#define u32x3 uint3\n");
+		result += G_string("#define f16x3 half3\n");
+		result += G_string("#define f32x3 float3\n");
+		result += G_string("#define f64x3 double3\n");
+
+		result += G_string("#define F_vector4_b8 bool4\n");
+		result += G_string("#define F_vector4_i32 int4\n");
+		result += G_string("#define F_vector4_u32 uint4\n");
+		result += G_string("#define F_vector4_f16 half4\n");
+		result += G_string("#define F_vector4_f32 float4\n");
+		result += G_string("#define F_vector4_f64 double4\n");
+
+		result += G_string("#define b8x4 bool4\n");
+		result += G_string("#define i32x4 int4\n");
+		result += G_string("#define u32x4 uint4\n");
+		result += G_string("#define f16x4 half4\n");
+		result += G_string("#define f32x4 float4\n");
+		result += G_string("#define f64x4 double4\n");
+
+		result += G_string("#define F_matrix2x2_b8 bool2x2\n");
+		result += G_string("#define F_matrix2x2_i32 int2x2\n");
+		result += G_string("#define F_matrix2x2_u32 uint2x2\n");
+		result += G_string("#define F_matrix2x2_f16 half2x2\n");
+		result += G_string("#define F_matrix2x2_f32 float2x2\n");
+		result += G_string("#define F_matrix2x2_f64 double2x2\n");
+
+		result += G_string("#define b8x2x2 bool2x2\n");
+		result += G_string("#define i32x2x2 int2x2\n");
+		result += G_string("#define u32x2x2 uint2x2\n");
+		result += G_string("#define f16x2x2 half2x2\n");
+		result += G_string("#define f32x2x2 float2x2\n");
+		result += G_string("#define f64x2x2 double2x2\n");
+
+		result += G_string("#define F_matrix3x3_b8 bool3x3\n");
+		result += G_string("#define F_matrix3x3_i32 int3x3\n");
+		result += G_string("#define F_matrix3x3_u32 uint3x3\n");
+		result += G_string("#define F_matrix3x3_f16 half3x3\n");
+		result += G_string("#define F_matrix3x3_f32 float3x3\n");
+		result += G_string("#define F_matrix3x3_f64 double3x3\n");
+
+		result += G_string("#define b8x3x3 bool3x3\n");
+		result += G_string("#define i32x3x3 int3x3\n");
+		result += G_string("#define u32x3x3 uint3x3\n");
+		result += G_string("#define f16x3x3 half3x3\n");
+		result += G_string("#define f32x3x3 float3x3\n");
+		result += G_string("#define f64x3x3 double3x3\n");
+
+		result += G_string("#define F_matrix4x4_b8 bool4x4\n");
+		result += G_string("#define F_matrix4x4_i32 int4x4\n");
+		result += G_string("#define F_matrix4x4_u32 uint4x4\n");
+		result += G_string("#define F_matrix4x4_f16 half4x4\n");
+		result += G_string("#define F_matrix4x4_f32 float4x4\n");
+		result += G_string("#define F_matrix4x4_f64 double4x4\n");
+
+		result += G_string("#define b8x4x4 bool4x4\n");
+		result += G_string("#define i32x4x4 int4x4\n");
+		result += G_string("#define u32x4x4 uint4x4\n");
+		result += G_string("#define f16x4x4 half4x4\n");
+		result += G_string("#define f32x4x4 float4x4\n");
+		result += G_string("#define f64x4x4 double4x4\n");
+
+		result += G_string("#define F_vector2 F_vector2_f32\n");
+		result += G_string("#define F_vector3 F_vector3_f32\n");
+		result += G_string("#define F_vector4 F_vector4_f32\n");
+		result += G_string("#define F_matrix2x2 F_matrix2x2_f32\n");
+		result += G_string("#define F_matrix3x3 F_matrix3x3_f32\n");
+		result += G_string("#define F_matrix4x4 F_matrix4x4_f32\n");
+
+		result += G_string("#define SV_POSITION SV_Position\n");
+		result += G_string("#define SV_TARGET SV_Target\n");
 
 		return std::move(result);
 	}
@@ -7653,7 +7832,9 @@ namespace nrhi {
 	}
 	eastl::optional<G_string> A_nsl_output_hlsl::shader_object_to_string(
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
-		TKPA_valid<A_nsl_shader_object> shader_object_p
+		TKPA_valid<A_nsl_shader_object> shader_object_p,
+		const G_string& body,
+		const G_string& pre_shader_keyword
 	) {
 		G_string data_param_declarations;
 
@@ -7698,9 +7879,11 @@ namespace nrhi {
 
 		return (
 			"#ifdef NSL_SHADER_" + shader_object_p->name() + "\n"
+			+ pre_shader_keyword
 			+ "void main(\n"
 			+ data_param_declarations
 			+ "\n){\n"
+			+ body + "\n"
 			+ "}\n"
 			+ "#endif\n"
 		);
@@ -8951,6 +9134,33 @@ namespace nrhi {
 		E_nsl_output_language output_language_enum,
 		const G_string& abs_path
 	) {
+		if(output_language_enum == E_nsl_output_language::NONE) {
+
+#ifdef NRHI_DRIVER_DIRECTX_12
+			if(driver_index() == NRHI_DRIVER_INDEX_DIRECTX_12)
+				output_language_enum = E_nsl_output_language::HLSL_5_1;
+#endif
+#ifdef NRHI_DRIVER_DIRECTX_11
+			if(driver_index() == NRHI_DRIVER_INDEX_DIRECTX_11)
+				output_language_enum = E_nsl_output_language::HLSL_5;
+#endif
+#ifdef NRHI_DRIVER_VULKAN
+			#error "Vulkan is not supported"
+//			if(driver_index() == NRHI_DRIVER_INDEX_VULKAN)
+//				output_language_enum = E_nsl_output_language::HLSL_5;
+#endif
+#ifdef NRHI_DRIVER_METAL
+			#error "Metal is not supported"
+//			if(driver_index() == NRHI_DRIVER_INDEX_METAL)
+//				output_language_enum = E_nsl_output_language::HLSL_5;
+#endif
+#ifdef NRHI_DRIVER_OPENGL
+			#error "OpenGL is not supported"
+//			if(driver_index() == NRHI_DRIVER_INDEXOPENGL)
+//				output_language_enum = E_nsl_output_language::HLSL_5;
+#endif
+		}
+
 		output_language_p_ = create_output_language(output_language_enum);
 
 		if(
