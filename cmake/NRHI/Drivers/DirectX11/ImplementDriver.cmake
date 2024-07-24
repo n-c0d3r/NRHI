@@ -22,24 +22,8 @@ NRHI_FunctionHelper_CreateFunctionClass(
     ADDITIONAL_CODE
         ""
     VALUES
-        "is_interface_support_simple_resource_binding" "bool()"
-        "is_interface_support_simple_resource_management" "bool()"
-        "is_interface_support_simple_work_submission" "bool()"
-        "is_interface_support_advanced_resource_binding" "bool()"
-        "is_interface_support_advanced_resource_management" "bool()"
-        "is_interface_support_advanced_work_submission" "bool()"
-        "is_full_support_simple_resource_binding" "bool()"
-        "is_full_support_simple_resource_management" "bool()"
-        "is_full_support_simple_work_submission" "bool()"
-        "is_full_support_advanced_resource_binding" "bool()"
-        "is_full_support_advanced_resource_management" "bool()"
-        "is_full_support_advanced_work_submission" "bool()"
-        "is_support_simple_resource_binding" "bool()"
-        "is_support_simple_resource_management" "bool()"
-        "is_support_simple_work_submission" "bool()"
-        "is_support_advanced_resource_binding" "bool()"
-        "is_support_advanced_resource_management" "bool()"
-        "is_support_advanced_work_submission" "bool()"
+        "is_support_descriptor_management" "bool()"
+        "is_support_advanced_resource" "bool()"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX11> Implement driver done")

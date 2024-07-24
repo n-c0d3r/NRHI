@@ -35,6 +35,7 @@
 
 #include <nrhi/directx11/pipeline_state.hpp>
 #include <nrhi/utilities/platform_object_pool.hpp>
+#include <nrhi/shader_blob_desc.hpp>
 
 #pragma endregion
 
@@ -93,17 +94,12 @@ namespace nrhi {
 
 	public:
 		NCPP_FORCE_INLINE ID3D11VertexShader* d3d11_vertex_shader_p() noexcept { return d3d11_vertex_shader_p_; }
-		NCPP_FORCE_INLINE void set_d3d11_vertex_shader_p_unsafe_unsafe(ID3D11VertexShader* value) noexcept { d3d11_vertex_shader_p_ = value; }
 		NCPP_FORCE_INLINE ID3D11PixelShader* d3d11_pixel_shader_p() noexcept { return d3d11_pixel_shader_p_; }
-		NCPP_FORCE_INLINE void set_d3d11_pixel_shader_p_unsafe_unsafe(ID3D11PixelShader* value) noexcept { d3d11_pixel_shader_p_ = value; }
 
 		NCPP_FORCE_INLINE ID3D11InputLayout* d3d11_input_layout_p() noexcept { return d3d11_input_layout_p_; }
-		NCPP_FORCE_INLINE void set_d3d11_input_layout_p_unsafe_unsafe(ID3D11InputLayout* value) noexcept { d3d11_input_layout_p_ = value; }
 
 		NCPP_FORCE_INLINE ID3D11RasterizerState* d3d11_rasterizer_state_p() noexcept { return d3d11_rasterizer_state_p_; }
-		NCPP_FORCE_INLINE void set_d3d11_rasterizer_state_p_unsafe(ID3D11RasterizerState* value) noexcept { d3d11_rasterizer_state_p_ = value; }
 		NCPP_FORCE_INLINE ID3D11DepthStencilState* d3d11_depth_stencil_state_p() noexcept { return d3d11_depth_stencil_state_p_; }
-		NCPP_FORCE_INLINE void set_d3d11_depth_stencil_state_p_unsafe(ID3D11DepthStencilState* value) noexcept { d3d11_depth_stencil_state_p_ = value; }
 
 
 

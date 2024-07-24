@@ -23,28 +23,17 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "namespace nrhi {
         }"
     VALUES
-        "compile_hlsl_from_src_content" "TG_vector<u8>(
-			const G_string& class_name,
-			const G_string& entry_point_name,
+        "compile_hlsl_from_src_content" "TU<A_shader_class>(
+            const G_string& name,
             const G_string& src_content,
             const G_string& abs_path,
-			u32 model_major,
-			u32 model_minor,
-			ED_shader_type type
+            TG_span<F_shader_kernel_desc> kernel_descs
         )"
-        "compile_hlsl" "TG_vector<u8>(
-			const G_string& class_name,
-			const G_string& entry_point_name,
+        "compile_hlsl" "TU<A_shader_class>(
+            const G_string& name,
             const G_string& abs_path,
-			u32 model_major,
-			u32 model_minor,
-			ED_shader_type type
+            TG_span<F_shader_kernel_desc> kernel_descs
         )"
-        "compile_nsl" "TG_vector<u8>(
-			const G_string& shader_class_name,
-			const F_nsl_compiled_result& compiled_result,
-			u32 shader_index
-		)"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX11> Implement shader compiler done")

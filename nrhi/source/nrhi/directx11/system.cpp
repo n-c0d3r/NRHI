@@ -1,5 +1,6 @@
 #include <nrhi/directx11/system.hpp>
-#include <nrhi/directx11/factory.hpp>
+#include <nrhi/directx11/graphics_pipeline_state.hpp>
+#include <nrhi/dxgi/factory.hpp>
 
 
 
@@ -7,11 +8,13 @@ namespace nrhi {
 
     void HD_directx11_system::initialize(){
 
-        F_directx11_factory_helper::initialize();
+        F_dxgi_factory_helper::initialize();
+
     }
     void HD_directx11_system::release(){
 
-        F_directx11_factory_helper::release();
+        F_dxgi_factory_helper::release();
+
     }
 
 }

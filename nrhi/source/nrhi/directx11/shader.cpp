@@ -1,5 +1,6 @@
 #include <nrhi/directx11/shader.hpp>
 #include <nrhi/directx11/device.hpp>
+#include <nrhi/directx11/shader_blob.hpp>
 #include <nrhi/format_helper.hpp>
 
 
@@ -24,18 +25,22 @@ namespace nrhi {
 	) :
 		F_directx11_shader(device_p, desc)
 	{
-		NCPP_ASSERT(desc.type == ED_shader_type::VERTEX) << "invalid shader type";
+		NCPP_ASSERT(desc.blob_p->desc().type == ED_shader_type::VERTEX) << "invalid blob's shader type";
 
-		const auto& input_assembler_desc = desc.input_assembler_desc;
+		const auto& blob_desc = desc.blob_p->desc();
+		const auto& input_assembler_desc = blob_desc.input_assembler_desc;
 
+		const auto& d3d11_shader_blob_p = desc.blob_p.T_cast<F_directx11_shader_blob>();
+
+		auto d3d_blob_p = d3d11_shader_blob_p->d3d_blob_p();
 		auto d3d11_device_p = device_p.T_cast<F_directx11_device>()->d3d11_device_p();
 
 
 
 		// create vertex shader
 		HRESULT hr = d3d11_device_p->CreateVertexShader(
-			desc.binary.data(),
-			desc.binary.size(),
+			d3d_blob_p->GetBufferPointer(),
+			d3d_blob_p->GetBufferSize(),
 			0,
 			&d3d11_vertex_shader_p_
 		);
@@ -161,8 +166,8 @@ namespace nrhi {
 		hr = d3d11_device_p->CreateInputLayout(
 			d3d11_input_element_desc_vector.data(),
 			element_count,
-			desc.binary.data(),
-			desc.binary.size(),
+			d3d_blob_p->GetBufferPointer(),
+			d3d_blob_p->GetBufferSize(),
 			&d3d11_input_layout_p_
 		);
 
@@ -182,13 +187,16 @@ namespace nrhi {
 	) :
 		F_directx11_shader(device_p, desc)
 	{
-		NCPP_ASSERT(desc.type == ED_shader_type::PIXEL) << "invalid shader type";
+		NCPP_ASSERT(desc.blob_p->desc().type == ED_shader_type::PIXEL) << "invalid blob's shader type";
 
+		const auto& d3d11_shader_blob_p = desc.blob_p.T_cast<F_directx11_shader_blob>();
+
+		auto d3d_blob_p = d3d11_shader_blob_p->d3d_blob_p();
 		auto d3d11_device_p = device_p.T_cast<F_directx11_device>()->d3d11_device_p();
 
 		HRESULT hr = d3d11_device_p->CreatePixelShader(
-			desc.binary.data(),
-			desc.binary.size(),
+			d3d_blob_p->GetBufferPointer(),
+			d3d_blob_p->GetBufferSize(),
 			0,
 			&d3d11_pixel_shader_p_
 		);
@@ -206,13 +214,16 @@ namespace nrhi {
 	) :
 		F_directx11_shader(device_p, desc)
 	{
-		NCPP_ASSERT(desc.type == ED_shader_type::COMPUTE) << "invalid shader type";
+		NCPP_ASSERT(desc.blob_p->desc().type == ED_shader_type::COMPUTE) << "invalid blob's shader type";
 
+		const auto& d3d11_shader_blob_p = desc.blob_p.T_cast<F_directx11_shader_blob>();
+
+		auto d3d_blob_p = d3d11_shader_blob_p->d3d_blob_p();
 		auto d3d11_device_p = device_p.T_cast<F_directx11_device>()->d3d11_device_p();
 
 		HRESULT hr = d3d11_device_p->CreateComputeShader(
-			desc.binary.data(),
-			desc.binary.size(),
+			d3d_blob_p->GetBufferPointer(),
+			d3d_blob_p->GetBufferSize(),
 			0,
 			&d3d11_compute_shader_p_
 		);
@@ -228,8 +239,9 @@ namespace nrhi {
 		TKPA_valid<A_device> device_p,
 		const F_shader_desc& desc
 	) {
+
 		NRHI_ENUM_SWITCH(
-			desc.type,
+			desc.blob_p->desc().type,
 			NRHI_ENUM_CASE(
 				ED_shader_type::VERTEX,
 				return TU<F_directx11_vertex_shader>()(device_p, desc);

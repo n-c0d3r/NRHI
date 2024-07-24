@@ -138,19 +138,5 @@ namespace nrhi {
 
 		finalize_rebuild();
 	}
-	void F_directx11_unordered_access_view::rebuild(
-		const F_resource_view_desc& desc
-	) {
-		if(d3d11_view_p_)
-			d3d11_view_p_->Release();
-		d3d11_view_p_ = create_d3d11_unordered_access_view(
-			device_p(),
-			desc
-		);
-
-		finalize_rebuild(
-			desc
-		);
-	}
 
 }

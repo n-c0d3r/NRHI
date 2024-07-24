@@ -66,9 +66,7 @@ namespace nrhi {
 
 	public:
 		NCPP_FORCE_INLINE ID3D11VertexShader* d3d11_vertex_shader_p() noexcept { return d3d11_vertex_shader_p_; }
-		NCPP_FORCE_INLINE void set_d3d11_vertex_shader_p_unsafe(ID3D11VertexShader* value) noexcept { d3d11_vertex_shader_p_ = value; }
 		NCPP_FORCE_INLINE ID3D11InputLayout* d3d11_input_layout_p() noexcept { return d3d11_input_layout_p_; }
-		NCPP_FORCE_INLINE void set_d3d11_input_layout_p_unsafe(ID3D11InputLayout* value) noexcept { d3d11_input_layout_p_ = value; }
 
 
 
@@ -90,7 +88,6 @@ namespace nrhi {
 
 	public:
 		NCPP_FORCE_INLINE ID3D11PixelShader* d3d11_pixel_shader_p() noexcept { return d3d11_pixel_shader_p_; }
-		NCPP_FORCE_INLINE void set_d3d11_pixel_shader_p_unsafe(ID3D11PixelShader* value) noexcept { d3d11_pixel_shader_p_ = value; }
 
 
 
@@ -112,7 +109,6 @@ namespace nrhi {
 
 	public:
 		NCPP_FORCE_INLINE ID3D11ComputeShader* d3d11_compute_shader_p() noexcept { return d3d11_compute_shader_p_; }
-		NCPP_FORCE_INLINE void set_d3d11_compute_shader_p_unsafe(ID3D11ComputeShader* value) noexcept { d3d11_compute_shader_p_ = value; }
 
 
 

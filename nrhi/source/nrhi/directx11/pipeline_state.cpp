@@ -34,9 +34,6 @@ namespace nrhi {
 				ED_pipeline_state_type::COMPUTE,
 				return TU<F_directx11_compute_pipeline_state>()(device_p, desc);
             )
-			NRHI_ENUM_DEFAULT(
-				NCPP_ASSERT(false) << "invalid pipeline state type";
-			)
 		);
 	}
 

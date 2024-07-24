@@ -33,12 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/device_child.hpp>
 #include <nrhi/sampler_state_desc.hpp>
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-#include <nrhi/descriptor_base.hpp>
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 #pragma endregion
 
@@ -50,29 +45,15 @@ namespace nrhi {
 
 
 
-	class NRHI_API A_sampler_state : public A_device_child {
+	class NRHI_API A_sampler_state {
 
 	private:
+		TK_valid<A_device> device_p_;
 		F_sampler_state_desc desc_;
 
-	protected:
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		F_descriptor descriptor_;
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-
 	public:
+		NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
 		NCPP_FORCE_INLINE const F_sampler_state_desc& desc() const noexcept { return desc_; }
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		NCPP_FORCE_INLINE const F_descriptor& descriptor() const noexcept {
-
-			return descriptor_;
-		}
-		NCPP_FORCE_INLINE void set_descriptor_unsafe(const auto& value) noexcept {
-
-			descriptor_ = value;
-		}
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 
 
@@ -81,13 +62,6 @@ namespace nrhi {
 			TKPA_valid<A_device> device_p,
 			const F_sampler_state_desc& desc
 		);
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		A_sampler_state(
-			TKPA_valid<A_device> device_p,
-			const F_sampler_state_desc& desc,
-			const F_descriptor& descriptor
-		);
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 	public:
 		virtual ~A_sampler_state();
@@ -99,23 +73,11 @@ namespace nrhi {
 		virtual void rebuild(
 			const F_sampler_state_desc& desc
 		);
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		virtual void rebuild(
-			const F_sampler_state_desc& desc,
-			const F_descriptor& descriptor
-		);
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 	protected:
 		void finalize_rebuild(
 			const F_sampler_state_desc& desc
 		);
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		void finalize_rebuild(
-			const F_sampler_state_desc& desc,
-			const F_descriptor& descriptor
-		);
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 	};
 

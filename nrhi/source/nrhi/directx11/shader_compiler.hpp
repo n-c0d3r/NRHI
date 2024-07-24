@@ -34,8 +34,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/shader_compiler_base.hpp>
-#include <nrhi/shader_desc.hpp>
-#include <nrhi/nsl_shader_compiler.hpp>
+#include <nrhi/shader_class_base.hpp>
 
 #pragma endregion
 
@@ -51,27 +50,16 @@ namespace nrhi {
 	class NRHI_API HD_directx11_shader_compiler {
 
 	public:
-		static TG_vector<u8> compile_hlsl_from_src_content(
-			const G_string& shader_class_name,
-			const G_string& entry_point_name,
+		static TU<A_shader_class> compile_hlsl_from_src_content(
+			const G_string& name,
 			const G_string& src_content,
 			const G_string& abs_path,
-			u32 model_major,
-			u32 model_minor,
-			ED_shader_type type
+			TG_span<F_shader_kernel_desc> kernel_descs
 		);
-		static TG_vector<u8> compile_hlsl(
-			const G_string& shader_class_name,
-			const G_string& entry_point_name,
+		static TU<A_shader_class> compile_hlsl(
+			const G_string& name,
 			const G_string& abs_path,
-			u32 model_major,
-			u32 model_minor,
-			ED_shader_type type
-		);
-		static TG_vector<u8> compile_nsl(
-			const G_string& shader_class_name,
-			const F_nsl_compiled_result& compiled_result,
-			u32 shader_index
+			TG_span<F_shader_kernel_desc> kernel_descs
 		);
 
 	};

@@ -2,7 +2,7 @@
 
 /** @file nrhi/root_signature_base.hpp
 *
-*   Implement sampler state base.
+*   Implement root_signature_base.
 */
 
 
@@ -33,55 +33,34 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-#include <nrhi/device_child.hpp>
-#include <nrhi/root_signature_desc.hpp>
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+#include <nrhi/root_param_type.hpp>
+#include <nrhi/descriptor_base.hpp>
 
 #pragma endregion
 
 
 
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 namespace nrhi {
 
-	class A_device;
+    struct F_root_constant_desc {
 
+        u32 base_register = 0;
+        u32 register_space = 0;
+        u32 value = 0;
 
+    };
 
-	class NRHI_API A_root_signature : public A_device_child {
+    struct F_root_param_desc {
 
-	private:
-		F_root_signature_desc desc_;
+        ED_root_param_type type;
 
-	public:
-		NCPP_FORCE_INLINE const F_root_signature_desc& desc() const noexcept { return desc_; }
+        union {
 
+            F_descriptor_table_desc descriptor_table_desc;
+            F_root_constant_desc constant_desc;
 
+        };
 
-	protected:
-		A_root_signature(
-			TKPA_valid<A_device> device_p,
-			const F_root_signature_desc& desc
-		);
-
-	public:
-		virtual ~A_root_signature();
-
-	public:
-		NCPP_OBJECT(A_root_signature);
-
-	public:
-		virtual void rebuild(
-			const F_root_signature_desc& desc
-		);
-
-	protected:
-		void finalize_rebuild(
-			const F_root_signature_desc& desc
-		);
-
-	};
+    };
 
 }
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING

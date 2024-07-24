@@ -33,16 +33,13 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-#include <nrhi/device_child.hpp>
+#include <nrhi/descriptor_range_type.hpp>
 #include <nrhi/descriptor_heap_type.hpp>
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 #pragma endregion
 
 
 
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 namespace nrhi {
 
     class A_device;
@@ -50,22 +47,49 @@ namespace nrhi {
 
 
 
-	using F_descriptor_cpu_address = u64;
-	using F_descriptor_gpu_address = u64;
+    struct F_descriptor_range_desc {
 
-	struct F_descriptor_handle {
+        ED_descriptor_range_type type;
 
-		F_descriptor_cpu_address cpu_address = 0;
-		F_descriptor_gpu_address gpu_address = 0;
+        u32 base_register = 0;
+        u32 register_space = 0;
 
-	};
+    };
 
-	struct F_descriptor {
+    struct F_descriptor_table_desc {
 
-		F_descriptor_handle handle;
-		TK<A_descriptor_heap> heap_p;
+        TG_span<F_descriptor_range_desc> range_descs;
 
-	};
+    };
+
+
+
+    struct F_descriptor_heap_desc {
+
+        ED_descriptor_heap_type type;
+
+    };
+
+
+
+    class NRHI_API A_descriptor_heap {
+
+    private:
+        TK_valid<A_device> device_p_;
+        F_descriptor_heap_desc desc_;
+
+    public:
+        NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
+        NCPP_FORCE_INLINE const F_descriptor_heap_desc& desc() const noexcept { return desc_; }
+
+
+
+    protected:
+        A_descriptor_heap(TK_valid<A_device> device_p, const F_descriptor_heap_desc& desc);
+
+    public:
+        virtual ~A_descriptor_heap();
+
+    };
 
 }
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING

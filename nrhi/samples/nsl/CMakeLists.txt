@@ -1,3 +1,2 @@
 
 add_subdirectory(hello_nsl)
-add_subdirectory(hello_nsl_5_1)

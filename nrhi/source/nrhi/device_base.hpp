@@ -29,14 +29,6 @@
 
 #include <nrhi/prerequisites.hpp>
 
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-#include <nrhi/descriptor_heap_type.hpp>
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-
 #pragma endregion
 
 
@@ -65,13 +57,6 @@ namespace nrhi {
 
 	public:
 		NCPP_OBJECT(A_device);
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-	public:
-		u64 descriptor_increment_size(
-			ED_descriptor_heap_type descriptor_heap_type
-		);
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
     };
 

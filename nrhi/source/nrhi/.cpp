@@ -59,7 +59,7 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_MULTIPLE
     namespace internal {
-        ncpp::i32 driver_index = NRHI_DRIVER_INDEX_DEFAULT;
+        ncpp::i32 driver_index = 0;
     }
 #endif
 

@@ -39,6 +39,7 @@
 #include <nrhi/compute_pipeline_state.hpp>
 #include <nrhi/buffer_handle.hpp>
 #include <nrhi/clear_flag.hpp>
+#include <nrhi/shader_blob_desc.hpp>
 #include <nrhi/resource_view_handle.hpp>
 
 #pragma endregion
@@ -103,7 +104,6 @@ namespace nrhi {
 
     public:
         NCPP_FORCE_INLINE ID3D11DeviceContext* d3d11_device_context_p() noexcept { return d3d11_device_context_p_; }
-		NCPP_FORCE_INLINE void set_d3d11_device_context_p_unsafe(ID3D11DeviceContext* value) noexcept { d3d11_device_context_p_ = value; }
 
 
 
@@ -138,15 +138,15 @@ namespace nrhi {
 		);
 
 	public:
-		static void set_pipeline_state(
+		static void bind_pipeline_state(
 			TKPA_valid<A_command_list> command_list_p,
 			TKPA_valid<A_pipeline_state> pipeline_state_p
 		);
-		static void set_graphics_pipeline_state(
+		static void bind_graphics_pipeline_state(
 			TKPA_valid<A_command_list> command_list_p,
 			KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p
 		);
-		static void set_compute_pipeline_state(
+		static void bind_compute_pipeline_state(
 			TKPA_valid<A_command_list> command_list_p,
 			KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p
 		);

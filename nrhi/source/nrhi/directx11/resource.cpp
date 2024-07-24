@@ -56,26 +56,6 @@ namespace nrhi {
                 ED_resource_type::INDIRECT_BUFFER,
 				return TU<F_directx11_indirect_buffer>()(device_p, initial_resource_data, desc);
             )
-			NRHI_ENUM_CASE(
-				ED_resource_type::TEXTURE_1D,
-				return TU<F_directx11_texture_1d>()(device_p, initial_resource_data, desc);
-			)
-			NRHI_ENUM_CASE(
-				ED_resource_type::TEXTURE_2D,
-				return TU<F_directx11_texture_2d>()(device_p, initial_resource_data, desc);
-			)
-			NRHI_ENUM_CASE(
-				ED_resource_type::TEXTURE_3D,
-				return TU<F_directx11_texture_3d>()(device_p, initial_resource_data, desc);
-			)
-			NRHI_ENUM_CASE(
-				ED_resource_type::TEXTURE_2D_ARRAY,
-				return TU<F_directx11_texture_2d_array>()(device_p, initial_resource_data, desc);
-			)
-			NRHI_ENUM_CASE(
-				ED_resource_type::TEXTURE_CUBE,
-				return TU<F_directx11_texture_cube>()(device_p, initial_resource_data, desc);
-			)
 		);
         return null;
     }

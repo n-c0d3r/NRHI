@@ -33,16 +33,11 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/device_child.hpp>
 #include <nrhi/resource_base.hpp>
 #include <nrhi/resource_desc.hpp>
 #include <nrhi/resource_view_desc.hpp>
 #include <nrhi/resource_view_type.hpp>
 #include <nrhi/resource_view_handle.hpp>
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-#include <nrhi/descriptor_base.hpp>
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 #pragma endregion
 
@@ -60,8 +55,7 @@ namespace nrhi {
 
 
 
-    class NRHI_API A_resource_view : public A_device_child
-	{
+    class NRHI_API A_resource_view {
 
 	public:
 		friend u64& nrhi::inject_resource_view_generation(TKPA_valid<A_resource_view> resource_view_p) noexcept;
@@ -69,17 +63,15 @@ namespace nrhi {
 
 
     private:
+        TK_valid<A_device> device_p_;
         F_resource_view_desc desc_;
 		ED_resource_type resource_type_;
 
 	protected:
 		u64 generation_ = 0;
 
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		F_descriptor descriptor_;
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-
     public:
+        NCPP_FORCE_INLINE TK_valid<A_device> device_p() noexcept { return device_p_; }
         NCPP_FORCE_INLINE const F_resource_view_desc& desc() const noexcept { return desc_; }
         NCPP_FORCE_INLINE ED_resource_type resource_type() const noexcept { return resource_type_; }
 
@@ -89,13 +81,6 @@ namespace nrhi {
 			return (generation_ == desc_.resource_p->generation());
 		}
 
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		NCPP_FORCE_INLINE const F_descriptor& descriptor() const noexcept {
-
-			return descriptor_;
-		}
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-
 
 
     protected:
@@ -104,14 +89,6 @@ namespace nrhi {
             const F_resource_view_desc& desc,
             ED_resource_view_type overrided_type
         );
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		A_resource_view(
-			TKPA_valid<A_device> device_p,
-			const F_resource_view_desc& desc,
-			const F_descriptor& descriptor,
-			ED_resource_view_type overrided_type
-		);
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
     public:
         virtual ~A_resource_view();
@@ -121,28 +98,10 @@ namespace nrhi {
 
 	public:
 		virtual void rebuild();
-		virtual void rebuild(
-			const F_resource_view_desc& desc
-		);
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		virtual void rebuild(
-			const F_resource_view_desc& desc,
-			const F_descriptor& descriptor
-		);
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 		void guarantee_generation();
 
 	protected:
 		void finalize_rebuild();
-		void finalize_rebuild(
-			const F_resource_view_desc& desc
-		);
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		void finalize_rebuild(
-			const F_resource_view_desc& desc,
-			const F_descriptor& descriptor
-		);
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
     };
 

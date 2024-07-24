@@ -66,20 +66,11 @@ namespace nrhi {}
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#ifdef NRHI_ENABLE_DXGI
-#include <dxgi.h>
-#include <dxgi1_2.h>
-#include <dxgi1_3.h>
-#include <dxgi1_4.h>
-#endif
-
 #ifdef NRHI_DRIVER_DIRECTX_11
 #include <d3d11.h>
 #endif
 #ifdef NRHI_DRIVER_DIRECTX_12
 #include <d3d12.h>
-#include <nrhi/directx12/d3dx12.h>
-#include <wrl.h>
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -189,16 +180,6 @@ namespace nrhi {}
 ////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef NRHI_DRIVER_MULTIPLE
-	#define NRHI_DRIVER_IF(...) if(__VA_ARGS__)
-#else
-	#define NRHI_DRIVER_IF(...) if constexpr (__VA_ARGS__)
-#endif
-
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-
-#ifdef NRHI_DRIVER_MULTIPLE
     #define NRHI_ENUM_SWITCH(Value, ...) NCPP_EXPAND(\
                     {\
                         auto NCPP_GLUE(NRHI_INTERNAL_ENUM_TEMP_, NCPP_LINE) = Value;\
@@ -225,73 +206,6 @@ namespace nrhi {}
     #define NRHI_ENUM_DEFAULT(...) default: { __VA_ARGS__; NRHI_ENUM_BREAK; }
                 
 #endif
-
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-
-#include <nrhi/interface_supports.hpp>
-#include <nrhi/full_supports.hpp>
-#include <nrhi/supports.hpp>
-
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-
-#define NRHI_DRIVER_DIRECTX_12_ID_MASK___RESOURCE_TYPE 0x11000000
-#define NRHI_DRIVER_DIRECTX_12_ID_OFFSET___RESOURCE_TYPE (6 * 4)
-#define NRHI_DRIVER_DIRECTX_12_REMOVE_ID___RESOURCE_TYPE(...) (\
-                (~NRHI_DRIVER_DIRECTX_12_ID_MASK___RESOURCE_TYPE) \
-                & (ncpp::u32(__VA_ARGS__))\
-            )
-#define NRHI_DRIVER_DIRECTX_12_REMOVE_PAYLOAD___RESOURCE_TYPE(...) (\
-                NRHI_DRIVER_DIRECTX_12_ID_MASK___RESOURCE_TYPE \
-                & (ncpp::u32(__VA_ARGS__))\
-            )
-#define NRHI_DRIVER_DIRECTX_12_GET_ID___RESOURCE_TYPE(...) (\
-                NRHI_DRIVER_DIRECTX_12_REMOVE_PAYLOAD___RESOURCE_TYPE(ncpp::u32(__VA_ARGS__))\
-                >> NRHI_DRIVER_DIRECTX_12_ID_OFFSET___RESOURCE_TYPE\
-            )
-#define NRHI_DRIVER_DIRECTX_12_GENERATE___RESOURCE_TYPE(ID, ...) (\
-                NRHI_DRIVER_DIRECTX_12_REMOVE_ID___RESOURCE_TYPE(ncpp::u32(__VA_ARGS__))\
-                | NRHI_DRIVER_DIRECTX_12_REMOVE_PAYLOAD___RESOURCE_TYPE(ncpp::u32(ID) << NRHI_DRIVER_DIRECTX_12_ID_OFFSET___RESOURCE_TYPE)\
-            )
-
-#define NRHI_DRIVER_DIRECTX_12_MAP___RESOURCE_TYPE___TO___RESOURCE_DIMENSION(...) (\
-                (D3D12_RESOURCE_DIMENSION)(\
-                    NRHI_DRIVER_DIRECTX_12_REMOVE_ID___RESOURCE_TYPE(ncpp::u32(__VA_ARGS__))\
-                )\
-            )
-
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-
-#define NRHI_DRIVER_DIRECTX_12_ID_MASK___RESOURCE_BIND_FLAG 0x11110000
-#define NRHI_DRIVER_DIRECTX_12_ID_OFFSET___RESOURCE_BIND_FLAG (4 * 4)
-#define NRHI_DRIVER_DIRECTX_12_REMOVE_ID___RESOURCE_BIND_FLAG(...) (\
-                (~NRHI_DRIVER_DIRECTX_12_ID_MASK___RESOURCE_BIND_FLAG) \
-                & (ncpp::u32(__VA_ARGS__))\
-            )
-#define NRHI_DRIVER_DIRECTX_12_REMOVE_PAYLOAD___RESOURCE_BIND_FLAG(...) (\
-                NRHI_DRIVER_DIRECTX_12_ID_MASK___RESOURCE_BIND_FLAG \
-                & (ncpp::u32(__VA_ARGS__))\
-            )
-#define NRHI_DRIVER_DIRECTX_12_GET_ID___RESOURCE_BIND_FLAG(...) (\
-                NRHI_DRIVER_DIRECTX_12_REMOVE_PAYLOAD___RESOURCE_BIND_FLAG(ncpp::u32(__VA_ARGS__))\
-                >> NRHI_DRIVER_DIRECTX_12_ID_OFFSET___RESOURCE_BIND_FLAG\
-            )
-#define NRHI_DRIVER_DIRECTX_12_GENERATE___RESOURCE_BIND_FLAG(ID, ...) (\
-                NRHI_DRIVER_DIRECTX_12_REMOVE_ID___RESOURCE_BIND_FLAG(ncpp::u32(__VA_ARGS__))\
-                | NRHI_DRIVER_DIRECTX_12_REMOVE_PAYLOAD___RESOURCE_BIND_FLAG(ncpp::u32(ID) << NRHI_DRIVER_DIRECTX_12_ID_OFFSET___RESOURCE_BIND_FLAG)\
-            )
-
-#define NRHI_DRIVER_DIRECTX_12_MAP___RESOURCE_BIND_FLAG___TO___RESOURCE_FLAG(...) (\
-                (D3D12_RESOURCE_FLAGS)(\
-                    NRHI_DRIVER_DIRECTX_12_REMOVE_ID___RESOURCE_BIND_FLAG(ncpp::u32(__VA_ARGS__))\
-                )\
-            )
-
 #pragma endregion
 
 
@@ -313,10 +227,6 @@ namespace nrhi {}
 namespace nrhi {
 
     NRHI_USING_NLIB_NAMESPACES();
-
-
-
-	using F_node_mask = u32;
 
 
 
@@ -351,7 +261,7 @@ namespace nrhi {
     }
 #else
     namespace internal {
-        constexpr ncpp::i32 driver_index = NRHI_DRIVER_INDEX_DEFAULT;
+        constexpr ncpp::i32 driver_index = 0;
         inline ncpp::b8 try_set_driver_index(ncpp::i32 new_driver_index) {
 
             if (new_driver_index != internal::driver_index)
