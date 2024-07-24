@@ -5225,6 +5225,29 @@ namespace nrhi {
 	A_nsl_shader_object::~A_nsl_shader_object() {
 	}
 
+	eastl::optional<G_string> A_nsl_shader_object::apply_shader_with_customizations(
+		const F_nsl_ast_tree& tree,
+		const G_string& pre_shader_keyword
+	) {
+		auto output_language_p = shader_compiler_p()->output_language_p();
+		auto translation_unit_compiler_p = shader_compiler_p()->translation_unit_compiler_p();
+
+		auto childs_to_string_opt = translation_unit_compiler_p->ast_trees_to_string(
+			tree.childs
+		);
+		if(!childs_to_string_opt)
+			return childs_to_string_opt.value();
+
+		G_string childs_to_string = childs_to_string_opt.value();
+
+		return output_language_p->shader_object_to_string(
+			translation_unit_p(),
+			NCPP_KTHIS(),
+			childs_to_string,
+			pre_shader_keyword
+		);
+	}
+
 	eastl::optional<TG_vector<F_nsl_ast_tree>> A_nsl_shader_object::recursive_build_ast_tree(
 		F_nsl_context& context,
 		TK_valid<F_nsl_translation_unit> unit_p,
@@ -5404,21 +5427,8 @@ namespace nrhi {
 	eastl::optional<G_string> A_nsl_shader_object::apply(
 		const F_nsl_ast_tree& tree
 	) {
-		auto output_language_p = shader_compiler_p()->output_language_p();
-		auto translation_unit_compiler_p = shader_compiler_p()->translation_unit_compiler_p();
-
-		auto childs_to_string_opt = translation_unit_compiler_p->ast_trees_to_string(
-			tree.childs
-		);
-		if(!childs_to_string_opt)
-			return childs_to_string_opt.value();
-
-		G_string childs_to_string = childs_to_string_opt.value();
-
-		return output_language_p->shader_object_to_string(
-			translation_unit_p(),
-			NCPP_KTHIS(),
-			childs_to_string
+		return apply_shader_with_customizations(
+			tree
 		);
 	}
 
@@ -5653,6 +5663,20 @@ namespace nrhi {
 		}
 
 		return std::move(childs);
+	}
+	eastl::optional<G_string> F_nsl_compute_shader_object::apply(
+		const F_nsl_ast_tree& tree
+	) {
+		return apply_shader_with_customizations(
+			tree,
+			G_string("[numthreads(")
+			+ G_to_string(thread_group_size_.x)
+			+ ","
+			+ G_to_string(thread_group_size_.y)
+			+ ","
+			+ G_to_string(thread_group_size_.z)
+			+ ")]\n"
+		);
 	}
 
 
@@ -7809,7 +7833,8 @@ namespace nrhi {
 	eastl::optional<G_string> A_nsl_output_hlsl::shader_object_to_string(
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 		TKPA_valid<A_nsl_shader_object> shader_object_p,
-		const G_string& body
+		const G_string& body,
+		const G_string& pre_shader_keyword
 	) {
 		G_string data_param_declarations;
 
@@ -7854,6 +7879,7 @@ namespace nrhi {
 
 		return (
 			"#ifdef NSL_SHADER_" + shader_object_p->name() + "\n"
+			+ pre_shader_keyword
 			+ "void main(\n"
 			+ data_param_declarations
 			+ "\n){\n"

@@ -64,6 +64,9 @@ namespace nrhi {
 		virtual ~F_directx12_graphics_pipeline_state();
 
 	private:
+		static TG_vector<D3D12_INPUT_ELEMENT_DESC> vertex_shader_desc_to_d3d12_input_element_descs(
+			const F_shader_desc& shader_desc
+		);
 		static ID3D12PipelineState* create_d3d12_graphics_pipeline_state_direct(
 			TKPA_valid<A_device> device_p,
 			const F_pipeline_state_desc& desc

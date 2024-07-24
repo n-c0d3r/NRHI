@@ -2100,6 +2100,12 @@ namespace nrhi {
 	public:
 		NCPP_OBJECT(A_nsl_shader_object);
 
+	protected:
+		eastl::optional<G_string> apply_shader_with_customizations(
+			const F_nsl_ast_tree& tree,
+			const G_string& pre_shader_keyword = ""
+		);
+
 	public:
 		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
 			F_nsl_context& context,
@@ -2110,7 +2116,7 @@ namespace nrhi {
 		) override;
 		virtual eastl::optional<G_string> apply(
 			const F_nsl_ast_tree& tree
-		);
+		) override;
 
 	};
 
@@ -2258,6 +2264,9 @@ namespace nrhi {
 			TG_vector<F_nsl_ast_tree>& trees,
 			sz index,
 			F_nsl_error_stack* error_stack_p
+		) override;
+		virtual eastl::optional<G_string> apply(
+			const F_nsl_ast_tree& tree
 		) override;
 
 	};
@@ -3214,7 +3223,8 @@ namespace nrhi {
 		virtual eastl::optional<G_string> shader_object_to_string(
 			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 			TKPA_valid<A_nsl_shader_object> shader_object_p,
-			const G_string& body
+			const G_string& body,
+			const G_string& pre_shader_keyword
 		) = 0;
 
 	};
@@ -3270,7 +3280,8 @@ namespace nrhi {
 		virtual eastl::optional<G_string> shader_object_to_string(
 			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 			TKPA_valid<A_nsl_shader_object> shader_object_p,
-			const G_string& body
+			const G_string& body,
+			const G_string& pre_shader_keyword
 		) override;
 
 	protected:
