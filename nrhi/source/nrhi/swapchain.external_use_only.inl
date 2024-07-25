@@ -44,9 +44,7 @@ namespace nrhi {
 
 	NCPP_FORCE_INLINE K_valid_rtv_handle A_swapchain::back_rtv_p() {
 
-		NRHI_DRIVER_REQUIRE_SUPPORT_SIMPLE_WORK_SUBMISSION(
-			return H_swapchain::back_rtv_p(NCPP_KTHIS());
-		);
+		return H_swapchain::back_rtv_p(NCPP_KTHIS());
 	}
 
 #ifdef NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
