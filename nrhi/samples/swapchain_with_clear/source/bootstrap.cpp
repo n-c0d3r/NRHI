@@ -32,11 +32,31 @@ int main() {
 
 
 	// create command list
-	auto command_list_p = H_command_list::create(
-		NCPP_FOREF_VALID(device_p),
-		F_command_list_desc {
-			ED_command_list_type::DIRECT
-		}
+	TU<A_command_allocator> command_allocator_p;
+	TU<A_command_list> command_list_p;
+	NRHI_DRIVER_ENABLE_IF_SUPPORT_ADVANCED_WORK_SUBMISSION(
+		command_allocator_p = H_command_allocator::create(
+			NCPP_FOREF_VALID(device_p),
+			F_command_allocator_desc {
+				ED_command_list_type::DIRECT
+			}
+		);
+		command_list_p = H_command_list::create_with_command_allocator(
+			NCPP_FOREF_VALID(device_p),
+			F_command_list_desc {
+				ED_command_list_type::DIRECT,
+				command_allocator_p.keyed()
+			}
+		);
+		command_list_p->async_end();
+	)
+	else NRHI_DRIVER_ENABLE_IF_SUPPORT_SIMPLE_WORK_SUBMISSION(
+		command_list_p = H_command_list::create(
+			NCPP_FOREF_VALID(device_p),
+			F_command_list_desc {
+				ED_command_list_type::DIRECT
+			}
+		);
 	);
 
 
@@ -95,23 +115,52 @@ int main() {
 		if(!swapchain_p)
 			return;
 
-	  	K_valid_rtv_handle back_rtv_p = swapchain_p->back_rtv_p();
+	  	auto back_rtv_p = swapchain_p->back_rtv_p();
+	  	auto back_buffer_p = swapchain_p->back_buffer_p();
 
 	  	NRHI_DRIVER_ENABLE_IF_SUPPORT_SIMPLE_WORK_SUBMISSION(
-			command_list_p->clear_rtv(back_rtv_p, F_vector4::forward());
+			command_list_p->clear_rtv(
+				back_rtv_p,
+				F_vector4::forward()
+			);
 
 			command_queue_p->execute_command_list(
 				NCPP_FOH_VALID(command_list_p)
 			);
 	  	)
 	  	else NRHI_DRIVER_ENABLE_IF_SUPPORT_ADVANCED_WORK_SUBMISSION(
-//			command_list_p->async_resource_barrier();
-//
-//			command_list_p->async_clear_rtv(back_rtv_p, F_vector4::forward());
-//
-//			command_queue_p->async_execute_command_list(
-//				NCPP_FOH_VALID(command_list_p)
-//			);
+		  	command_allocator_p->reset();
+
+			command_list_p->async_begin(
+				NCPP_FOH_VALID(command_allocator_p)
+			);
+
+			command_list_p->async_resource_barrier(
+				H_resource_barrier::transition({
+					.resource_p = back_buffer_p.no_requirements(),
+					.state_before = ED_resource_state::PRESENT,
+					.state_after = ED_resource_state::RENDER_TARGET
+				})
+			);
+
+			command_list_p->async_clear_rtv(
+				back_rtv_p->descriptor().handle.cpu_address,
+				F_vector4::forward()
+			);
+
+			command_list_p->async_resource_barrier(
+				H_resource_barrier::transition({
+					.resource_p = back_buffer_p.no_requirements(),
+				  	.state_before = ED_resource_state::RENDER_TARGET,
+					.state_after = ED_resource_state::PRESENT
+				})
+			);
+
+			command_list_p->async_end();
+
+			command_queue_p->async_execute_command_list(
+				NCPP_FOH_VALID(command_list_p)
+			);
 	  	);
 
 	  	// present swapchain

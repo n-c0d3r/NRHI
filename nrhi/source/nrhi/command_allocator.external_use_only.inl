@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/command_queue_base.hpp
+/** @file nrhi/command_allocator.external_use_only.inl
 *
-*   Implement command queue base class.
+*   Implement command allocator inline functions that is only used by external.
 */
 
 
@@ -33,8 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/device_child.hpp>
-#include <nrhi/command_list_type.hpp>
+#include <nrhi/command_allocator.hpp>
 
 #pragma endregion
 
@@ -42,76 +41,11 @@
 
 namespace nrhi {
 
-    class A_device;
-    class A_command_list;
-
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-    class A_fence;
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-
-
-
-	using ED_command_queue_type = ED_command_list_type;
-
-    struct F_command_queue_desc {
-
-		ED_command_queue_type type = ED_command_queue_type::DIRECT;
-
-    };
-
-
-
-    class NRHI_API A_command_queue : public A_device_child {
-
-    private:
-        F_command_queue_desc desc_;
-		b8 supports_graphics_ = false;
-		b8 supports_compute_ = false;
-		b8 supports_blit_ = false;
-
-    public:
-        NCPP_FORCE_INLINE const F_command_queue_desc& desc() const noexcept { return desc_; }
-		NCPP_FORCE_INLINE b8 supports_graphics() const noexcept { return supports_graphics_; }
-		NCPP_FORCE_INLINE b8 supports_compute() const noexcept { return supports_compute_; }
-		NCPP_FORCE_INLINE b8 supports_blit() const noexcept { return supports_blit_; }
-
-
-
-    protected:
-        A_command_queue(TKPA_valid<A_device> device_p, const F_command_queue_desc& desc);
-
-    public:
-        virtual ~A_command_queue();
-
-	public:
-		NCPP_OBJECT(A_command_queue);
-
-
-
-	public:
-#ifdef NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
-		void execute_command_lists(TG_span<TK_valid<A_command_list>> command_list_p_span);
-		void execute_command_list(TKPA_valid<A_command_list> command_list_p);
-#endif
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-		void async_signal(
-			TKPA_valid<A_fence> fence_p,
-			u64 new_value
+	NCPP_FORCE_INLINE void A_command_allocator::reset() {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			H_command_allocator::reset(NCPP_KTHIS());
 		);
-		void async_wait(
-			TKPA_valid<A_fence> fence_p,
-			u64 value
-		);
-		void async_execute_command_lists(TG_span<TK_valid<A_command_list>> command_list_p_span);
-		void async_execute_command_list(TKPA_valid<A_command_list> command_list_p);
+	}
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-
-
-
-	public:
-		b8 is_compatible(TKPA_valid<A_command_list> command_list_p) const;
-
-    };
-
 }

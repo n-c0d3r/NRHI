@@ -7,22 +7,14 @@
 
 namespace nrhi {
 
-    F_directx12_command_list::F_directx12_command_list(TKPA_valid<A_device> device_p, const F_command_list_desc& desc) :
+    F_directx12_command_list::F_directx12_command_list(
+		TKPA_valid<A_device> device_p,
+		const F_command_list_desc& desc,
+		F_directx12_command_list_create_with_command_allocator_flag
+	) :
         A_command_list(device_p, desc)
     {
-		// setup command allocator
-		if(desc.manual_command_allocator_p)
-		{
-			command_allocator_p_ = desc.manual_command_allocator_p;
-		}
-		else
-		{
-			owned_command_allocator_p_ = H_command_allocator::create(
-				device_p,
-				{ desc.type }
-			);
-			command_allocator_p_ = owned_command_allocator_p_.keyed();
-		}
+		command_allocator_p_ = desc.command_allocator_p;
 
 		// create d3d12 command list
 		device_p.T_cast<F_directx12_device>()->d3d12_device_p()->CreateCommandList(
@@ -33,9 +25,6 @@ namespace nrhi {
 			IID_PPV_ARGS(&d3d12_command_list_p_)
 		);
 		NCPP_ASSERT(d3d12_command_list_p_) << "create d3d12 command list failed";
-
-		HRESULT hr = d3d12_command_list_p_->Close();
-    	NCPP_ASSERT(!FAILED(hr)) << "can't close command list";
 	}
     F_directx12_command_list::~F_directx12_command_list(){
 
@@ -45,10 +34,24 @@ namespace nrhi {
 
 
 
-    TU<A_command_list> HD_directx12_command_list::create(TKPA_valid<A_device> device_p, const F_command_list_desc& desc){
+    TU<A_command_list> HD_directx12_command_list::create_with_command_allocator(TKPA_valid<A_device> device_p, const F_command_list_desc& desc){
 
-        return TU<F_directx12_command_list>()(device_p, desc);
+        return TU<F_directx12_command_list>()(device_p, desc, F_directx12_command_list_create_with_command_allocator_flag {});
     }
+
+	void HD_directx12_command_list::async_begin(
+		TKPA_valid<A_command_list> command_list_p,
+		TKPA_valid<A_command_allocator> command_allocator_p
+	) {
+		command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p()->Reset(
+			command_allocator_p.T_cast<F_directx12_command_allocator>()->d3d12_command_allocator_p(),
+			0
+		);
+	}
+	void HD_directx12_command_list::async_end(TKPA_valid<A_command_list> command_list_p) {
+
+		command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p()->Close();
+	}
 
 	void HD_directx12_command_list::async_resource_barrier(
 		TKPA_valid<A_command_list> command_list_p,
@@ -134,6 +137,21 @@ namespace nrhi {
 		dx12_command_list_p->d3d12_command_list_p()->ResourceBarrier(
 			resource_barriers.size(),
 			batch.data()
+		);
+	}
+
+	void HD_directx12_command_list::async_clear_rtv(
+		TKPA_valid<A_command_list> command_list_p,
+		F_descriptor_cpu_address rtv_cpu_address,
+		PA_vector4_f32 color
+	) {
+		auto dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
+
+		dx12_command_list_p->d3d12_command_list_p()->ClearRenderTargetView(
+			{ rtv_cpu_address },
+			(const float*)&color,
+			0,
+			0
 		);
 	}
 

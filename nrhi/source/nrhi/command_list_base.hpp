@@ -42,6 +42,7 @@
 #include <nrhi/clear_flag.hpp>
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+#include <nrhi/descriptor_base.hpp>
 #include <nrhi/resource_barrier.hpp>
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
@@ -66,7 +67,7 @@ namespace nrhi {
         ED_command_list_type type = ED_command_list_type::DIRECT;
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-		TK<A_command_allocator> manual_command_allocator_p;
+		TK<A_command_allocator> command_allocator_p;
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
     };
@@ -83,7 +84,6 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 	protected:
-		TU<A_command_allocator> owned_command_allocator_p_;
 		TK<A_command_allocator> command_allocator_p_;
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
@@ -94,8 +94,7 @@ namespace nrhi {
         NCPP_FORCE_INLINE b8 supports_blit() const noexcept { return supports_blit_; }
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-        NCPP_FORCE_INLINE TK<A_command_allocator> owned_command_allocator_p() const noexcept { return owned_command_allocator_p_.keyed(); }
-        NCPP_FORCE_INLINE TK_valid<A_command_allocator> command_allocator_p() const noexcept { return NCPP_FOH_VALID(command_allocator_p_); }
+        NCPP_FORCE_INLINE TK<A_command_allocator> command_allocator_p() const noexcept { return command_allocator_p_; }
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 
@@ -304,11 +303,23 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 	public:
+		void async_begin(
+			TKPA_valid<A_command_allocator> command_allocator_p
+		);
+		void async_end();
+
+	public:
 		void async_resource_barrier(
 			const F_resource_barrier& resource_barrier
 		);
 		void async_resource_barriers(
 			const TG_span<F_resource_barrier>& resource_barriers
+		);
+
+	public:
+		void async_clear_rtv(
+			F_descriptor_cpu_address rtv_cpu_address,
+			PA_vector4_f32 color
 		);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 

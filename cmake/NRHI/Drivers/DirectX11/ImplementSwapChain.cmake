@@ -30,6 +30,7 @@ NRHI_FunctionHelper_CreateFunctionClass(
             const F_swapchain_desc& desc
         )"
         "back_rtv_p" "K_valid_rtv_handle(TKPA_valid<A_swapchain> swapchain_p)"
+        "back_buffer_p" "K_valid_texture_2d_handle(TKPA_valid<A_swapchain> swapchain_p)"
         "present" "void(TKPA_valid<A_swapchain> swapchain_p)"
 )
 

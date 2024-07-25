@@ -52,6 +52,10 @@ namespace nrhi {
 
 
 
+	struct F_directx12_command_list_create_with_command_allocator_flag {};
+
+
+
     class NRHI_API F_directx12_command_list : public A_command_list {
 
 	public:
@@ -69,7 +73,11 @@ namespace nrhi {
 
 
     public:
-        F_directx12_command_list(TKPA_valid<A_device> device_p, const F_command_list_desc& desc);
+        F_directx12_command_list(
+			TKPA_valid<A_device> device_p,
+			const F_command_list_desc& desc,
+			F_directx12_command_list_create_with_command_allocator_flag
+		);
         ~F_directx12_command_list();
 
     };
@@ -79,7 +87,14 @@ namespace nrhi {
     class NRHI_API HD_directx12_command_list {
 
     public:
-        static TU<A_command_list> create(TKPA_valid<A_device> device_p, const F_command_list_desc& desc);
+        static TU<A_command_list> create_with_command_allocator(TKPA_valid<A_device> device_p, const F_command_list_desc& desc);
+
+	public:
+		static void async_begin(
+			TKPA_valid<A_command_list> command_list_p,
+			TKPA_valid<A_command_allocator> command_allocator_p
+		);
+		static void async_end(TKPA_valid<A_command_list> command_list_p);
 
 	public:
 		static void async_resource_barrier(
@@ -89,6 +104,13 @@ namespace nrhi {
 		static void async_resource_barriers(
 			TKPA_valid<A_command_list> command_list_p,
 			const TG_span<F_resource_barrier>& resource_barriers
+		);
+
+	public:
+		static void async_clear_rtv(
+			TKPA_valid<A_command_list> command_list_p,
+			F_descriptor_cpu_address rtv_cpu_address,
+			PA_vector4_f32 color
 		);
 
     };

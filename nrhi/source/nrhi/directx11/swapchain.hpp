@@ -97,6 +97,7 @@ namespace nrhi {
 
 	public:
 		static K_valid_rtv_handle back_rtv_p(TKPA_valid<A_swapchain>);
+		static K_valid_texture_2d_handle back_buffer_p(TKPA_valid<A_swapchain>);
 
 	public:
 		static void present(TKPA_valid<A_swapchain>);

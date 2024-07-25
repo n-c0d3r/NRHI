@@ -82,6 +82,9 @@ namespace nrhi {
 	public:
 		NCPP_OBJECT(A_command_allocator);
 
+	public:
+		void reset();
+
 	};
 
 }

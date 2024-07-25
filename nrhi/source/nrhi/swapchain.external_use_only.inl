@@ -46,6 +46,10 @@ namespace nrhi {
 
 		return H_swapchain::back_rtv_p(NCPP_KTHIS());
 	}
+	NCPP_FORCE_INLINE K_valid_texture_2d_handle A_swapchain::back_buffer_p() {
+
+		return H_swapchain::back_buffer_p(NCPP_KTHIS());
+	}
 
 #ifdef NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
 	NCPP_FORCE_INLINE void A_swapchain::present() {

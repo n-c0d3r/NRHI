@@ -57,30 +57,17 @@ namespace nrhi {
 	void HD_directx11_command_list::clear_rtv(
 		TKPA_valid<A_command_list> command_list_p,
 		KPA_valid_rtv_handle rtv_p,
-		PA_vector4 color
+		PA_vector4_f32 color
 	) {
 		NCPP_ASSERT(rtv_p->is_valid_generation()) << "render target view's generation is not valid";
 		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
 		ID3D11DeviceContext* d3d11_device_context_p = command_list_p.T_cast<F_directx11_command_list>()->d3d11_device_context_p();
 
-		if constexpr (std::is_same_v<F_vector4, F_vector4_f32>)
-			d3d11_device_context_p->ClearRenderTargetView(
-				(ID3D11RenderTargetView*)(rtv_p.T_cast<F_directx11_render_target_view>()->d3d11_view_p()),
-				(const f32*)&color
-			);
-		else {
-			f32 color_f32[4] = {
-				color.x,
-				color.y,
-				color.z,
-				color.w
-			};
-			d3d11_device_context_p->ClearRenderTargetView(
-				(ID3D11RenderTargetView*)(rtv_p.T_cast<F_directx11_render_target_view>()->d3d11_view_p()),
-				color_f32
-			);
-		}
+		d3d11_device_context_p->ClearRenderTargetView(
+			(ID3D11RenderTargetView*)(rtv_p.T_cast<F_directx11_render_target_view>()->d3d11_view_p()),
+			(const f32*)&color
+		);
 	}
 	void HD_directx11_command_list::clear_dsv(
 		TKPA_valid<A_command_list> command_list_p,

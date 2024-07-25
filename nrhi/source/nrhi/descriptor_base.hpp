@@ -62,11 +62,11 @@ namespace nrhi {
 
 		NCPP_FORCE_INLINE b8 is_valid() const noexcept {
 
-			return cpu_address && gpu_address;
+			return cpu_address || gpu_address;
 		}
 		NCPP_FORCE_INLINE b8 is_null() const noexcept {
 
-			return !(cpu_address && gpu_address);
+			return !(cpu_address || gpu_address);
 		}
 		NCPP_FORCE_INLINE operator b8() const noexcept {
 

@@ -88,10 +88,8 @@ namespace nrhi { }
 #include <nrhi/swapchain.external_use_only.inl>
 #include <nrhi/frame_buffer.external_use_only.inl>
 #include <nrhi/fence.external_use_only.inl>
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 #include <nrhi/descriptor_heap.external_use_only.inl>
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+#include <nrhi/command_allocator.external_use_only.inl>
 
 #include <nrhi/texture_handle.external_use_only.inl>
 

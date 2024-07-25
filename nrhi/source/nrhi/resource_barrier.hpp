@@ -72,6 +72,23 @@ namespace nrhi {
 
 	struct F_resource_barrier {
 
+		static constexpr sz payload_size = (
+			(
+			   	sizeof(F_resource_uav_barrier)
+				> (
+					(sizeof(F_resource_transition_barrier) > sizeof(F_resource_aliasing_barrier))
+					? sizeof(F_resource_transition_barrier)
+					: sizeof(F_resource_aliasing_barrier)
+				)
+		   	)
+		   	? sizeof(F_resource_uav_barrier)
+		   	: (
+			   	(sizeof(F_resource_transition_barrier) > sizeof(F_resource_aliasing_barrier))
+			   	? sizeof(F_resource_transition_barrier)
+			   	: sizeof(F_resource_aliasing_barrier)
+		   	)
+		);
+
 		ED_resource_barrier_type type;
 		ED_resource_barrier_flag flags = ED_resource_barrier_flag::NONE;
 
@@ -81,7 +98,56 @@ namespace nrhi {
 			F_resource_aliasing_barrier aliasing;
 			F_resource_uav_barrier uav;
 
+			u8 payload[payload_size] = {};
+
 		};
+
+		NCPP_FORCE_INLINE F_resource_barrier() noexcept
+		{}
+		NCPP_FORCE_INLINE ~F_resource_barrier() noexcept
+		{}
+		NCPP_FORCE_INLINE F_resource_barrier(const F_resource_barrier& x) noexcept :
+			type(x.type),
+			flags(x.flags)
+		{
+			memcpy(
+				payload,
+				x.payload,
+				payload_size
+			);
+		}
+		NCPP_FORCE_INLINE F_resource_barrier& operator = (const F_resource_barrier& x) noexcept
+		{
+			type = x.type;
+			flags = x.flags;
+
+			memcpy(
+				payload,
+				x.payload,
+				payload_size
+			);
+			return *this;
+		}
+
+	};
+
+
+
+	struct NRHI_API H_resource_barrier {
+
+	public:
+		static F_resource_barrier transition(
+			const F_resource_transition_barrier& transition_barrier,
+			ED_resource_barrier_flag flags = ED_resource_barrier_flag::NONE
+		);
+		static F_resource_barrier aliasing(
+			const F_resource_aliasing_barrier& aliasing_barrier,
+			ED_resource_barrier_flag flags = ED_resource_barrier_flag::NONE
+		);
+		static F_resource_barrier uav(
+			const F_resource_uav_barrier& uav_barrier,
+			ED_resource_barrier_flag flags = ED_resource_barrier_flag::NONE
+		);
 
 	};
 

@@ -127,7 +127,7 @@ namespace nrhi {
 		static void clear_rtv(
 			TKPA_valid<A_command_list> command_list_p,
 			KPA_valid_rtv_handle rtv_p,
-			PA_vector4 color
+			PA_vector4_f32 color
 		);
 		static void clear_dsv(
 			TKPA_valid<A_command_list> command_list_p,

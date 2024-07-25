@@ -116,6 +116,8 @@ namespace nrhi {
 
         surface_p()->T_get_event<F_surface_resize_event>().remove_listener(surface_resize_handle_);
 
+		buffer_p_.reset();
+
         if(dxgi_swapchain_p_)
             dxgi_swapchain_p_->Release();
     }
@@ -170,6 +172,12 @@ namespace nrhi {
 		auto dx11_swapchain_p = swapchain_p.T_cast<F_directx11_swapchain>();
 
 		return NCPP_FOH_VALID(dx11_swapchain_p->back_rtv_p_);
+	}
+	K_valid_texture_2d_handle HD_directx11_swapchain::back_buffer_p(TKPA_valid<A_swapchain> swapchain_p) {
+
+		auto dx11_swapchain_p = swapchain_p.T_cast<F_directx11_swapchain>();
+
+		return NCPP_FOH_VALID(dx11_swapchain_p->buffer_p_);
 	}
 
 	void HD_directx11_swapchain::present(TKPA_valid<A_swapchain> swapchain_p){

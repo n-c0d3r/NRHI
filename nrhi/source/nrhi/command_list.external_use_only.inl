@@ -497,6 +497,25 @@ namespace nrhi {
 #endif // NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_MANAGEMENT && NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_BINDING && NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+	NCPP_FORCE_INLINE void A_command_list::async_begin(
+		TKPA_valid<A_command_allocator> command_allocator_p
+	) {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			H_command_list::async_begin(
+				NCPP_KTHIS(),
+				command_allocator_p
+			);
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::async_end() {
+
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			H_command_list::async_end(
+				NCPP_KTHIS()
+			);
+		);
+	}
+
 	NCPP_FORCE_INLINE void A_command_list::async_resource_barrier(
 		const F_resource_barrier& resource_barrier
 	) {
@@ -516,6 +535,19 @@ namespace nrhi {
 					NCPP_KTHIS(),
 					resource_barriers
 				);
+			);
+		);
+	}
+
+	NCPP_FORCE_INLINE void A_command_list::async_clear_rtv(
+		F_descriptor_cpu_address rtv_cpu_address,
+		PA_vector4_f32 color
+	) {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			H_command_list::async_clear_rtv(
+				NCPP_KTHIS(),
+				rtv_cpu_address,
+				color
 			);
 		);
 	}

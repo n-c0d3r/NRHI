@@ -33,6 +33,7 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "rtv_p" "K_valid_rtv_handle(TKPA_valid<A_swapchain> swapchain_p, u8 index)"
         "update_back_rtv" "void(TKPA_valid<A_swapchain> swapchain_p)"
         "back_rtv_p" "K_valid_rtv_handle(TKPA_valid<A_swapchain> swapchain_p)"
+        "back_buffer_p" "K_valid_texture_2d_handle(TKPA_valid<A_swapchain> swapchain_p)"
         "async_present" "void(TKPA_valid<A_swapchain> swapchain_p)"
 )
 

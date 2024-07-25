@@ -28,24 +28,29 @@ int main() {
 			ED_command_list_type::DIRECT
 		}
 	);
-	auto command_allocator_p = H_command_allocator::create(
-		NCPP_FOREF_VALID(device_p),
-		F_command_allocator_desc {
-			ED_command_list_type::DIRECT
-		}
-	);
-	auto command_list_1_p = H_command_list::create(
-		NCPP_FOREF_VALID(device_p),
-		F_command_list_desc {
-			ED_command_list_type::DIRECT,
-			command_allocator_p.keyed()
-		}
-	);
-	auto command_list_2_p = H_command_list::create(
-		NCPP_FOREF_VALID(device_p),
-		F_command_list_desc {
-			ED_command_list_type::DIRECT
-		}
+	NRHI_DRIVER_ENABLE_IF_SUPPORT_ADVANCED_WORK_SUBMISSION(
+		auto command_allocator_p = H_command_allocator::create(
+			NCPP_FOREF_VALID(device_p),
+			F_command_allocator_desc {
+				ED_command_list_type::DIRECT
+			}
+		);
+		auto command_list_p = H_command_list::create_with_command_allocator(
+			NCPP_FOREF_VALID(device_p),
+			F_command_list_desc {
+				ED_command_list_type::DIRECT,
+				command_allocator_p.keyed()
+			}
+		);
+		command_list_p->async_end();
+	)
+	else NRHI_DRIVER_ENABLE_IF_SUPPORT_SIMPLE_WORK_SUBMISSION(
+		auto command_list_p = H_command_list::create(
+			NCPP_FOREF_VALID(device_p),
+			F_command_list_desc {
+				ED_command_list_type::DIRECT
+			}
+		);
 	);
 
 	return 0;

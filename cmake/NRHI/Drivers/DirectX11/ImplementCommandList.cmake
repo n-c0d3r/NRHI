@@ -31,7 +31,7 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "clear_rtv" "void(
 			TKPA_valid<A_command_list> command_list_p,
 			KPA_valid_rtv_handle rtv_p,
-			PA_vector4 color
+			PA_vector4_f32 color
 		)"
         "clear_dsv" "void(
             TKPA_valid<A_command_list> command_list_p,

@@ -92,6 +92,7 @@ namespace nrhi {
 
 	public:
 		K_valid_rtv_handle back_rtv_p();
+		K_valid_texture_2d_handle back_buffer_p();
 
 #ifdef NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
 		void present();

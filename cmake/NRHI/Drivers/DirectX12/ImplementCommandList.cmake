@@ -24,7 +24,14 @@ NRHI_FunctionHelper_CreateFunctionClass(
             class A_device;
         }"
     VALUES
-        "create" "TU<A_command_list>(TKPA_valid<A_device> device_p, const F_command_list_desc& desc)"
+        "create_with_command_allocator" "TU<A_command_list>(TKPA_valid<A_device> device_p, const F_command_list_desc& desc)"
+        "async_begin" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            TKPA_valid<A_command_allocator> command_allocator_p
+        )"
+        "async_end" "void(
+            TKPA_valid<A_command_list> command_list_p
+        )"
         "async_resource_barrier" "void(
             TKPA_valid<A_command_list> command_list_p,
             const F_resource_barrier& resource_barrier
@@ -32,6 +39,11 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "async_resource_barriers" "void(
             TKPA_valid<A_command_list> command_list_p,
             const TG_span<F_resource_barrier>& resource_barriers
+        )"
+        "async_clear_rtv" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            F_descriptor_cpu_address rtv_cpu_address,
+            PA_vector4_f32 color
         )"
 )
 

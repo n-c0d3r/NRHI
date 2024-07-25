@@ -25,6 +25,7 @@ NRHI_FunctionHelper_CreateFunctionClass(
         }"
     VALUES
         "create" "TU<A_command_allocator>(TKPA_valid<A_device> device_p, const F_command_allocator_desc& desc)"
+        "reset" "void(TKPA_valid<A_command_allocator>)"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement command allocator done")

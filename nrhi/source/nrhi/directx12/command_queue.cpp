@@ -54,4 +54,47 @@ namespace nrhi {
 		);
 	}
 
+	void HD_directx12_command_queue::async_execute_command_lists(
+		TKPA_valid<A_command_queue> command_queue_p,
+		TG_span<TK_valid<A_command_list>> command_list_p_span
+	) {
+		sz command_list_count = command_list_p_span.size();
+
+		TG_array<ID3D12CommandList*, NRHI_MAX_COMMAND_LIST_COUNT_PER_BATCH> d3d12_command_list_p_array;
+
+		for(u32 i = 0; i < command_list_count; ++i) {
+
+			TK_valid<A_command_list> command_list_p = command_list_p_span[i];
+
+			NCPP_ASSERT(command_queue_p->is_compatible(command_list_p)) << "non-compatible command list";
+
+			auto d3d12_command_list_p = command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p();
+			d3d12_command_list_p_array[i] = d3d12_command_list_p;
+		}
+
+		command_queue_p
+			.T_cast<F_directx12_command_queue>()
+			->d3d12_command_queue_p()
+			->ExecuteCommandLists(
+				command_list_count,
+				d3d12_command_list_p_array.data()
+			);
+	}
+	void HD_directx12_command_queue::async_execute_command_list(
+		TKPA_valid<A_command_queue> command_queue_p,
+		TKPA_valid<A_command_list> command_list_p
+	) {
+		NCPP_ASSERT(command_queue_p->is_compatible(command_list_p)) << "non-compatible command list";
+
+		ID3D12GraphicsCommandList* d3d12_command_list_p = command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p();
+
+		command_queue_p
+			.T_cast<F_directx12_command_queue>()
+			->d3d12_command_queue_p()
+			->ExecuteCommandLists(
+				1,
+				(ID3D12CommandList**)&d3d12_command_list_p
+			);
+	}
+
 }
