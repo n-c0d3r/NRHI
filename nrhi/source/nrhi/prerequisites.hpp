@@ -238,7 +238,7 @@ namespace nrhi {}
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#define NRHI_DRIVER_DIRECTX_12_ID_MASK___RESOURCE_TYPE 0x11000000
+#define NRHI_DRIVER_DIRECTX_12_ID_MASK___RESOURCE_TYPE 0xFF000000
 #define NRHI_DRIVER_DIRECTX_12_ID_OFFSET___RESOURCE_TYPE (6 * 4)
 #define NRHI_DRIVER_DIRECTX_12_REMOVE_ID___RESOURCE_TYPE(...) (\
                 (~NRHI_DRIVER_DIRECTX_12_ID_MASK___RESOURCE_TYPE) \
@@ -267,7 +267,7 @@ namespace nrhi {}
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#define NRHI_DRIVER_DIRECTX_12_ID_MASK___RESOURCE_BIND_FLAG 0x11110000
+#define NRHI_DRIVER_DIRECTX_12_ID_MASK___RESOURCE_BIND_FLAG 0xFFFF0000
 #define NRHI_DRIVER_DIRECTX_12_ID_OFFSET___RESOURCE_BIND_FLAG (4 * 4)
 #define NRHI_DRIVER_DIRECTX_12_REMOVE_ID___RESOURCE_BIND_FLAG(...) (\
                 (~NRHI_DRIVER_DIRECTX_12_ID_MASK___RESOURCE_BIND_FLAG) \

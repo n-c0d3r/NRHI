@@ -1,0 +1,25 @@
+
+message(STATUS "<NRHI::Drivers::DirectX12> Start implementing resource barrier flag")
+
+include(NRHI/Utilities/EnumHelper)
+
+
+
+NCPP_SetGlobal(NRHI_RESOURCE_BARRIER_FLAG_ENUM_HPP_FILE_PATH "${NRHI_GENERATED_FILES_DIR}/resource_barrier_flag.hpp")
+NCPP_SetGlobal(NRHI_RESOURCE_BARRIER_FLAG_ENUM_CPP_FILE_PATH "${NRHI_GENERATED_FILES_DIR}/resource_barrier_flag.cpp")
+
+
+
+NRHI_EnumHelper_CreateEnum(
+    NAMESPACE "nrhi"
+    NAME "ED_resource_barrier_flag"
+    DRIVER_UPPER_CASE_NAME "DIRECTX_12"
+    TARGET_HPP_FILE_PATH "${NRHI_RESOURCE_BARRIER_FLAG_ENUM_HPP_FILE_PATH}"
+    TARGET_CPP_FILE_PATH "${NRHI_RESOURCE_BARRIER_FLAG_ENUM_CPP_FILE_PATH}"
+    VALUES
+        NONE D3D12_RESOURCE_BARRIER_FLAG_NONE
+        BEGIN_ONLY D3D12_RESOURCE_BARRIER_FLAG_BEGIN_ONLY
+        END_ONLY D3D12_RESOURCE_BARRIER_FLAG_END_ONLY
+)
+
+message(STATUS "<NRHI::Drivers::DirectX12> Implement resource barrier flag done")
