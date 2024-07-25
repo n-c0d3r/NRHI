@@ -47,6 +47,7 @@ namespace nrhi {
 	class A_command_list;
 	class A_resource;
 	class A_resource_view;
+	class A_descriptor_heap;
 
 
 
@@ -62,6 +63,8 @@ namespace nrhi {
 		typename F_event::F_listener_handle surface_resize_handle_;
 
 		TG_vector<U_texture_2d_handle> buffer_p_vector_;
+
+		TU<A_descriptor_heap> back_rtv_descriptor_heap_p_;
 
 	public:
 		NCPP_FORCE_INLINE IDXGISwapChain3* dxgi_swapchain_p() noexcept { return dxgi_swapchain_p_; }

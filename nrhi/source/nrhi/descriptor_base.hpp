@@ -53,17 +53,77 @@ namespace nrhi {
 	using F_descriptor_cpu_address = u64;
 	using F_descriptor_gpu_address = u64;
 
+
+
 	struct F_descriptor_handle {
 
 		F_descriptor_cpu_address cpu_address = 0;
 		F_descriptor_gpu_address gpu_address = 0;
 
+		NCPP_FORCE_INLINE b8 is_valid() const noexcept {
+
+			return cpu_address && gpu_address;
+		}
+		NCPP_FORCE_INLINE b8 is_null() const noexcept {
+
+			return !(cpu_address && gpu_address);
+		}
+		NCPP_FORCE_INLINE operator b8() const noexcept {
+
+			return is_valid();
+		}
+
+		NCPP_FORCE_INLINE b8 operator == (const F_descriptor_handle& b) const noexcept {
+
+			return (
+				(cpu_address == b.cpu_address)
+				&& (gpu_address == b.gpu_address)
+			);
+		}
+		NCPP_FORCE_INLINE b8 operator != (const F_descriptor_handle& b) const noexcept {
+
+			return (
+				(cpu_address != b.cpu_address)
+				|| (gpu_address != b.gpu_address)
+			);
+		}
+
 	};
+
+
 
 	struct F_descriptor {
 
 		F_descriptor_handle handle;
 		TK<A_descriptor_heap> heap_p;
+
+		NCPP_FORCE_INLINE b8 is_valid() const noexcept {
+
+			return handle && heap_p;
+		}
+		NCPP_FORCE_INLINE b8 is_null() const noexcept {
+
+			return !(handle && heap_p);
+		}
+		NCPP_FORCE_INLINE operator b8() const noexcept {
+
+			return is_valid();
+		}
+
+		NCPP_FORCE_INLINE b8 operator == (const F_descriptor& b) const noexcept {
+
+			return (
+				(handle == b.handle)
+				&& (heap_p == b.heap_p)
+			);
+		}
+		NCPP_FORCE_INLINE b8 operator != (const F_descriptor& b) const noexcept {
+
+			return (
+				(handle != b.handle)
+				|| (heap_p != b.heap_p)
+			);
+		}
 
 	};
 
