@@ -50,10 +50,37 @@ namespace nrhi {
 
 
 
+	struct F_resource_transition_barrier {
+
+		TK<A_resource> resource_p;
+		ED_resource_state state_before;
+		ED_resource_state state_after;
+
+	};
+	struct F_resource_aliasing_barrier {
+
+		TK<A_resource> resource_before_p;
+		TK<A_resource> resource_after_p;
+
+	};
+	struct F_resource_uav_barrier {
+
+		TK<A_resource> resource_p;
+
+	};
+
 	struct F_resource_barrier {
 
 		ED_resource_barrier_type type;
 		ED_resource_barrier_flag flags = ED_resource_barrier_flag::NONE;
+
+		union {
+
+			F_resource_transition_barrier transition;
+			F_resource_aliasing_barrier aliasing;
+			F_resource_uav_barrier uav;
+
+		};
 
 	};
 
