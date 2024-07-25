@@ -36,6 +36,7 @@
 #include <nrhi/swapchain_base.hpp>
 #include <nrhi/texture.hpp>
 #include <nrhi/resource_view_base.hpp>
+#include <nrhi/resource_view_handle.hpp>
 
 #pragma endregion
 
@@ -61,8 +62,8 @@ namespace nrhi {
         IDXGISwapChain* dxgi_swapchain_p_ = 0;
         typename F_event::F_listener_handle surface_resize_handle_;
 
-		TG_vector<U_texture_2d_handle> buffer_p_vector_;
-		u8 current_back_rtv_index_ = 0;
+		U_texture_2d_handle buffer_p_;
+		U_rtv_handle back_rtv_p_;
 
     public:
         NCPP_FORCE_INLINE IDXGISwapChain* dxgi_swapchain_p() noexcept { return dxgi_swapchain_p_; }
@@ -79,7 +80,7 @@ namespace nrhi {
         ~F_directx11_swapchain();
 
     private:
-        void update_d3d11_object_for_buffer_rtvs();
+        void update_d3d11_object_for_buffer_rtv();
 
     };
 
@@ -95,7 +96,7 @@ namespace nrhi {
         );
 
 	public:
-		static u8 current_back_rtv_index(TKPA_valid<A_swapchain>);
+		static K_valid_rtv_handle back_rtv_p(TKPA_valid<A_swapchain>);
 
 	public:
 		static void present(TKPA_valid<A_swapchain>);

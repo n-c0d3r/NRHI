@@ -29,7 +29,7 @@ namespace nrhi {
 		// create d3d12 swapchain
 		DXGI_SWAP_CHAIN_DESC1 dxgi_swapchain_desc;
 		ZeroMemory(&dxgi_swapchain_desc, sizeof(dxgi_swapchain_desc));
-		dxgi_swapchain_desc.BufferCount = desc.back_rtv_count + 1;
+		dxgi_swapchain_desc.BufferCount = desc.rtv_count;
 		dxgi_swapchain_desc.Width = surface_p->client_size().x;
 		dxgi_swapchain_desc.Height = surface_p->client_size().y;
 		dxgi_swapchain_desc.Format = (DXGI_FORMAT)(desc.format);
@@ -63,8 +63,7 @@ namespace nrhi {
 			ED_resource_heap_type::GREAD_GWRITE
 		);
 		buffer_desc.can_create_view = false;
-
-		for(u32 i = 0; i < desc.back_rtv_count; ++i) {
+		for(u32 i = 0; i < desc.rtv_count; ++i) {
 
 			buffer_p_vector_.push_back({
 				TU<F_directx12_committed_resource>()(
@@ -76,65 +75,79 @@ namespace nrhi {
 			});
 		}
 
-		// create back rtv descriptor heap
-		back_rtv_descriptor_heap_p_ = H_descriptor_heap::create(
+		// create rtv descriptor heap
+		rtv_descriptor_heap_p_ = H_descriptor_heap::create(
 			device_p,
 			{
 				.type = ED_descriptor_heap_type::RTV,
-				.descriptor_count = desc.back_rtv_count
+				.descriptor_count = desc.rtv_count
 			}
 		);
-		F_descriptor_cpu_address back_rtv_descriptor_heap_base_cpu_address = HD_directx12_descriptor_heap::base_cpu_address(
-			NCPP_FOH_VALID(back_rtv_descriptor_heap_p_)
+		F_descriptor_cpu_address rtv_descriptor_heap_base_cpu_address = HD_directx12_descriptor_heap::base_cpu_address(
+			NCPP_FOH_VALID(rtv_descriptor_heap_p_)
 		);
-		F_descriptor_gpu_address back_rtv_descriptor_heap_base_gpu_address = HD_directx12_descriptor_heap::base_gpu_address(
-			NCPP_FOH_VALID(back_rtv_descriptor_heap_p_)
+		F_descriptor_gpu_address rtv_descriptor_heap_base_gpu_address = HD_directx12_descriptor_heap::base_gpu_address(
+			NCPP_FOH_VALID(rtv_descriptor_heap_p_)
 		);
 
-		// create back texture 2d rtv
-		for(u32 i = 0; i < desc.back_rtv_count; ++i) {
+		// create texture 2d rtv
+		for(u32 i = 0; i < desc.rtv_count; ++i) {
 
-			F_resource_view_desc back_rtv_desc = {
-				.resource_p = NCPP_FHANDLE_VALID_AS_OREF(buffer_p_vector_[i])
+			F_resource_view_desc rtv_desc = {
+				.resource_p = NCPP_AOH_VALID(buffer_p_vector_[i])
 			};
-			back_rtv_p_vector_.push_back({
+			rtv_p_vector_.push_back({
 				TU<F_directx12_resource_view>()(
 					device_p,
-					back_rtv_desc,
+					rtv_desc,
 					F_descriptor {
 						.handle = {
-							.cpu_address = back_rtv_descriptor_heap_base_cpu_address + i * rtv_descriptor_increment_size,
-							.gpu_address = back_rtv_descriptor_heap_base_gpu_address + i * rtv_descriptor_increment_size
+							.cpu_address = rtv_descriptor_heap_base_cpu_address + i * rtv_descriptor_increment_size,
+							.gpu_address = rtv_descriptor_heap_base_gpu_address + i * rtv_descriptor_increment_size
 						},
-						.heap_p = back_rtv_descriptor_heap_p_
+						.heap_p = rtv_descriptor_heap_p_
 					},
 					ED_resource_view_type::RTV
 				)
 			});
 		}
 
+		F_resource_view_desc rtv_desc = {
+			.resource_p = NCPP_AOH_VALID(buffer_p_vector_[0])
+		};
+		back_rtv_p_ ={
+			TU<F_directx12_resource_view>()(
+				device_p,
+				rtv_desc,
+				F_descriptor {
+					.handle = {
+						.cpu_address = rtv_descriptor_heap_base_cpu_address + 0 * rtv_descriptor_increment_size,
+						.gpu_address = rtv_descriptor_heap_base_gpu_address + 0 * rtv_descriptor_increment_size
+					},
+					.heap_p = rtv_descriptor_heap_p_
+				},
+				ED_resource_view_type::RTV
+			)
+		};
 
-
-		// back rtv has no d3d12 object now
+		// rtv has no d3d12 object now
 		// so we need to update d3d12 object for it
 		update_d3d12_object_for_buffer_rtvs();
-
-
 
 		// also update_d3d12_object_for_buffer_rtvs when surface is resized
 		surface_resize_handle_ = surface_p->T_get_event<F_surface_resize_event>().T_push_back_listener([this](auto& event){
 
-		  	u32 back_rtv_count = this->desc().back_rtv_count;
-		  	for(u32 i = 0; i < back_rtv_count; ++i)
+		  	u32 rtv_count = this->desc().rtv_count;
+		  	for(u32 i = 0; i < rtv_count; ++i)
 		  	{
 			  	auto dx12_buffer_p = NCPP_FOH_VALID(buffer_p_vector_[i]).T_cast<F_directx12_committed_resource>();
-			  	auto dx12_back_rtv_p = NCPP_FOH_VALID(back_rtv_p_vector_[i]).T_cast<F_directx12_resource_view>();
+			  	auto dx12_rtv_p = NCPP_FOH_VALID(rtv_p_vector_[i]).T_cast<F_directx12_resource_view>();
 
 			  	auto surface_size = this->surface_p()->client_size();
 
-			  	auto& back_texture_2d_desc = inject_resource_desc(NCPP_FHANDLE_VALID_AS_OREF(dx12_buffer_p));
-			  	back_texture_2d_desc.width = surface_size.x;
-			  	back_texture_2d_desc.height = surface_size.y;
+			  	auto& texture_2d_desc = inject_resource_desc(NCPP_FHANDLE_VALID_AS_OREF(dx12_buffer_p));
+			  	texture_2d_desc.width = surface_size.x;
+			  	texture_2d_desc.height = surface_size.y;
 
 			  	HRESULT hr = dxgi_swapchain_p_->ResizeBuffers(
 				  	0,
@@ -162,11 +175,11 @@ namespace nrhi {
 
 	void F_directx12_swapchain::update_d3d12_object_for_buffer_rtvs(){
 
-		u32 back_rtv_count = desc().back_rtv_count;
-		for(u32 i = 0; i < back_rtv_count; ++i)
+		u32 rtv_count = desc().rtv_count;
+		for(u32 i = 0; i < rtv_count; ++i)
 		{
 			auto dx12_buffer_p = NCPP_FOH_VALID(buffer_p_vector_[i]).T_cast<F_directx12_committed_resource>();
-			auto dx12_buffer_rtv_p = NCPP_FOH_VALID(back_rtv_p_vector_[i]).T_cast<F_directx12_resource_view>();
+			auto dx12_buffer_rtv_p = NCPP_FOH_VALID(rtv_p_vector_[i]).T_cast<F_directx12_resource_view>();
 
 			auto device_p = command_queue_p()->device_p();
 			auto d3d12_device_p = device_p.T_cast<F_directx12_device>()->d3d12_device_p();
@@ -181,7 +194,7 @@ namespace nrhi {
 				0,
 				{ main_rtview_descriptor.handle.cpu_address }
 			);
-			NCPP_ASSERT(!FAILED(d3d12_device_p->GetDeviceRemovedReason())) << "update d3d12 object for back rtv failed";
+			NCPP_ASSERT(!FAILED(d3d12_device_p->GetDeviceRemovedReason())) << "update d3d12 object for rtv failed";
 
 			main_rtbuffer_p->Release();
 
@@ -208,13 +221,40 @@ namespace nrhi {
 		);
 	}
 
-	u8 HD_directx12_swapchain::current_back_rtv_index(TKPA_valid<A_swapchain> swapchain_p) {
+	u8 HD_directx12_swapchain::current_rtv_index(TKPA_valid<A_swapchain> swapchain_p) {
 
 		auto dx12_swapchain_p = swapchain_p.T_cast<F_directx12_swapchain>();
 
 		return dx12_swapchain_p->dxgi_swapchain_p_->GetCurrentBackBufferIndex();
 	}
+	K_valid_rtv_handle HD_directx12_swapchain::rtv_p(TKPA_valid<A_swapchain> swapchain_p, u8 index) {
 
+		auto dx12_swapchain_p = swapchain_p.T_cast<F_directx12_swapchain>();
+
+		return NCPP_FOH_VALID(dx12_swapchain_p->rtv_p_vector_[index]);
+	}
+	void HD_directx12_swapchain::update_back_rtv(TKPA_valid<A_swapchain> swapchain_p) {
+
+		auto dx12_swapchain_p = swapchain_p.T_cast<F_directx12_swapchain>();
+
+		u8 current_rtv_index = HD_directx12_swapchain::current_rtv_index(dx12_swapchain_p);
+		auto& current_rtv_p = dx12_swapchain_p->rtv_p_vector_[current_rtv_index];
+		auto& back_rtv_p = dx12_swapchain_p->back_rtv_p_;
+
+		auto& current_rtv_descriptor = (F_descriptor&)(current_rtv_p->descriptor());
+		auto& back_rtv_descriptor = (F_descriptor&)(back_rtv_p->descriptor());
+		back_rtv_descriptor.handle = current_rtv_descriptor.handle;
+
+		auto& current_rtv_desc = (F_resource_view_desc&)(current_rtv_p->desc());
+		auto& back_rtv_desc = (F_resource_view_desc&)(back_rtv_p->desc());
+		back_rtv_desc = back_rtv_desc;
+	}
+	K_valid_rtv_handle HD_directx12_swapchain::back_rtv_p(TKPA_valid<A_swapchain> swapchain_p) {
+
+		auto dx12_swapchain_p = swapchain_p.T_cast<F_directx12_swapchain>();
+
+		return NCPP_FOH_VALID(dx12_swapchain_p->back_rtv_p_);
+	}
 	void HD_directx12_swapchain::async_present(TKPA_valid<A_swapchain> swapchain_p){
 
 		auto dx12_swapchain_p = swapchain_p.T_cast<F_directx12_swapchain>();

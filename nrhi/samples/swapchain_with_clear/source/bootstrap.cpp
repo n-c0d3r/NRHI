@@ -31,6 +31,16 @@ int main() {
 
 
 
+	// create command list
+	auto command_list_p = H_command_list::create(
+		NCPP_FOREF_VALID(device_p),
+		F_command_list_desc {
+			ED_command_list_type::DIRECT
+		}
+	);
+
+
+
 	// create fence
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 	TU<A_fence> fence_p;
@@ -85,6 +95,26 @@ int main() {
 		if(!swapchain_p)
 			return;
 
+	  	K_valid_rtv_handle back_rtv_p = swapchain_p->back_rtv_p();
+
+	  	NRHI_DRIVER_ENABLE_IF_SUPPORT_SIMPLE_WORK_SUBMISSION(
+			command_list_p->clear_rtv(back_rtv_p, F_vector4::forward());
+
+			command_queue_p->execute_command_list(
+				NCPP_FOH_VALID(command_list_p)
+			);
+	  	)
+	  	else NRHI_DRIVER_ENABLE_IF_SUPPORT_ADVANCED_WORK_SUBMISSION(
+//			command_list_p->async_resource_barrier();
+//
+//			command_list_p->async_clear_rtv(back_rtv_p, F_vector4::forward());
+//
+//			command_queue_p->async_execute_command_list(
+//				NCPP_FOH_VALID(command_list_p)
+//			);
+	  	);
+
+	  	// present swapchain
 		NRHI_DRIVER_ENABLE_IF_SUPPORT_SIMPLE_WORK_SUBMISSION(
 	  		swapchain_p->present();
 	 	)
