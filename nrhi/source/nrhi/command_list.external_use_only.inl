@@ -496,4 +496,29 @@ namespace nrhi {
 	}
 #endif // NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_MANAGEMENT && NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_BINDING && NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+	NCPP_FORCE_INLINE void A_command_list::async_resource_barrier(
+		const F_resource_barrier& resource_barrier
+	) {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			H_command_list::async_resource_barrier(
+				NCPP_KTHIS(),
+				resource_barrier
+			);
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::async_resource_barriers(
+		const TG_span<F_resource_barrier>& resource_barriers
+	) {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+				H_command_list::async_resource_barriers(
+					NCPP_KTHIS(),
+					resource_barriers
+				);
+			);
+		);
+	}
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
 }

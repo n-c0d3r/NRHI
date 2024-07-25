@@ -25,6 +25,14 @@ NRHI_FunctionHelper_CreateFunctionClass(
         }"
     VALUES
         "create" "TU<A_command_list>(TKPA_valid<A_device> device_p, const F_command_list_desc& desc)"
+        "async_resource_barrier" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            const F_resource_barrier& resource_barrier
+        )"
+        "async_resource_barriers" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            const TG_span<F_resource_barrier>& resource_barriers
+        )"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement command list done")

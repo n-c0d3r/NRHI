@@ -53,6 +53,7 @@ namespace nrhi {
 	struct F_resource_transition_barrier {
 
 		TK<A_resource> resource_p;
+		u32 subresource_index;
 		ED_resource_state state_before;
 		ED_resource_state state_after;
 

@@ -40,6 +40,7 @@
 #include <nrhi/buffer_handle.hpp>
 #include <nrhi/clear_flag.hpp>
 #include <nrhi/resource_view_handle.hpp>
+#include <nrhi/resource_barrier.hpp>
 
 #pragma endregion
 
@@ -79,6 +80,16 @@ namespace nrhi {
 
     public:
         static TU<A_command_list> create(TKPA_valid<A_device> device_p, const F_command_list_desc& desc);
+
+	public:
+		static void async_resource_barrier(
+			TKPA_valid<A_command_list> command_list_p,
+			const F_resource_barrier& resource_barrier
+		);
+		static void async_resource_barriers(
+			TKPA_valid<A_command_list> command_list_p,
+			const TG_span<F_resource_barrier>& resource_barriers
+		);
 
     };
 

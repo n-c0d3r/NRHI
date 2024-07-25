@@ -41,6 +41,10 @@
 #include <nrhi/buffer_handle.hpp>
 #include <nrhi/clear_flag.hpp>
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+#include <nrhi/resource_barrier.hpp>
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
 #pragma endregion
 
 
@@ -297,6 +301,16 @@ namespace nrhi {
 			KPA_valid_srv_handle srv_p
 		);
 #endif // NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_MANAGEMENT && NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_BINDING && NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+	public:
+		void async_resource_barrier(
+			const F_resource_barrier& resource_barrier
+		);
+		void async_resource_barriers(
+			const TG_span<F_resource_barrier>& resource_barriers
+		);
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
     };
 
