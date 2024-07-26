@@ -23,17 +23,26 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "namespace nrhi {
         }"
     VALUES
-        "create_direct" "TU<A_pipeline_state>(
+        "create_with_root_signature" "TU<A_pipeline_state>(
             TKPA_valid<A_device> device_p,
-            const A_pipeline_state_desc& desc
+            const A_pipeline_state_desc& desc,
+		    TKPA_valid<A_root_signature> root_signature_p
         )"
-        "create_graphics_pipeline_state_direct" "U_graphics_pipeline_state_handle(
+        "create_graphics_pipeline_state_with_root_signature" "U_graphics_pipeline_state_handle(
             TKPA_valid<A_device> device_p,
-            const A_pipeline_state_desc& desc
+            const F_graphics_pipeline_state_options& options,
+		    TKPA_valid<A_root_signature> root_signature_p
         )"
-        "create_compute_pipeline_state_direct" "U_compute_pipeline_state_handle(
+        "create_compute_pipeline_state_with_root_signature" "U_compute_pipeline_state_handle(
 			TKPA_valid<A_device> device_p,
-			const A_pipeline_state_desc& desc
+			const F_compute_pipeline_state_options& options,
+		    TKPA_valid<A_root_signature> root_signature_p
+		)"
+        "graphics_options" "const F_graphics_pipeline_state_options&(
+			KPA_valid_graphics_pipeline_state_handle pso_p
+		)"
+        "compute_options" "const F_compute_pipeline_state_options&(
+			KPA_valid_compute_pipeline_state_handle pso_p
 		)"
 )
 

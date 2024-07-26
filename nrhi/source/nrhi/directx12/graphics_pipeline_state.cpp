@@ -1,5 +1,4 @@
 #include <nrhi/directx12/graphics_pipeline_state.hpp>
-#include <nrhi/directx12/shader.hpp>
 #include <nrhi/directx12/device.hpp>
 #include <nrhi/directx12/root_signature.hpp>
 #include <nrhi/format_helper.hpp>
@@ -10,28 +9,35 @@ namespace nrhi {
 
 	F_directx12_graphics_pipeline_state::F_directx12_graphics_pipeline_state(
 		TKPA_valid<A_device> device_p,
-		const A_pipeline_state_desc& desc,
-		F_directx12_pipeline_state_direct_flag,
-		ED_pipeline_state_type overrided_type
+		const F_graphics_pipeline_state_options& options,
+		TKPA_valid<A_root_signature> root_signature_p
 	) :
 		F_directx12_pipeline_state(
 			device_p,
-			desc,
-			overrided_type,
-			create_d3d12_graphics_pipeline_state_direct(
+			ED_pipeline_state_type::GRAPHICS,
+			root_signature_p,
+			create_d3d12_graphics_pipeline_state(
 				device_p,
-				desc
+				options,
+				root_signature_p
 			)
-		)
+		),
+		options_(options)
 	{
 	}
 	F_directx12_graphics_pipeline_state::F_directx12_graphics_pipeline_state(
 		TKPA_valid<A_device> device_p,
-		const A_pipeline_state_desc& desc,
-		ED_pipeline_state_type overrided_type,
+		const F_graphics_pipeline_state_options& options,
+		TKPA_valid<A_root_signature> root_signature_p,
 		ID3D12PipelineState* d3d12_graphics_pipeline_state_p
 	) :
-		F_directx12_pipeline_state(device_p, desc, overrided_type, d3d12_graphics_pipeline_state_p)
+		F_directx12_pipeline_state(
+			device_p,
+			ED_pipeline_state_type::GRAPHICS,
+			root_signature_p,
+			d3d12_graphics_pipeline_state_p
+		),
+		options_(options)
 	{
 	}
 	F_directx12_graphics_pipeline_state::~F_directx12_graphics_pipeline_state(){
@@ -40,11 +46,9 @@ namespace nrhi {
 			d3d12_pipeline_state_p_->Release();
 	}
 
-	TG_vector<D3D12_INPUT_ELEMENT_DESC> F_directx12_graphics_pipeline_state::vertex_shader_desc_to_d3d12_input_element_descs(
-		const F_shader_desc& shader_desc
+	TG_vector<D3D12_INPUT_ELEMENT_DESC> F_directx12_graphics_pipeline_state::input_assembler_desc_desc_to_d3d12_input_element_descs(
+		const F_input_assembler_desc& input_assembler_desc
 	) {
-		const auto& input_assembler_desc = shader_desc.input_assembler_desc;
-
 		u32 vertex_attribute_group_count = (u32)(input_assembler_desc.vertex_attribute_groups.size());
 		u32 instance_attribute_group_count = (u32)(input_assembler_desc.instance_attribute_groups.size());
 
@@ -160,33 +164,34 @@ namespace nrhi {
 
 		return std::move(d3d12_input_element_desc_vector);
 	}
-	ID3D12PipelineState* F_directx12_graphics_pipeline_state::create_d3d12_graphics_pipeline_state_direct(
+	ID3D12PipelineState* F_directx12_graphics_pipeline_state::create_d3d12_graphics_pipeline_state(
 		TKPA_valid<A_device> device_p,
-		const A_pipeline_state_desc& desc
+		const F_graphics_pipeline_state_options& options,
+		TKPA_valid<A_root_signature> root_signature_p
 	) {
 		ID3D12Device* d3d12_device_p = device_p.T_cast<F_directx12_device>()->d3d12_device_p();
-		ID3D12RootSignature* d3d12_root_signature_p = desc.root_signature_p.T_cast<F_directx12_root_signature>()->d3d12_root_signature_p();
+		ID3D12RootSignature* d3d12_root_signature_p = root_signature_p.T_cast<F_directx12_root_signature>()->d3d12_root_signature_p();
 
 		ID3D12PipelineState* d3d12_pipeline_state_p = 0;
 
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC  d3d12_pipeline_state_desc = {};
 		d3d12_pipeline_state_desc.pRootSignature = d3d12_root_signature_p;
 
-		d3d12_pipeline_state_desc.RasterizerState.CullMode = D3D12_CULL_MODE(desc.rasterizer_desc.cull_mode);
-		d3d12_pipeline_state_desc.RasterizerState.FillMode = D3D12_FILL_MODE(desc.rasterizer_desc.fill_mode);
-		d3d12_pipeline_state_desc.RasterizerState.FrontCounterClockwise = desc.rasterizer_desc.front_counter_clock_wise;
+		d3d12_pipeline_state_desc.RasterizerState.CullMode = D3D12_CULL_MODE(options.rasterizer_desc.cull_mode);
+		d3d12_pipeline_state_desc.RasterizerState.FillMode = D3D12_FILL_MODE(options.rasterizer_desc.fill_mode);
+		d3d12_pipeline_state_desc.RasterizerState.FrontCounterClockwise = options.rasterizer_desc.front_counter_clock_wise;
 
-		d3d12_pipeline_state_desc.DepthStencilState.DepthEnable = desc.depth_stencil_desc.enable_depth_test;
-		d3d12_pipeline_state_desc.DSVFormat = DXGI_FORMAT(desc.depth_stencil_desc.format);
-		d3d12_pipeline_state_desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC(desc.depth_stencil_desc.depth_comparison_func);
-		d3d12_pipeline_state_desc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK(desc.depth_stencil_desc.depth_buffer_write);
+		d3d12_pipeline_state_desc.DepthStencilState.DepthEnable = options.depth_stencil_desc.enable_depth_test;
+		d3d12_pipeline_state_desc.DSVFormat = DXGI_FORMAT(options.depth_stencil_desc.format);
+		d3d12_pipeline_state_desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC(options.depth_stencil_desc.depth_comparison_func);
+		d3d12_pipeline_state_desc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK(options.depth_stencil_desc.depth_buffer_write);
 
-		d3d12_pipeline_state_desc.BlendState.AlphaToCoverageEnable = desc.blend_desc.enable_alpha_to_coverage;
-		d3d12_pipeline_state_desc.BlendState.IndependentBlendEnable = DXGI_FORMAT(desc.blend_desc.enable_independent_blend);
+		d3d12_pipeline_state_desc.BlendState.AlphaToCoverageEnable = options.blend_desc.enable_alpha_to_coverage;
+		d3d12_pipeline_state_desc.BlendState.IndependentBlendEnable = DXGI_FORMAT(options.blend_desc.enable_independent_blend);
 		for(u32 i = 0; i < 8; ++i) {
 
 			auto& d3d12_blend_rt = d3d12_pipeline_state_desc.BlendState.RenderTarget[i];
-			const auto& blend_rt = desc.blend_desc.render_targets[i];
+			const auto& blend_rt = options.blend_desc.render_targets[i];
 			d3d12_blend_rt.BlendEnable = blend_rt.enable_blend;
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
@@ -206,40 +211,31 @@ namespace nrhi {
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 		}
 
-		u32 shader_count = desc.direct_shader_descs.size();
-		const auto& direct_shader_descs = desc.direct_shader_descs;
-		TG_vector<D3D12_INPUT_ELEMENT_DESC> d3d12_input_element_descs;
-		for(u32 i = 0; i < shader_count; ++i) {
+		const auto& shader_binaries = options.shader_binaries;
 
-			const auto& direct_shader_desc = direct_shader_descs[i];
-			const auto& direct_shader_binary = direct_shader_desc.binary;
+		const auto& vertex_shader_binary = options.shader_binaries.vertex;
+		d3d12_pipeline_state_desc.VS = { vertex_shader_binary.data(), vertex_shader_binary.size() };
 
-			NRHI_ENUM_SWITCH(
-				direct_shader_desc.type,
-				NRHI_ENUM_CASE(
-					ED_shader_type::VERTEX,
-					d3d12_input_element_descs = vertex_shader_desc_to_d3d12_input_element_descs(
-						direct_shader_desc
-					);
-					d3d12_pipeline_state_desc.VS = { direct_shader_binary.data(), direct_shader_binary.size() };
-					d3d12_pipeline_state_desc.InputLayout.NumElements = d3d12_input_element_descs.size();
-					d3d12_pipeline_state_desc.InputLayout.pInputElementDescs = d3d12_input_element_descs.data();
-				)
-				NRHI_ENUM_CASE(
-					ED_shader_type::PIXEL,
-					d3d12_pipeline_state_desc.PS = { direct_shader_binary.data(), direct_shader_binary.size() };
-				)
-			);
+		TG_vector<D3D12_INPUT_ELEMENT_DESC> d3d12_input_element_descs = input_assembler_desc_desc_to_d3d12_input_element_descs(
+			options.input_assembler_desc
+		);
+		d3d12_pipeline_state_desc.InputLayout.NumElements = d3d12_input_element_descs.size();
+		d3d12_pipeline_state_desc.InputLayout.pInputElementDescs = d3d12_input_element_descs.data();
+
+		if(shader_binaries.pixel)
+		{
+			const auto& pixel_shader_binary = shader_binaries.pixel.value();
+			d3d12_pipeline_state_desc.PS = { pixel_shader_binary.data(), pixel_shader_binary.size() };
 		}
 
-		d3d12_pipeline_state_desc.NumRenderTargets = desc.color_formats.size();
+		d3d12_pipeline_state_desc.NumRenderTargets = options.color_formats.size();
 		memcpy(
 			d3d12_pipeline_state_desc.RTVFormats,
-			desc.color_formats.data(),
-			desc.color_formats.size() * sizeof(DXGI_FORMAT)
+			options.color_formats.data(),
+			options.color_formats.size() * sizeof(DXGI_FORMAT)
 		);
 
-		d3d12_pipeline_state_desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE(desc.primitive_topology);
+		d3d12_pipeline_state_desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE(options.primitive_topology);
 
 		d3d12_pipeline_state_desc.SampleMask = UINT_MAX;
 		d3d12_pipeline_state_desc.SampleDesc.Count = 1;

@@ -46,6 +46,10 @@ namespace nrhi {
 	class A_device;
 	class A_pipeline_state;
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+	class A_root_signature;
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+
 
 
 	class NRHI_API A_pipeline_state : public A_device_child {
@@ -53,8 +57,16 @@ namespace nrhi {
 	private:
 		ED_pipeline_state_type type_;
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		TK<A_root_signature> root_signature_p_;
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+
 	public:
 		NCPP_FORCE_INLINE ED_pipeline_state_type type() const noexcept { return type_; }
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		NCPP_FORCE_INLINE TK_valid<A_root_signature> root_signature_p() const noexcept { return NCPP_FOH_VALID(root_signature_p_); }
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 
 
@@ -63,6 +75,13 @@ namespace nrhi {
 			TKPA_valid<A_device> device_p,
 			ED_pipeline_state_type type
 		);
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		A_pipeline_state(
+			TKPA_valid<A_device> device_p,
+			TKPA_valid<A_root_signature> root_signature_p,
+			ED_pipeline_state_type type
+		);
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 	public:
 		virtual ~A_pipeline_state();

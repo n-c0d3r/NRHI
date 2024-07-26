@@ -48,28 +48,36 @@ namespace nrhi {
 
 	class NRHI_API F_directx12_graphics_pipeline_state : public F_directx12_pipeline_state {
 
+	private:
+		F_graphics_pipeline_state_options options_;
+
+	public:
+		NCPP_FORCE_INLINE const auto& options() const noexcept { return options_; }
+
+
+
 	public:
 		F_directx12_graphics_pipeline_state(
 			TKPA_valid<A_device> device_p,
-			const A_pipeline_state_desc& desc,
-			F_directx12_pipeline_state_direct_flag,
-			ED_pipeline_state_type overrided_type = ED_pipeline_state_type::GRAPHICS
+			const F_graphics_pipeline_state_options& options,
+			TKPA_valid<A_root_signature> root_signature_p
 		);
 		F_directx12_graphics_pipeline_state(
 			TKPA_valid<A_device> device_p,
-			const A_pipeline_state_desc& desc,
-			ED_pipeline_state_type overrided_type,
-			ID3D12PipelineState* d3d12_graphics_pipeline_state_p
+			const F_graphics_pipeline_state_options& options,
+			TKPA_valid<A_root_signature> root_signature_p,
+			ID3D12PipelineState* d3d12_pipeline_state_p
 		);
 		virtual ~F_directx12_graphics_pipeline_state();
 
 	private:
-		static TG_vector<D3D12_INPUT_ELEMENT_DESC> vertex_shader_desc_to_d3d12_input_element_descs(
-			const F_shader_desc& shader_desc
+		static TG_vector<D3D12_INPUT_ELEMENT_DESC> input_assembler_desc_desc_to_d3d12_input_element_descs(
+			const F_input_assembler_desc& input_assembler_desc
 		);
-		static ID3D12PipelineState* create_d3d12_graphics_pipeline_state_direct(
+		static ID3D12PipelineState* create_d3d12_graphics_pipeline_state(
 			TKPA_valid<A_device> device_p,
-			const A_pipeline_state_desc& desc
+			const F_graphics_pipeline_state_options& options,
+			TKPA_valid<A_root_signature> root_signature_p
 		);
 
 	};

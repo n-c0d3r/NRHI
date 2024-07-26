@@ -21,7 +21,7 @@ int main() {
 
 
 
-	// create shaders, root signature and pipeline states
+	// create shader
 	auto compiler_p = TU<F_nsl_shader_compiler>()();
 	auto nsl_shader_compiled_result_opt = compiler_p->compile(
 		"\n"
@@ -75,11 +75,6 @@ int main() {
 		"output = vout;\n"
 		"}\n"
 		"\n"
-		"@thread_group_size(4 1 1)\n"
-		"compute_shader cs_main(\n"
-		")\n"
-		"{\n"
-		"}\n"
 	);
 	NCPP_ASSERT(nsl_shader_compiled_result_opt);
 
@@ -90,15 +85,10 @@ int main() {
 		nsl_shader_reflection.input_assembler_index
 	];
 
-	auto vshader_binary = H_shader_compiler::compile_nsl(
+	auto shader_binary = H_shader_compiler::compile_nsl(
 		"demo_shader",
 		nsl_shader_compiled_result,
 		0
-	);
-	auto cshader_binary = H_shader_compiler::compile_nsl(
-		"demo_shader",
-		nsl_shader_compiled_result,
-		1
 	);
 
 	auto root_signature_p = H_root_signature::create(
@@ -108,33 +98,15 @@ int main() {
 		}
 	);
 
-	auto graphics_pipeline_state_p = H_graphics_pipeline_state::create_direct(
+	auto pipeline_state_p = H_graphics_pipeline_state::create_with_root_signature(
 		NCPP_FOH_VALID(device_p),
 		{
-			.direct_shader_descs = {
-				F_shader_desc {
-					.name = "demo_shader::vs_main",
-					.binary = vshader_binary,
-					.type = nsl_shader_reflection.type,
-					.input_assembler_desc = nsl_input_assembler_reflection.desc
-				}
-			},
-			.root_signature_p = root_signature_p.keyed()
-		}
-	);
-
-	auto compute_pipeline_state_p = H_compute_pipeline_state::create_direct(
-		NCPP_FOH_VALID(device_p),
-		{
-			.direct_shader_descs = {
-				F_shader_desc {
-					.name = "demo_shader::cs_main",
-					.binary = cshader_binary,
-					.type = nsl_shader_reflection.type
-				}
-			},
-			.root_signature_p = root_signature_p.keyed()
-		}
+			.input_assembler_desc = nsl_input_assembler_reflection.desc,
+			.shader_binaries = {
+				.vertex = shader_binary
+			}
+		},
+		NCPP_FOH_VALID(root_signature_p)
 	);
 
 	return 0;

@@ -16,7 +16,6 @@ include(NRHI/Drivers/DirectX12/ImplementDescriptorHeap)
 include(NRHI/Drivers/DirectX12/ImplementResourceView)
 include(NRHI/Drivers/DirectX12/ImplementSamplerState)
 include(NRHI/Drivers/DirectX12/ImplementPipelineState)
-include(NRHI/Drivers/DirectX12/ImplementShader)
 include(NRHI/Drivers/DirectX12/ImplementShaderCompiler)
 include(NRHI/Drivers/DirectX12/ImplementRootSignature)
 

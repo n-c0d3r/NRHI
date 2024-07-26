@@ -47,25 +47,33 @@ namespace nrhi {
 
 	class NRHI_API F_directx12_compute_pipeline_state : public F_directx12_pipeline_state {
 
+	private:
+		F_compute_pipeline_state_options options_;
+
+	public:
+		NCPP_FORCE_INLINE const auto& options() const noexcept { return options_; }
+
+
+
 	public:
 		F_directx12_compute_pipeline_state(
 			TKPA_valid<A_device> device_p,
-			const A_pipeline_state_desc& desc,
-			F_directx12_pipeline_state_direct_flag,
-			ED_pipeline_state_type overrided_type = ED_pipeline_state_type::COMPUTE
+			const F_compute_pipeline_state_options& options,
+			TKPA_valid<A_root_signature> root_signature_p
 		);
 		F_directx12_compute_pipeline_state(
 			TKPA_valid<A_device> device_p,
-			const A_pipeline_state_desc& desc,
-			ED_pipeline_state_type overrided_type,
+			const F_compute_pipeline_state_options& options,
+			TKPA_valid<A_root_signature> root_signature_p,
 			ID3D12PipelineState* d3d12_pipeline_state_p
 		);
 		virtual ~F_directx12_compute_pipeline_state();
 
 	private:
-		static ID3D12PipelineState* create_d3d12_compute_pipeline_state_direct(
+		static ID3D12PipelineState* create_d3d12_compute_pipeline_state(
 			TKPA_valid<A_device> device_p,
-			const A_pipeline_state_desc& desc
+			const F_compute_pipeline_state_options& options,
+			TKPA_valid<A_root_signature> root_signature_p
 		);
 
 	};

@@ -47,10 +47,6 @@ namespace nrhi {
 
 
 
-	struct F_directx12_pipeline_state_direct_flag {};
-
-
-
 	class NRHI_API F_directx12_pipeline_state : public A_pipeline_state {
 
 	protected:
@@ -65,8 +61,8 @@ namespace nrhi {
 	public:
 		F_directx12_pipeline_state(
 			TKPA_valid<A_device> device_p,
-			const A_pipeline_state_desc& desc,
 			ED_pipeline_state_type overrided_type,
+			TKPA_valid<A_root_signature> root_signature_p,
 			ID3D12PipelineState* d3d12_pipeline_state_p
 		);
 		virtual ~F_directx12_pipeline_state();
@@ -78,19 +74,30 @@ namespace nrhi {
 	class NRHI_API HD_directx12_pipeline_state {
 
 	public:
-		static TU<A_pipeline_state> create_direct(
+		static TU<A_pipeline_state> create_with_root_signature(
 			TKPA_valid<A_device> device_p,
-			const A_pipeline_state_desc& desc
+			const A_pipeline_state_desc& desc,
+			TKPA_valid<A_root_signature> root_signature_p
 		);
 
 	public:
-		static U_graphics_pipeline_state_handle create_graphics_pipeline_state_direct(
+		static U_graphics_pipeline_state_handle create_graphics_pipeline_state_with_root_signature(
 			TKPA_valid<A_device> device_p,
-			const A_pipeline_state_desc& desc
+			const F_graphics_pipeline_state_options& options,
+			TKPA_valid<A_root_signature> root_signature_p
 		);
-		static U_compute_pipeline_state_handle create_compute_pipeline_state_direct(
+		static U_compute_pipeline_state_handle create_compute_pipeline_state_with_root_signature(
 			TKPA_valid<A_device> device_p,
-			const A_pipeline_state_desc& desc
+			const F_compute_pipeline_state_options& options,
+			TKPA_valid<A_root_signature> root_signature_p
+		);
+
+	public:
+		static const F_graphics_pipeline_state_options& graphics_options(
+			KPA_valid_graphics_pipeline_state_handle pso_p
+		);
+		static const F_compute_pipeline_state_options& compute_options(
+			KPA_valid_compute_pipeline_state_handle pso_p
 		);
 
 	};

@@ -57,8 +57,10 @@ namespace nrhi {
 	class A_device;
 	class A_pipeline_state;
 	class A_frame_buffer;
-	class A_shader;
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 	class A_root_signature;
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 
 
