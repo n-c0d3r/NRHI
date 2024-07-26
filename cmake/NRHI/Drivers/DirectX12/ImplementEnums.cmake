@@ -28,6 +28,10 @@ include(NRHI/Drivers/DirectX12/ImplementRootSignatureFlag)
 include(NRHI/Drivers/DirectX12/ImplementCullMode)
 include(NRHI/Drivers/DirectX12/ImplementFillMode)
 include(NRHI/Drivers/DirectX12/ImplementDepthComparisonFunc)
+include(NRHI/Drivers/DirectX12/ImplementBlendFactor)
+include(NRHI/Drivers/DirectX12/ImplementBlendOperation)
+include(NRHI/Drivers/DirectX12/ImplementColorWriteMode)
+include(NRHI/Drivers/DirectX12/ImplementLogicOperation)
 
 
 

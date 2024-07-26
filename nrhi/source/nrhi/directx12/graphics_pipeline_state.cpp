@@ -181,6 +181,31 @@ namespace nrhi {
 		d3d12_pipeline_state_desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC(desc.depth_stencil_desc.depth_comparison_func);
 		d3d12_pipeline_state_desc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK(desc.depth_stencil_desc.depth_buffer_write);
 
+		d3d12_pipeline_state_desc.BlendState.AlphaToCoverageEnable = desc.blend_desc.enable_alpha_to_coverage;
+		d3d12_pipeline_state_desc.BlendState.IndependentBlendEnable = DXGI_FORMAT(desc.blend_desc.enable_independent_blend);
+		for(u32 i = 0; i < 8; ++i) {
+
+			auto& d3d12_blend_rt = d3d12_pipeline_state_desc.BlendState.RenderTarget[i];
+			const auto& blend_rt = desc.blend_desc.render_targets[i];
+			d3d12_blend_rt.BlendEnable = blend_rt.enable_blend;
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+			d3d12_blend_rt.LogicOpEnable = blend_rt.enable_logic_operation;
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+
+			d3d12_blend_rt.SrcBlend = D3D12_BLEND(blend_rt.src_blend_factor);
+			d3d12_blend_rt.DestBlend = D3D12_BLEND(blend_rt.dst_blend_factor);
+			d3d12_blend_rt.BlendOp = D3D12_BLEND_OP(blend_rt.blend_operation);
+
+			d3d12_blend_rt.SrcBlendAlpha = D3D12_BLEND(blend_rt.src_alpha_blend_factor);
+			d3d12_blend_rt.DestBlendAlpha = D3D12_BLEND(blend_rt.dst_alpha_blend_factor);
+			d3d12_blend_rt.BlendOpAlpha = D3D12_BLEND_OP(blend_rt.alpha_blend_operation);
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+			d3d12_blend_rt.LogicOp = D3D12_LOGIC_OP(blend_rt.logic_operation);
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		}
+
 		u32 shader_count = desc.direct_shader_descs.size();
 		const auto& direct_shader_descs = desc.direct_shader_descs;
 		TG_vector<D3D12_INPUT_ELEMENT_DESC> d3d12_input_element_descs;
