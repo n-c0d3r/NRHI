@@ -107,10 +107,20 @@ namespace nrhi {
 		);
 
 	public:
+		static void async_clear_state(
+			TKPA_valid<A_command_list> command_list_p
+		);
 		static void async_clear_rtv(
 			TKPA_valid<A_command_list> command_list_p,
 			F_descriptor_cpu_address rtv_cpu_address,
 			PA_vector4_f32 color
+		);
+		static void async_clear_dsv(
+			TKPA_valid<A_command_list> command_list_p,
+			F_descriptor_cpu_address dsv_cpu_address,
+			ED_clear_flag flag,
+			f32 depth,
+			u8 stencil
 		);
 
     };

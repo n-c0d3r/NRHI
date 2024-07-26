@@ -140,6 +140,13 @@ namespace nrhi {
 		);
 	}
 
+	void HD_directx12_command_list::async_clear_state(
+		TKPA_valid<A_command_list> command_list_p
+	) {
+		auto dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
+
+		dx12_command_list_p->d3d12_command_list_p()->ClearState(0);
+	}
 	void HD_directx12_command_list::async_clear_rtv(
 		TKPA_valid<A_command_list> command_list_p,
 		F_descriptor_cpu_address rtv_cpu_address,
@@ -150,6 +157,24 @@ namespace nrhi {
 		dx12_command_list_p->d3d12_command_list_p()->ClearRenderTargetView(
 			{ rtv_cpu_address },
 			(const float*)&color,
+			0,
+			0
+		);
+	}
+	void HD_directx12_command_list::async_clear_dsv(
+		TKPA_valid<A_command_list> command_list_p,
+		F_descriptor_cpu_address dsv_cpu_address,
+		ED_clear_flag flag,
+		f32 depth,
+		u8 stencil
+	) {
+		auto dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
+
+		dx12_command_list_p->d3d12_command_list_p()->ClearDepthStencilView(
+			{ dsv_cpu_address },
+			D3D12_CLEAR_FLAGS(flag),
+			depth,
+			stencil,
 			0,
 			0
 		);

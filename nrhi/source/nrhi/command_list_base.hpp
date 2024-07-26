@@ -317,9 +317,16 @@ namespace nrhi {
 		);
 
 	public:
+		void async_clear_state();
 		void async_clear_rtv(
 			F_descriptor_cpu_address rtv_cpu_address,
 			PA_vector4_f32 color
+		);
+		void async_clear_dsv(
+			F_descriptor_cpu_address dsv_cpu_address,
+			ED_clear_flag flag,
+			f32 depth,
+			u8 stencil
 		);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 

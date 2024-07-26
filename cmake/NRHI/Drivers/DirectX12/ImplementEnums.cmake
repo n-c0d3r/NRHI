@@ -3,6 +3,7 @@ message(STATUS "<NRHI::Drivers::DirectX12> Start implementing enums")
 
 include(NRHI/Drivers/DXGI/FormatHelper)
 include(NRHI/Drivers/DirectX12/ImplementRootParamType)
+include(NRHI/Drivers/DirectX12/ImplementClearFlag)
 include(NRHI/Drivers/DirectX12/ImplementDescriptorHeapType)
 include(NRHI/Drivers/DirectX12/ImplementDescriptorHeapFlag)
 include(NRHI/Drivers/DirectX12/ImplementDescriptorRangeType)

@@ -539,6 +539,14 @@ namespace nrhi {
 		);
 	}
 
+	NCPP_FORCE_INLINE void A_command_list::async_clear_state() {
+
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			H_command_list::async_clear_state(
+				NCPP_KTHIS()
+			);
+		);
+	}
 	NCPP_FORCE_INLINE void A_command_list::async_clear_rtv(
 		F_descriptor_cpu_address rtv_cpu_address,
 		PA_vector4_f32 color
@@ -548,6 +556,22 @@ namespace nrhi {
 				NCPP_KTHIS(),
 				rtv_cpu_address,
 				color
+			);
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::async_clear_dsv(
+		F_descriptor_cpu_address dsv_cpu_address,
+		ED_clear_flag flag,
+		f32 depth,
+		u8 stencil
+	) {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			H_command_list::async_clear_dsv(
+				NCPP_KTHIS(),
+				dsv_cpu_address,
+				flag,
+				depth,
+				stencil
 			);
 		);
 	}

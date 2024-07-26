@@ -40,10 +40,20 @@ NRHI_FunctionHelper_CreateFunctionClass(
             TKPA_valid<A_command_list> command_list_p,
             const TG_span<F_resource_barrier>& resource_barriers
         )"
+        "async_clear_state" "void(
+            TKPA_valid<A_command_list> command_list_p
+        )"
         "async_clear_rtv" "void(
             TKPA_valid<A_command_list> command_list_p,
             F_descriptor_cpu_address rtv_cpu_address,
             PA_vector4_f32 color
+        )"
+        "async_clear_dsv" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            F_descriptor_cpu_address dsv_cpu_address,
+            ED_clear_flag flag,
+            f32 depth,
+            u8 stencil
         )"
 )
 
