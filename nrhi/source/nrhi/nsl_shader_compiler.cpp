@@ -4698,6 +4698,34 @@ namespace nrhi {
 			}
 		}
 
+		// @input_assembler annotation
+		{
+			auto it = context.current_object_config.find("input_assembler");
+			if(it != context.current_object_config.end()) {
+
+				auto value_opt = it->second.read_string(0);
+
+				if(!value_opt)
+					return eastl::nullopt;
+
+				auto input_assembler_manager_p = shader_compiler_p()->input_assembler_manager_p();
+
+				if(!(input_assembler_manager_p->is_name_has_input_assembler_info(value_opt.value()))) {
+
+					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+						&(unit_p->error_group_p()->stack()),
+						it->second.info_trees()[0].begin_location,
+						"not found input assembler \"" + value_opt.value() + "\""
+					);
+					return eastl::nullopt;
+				}
+
+				const F_nsl_input_assembler_info& input_assembler_info = input_assembler_manager_p->input_assembler_info(value_opt.value());
+
+				pipeline_state_info.options.graphics.input_assembler_desc = input_assembler_info.desc;
+			}
+		}
+
 		// check for primitive_topology annotation
 		{
 			auto it = context.current_object_config.find("primitive_topology");
@@ -5487,20 +5515,6 @@ namespace nrhi {
 		);
 
 		auto name_manager_p = shader_compiler_p()->name_manager_p();
-
-		// @input_assembler annotation
-		{
-			auto it = context.current_object_config.find("input_assembler");
-			if(it != context.current_object_config.end()) {
-
-				auto value_opt = it->second.read_string(0);
-
-				if(!value_opt)
-					return eastl::nullopt;
-
-				input_assembler_name_ = name_manager_p->target(value_opt.value());
-			}
-		}
 
 		return std::move(childs);
 	}
@@ -8932,21 +8946,10 @@ namespace nrhi {
 
 				auto& shader_object_p = it->second;
 
-				u32 input_assembler_index = -1;
-
-				TK<F_nsl_vertex_shader_object> vertex_shader_object_p;
-				if(shader_object_p.T_try_interface<F_nsl_vertex_shader_object>(vertex_shader_object_p)) {
-
-					input_assembler_index = name_to_input_assembler_index_map[
-						vertex_shader_object_p->input_assembler_name()
-					];
-				}
-
 				reflection.shaders[i] = F_nsl_shader_reflection {
 
 					.name = shader_object_p->name(),
-					.type = shader_object_p->type(),
-					.input_assembler_index = input_assembler_index
+					.type = shader_object_p->type()
 
 				};
 

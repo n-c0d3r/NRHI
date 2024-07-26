@@ -728,8 +728,6 @@ namespace nrhi {
 
 		ED_shader_type type;
 
-		u32 input_assembler_index = NCPP_U32_MAX;
-
 	};
 	struct F_nsl_input_assembler_reflection {
 
@@ -2140,14 +2138,6 @@ namespace nrhi {
 
 
 	class NRHI_API F_nsl_vertex_shader_object final : public A_nsl_shader_object {
-
-	private:
-		G_string input_assembler_name_;
-
-	public:
-		NCPP_FORCE_INLINE const G_string& input_assembler_name() const noexcept { return input_assembler_name_; }
-
-
 
 	public:
 		F_nsl_vertex_shader_object(
