@@ -116,7 +116,9 @@ namespace nrhi {
 		ED_blend_factor dst_alpha_blend_factor;
 		ED_blend_operation alpha_blend_operation;
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 		ED_logic_operation logic_operation;
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 		ED_color_write_mode write_mode;
 

@@ -334,6 +334,7 @@ namespace nrhi {
 
 
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 	class F_command_list_async_scope {
 
 	private:
@@ -360,5 +361,6 @@ namespace nrhi {
 #define NRHI_COMMAND_LIST_ASYNC_SCOPE(...) nrhi::F_command_list_async_scope NCPP_GLUE(___nrhi_command_list_async_scope_, NCPP_LINE)( \
             	__VA_ARGS__                                                                                                                   \
 			);
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 }
