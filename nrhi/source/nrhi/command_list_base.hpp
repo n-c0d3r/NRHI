@@ -332,4 +332,33 @@ namespace nrhi {
 
     };
 
+
+
+	class F_command_list_async_scope {
+
+	private:
+		TK_valid<A_command_list> command_list_p_;
+
+	public:
+		NCPP_FORCE_INLINE TKPA_valid<A_command_list> command_list_p() const noexcept { return command_list_p_; }
+
+
+
+	public:
+		NCPP_FORCE_INLINE F_command_list_async_scope(TKPA_valid<A_command_list> command_list_p, TKPA_valid<A_command_allocator> command_allocator_p) noexcept :
+			command_list_p_(command_list_p)
+		{
+			command_list_p->async_begin(command_allocator_p);
+		}
+		NCPP_FORCE_INLINE ~F_command_list_async_scope() noexcept {
+
+			command_list_p_->async_end();
+		}
+
+	};
+
+#define NRHI_COMMAND_LIST_ASYNC_SCOPE(...) nrhi::F_command_list_async_scope NCPP_GLUE(___nrhi_command_list_async_scope_, NCPP_LINE)( \
+            	__VA_ARGS__                                                                                                                   \
+			);
+
 }
