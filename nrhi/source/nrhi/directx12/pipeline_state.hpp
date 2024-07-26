@@ -65,7 +65,7 @@ namespace nrhi {
 	public:
 		F_directx12_pipeline_state(
 			TKPA_valid<A_device> device_p,
-			const F_pipeline_state_desc& desc,
+			const A_pipeline_state_desc& desc,
 			ED_pipeline_state_type overrided_type,
 			ID3D12PipelineState* d3d12_pipeline_state_p
 		);
@@ -80,17 +80,17 @@ namespace nrhi {
 	public:
 		static TU<A_pipeline_state> create_direct(
 			TKPA_valid<A_device> device_p,
-			const F_pipeline_state_desc& desc
+			const A_pipeline_state_desc& desc
 		);
 
 	public:
 		static U_graphics_pipeline_state_handle create_graphics_pipeline_state_direct(
 			TKPA_valid<A_device> device_p,
-			const F_pipeline_state_desc& desc
+			const A_pipeline_state_desc& desc
 		);
 		static U_compute_pipeline_state_handle create_compute_pipeline_state_direct(
 			TKPA_valid<A_device> device_p,
-			const F_pipeline_state_desc& desc
+			const A_pipeline_state_desc& desc
 		);
 
 	};

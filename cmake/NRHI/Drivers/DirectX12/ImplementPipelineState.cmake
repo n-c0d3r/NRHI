@@ -25,15 +25,15 @@ NRHI_FunctionHelper_CreateFunctionClass(
     VALUES
         "create_direct" "TU<A_pipeline_state>(
             TKPA_valid<A_device> device_p,
-            const F_pipeline_state_desc& desc
+            const A_pipeline_state_desc& desc
         )"
         "create_graphics_pipeline_state_direct" "U_graphics_pipeline_state_handle(
             TKPA_valid<A_device> device_p,
-            const F_pipeline_state_desc& desc
+            const A_pipeline_state_desc& desc
         )"
         "create_compute_pipeline_state_direct" "U_compute_pipeline_state_handle(
 			TKPA_valid<A_device> device_p,
-			const F_pipeline_state_desc& desc
+			const A_pipeline_state_desc& desc
 		)"
 )
 

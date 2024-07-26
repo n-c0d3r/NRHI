@@ -55,14 +55,11 @@ namespace nrhi { }
 #include <nrhi/resource_desc.hpp>
 #include <nrhi/resource_view_desc.hpp>
 #include <nrhi/pipeline_state_desc.hpp>
-#include <nrhi/shader_desc.hpp>
 #include <nrhi/frame_buffer_desc.hpp>
 #include <nrhi/root_signature_desc.hpp>
 
 #include <nrhi/buffer.hpp>
 #include <nrhi/texture.hpp>
-
-#include <nrhi/shader_factory.hpp>
 
 #include <nrhi/resource_barrier.hpp>
 
@@ -90,6 +87,8 @@ namespace nrhi { }
 #include <nrhi/fence.external_use_only.inl>
 #include <nrhi/descriptor_heap.external_use_only.inl>
 #include <nrhi/command_allocator.external_use_only.inl>
+#include <nrhi/graphics_pipeline_state_handle.external_use_only.inl>
+#include <nrhi/compute_pipeline_state_handle.external_use_only.inl>
 
 #include <nrhi/texture_handle.external_use_only.inl>
 

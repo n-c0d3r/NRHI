@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/shader_factory.hpp
+/** @file nrhi/compute_pipeline_state_handle.external_use_only.inl
 *
-*   Implement shader factory.
+*   Implement compute_pipeline_state_handle inline functions that is only used by external.
 */
 
 
@@ -33,9 +33,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/shader_type.hpp>
-#include <nrhi/shader_desc.hpp>
-#include <nrhi/shader.hpp>
+#include <nrhi/compute_pipeline_state_handle.hpp>
+#include <nrhi/pipeline_state.hpp>
 
 #pragma endregion
 
@@ -43,41 +42,10 @@
 
 namespace nrhi {
 
-	class A_device;
-	class A_shader;
-	class A_shader_blob;
-	class A_shader_class;
+	NCPP_FHANDLE_TEMPLATE_DEFINE_MEMBER(A_pipeline_state)
+	NCPP_FORCE_INLINE const F_compute_pipeline_state_options& TF_compute_pipeline_state_handle<F_oref__>::options() const noexcept {
 
-
-
-	class H_vertex_shader {
-
-	public:
-		static NCPP_FORCE_INLINE U_vertex_shader_handle create(TKPA_valid<A_device> device_p, const F_shader_desc& desc) {
-
-			return H_shader::create_vertex_shader(device_p, desc);
-		}
-
-	};
-
-	class H_pixel_shader {
-
-	public:
-		static NCPP_FORCE_INLINE U_pixel_shader_handle create(TKPA_valid<A_device> device_p, const F_shader_desc& desc) {
-
-			return H_shader::create_pixel_shader(device_p, desc);
-		}
-
-	};
-
-	class H_compute_shader {
-
-	public:
-		static NCPP_FORCE_INLINE U_compute_shader_handle create(TKPA_valid<A_device> device_p, const F_shader_desc& desc) {
-
-			return H_shader::create_compute_shader(device_p, desc);
-		}
-
-	};
+		return H_pipeline_state::compute_options({ oref });
+	}
 
 }

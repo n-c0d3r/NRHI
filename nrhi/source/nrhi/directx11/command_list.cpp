@@ -93,7 +93,7 @@ namespace nrhi {
 		TKPA_valid<A_pipeline_state> pipeline_state_p
 	) {
 		NRHI_ENUM_SWITCH(
-			pipeline_state_p->desc().type,
+			pipeline_state_p->type(),
 			NRHI_ENUM_CASE(
 				ED_pipeline_state_type::GRAPHICS,
 				set_graphics_pipeline_state(
@@ -122,14 +122,14 @@ namespace nrhi {
 	) {
 		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
-		const auto desc = graphics_pipeline_state_p->desc();
+		const auto& options = HD_directx11_pipeline_state::graphics_options(graphics_pipeline_state_p);
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
 		auto& temp_state = directx11_command_list_p->temp_state_;
 
-		temp_state.vertex_buffer_count = graphics_pipeline_state_p->vertex_buffer_count();
-		temp_state.instance_buffer_count = graphics_pipeline_state_p->instance_buffer_count();
+		temp_state.vertex_buffer_count = options.input_assembler_desc.vertex_attribute_groups.size();
+		temp_state.instance_buffer_count = options.input_assembler_desc.instance_attribute_groups.size();
 
 		NCPP_ENABLE_IF_ASSERTION_ENABLED(
 			temp_state.is_pipeline_state_binded = true;
@@ -155,7 +155,7 @@ namespace nrhi {
 
 		// bind topology
 		d3d11_device_context_p->IASetPrimitiveTopology(
-			D3D11_PRIMITIVE_TOPOLOGY(desc.primitive_topology)
+			D3D11_PRIMITIVE_TOPOLOGY(options.primitive_topology)
 		);
 
 		// bind shaders and input layout
@@ -196,7 +196,7 @@ namespace nrhi {
 	) {
 		NCPP_ASSERT(command_list_p->supports_compute()) << "command list does not support compute";
 
-		const auto desc = compute_pipeline_state_p->desc();
+		const auto& options = HD_directx11_pipeline_state::compute_options(compute_pipeline_state_p);
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
@@ -1030,7 +1030,7 @@ namespace nrhi {
 
 		NCPP_ENABLE_IF_ASSERTION_ENABLED(
 			NCPP_ASSERT(temp_state.is_pipeline_state_binded) << "no pipeline state binded";
-			NCPP_ASSERT(temp_state.pipeline_state_p->desc().type == ED_pipeline_state_type::GRAPHICS) << "invalid pipeline state type";
+			NCPP_ASSERT(temp_state.pipeline_state_p->type() == ED_pipeline_state_type::GRAPHICS) << "invalid pipeline state type";
 		);
 
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
@@ -1061,7 +1061,7 @@ namespace nrhi {
 
 		NCPP_ENABLE_IF_ASSERTION_ENABLED(
 			NCPP_ASSERT(temp_state.is_pipeline_state_binded) << "no pipeline state binded";
-			NCPP_ASSERT(temp_state.pipeline_state_p->desc().type == ED_pipeline_state_type::GRAPHICS) << "invalid pipeline state type";
+			NCPP_ASSERT(temp_state.pipeline_state_p->type() == ED_pipeline_state_type::GRAPHICS) << "invalid pipeline state type";
 		);
 
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
@@ -1093,7 +1093,7 @@ namespace nrhi {
 
 		NCPP_ENABLE_IF_ASSERTION_ENABLED(
 			NCPP_ASSERT(temp_state.is_pipeline_state_binded) << "no pipeline state binded";
-			NCPP_ASSERT(temp_state.pipeline_state_p->desc().type == ED_pipeline_state_type::GRAPHICS) << "invalid pipeline state type";
+			NCPP_ASSERT(temp_state.pipeline_state_p->type() == ED_pipeline_state_type::GRAPHICS) << "invalid pipeline state type";
 			NCPP_ASSERT(temp_state.index_buffer_p.is_valid()) << "index buffer is required";
 		);
 
@@ -1127,7 +1127,7 @@ namespace nrhi {
 
 		NCPP_ENABLE_IF_ASSERTION_ENABLED(
 			NCPP_ASSERT(temp_state.is_pipeline_state_binded) << "no pipeline state binded";
-			NCPP_ASSERT(temp_state.pipeline_state_p->desc().type == ED_pipeline_state_type::GRAPHICS) << "invalid pipeline state type";
+			NCPP_ASSERT(temp_state.pipeline_state_p->type() == ED_pipeline_state_type::GRAPHICS) << "invalid pipeline state type";
 			NCPP_ASSERT(temp_state.index_buffer_p.is_valid()) << "index buffer is required";
 		);
 
@@ -1160,7 +1160,7 @@ namespace nrhi {
 
 		NCPP_ENABLE_IF_ASSERTION_ENABLED(
 			NCPP_ASSERT(temp_state.is_pipeline_state_binded) << "no pipeline state binded";
-			NCPP_ASSERT(temp_state.pipeline_state_p->desc().type == ED_pipeline_state_type::COMPUTE) << "invalid pipeline state type";
+			NCPP_ASSERT(temp_state.pipeline_state_p->type() == ED_pipeline_state_type::COMPUTE) << "invalid pipeline state type";
 		);
 
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
@@ -1185,7 +1185,7 @@ namespace nrhi {
 
 		NCPP_ENABLE_IF_ASSERTION_ENABLED(
 			NCPP_ASSERT(temp_state.is_pipeline_state_binded) << "no pipeline state binded";
-			NCPP_ASSERT(temp_state.pipeline_state_p->desc().type == ED_pipeline_state_type::GRAPHICS) << "invalid pipeline state type";
+			NCPP_ASSERT(temp_state.pipeline_state_p->type() == ED_pipeline_state_type::GRAPHICS) << "invalid pipeline state type";
 		);
 
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
@@ -1213,7 +1213,7 @@ namespace nrhi {
 
 		NCPP_ENABLE_IF_ASSERTION_ENABLED(
 			NCPP_ASSERT(temp_state.is_pipeline_state_binded) << "no pipeline state binded";
-			NCPP_ASSERT(temp_state.pipeline_state_p->desc().type == ED_pipeline_state_type::GRAPHICS) << "invalid pipeline state type";
+			NCPP_ASSERT(temp_state.pipeline_state_p->type() == ED_pipeline_state_type::GRAPHICS) << "invalid pipeline state type";
 			NCPP_ASSERT(temp_state.index_buffer_p.is_valid()) << "index buffer is required";
 		);
 
@@ -1243,7 +1243,7 @@ namespace nrhi {
 
 		NCPP_ENABLE_IF_ASSERTION_ENABLED(
 			NCPP_ASSERT(temp_state.is_pipeline_state_binded) << "no pipeline state binded";
-			NCPP_ASSERT(temp_state.pipeline_state_p->desc().type == ED_pipeline_state_type::COMPUTE) << "invalid pipeline state type";
+			NCPP_ASSERT(temp_state.pipeline_state_p->type() == ED_pipeline_state_type::COMPUTE) << "invalid pipeline state type";
 		);
 
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();

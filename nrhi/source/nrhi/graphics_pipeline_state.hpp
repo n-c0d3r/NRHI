@@ -48,13 +48,13 @@ namespace nrhi {
 #ifdef NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_BINDING
 		static U_graphics_pipeline_state_handle create(
 			TKPA_valid<A_device> device_p,
-			const F_pipeline_state_desc& desc
+			const F_graphics_pipeline_state_options& options
 		);
 #endif // NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_BINDING
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 		static U_graphics_pipeline_state_handle create_direct(
 			TKPA_valid<A_device> device_p,
-			const F_pipeline_state_desc& desc
+			const F_graphics_pipeline_state_options& options
 		);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 

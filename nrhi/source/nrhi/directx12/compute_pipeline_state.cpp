@@ -10,7 +10,7 @@ namespace nrhi {
 
 	F_directx12_compute_pipeline_state::F_directx12_compute_pipeline_state(
 		TKPA_valid<A_device> device_p,
-		const F_pipeline_state_desc& desc,
+		const A_pipeline_state_desc& desc,
 		F_directx12_pipeline_state_direct_flag,
 		ED_pipeline_state_type overrided_type
 	) :
@@ -27,7 +27,7 @@ namespace nrhi {
 	}
 	F_directx12_compute_pipeline_state::F_directx12_compute_pipeline_state(
 		TKPA_valid<A_device> device_p,
-		const F_pipeline_state_desc& desc,
+		const A_pipeline_state_desc& desc,
 		ED_pipeline_state_type overrided_type,
 		ID3D12PipelineState* d3d12_compute_pipeline_state_p
 	) :
@@ -42,7 +42,7 @@ namespace nrhi {
 
 	ID3D12PipelineState* F_directx12_compute_pipeline_state::create_d3d12_compute_pipeline_state_direct(
 		TKPA_valid<A_device> device_p,
-		const F_pipeline_state_desc& desc
+		const A_pipeline_state_desc& desc
 	) {
 		ID3D12Device* d3d12_device_p = device_p.T_cast<F_directx12_device>()->d3d12_device_p();
 		ID3D12RootSignature* d3d12_root_signature_p = desc.root_signature_p.T_cast<F_directx12_root_signature>()->d3d12_root_signature_p();

@@ -51,24 +51,17 @@ namespace nrhi {
 	class NRHI_API A_pipeline_state : public A_device_child {
 
 	private:
-		F_pipeline_state_desc desc_;
-
-		u32 vertex_buffer_count_ = 0;
-		u32 instance_buffer_count_ = 0;
+		ED_pipeline_state_type type_;
 
 	public:
-		NCPP_FORCE_INLINE const F_pipeline_state_desc& desc() const noexcept { return desc_; }
-
-		NCPP_FORCE_INLINE u32 vertex_buffer_count() const noexcept { return vertex_buffer_count_; }
-		NCPP_FORCE_INLINE u32 instance_buffer_count() const noexcept { return instance_buffer_count_; }
+		NCPP_FORCE_INLINE ED_pipeline_state_type type() const noexcept { return type_; }
 
 
 
 	protected:
 		A_pipeline_state(
 			TKPA_valid<A_device> device_p,
-			const F_pipeline_state_desc& desc,
-			ED_pipeline_state_type overrided_type
+			ED_pipeline_state_type type
 		);
 
 	public:

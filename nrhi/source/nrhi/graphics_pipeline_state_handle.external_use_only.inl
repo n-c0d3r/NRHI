@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/shader_desc.hpp
+/** @file nrhi/graphics_pipeline_state_handle.external_use_only.inl
 *
-*   Implement shader desc.
+*   Implement graphics_pipeline_state_handle inline functions that is only used by external.
 */
 
 
@@ -33,8 +33,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/shader_type.hpp>
-#include <nrhi/format.hpp>
+#include <nrhi/graphics_pipeline_state_handle.hpp>
+#include <nrhi/pipeline_state.hpp>
 
 #pragma endregion
 
@@ -42,44 +42,10 @@
 
 namespace nrhi {
 
-	class A_device;
-	class A_shader;
+	NCPP_FHANDLE_TEMPLATE_DEFINE_MEMBER(A_pipeline_state)
+	NCPP_FORCE_INLINE const F_graphics_pipeline_state_options& TF_graphics_pipeline_state_handle<F_oref__>::options() const noexcept {
 
-
-
-	struct F_vertex_attribute {
-
-		G_string name;
-		ED_format format;
-		u32 duplicate_count = 1;
-		u32 offset = NCPP_U32_MAX;
-
-	};
-	struct F_instance_attribute {
-
-		G_string name;
-		ED_format format;
-		u32 duplicate_count = 1;
-		u32 offset = NCPP_U32_MAX;
-
-	};
-
-	struct F_input_assembler_desc {
-
-		TG_vector<TG_vector<F_vertex_attribute>> vertex_attribute_groups;
-		TG_vector<TG_vector<F_instance_attribute>> instance_attribute_groups;
-
-	};
-
-
-
-	struct F_shader_desc {
-
-		G_string name;
-		TG_span<u8> binary;
-		ED_shader_type type = ED_shader_type::NONE;
-		F_input_assembler_desc input_assembler_desc;
-
-	};
+		return H_pipeline_state::graphics_options({ oref });
+	}
 
 }

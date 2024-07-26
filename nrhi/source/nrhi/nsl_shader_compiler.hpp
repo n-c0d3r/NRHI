@@ -34,7 +34,6 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/shader_compiler_base.hpp>
-#include <nrhi/shader_desc.hpp>
 #include <nrhi/sampler_state_desc.hpp>
 #include <nrhi/cull_mode.hpp>
 #include <nrhi/fill_mode.hpp>
@@ -427,7 +426,7 @@ namespace nrhi {
 
 		ED_pipeline_state_type type = ED_pipeline_state_type::NONE;
 
-		F_pipeline_state_desc desc;
+		F_general_pipeline_state_options options;
 
 		F_nsl_pipeline_state_config_map config_map;
 
@@ -643,7 +642,7 @@ namespace nrhi {
 		TG_stack<F_nsl_object_config> object_config_stack;
 
 		G_string default_constant_buffer;
-		F_pipeline_state_desc default_pipeline_state_desc;
+		F_general_pipeline_state_options default_pipeline_state_options;
 
 	};
 
@@ -743,7 +742,9 @@ namespace nrhi {
 
 		G_string name;
 
-		F_pipeline_state_desc desc;
+		ED_pipeline_state_type type = ED_pipeline_state_type::NONE;
+
+		F_general_pipeline_state_options options;
 
 		TG_vector<u32> shader_indices;
 
@@ -1970,19 +1971,19 @@ namespace nrhi {
 
 
 
-	class NRHI_API F_nsl_default_pipeline_state_desc_object : public A_nsl_object {
+	class NRHI_API F_nsl_default_pipeline_state_options_object : public A_nsl_object {
 
 	public:
-		F_nsl_default_pipeline_state_desc_object(
+		F_nsl_default_pipeline_state_options_object(
 			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 			TKPA_valid<A_nsl_object_type> type_p,
 			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 			const G_string& name = ""
 		);
-		virtual ~F_nsl_default_pipeline_state_desc_object();
+		virtual ~F_nsl_default_pipeline_state_options_object();
 
 	public:
-		NCPP_OBJECT(F_nsl_default_pipeline_state_desc_object);
+		NCPP_OBJECT(F_nsl_default_pipeline_state_options_object);
 
 	public:
 		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
@@ -1997,16 +1998,16 @@ namespace nrhi {
 
 
 
-	class NRHI_API F_nsl_default_pipeline_state_desc_object_type : public A_nsl_object_type {
+	class NRHI_API F_nsl_default_pipeline_state_options_object_type : public A_nsl_object_type {
 
 	public:
-		F_nsl_default_pipeline_state_desc_object_type(
+		F_nsl_default_pipeline_state_options_object_type(
 			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
 		);
-		virtual ~F_nsl_default_pipeline_state_desc_object_type();
+		virtual ~F_nsl_default_pipeline_state_options_object_type();
 
 	public:
-		NCPP_OBJECT(F_nsl_default_pipeline_state_desc_object_type);
+		NCPP_OBJECT(F_nsl_default_pipeline_state_options_object_type);
 
 	public:
 		virtual TK<A_nsl_object> create_object(

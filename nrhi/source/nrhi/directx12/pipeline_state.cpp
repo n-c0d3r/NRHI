@@ -8,7 +8,7 @@ namespace nrhi {
 
 	F_directx12_pipeline_state::F_directx12_pipeline_state(
 		TKPA_valid<A_device> device_p,
-		const F_pipeline_state_desc& desc,
+		const A_pipeline_state_desc& desc,
 		ED_pipeline_state_type overrided_type,
 		ID3D12PipelineState* d3d12_pipeline_state_p
 	) :
@@ -24,7 +24,7 @@ namespace nrhi {
 
 	TU<A_pipeline_state> HD_directx12_pipeline_state::create_direct(
 		TKPA_valid<A_device> device_p,
-		const F_pipeline_state_desc& desc
+		const A_pipeline_state_desc& desc
 	) {
 		NRHI_ENUM_SWITCH(
 			desc.type,
@@ -41,13 +41,13 @@ namespace nrhi {
 
 	U_graphics_pipeline_state_handle HD_directx12_pipeline_state::create_graphics_pipeline_state_direct(
 		TKPA_valid<A_device> device_p,
-		const F_pipeline_state_desc& desc
+		const A_pipeline_state_desc& desc
 	) {
 		return { TU<F_directx12_graphics_pipeline_state>()(device_p, desc, F_directx12_pipeline_state_direct_flag{}) };
 	}
 	U_compute_pipeline_state_handle HD_directx12_pipeline_state::create_compute_pipeline_state_direct(
 		TKPA_valid<A_device> device_p,
-		const F_pipeline_state_desc& desc
+		const A_pipeline_state_desc& desc
 	) {
 		return { TU<F_directx12_compute_pipeline_state>()(device_p, desc, F_directx12_pipeline_state_direct_flag{}) };
 	}

@@ -91,21 +91,12 @@ int main() {
 		0
 	);
 
-	auto shader_p = H_shader::create_vertex_shader(
-		NCPP_FOH_VALID(device_p),
-		{
-			.name = "demo_shader::vs_main",
-			.binary = shader_binary,
-			.type = nsl_shader_reflection.type,
-			.input_assembler_desc = nsl_input_assembler_reflection.desc
-		}
-	);
-
 	auto pipeline_state_p = H_graphics_pipeline_state::create(
 		NCPP_FOH_VALID(device_p),
 		{
-			.shader_p_vector = {
-				NCPP_AOH_VALID(shader_p)
+			.input_assembler_desc = nsl_input_assembler_reflection.desc,
+			.shader_binaries = {
+				.vertex = shader_binary
 			}
 		}
 	);

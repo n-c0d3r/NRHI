@@ -40,7 +40,6 @@
 #include <nrhi/fill_mode.hpp>
 #include <nrhi/depth_comparison_func.hpp>
 #include <nrhi/primitive_topology.hpp>
-#include <nrhi/shader_desc.hpp>
 #include <nrhi/blend_factor.hpp>
 #include <nrhi/blend_operation.hpp>
 #include <nrhi/color_write_mode.hpp>
@@ -63,6 +62,37 @@ namespace nrhi {
 
 
 
+	using F_shader_binary = TG_vector<u8>;
+	using F_shader_binary_temp = TG_span<u8>;
+
+
+
+	struct F_vertex_attribute {
+
+		G_string name;
+		ED_format format;
+		u32 duplicate_count = 1;
+		u32 offset = NCPP_U32_MAX;
+
+	};
+	struct F_instance_attribute {
+
+		G_string name;
+		ED_format format;
+		u32 duplicate_count = 1;
+		u32 offset = NCPP_U32_MAX;
+
+	};
+
+	struct F_input_assembler_desc {
+
+		TG_vector<TG_vector<F_vertex_attribute>> vertex_attribute_groups;
+		TG_vector<TG_vector<F_instance_attribute>> instance_attribute_groups;
+
+	};
+
+
+
 	struct F_rasterizer_desc {
 
 		ED_cull_mode cull_mode = ED_cull_mode::BACK;
@@ -80,6 +110,8 @@ namespace nrhi {
 		}
 
 	};
+
+
 
 	struct F_depth_stencil_desc {
 
@@ -99,6 +131,8 @@ namespace nrhi {
 		}
 
 	};
+
+
 
 	struct F_blend_render_target_desc {
 
@@ -172,11 +206,29 @@ namespace nrhi {
 
 	};
 
-	struct F_pipeline_state_desc {
 
+
+	struct A_pipeline_state_desc
+	{
 		ED_pipeline_state_type type = ED_pipeline_state_type::NONE;
 
-		TG_vector<ED_format> color_formats = {
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		TK<A_root_signature> root_signature_p;
+#endif // NRHI_SUPPORT_DRIVER_ADVANCED_RESOURCE_BINDING
+	};
+
+
+
+	struct F_graphics_pipeline_state_shader_binaries {
+
+		F_shader_binary_temp vertex;
+		eastl::optional<F_shader_binary_temp> pixel;
+
+	};
+
+	struct F_graphics_pipeline_state_options {
+
+		TG_fixed_vector<ED_format, 8, false> color_formats = {
 			ED_format::R8G8B8A8_UNORM
 		};
 		F_depth_stencil_desc depth_stencil_desc;
@@ -187,16 +239,45 @@ namespace nrhi {
 
 		ED_primitive_topology primitive_topology = ED_primitive_topology::TRIANGLE_LIST;
 
-		TG_vector<TK_valid<A_shader>> shader_p_vector;
+		F_input_assembler_desc input_assembler_desc;
 
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		TG_vector<F_shader_desc> direct_shader_descs;
-		TK<A_root_signature> root_signature_p;
-#endif // NRHI_SUPPORT_DRIVER_ADVANCED_RESOURCE_BINDING
+		F_graphics_pipeline_state_shader_binaries shader_binaries;
 
 	};
 
-	class NRHI_API H_pipeline_state_desc {
+	struct F_graphics_pipeline_state_desc :
+		public A_pipeline_state_desc
+	{
+		F_graphics_pipeline_state_options options;
+	};
+
+
+
+	struct F_compute_pipeline_state_shader_binaries {
+
+		F_shader_binary_temp compute;
+
+	};
+
+	struct F_compute_pipeline_state_options {
+
+		F_compute_pipeline_state_shader_binaries shader_binaries;
+
+	};
+
+	struct F_compute_pipeline_state_desc :
+		public A_pipeline_state_desc
+	{
+		F_compute_pipeline_state_options options;
+	};
+
+
+
+	struct F_general_pipeline_state_options {
+
+		F_graphics_pipeline_state_options graphics;
+		F_compute_pipeline_state_options compute;
+
 	};
 
 }

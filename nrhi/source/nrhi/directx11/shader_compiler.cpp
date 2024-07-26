@@ -1,5 +1,4 @@
 #include <nrhi/directx11/shader_compiler.hpp>
-#include <nrhi/directx11/shader.hpp>
 
 #include <d3dcompiler.h>
 
@@ -7,7 +6,7 @@
 
 namespace nrhi {
 
-	TG_vector<u8> HD_directx11_shader_compiler::compile_hlsl_from_src_content(
+	F_shader_binary HD_directx11_shader_compiler::compile_hlsl_from_src_content(
 		const G_string& class_name,
 		const G_string& entry_point_name,
 		const G_string& src_content,
@@ -107,7 +106,7 @@ namespace nrhi {
 			)
 		);
 
-		TG_vector<u8> result(d3d11_shader_blob_p->GetBufferSize());
+		F_shader_binary result(d3d11_shader_blob_p->GetBufferSize());
 		memcpy(
 			(void*)(result.data()),
 			(void*)(d3d11_shader_blob_p->GetBufferPointer()),
@@ -116,7 +115,7 @@ namespace nrhi {
 
 		return std::move(result);
 	}
-	TG_vector<u8> HD_directx11_shader_compiler::compile_hlsl(
+	F_shader_binary HD_directx11_shader_compiler::compile_hlsl(
 		const G_string& class_name,
 		const G_string& entry_point_name,
 		const G_string& abs_path,
@@ -211,7 +210,7 @@ namespace nrhi {
 			)
 		);
 
-		TG_vector<u8> result(d3d11_shader_blob_p->GetBufferSize());
+		F_shader_binary result(d3d11_shader_blob_p->GetBufferSize());
 		memcpy(
 			(void*)(result.data()),
 			(void*)(d3d11_shader_blob_p->GetBufferPointer()),
@@ -220,7 +219,7 @@ namespace nrhi {
 		
 		return std::move(result);
 	}
-	TG_vector<u8> HD_directx11_shader_compiler::compile_nsl(
+	F_shader_binary HD_directx11_shader_compiler::compile_nsl(
 		const G_string& shader_class_name,
 		const F_nsl_compiled_result& compiled_result,
 		u32 shader_index
