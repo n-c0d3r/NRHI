@@ -41,6 +41,7 @@
 #include <nrhi/depth_comparison_func.hpp>
 #include <nrhi/primitive_topology.hpp>
 #include <nrhi/shader_desc.hpp>
+#include <nrhi/shader_base.hpp>
 #include <nrhi/blend_factor.hpp>
 #include <nrhi/blend_operation.hpp>
 #include <nrhi/color_write_mode.hpp>
@@ -194,7 +195,36 @@ namespace nrhi {
 
 	};
 
-	class NRHI_API H_pipeline_state_desc {
-	};
+//	struct F_graphics_pipeline_state_options {
+//
+//		TG_array<ED_format, 8> color_formats = {
+//			ED_format::R8G8B8A8_UNORM
+//		};
+//		F_depth_stencil_desc depth_stencil_desc;
+//
+//		F_rasterizer_desc rasterizer_desc;
+//
+//		F_blend_desc blend_desc;
+//
+//		ED_primitive_topology primitive_topology = ED_primitive_topology::TRIANGLE_LIST;
+//
+//	};
+
+//	struct F_graphics_pipeline_state_shaders
+//	{
+//		K_vertex_shader_handle vertex_shader_p;
+//		K_pixel_shader_handle pixel_shader_p;
+//	};
+//
+//	struct F_graphics_pipeline_state_shaders
+//	{
+//		K_vertex_shader_handle vertex_shader_p;
+//		K_pixel_shader_handle pixel_shader_p;
+//	};
+
+//#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+//	TG_vector<F_shader_desc> direct_shader_descs;
+//	TK<A_root_signature> root_signature_p;
+//#endif // NRHI_SUPPORT_DRIVER_ADVANCED_RESOURCE_BINDING
 
 }
