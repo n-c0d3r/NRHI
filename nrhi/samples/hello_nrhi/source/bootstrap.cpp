@@ -250,15 +250,6 @@ int main() {
 		0,
 		ED_shader_type::VERTEX
 	);
-	auto vshader_p = H_vertex_shader::create(
-		NCPP_FOREF_VALID(device_p),
-		{
-			.name = "DemoShaderClass::vmain",
-			.binary = vshader_binary,
-			.type = ED_shader_type::VERTEX,
-			.input_assembler_desc = input_assembler_desc
-		}
-	);
 
 	// create pixel shader
 	auto pshader_binary = H_shader_compiler::compile_hlsl_from_src_content(
@@ -269,14 +260,6 @@ int main() {
 		5,
 		0,
 		ED_shader_type::PIXEL
-	);
-	auto pshader_p = H_pixel_shader::create(
-		NCPP_FOREF_VALID(device_p),
-		{
-			.name = "DemoShaderClass::pmain",
-			.binary = pshader_binary,
-			.type = ED_shader_type::PIXEL
-		}
 	);
 
 	// create frame buffer
@@ -299,9 +282,10 @@ int main() {
 	auto graphics_pipeline_state_p = H_graphics_pipeline_state::create(
 		NCPP_FOREF_VALID(device_p),
 		{
-			.shader_p_vector = {
-				NCPP_FHANDLE_VALID_AS_OREF(vshader_p),
-				NCPP_FHANDLE_VALID_AS_OREF(pshader_p)
+			.input_assembler_desc = input_assembler_desc,
+			.shader_binaries = {
+				.vertex = vshader_binary,
+				.pixel = eastl::optional<F_shader_binary_temp>(pshader_binary)
 			}
 		}
 	);
