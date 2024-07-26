@@ -88,12 +88,13 @@ namespace nrhi {
 		ED_root_param_type type;
 		ED_shader_visibility shader_visibility = ED_shader_visibility::ALL;
 
-		union {
+		// due to use of TG_vector, we can't put descriptor_table_desc into union
+		F_root_descriptor_table_desc descriptor_table_desc;
 
-			F_root_descriptor_table_desc descriptor_table_desc;
+		// these two structs just have primitive data types, so it's ok to use union
+		union {
 			F_root_descriptor_desc descriptor_desc;
 			F_root_constant_desc constant_desc;
-
 		};
 
 	};
