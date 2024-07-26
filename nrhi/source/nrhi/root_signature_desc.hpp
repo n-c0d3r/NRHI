@@ -64,7 +64,7 @@ namespace nrhi {
 	};
 	struct F_root_descriptor_table_desc {
 
-		TG_span<F_descriptor_range_desc> range_descs;
+		TG_vector<F_descriptor_range_desc> range_descs;
 
 	};
 
