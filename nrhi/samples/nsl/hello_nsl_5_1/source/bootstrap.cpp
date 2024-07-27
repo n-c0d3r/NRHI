@@ -123,7 +123,7 @@ int main() {
 "}\n"
 "\n"
 "@color_formats(R8G8B8A8_UNORM)\n"
-"default_pipeline_state_options()\n"
+"default_pipeline_state()\n"
 "\n"
 "@rasterizer\n"
 "(\n"
