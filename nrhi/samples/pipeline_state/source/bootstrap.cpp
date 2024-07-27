@@ -22,8 +22,7 @@ int main() {
 
 
 	// create shader
-	auto compiler_p = TU<F_nsl_shader_compiler>()();
-	auto nsl_shader_compiled_result_opt = compiler_p->compile(
+	G_string shader_src_content =
 		"\n"
 		"import(nrhi)\n"
 		"\n"
@@ -86,8 +85,10 @@ int main() {
 		"(\n"
 		"	vs_main\n"
 		")\n"
-		"\n"
-	);
+		"\n";
+
+	auto compiler_p = TU<F_nsl_shader_compiler>()();
+	auto nsl_shader_compiled_result_opt = compiler_p->compile(shader_src_content);
 	NCPP_ASSERT(nsl_shader_compiled_result_opt);
 
 	const auto& nsl_shader_compiled_result = nsl_shader_compiled_result_opt.value();
