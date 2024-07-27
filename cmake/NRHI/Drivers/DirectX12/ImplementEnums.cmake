@@ -32,6 +32,7 @@ include(NRHI/Drivers/DirectX12/ImplementBlendFactor)
 include(NRHI/Drivers/DirectX12/ImplementBlendOperation)
 include(NRHI/Drivers/DirectX12/ImplementColorWriteMode)
 include(NRHI/Drivers/DirectX12/ImplementLogicOperation)
+include(NRHI/Drivers/DirectX12/ImplementTextureCubeFace)
 
 
 
