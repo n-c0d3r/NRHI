@@ -4510,15 +4510,15 @@ namespace nrhi {
 
 		auto& child_info_trees = child_info_trees_opt.value();
 
-		if(child_info_trees.size() == 0) {
-
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				&(unit_p->error_group_p()->stack()),
-				object_implementation.bodies[0].begin_location,
-				"require pipeline_state shaders"
-			);
-			return eastl::nullopt;
-		}
+//		if(child_info_trees.size() == 0) {
+//
+//			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+//				&(unit_p->error_group_p()->stack()),
+//				object_implementation.bodies[0].begin_location,
+//				"require pipeline_state shaders"
+//			);
+//			return eastl::nullopt;
+//		}
 
 		u32 shader_count = child_info_trees.size();
 
@@ -5359,13 +5359,13 @@ namespace nrhi {
 
 
 
-	F_nsl_default_pipeline_state_options_object::F_nsl_default_pipeline_state_options_object(
+	F_nsl_default_pipeline_state_object::F_nsl_default_pipeline_state_object(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 		TKPA_valid<A_nsl_object_type> type_p,
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 		const G_string& name
 	) :
-		A_nsl_object(
+		F_nsl_pipeline_state_object(
 			shader_compiler_p,
 			type_p,
 			translation_unit_p,
@@ -5373,215 +5373,44 @@ namespace nrhi {
 		)
 	{
 	}
-	F_nsl_default_pipeline_state_options_object::~F_nsl_default_pipeline_state_options_object() {
+	F_nsl_default_pipeline_state_object::~F_nsl_default_pipeline_state_object() {
 	}
 
-	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_default_pipeline_state_options_object::recursive_build_ast_tree(
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_default_pipeline_state_object::recursive_build_ast_tree(
 		F_nsl_context& context,
 		TK_valid<F_nsl_translation_unit> unit_p,
 		TG_vector<F_nsl_ast_tree>& trees,
 		sz index,
 		F_nsl_error_stack* error_stack_p
 	) {
-		auto& tree = trees[index];
-		auto& object_implementation = tree.object_implementation;
+		auto result_opt = F_nsl_pipeline_state_object::recursive_build_ast_tree(
+			context,
+			unit_p,
+			trees,
+			index,
+			error_stack_p
+		);
 
-		context.parent_object_p = NCPP_KTHIS().no_requirements();
+		if(!result_opt)
+			return result_opt;
 
-		auto name_manager_p = shader_compiler_p()->name_manager_p();
-		auto translation_unit_compiler_p = shader_compiler_p()->translation_unit_compiler_p();
+		auto pipeline_state_manager_p = shader_compiler_p()->pipeline_state_manager_p();
 
-		F_general_pipeline_state_options default_pipeline_state_options;
+		const auto& pipeline_state_info = pipeline_state_manager_p->pipeline_state_info(name());
 
-		// check for color_formats annotation
-		{
-			auto it = context.current_object_config.find("color_formats");
-			if(it != context.current_object_config.end()) {
+		context.default_pipeline_state_options = pipeline_state_info.options;
 
-				const auto& info_tree_reader = it->second;
-
-				u32 color_format_count = info_tree_reader.info_trees().size();
-
-				for(u32 i = 0; i < color_format_count; ++i) {
-
-					auto value_opt = info_tree_reader.read_format(i);
-
-					if(!value_opt)
-						return eastl::nullopt;
-
-					default_pipeline_state_options.graphics.color_formats[i] = value_opt.value();
-				}
-			}
-		}
-
-		// check for depth_stencil annotation
-		{
-			auto it = context.current_object_config.find("depth_stencil");
-			if(it != context.current_object_config.end()) {
-
-				const auto& info_tree_reader = it->second;
-
-				// enable_depth_test attribute
-				{
-					auto sub_info_tree_reader_opt = info_tree_reader.read_sub("enable_depth_test", false);
-
-					if(sub_info_tree_reader_opt) {
-
-						const auto& sub_info_tree_reader = sub_info_tree_reader_opt.value();
-
-						auto value_opt = sub_info_tree_reader.read_b8(0);
-
-						if(!value_opt)
-							return eastl::nullopt;
-
-						default_pipeline_state_options.graphics.depth_stencil_desc.
-						enable_depth_test = value_opt.value();
-					}
-				}
-
-				// fill_mode attribute
-				{
-					auto sub_info_tree_reader_opt = info_tree_reader.read_sub("format", false);
-
-					if(sub_info_tree_reader_opt) {
-
-						const auto& sub_info_tree_reader = sub_info_tree_reader_opt.value();
-
-						auto value_opt = sub_info_tree_reader.read_format(0);
-
-						if(!value_opt)
-							return eastl::nullopt;
-
-						default_pipeline_state_options.graphics.depth_stencil_desc.format = value_opt.value();
-					}
-				}
-
-				// depth_comparison_func attribute
-				{
-					auto sub_info_tree_reader_opt = info_tree_reader.read_sub("depth_comparison_func", false);
-
-					if(sub_info_tree_reader_opt) {
-
-						const auto& sub_info_tree_reader = sub_info_tree_reader_opt.value();
-
-						auto value_opt = sub_info_tree_reader.read_depth_comparison_func(0);
-
-						if(!value_opt)
-							return eastl::nullopt;
-
-						default_pipeline_state_options.graphics.depth_stencil_desc.depth_comparison_func = value_opt.value();
-					}
-				}
-
-				// depth_buffer_write attribute
-				{
-					auto sub_info_tree_reader_opt = info_tree_reader.read_sub("depth_buffer_write", false);
-
-					if(sub_info_tree_reader_opt) {
-
-						const auto& sub_info_tree_reader = sub_info_tree_reader_opt.value();
-
-						auto value_opt = sub_info_tree_reader.read_b8(0);
-
-						if(!value_opt)
-							return eastl::nullopt;
-
-						default_pipeline_state_options.graphics.depth_stencil_desc.depth_buffer_write = value_opt.value();
-					}
-				}
-			}
-		}
-
-		// check for rasterizer annotation
-		{
-			auto it = context.current_object_config.find("rasterizer");
-			if(it != context.current_object_config.end()) {
-
-				const auto& info_tree_reader = it->second;
-
-				// cull_mode attribute
-				{
-					auto sub_info_tree_reader_opt = info_tree_reader.read_sub("cull_mode", false);
-
-					if(sub_info_tree_reader_opt) {
-
-						const auto& sub_info_tree_reader = sub_info_tree_reader_opt.value();
-
-						auto value_opt = sub_info_tree_reader.read_cull_mode(0);
-
-						if(!value_opt)
-							return eastl::nullopt;
-
-						default_pipeline_state_options.graphics.rasterizer_desc.cull_mode = value_opt.value();
-					}
-				}
-
-				// fill_mode attribute
-				{
-					auto sub_info_tree_reader_opt = info_tree_reader.read_sub("fill_mode", false);
-
-					if(sub_info_tree_reader_opt) {
-
-						const auto& sub_info_tree_reader = sub_info_tree_reader_opt.value();
-
-						auto value_opt = sub_info_tree_reader.read_fill_mode(0);
-
-						if(!value_opt)
-							return eastl::nullopt;
-
-						default_pipeline_state_options.graphics.rasterizer_desc.fill_mode = value_opt.value();
-					}
-				}
-
-				// front_counter_clock_wise attribute
-				{
-					auto sub_info_tree_reader_opt = info_tree_reader.read_sub("front_counter_clock_wise", false);
-
-					if(sub_info_tree_reader_opt) {
-
-						const auto& sub_info_tree_reader = sub_info_tree_reader_opt.value();
-
-						auto value_opt = sub_info_tree_reader.read_b8(0);
-
-						if(!value_opt)
-							return eastl::nullopt;
-
-						default_pipeline_state_options.graphics.rasterizer_desc.front_counter_clock_wise = value_opt.value();
-					}
-				}
-			}
-		}
-
-		// check for primitive_topology annotation
-		{
-			auto it = context.current_object_config.find("primitive_topology");
-			if(it != context.current_object_config.end()) {
-
-				const auto& info_tree_reader = it->second;
-
-				auto value_opt = info_tree_reader.read_primitive_topology(0);
-
-				if(!value_opt)
-					return eastl::nullopt;
-
-				default_pipeline_state_options.graphics.primitive_topology = value_opt.value();
-			}
-		}
-
-		// store default_pipeline_state_options
-		context.default_pipeline_state_options = default_pipeline_state_options;
-
-		return TG_vector<F_nsl_ast_tree>();
+		return result_opt;
 	}
 
 
 
-	F_nsl_default_pipeline_state_options_object_type::F_nsl_default_pipeline_state_options_object_type(
+	F_nsl_default_pipeline_state_object_type::F_nsl_default_pipeline_state_object_type(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
 	) :
 		A_nsl_object_type(
 			shader_compiler_p,
-			"default_pipeline_state_options",
+			"default_pipeline_state",
 			false,
 			1,
 			1,
@@ -5589,10 +5418,10 @@ namespace nrhi {
 		)
 	{
 	}
-	F_nsl_default_pipeline_state_options_object_type::~F_nsl_default_pipeline_state_options_object_type() {
+	F_nsl_default_pipeline_state_object_type::~F_nsl_default_pipeline_state_object_type() {
 	}
 
-	TK<A_nsl_object> F_nsl_default_pipeline_state_options_object_type::create_object(
+	TK<A_nsl_object> F_nsl_default_pipeline_state_object_type::create_object(
 		F_nsl_ast_tree& tree,
 		F_nsl_context& context,
 		TKPA_valid<F_nsl_translation_unit> translation_unit_p
@@ -5600,7 +5429,7 @@ namespace nrhi {
 		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
 
 		auto object_p = register_object(
-			TU<F_nsl_default_pipeline_state_options_object>()(
+			TU<F_nsl_default_pipeline_state_object>()(
 				shader_compiler_p(),
 				NCPP_KTHIS(),
 				translation_unit_p,
@@ -6166,7 +5995,7 @@ namespace nrhi {
 			TU<F_nsl_pipeline_state_object_type>()(shader_compiler_p_)
 		);
 		register_type(
-			TU<F_nsl_default_pipeline_state_options_object_type>()(shader_compiler_p_)
+			TU<F_nsl_default_pipeline_state_object_type>()(shader_compiler_p_)
 		);
 	}
 	F_nsl_object_manager::~F_nsl_object_manager() {
