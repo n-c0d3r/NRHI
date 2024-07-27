@@ -91,22 +91,16 @@ int main() {
 	NCPP_ASSERT(nsl_shader_compiled_result_opt);
 
 	const auto& nsl_shader_compiled_result = nsl_shader_compiled_result_opt.value();
-	const auto& nsl_shader_compiled_result_reflection = nsl_shader_compiled_result.reflection;
-	const auto& nsl_shader_reflection = nsl_shader_compiled_result_reflection.shaders[0];
-	const auto& nsl_pso_reflection = nsl_shader_compiled_result_reflection.pipeline_states[0];
 
-	auto shader_binary = H_shader_compiler::compile_nsl(
-		"demo_shader",
-		nsl_shader_compiled_result,
-		0
-	);
-
-	auto pso_options = nsl_pso_reflection.options.graphics;
-	pso_options.shader_binaries.vertex = shader_binary;
+	F_graphics_pipeline_state_shader_binaries shader_binaries;
 
 	auto pipeline_state_p = H_graphics_pipeline_state::create(
 		NCPP_FOH_VALID(device_p),
-		pso_options
+		H_pipeline_state_compiler::compile_graphics_nsl(
+			nsl_shader_compiled_result,
+			shader_binaries,
+			0
+		)
 	);
 
 	return 0;

@@ -64,6 +64,7 @@ namespace nrhi { }
 #include <nrhi/resource_barrier.hpp>
 
 #include <nrhi/nsl_shader_compiler.hpp>
+#include <nrhi/pipeline_state_compiler.hpp>
 
 #ifdef NRHI_DRIVER_DIRECTX_11
 #include <nrhi/directx11/buffer.hpp>

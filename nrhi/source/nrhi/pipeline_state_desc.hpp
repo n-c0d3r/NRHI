@@ -221,10 +221,28 @@ namespace nrhi {
 
 
 
-	struct F_graphics_pipeline_state_shader_binaries {
+	struct F_graphics_pipeline_state_shader_binaries_temp {
 
 		F_shader_binary_temp vertex;
 		eastl::optional<F_shader_binary_temp> pixel;
+
+	};
+	struct F_graphics_pipeline_state_shader_binaries {
+
+		F_shader_binary vertex;
+		eastl::optional<F_shader_binary> pixel;
+
+		NCPP_FORCE_INLINE operator F_graphics_pipeline_state_shader_binaries_temp () const noexcept {
+
+			F_graphics_pipeline_state_shader_binaries_temp result;
+
+			result.vertex = (F_shader_binary&)vertex;
+
+			if(pixel)
+				result.pixel = eastl::optional<F_shader_binary_temp>((F_shader_binary&)pixel);
+
+			return std::move(result);
+		}
 
 	};
 
@@ -243,7 +261,7 @@ namespace nrhi {
 
 		F_input_assembler_desc input_assembler_desc;
 
-		F_graphics_pipeline_state_shader_binaries shader_binaries;
+		F_graphics_pipeline_state_shader_binaries_temp shader_binaries;
 
 	};
 
@@ -255,15 +273,27 @@ namespace nrhi {
 
 
 
-	struct F_compute_pipeline_state_shader_binaries {
+	struct F_compute_pipeline_state_shader_binaries_temp {
 
 		F_shader_binary_temp compute;
+
+	};
+	struct F_compute_pipeline_state_shader_binaries {
+
+		F_shader_binary compute;
+
+		NCPP_FORCE_INLINE operator F_compute_pipeline_state_shader_binaries_temp () const noexcept {
+
+			return {
+				F_shader_binary_temp{ (F_shader_binary&)compute }
+			};
+		}
 
 	};
 
 	struct F_compute_pipeline_state_options {
 
-		F_compute_pipeline_state_shader_binaries shader_binaries;
+		F_compute_pipeline_state_shader_binaries_temp shader_binaries;
 
 	};
 
