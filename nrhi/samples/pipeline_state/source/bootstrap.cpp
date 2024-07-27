@@ -52,7 +52,26 @@ int main() {
 		"	clip_position(SV_POSITION)\n"
 		")\n"
 		"\n"
-		"input_assembler demo_input_assembler\n"
+		"vertex_shader vs_main(\n"
+		"	input(F_vs_input)\n"
+		"	out output(F_vs_output)\n"
+		")\n"
+		"{\n"
+		"	F_vs_output vout;\n"
+		"	vout.clip_position = f32x4(0, 0, 0, 1);\n"
+		"	\n"
+		"	output = vout;\n"
+		"}\n"
+		"\n"
+		"@color_formats(R8G8B8A8_UNORM)\n"
+		"default_pipeline_state_options()\n"
+		"\n"
+		"@rasterizer\n"
+		"(\n"
+		"	cull_mode(BACK)\n"
+		"	fill_mode(WIREFRAME)\n"
+		")\n"
+		"@input_assembler\n"
 		"(\n"
 		"	@buffer(0)\n"
 		"	@offset(0)\n"
@@ -62,18 +81,11 @@ int main() {
 		"	NORMAL\n"
 		"	INSTANCE_DATA\n"
 		")\n"
-		"\n"
-		"@input_assembler(demo_input_assembler)\n"
-		"vertex_shader vs_main(\n"
-		"	input(F_vs_input)\n"
-		"	out output(F_vs_output)\n"
+		"@primitive_topology(TRIANGLE_LIST)\n"
+		"pipeline_state graphics_pso_main\n"
+		"(\n"
+		"	vs_main\n"
 		")\n"
-		"{\n"
-		"F_vs_output vout;\n"
-		"vout.clip_position = f32x4(0, 0, 0, 1);\n"
-		"\n"
-		"output = vout;\n"
-		"}\n"
 		"\n"
 	);
 	NCPP_ASSERT(nsl_shader_compiled_result_opt);
@@ -81,9 +93,7 @@ int main() {
 	const auto& nsl_shader_compiled_result = nsl_shader_compiled_result_opt.value();
 	const auto& nsl_shader_compiled_result_reflection = nsl_shader_compiled_result.reflection;
 	const auto& nsl_shader_reflection = nsl_shader_compiled_result_reflection.shaders[0];
-	const auto& nsl_input_assembler_reflection = nsl_shader_compiled_result_reflection.input_assemblers[
-		nsl_shader_reflection.input_assembler_index
-	];
+	const auto& nsl_pso_reflection = nsl_shader_compiled_result_reflection.pipeline_states[0];
 
 	auto shader_binary = H_shader_compiler::compile_nsl(
 		"demo_shader",
@@ -91,14 +101,12 @@ int main() {
 		0
 	);
 
+	auto pso_options = nsl_pso_reflection.options.graphics;
+	pso_options.shader_binaries.vertex = shader_binary;
+
 	auto pipeline_state_p = H_graphics_pipeline_state::create(
 		NCPP_FOH_VALID(device_p),
-		{
-			.input_assembler_desc = nsl_input_assembler_reflection.desc,
-			.shader_binaries = {
-				.vertex = shader_binary
-			}
-		}
+		pso_options
 	);
 
 	return 0;

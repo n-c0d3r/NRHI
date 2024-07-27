@@ -4703,26 +4703,107 @@ namespace nrhi {
 			auto it = context.current_object_config.find("input_assembler");
 			if(it != context.current_object_config.end()) {
 
-				auto value_opt = it->second.read_string(0);
+				auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
 
-				if(!value_opt)
-					return eastl::nullopt;
+				F_nsl_input_attribute_config_map attribute_config_map;
 
-				auto input_assembler_manager_p = shader_compiler_p()->input_assembler_manager_p();
+				auto& input_child_info_trees = it->second.info_trees();
 
-				if(!(input_assembler_manager_p->is_name_has_input_assembler_info(value_opt.value()))) {
+				if(input_child_info_trees.size() == 0) {
 
 					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 						&(unit_p->error_group_p()->stack()),
-						it->second.info_trees()[0].begin_location,
-						"not found input assembler \"" + value_opt.value() + "\""
+						object_implementation.bodies[0].begin_location,
+						"require input_assembler shaders"
 					);
 					return eastl::nullopt;
 				}
 
-				const F_nsl_input_assembler_info& input_assembler_info = input_assembler_manager_p->input_assembler_info(value_opt.value());
+				F_nsl_input_assembler_info input_assembler_info;
 
-				pipeline_state_info.options.graphics.input_assembler_desc = input_assembler_info.desc;
+				u32 child_info_tree_count = input_child_info_trees.size();
+
+				// build input assembler info
+				for(u32 i = 0; i < child_info_tree_count; ++i) {
+
+					auto& child_info_tree = input_child_info_trees[i];
+
+					if(child_info_tree.name[0] == '@') {
+
+						attribute_config_map[
+							child_info_tree.name.substr(1, child_info_tree.name.length() - 1)
+						] = F_nsl_info_tree_reader(
+							shader_compiler_p(),
+							child_info_tree.childs,
+							child_info_tree.begin_childs_location,
+							&(unit_p->error_group_p()->stack())
+						);
+						continue;
+					}
+
+					G_string semantic = child_info_tree.name;
+
+					if(!(name_manager_p->is_name_registered(semantic))) {
+
+						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+							&(unit_p->error_group_p()->stack()),
+							child_info_tree.begin_location,
+							"not found semantic \"" + semantic + "\""
+						);
+					}
+
+					semantic = name_manager_p->target(semantic);
+
+					if(!(data_type_manager_p->is_name_has_semantic_info(semantic))) {
+
+						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+							&(unit_p->error_group_p()->stack()),
+							child_info_tree.begin_location,
+							"not found semantic \"" + semantic + "\""
+						);
+					}
+
+					F_nsl_input_attribute attribute = {
+						.semantic = name_manager_p->target(child_info_tree.name)
+					};
+
+					// @buffer annotation
+					{
+						auto it = attribute_config_map.find("buffer");
+						if(it != attribute_config_map.end()) {
+
+							auto value_opt = it->second.read_u32(0);
+
+							if(!value_opt)
+							return eastl::nullopt;
+
+							attribute.buffer = value_opt.value();
+						}
+					}
+
+					// @offset annotation
+					{
+						auto it = attribute_config_map.find("offset");
+						if(it != attribute_config_map.end()) {
+
+							auto value_opt = it->second.read_i32(0);
+
+							if(!value_opt)
+							return eastl::nullopt;
+
+							attribute.offset = value_opt.value();
+						}
+					}
+
+					input_assembler_info.attributes.push_back(attribute);
+
+					attribute_config_map = {};
+				}
+
+				// convert to input assembler desc and then store pipeline state
+				pipeline_state_info.options.graphics.input_assembler_desc = convert_to_input_assembler_desc(
+					input_assembler_info
+				);
 			}
 		}
 
@@ -4750,6 +4831,491 @@ namespace nrhi {
 		);
 
 		return std::move(child_trees);
+	}
+
+	F_input_assembler_desc F_nsl_pipeline_state_object::convert_to_input_assembler_desc(const F_nsl_input_assembler_info& input_assembler_info) {
+
+		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
+
+		F_input_assembler_desc desc;
+
+		// build desc
+		{
+			u32 attribute_count = input_assembler_info.attributes.size();
+
+			for(u32 i = 0; i < attribute_count; ++i) {
+
+				auto& attribute = input_assembler_info.attributes[i];
+
+				const auto& semantic_info = data_type_manager_p->semantic_info(attribute.semantic);
+
+				ED_format format = ED_format::NONE;
+				u32 duplicate_count = 0;
+
+				switch (semantic_info.element_format)
+				{
+				case E_nsl_element_format::FLOAT_64:
+				{
+					static ED_format formats[] = {
+						ED_format::R32G32B32A32_FLOAT,
+						ED_format::R32G32_FLOAT
+					};
+					format = formats[
+						4 - eastl::min<u32>(
+							semantic_info.element_count,
+							2
+						)
+					];
+					duplicate_count = u32(
+						ceil(
+							f32(semantic_info.element_count)
+								/ 8.0f
+						)
+					);
+				}
+					break;
+				case E_nsl_element_format::UINT_64:
+				{
+					static ED_format formats[] = {
+						ED_format::R32G32B32A32_UINT,
+						ED_format::R32G32_UINT
+					};
+					format = formats[
+						4 - eastl::min<u32>(
+							semantic_info.element_count,
+							2
+						)
+					];
+					duplicate_count = u32(
+						ceil(
+							f32(semantic_info.element_count)
+								/ 8.0f
+						)
+					);
+				}
+					break;
+				case E_nsl_element_format::SINT_64:
+				{
+					static ED_format formats[] = {
+						ED_format::R32G32B32A32_SINT,
+						ED_format::R32G32_SINT
+					};
+					format = formats[
+						4 - eastl::min<u32>(
+							semantic_info.element_count,
+							2
+						)
+					];
+					duplicate_count = u32(
+						ceil(
+							f32(semantic_info.element_count)
+								/ 8.0f
+						)
+					);
+				}
+					break;
+				case E_nsl_element_format::TYPELESS_64:
+				{
+					static ED_format formats[] = {
+						ED_format::R32G32B32A32_TYPELESS,
+						ED_format::R32G32_TYPELESS
+					};
+					format = formats[
+						4 - eastl::min<u32>(
+							semantic_info.element_count,
+							2
+						)
+					];
+					duplicate_count = u32(
+						ceil(
+							f32(semantic_info.element_count)
+								/ 8.0f
+						)
+					);
+				}
+					break;
+
+				case E_nsl_element_format::FLOAT_32:
+				{
+					static ED_format formats[] = {
+						ED_format::R32G32B32A32_FLOAT,
+						ED_format::R32G32B32_FLOAT,
+						ED_format::R32G32_FLOAT,
+						ED_format::R32_FLOAT
+					};
+					format = formats[
+						4 - eastl::min<u32>(
+							semantic_info.element_count,
+							4
+						)
+					];
+					duplicate_count = u32(
+						ceil(
+							f32(semantic_info.element_count)
+								/ 4.0f
+						)
+					);
+				}
+					break;
+				case E_nsl_element_format::FLOAT_16:
+				{
+					static ED_format formats[] = {
+						ED_format::R16G16B16A16_FLOAT,
+						ED_format::R16G16B16A16_FLOAT,
+						ED_format::R16G16_FLOAT,
+						ED_format::R16_FLOAT
+					};
+					format = formats[
+						4 - eastl::min<u32>(
+							semantic_info.element_count,
+							4
+						)
+					];
+					duplicate_count = u32(
+						ceil(
+							f32(semantic_info.element_count)
+								/ 4.0f
+						)
+					);
+				}
+					break;
+
+				case E_nsl_element_format::UNORM_16:
+				{
+					static ED_format formats[] = {
+						ED_format::R16G16B16A16_UNORM,
+						ED_format::R16G16B16A16_UNORM,
+						ED_format::R16G16_UNORM,
+						ED_format::R16_UNORM
+					};
+					format = formats[
+						4 - eastl::min<u32>(
+							semantic_info.element_count,
+							4
+						)
+					];
+					duplicate_count = u32(
+						ceil(
+							f32(semantic_info.element_count)
+								/ 4.0f
+						)
+					);
+				}
+					break;
+				case E_nsl_element_format::UNORM_8:
+				{
+					static ED_format formats[] = {
+						ED_format::R8G8B8A8_UNORM,
+						ED_format::R8G8B8A8_UNORM,
+						ED_format::R8G8_UNORM,
+						ED_format::R8_UNORM
+					};
+					format = formats[
+						4 - eastl::min<u32>(
+							semantic_info.element_count,
+							4
+						)
+					];
+					duplicate_count = u32(
+						ceil(
+							f32(semantic_info.element_count)
+								/ 4.0f
+						)
+					);
+				}
+					break;
+
+				case E_nsl_element_format::SNORM_16:
+				{
+					static ED_format formats[] = {
+						ED_format::R16G16B16A16_SNORM,
+						ED_format::R16G16B16A16_SNORM,
+						ED_format::R16G16_SNORM,
+						ED_format::R16_SNORM
+					};
+					format = formats[
+						4 - eastl::min<u32>(
+							semantic_info.element_count,
+							4
+						)
+					];
+					duplicate_count = u32(
+						ceil(
+							f32(semantic_info.element_count)
+								/ 4.0f
+						)
+					);
+				}
+					break;
+				case E_nsl_element_format::SNORM_8:
+				{
+					static ED_format formats[] = {
+						ED_format::R8G8B8A8_SNORM,
+						ED_format::R8G8B8A8_SNORM,
+						ED_format::R8G8_SNORM,
+						ED_format::R8_SNORM
+					};
+					format = formats[
+						4 - eastl::min<u32>(
+							semantic_info.element_count,
+							4
+						)
+					];
+					duplicate_count = u32(
+						ceil(
+							f32(semantic_info.element_count)
+								/ 4.0f
+						)
+					);
+				}
+					break;
+
+				case E_nsl_element_format::UINT_32:
+				{
+					static ED_format formats[] = {
+						ED_format::R32G32B32A32_UINT,
+						ED_format::R32G32B32_UINT,
+						ED_format::R32G32_UINT,
+						ED_format::R32_UINT
+					};
+					format = formats[
+						4 - eastl::min<u32>(
+							semantic_info.element_count,
+							4
+						)
+					];
+					duplicate_count = u32(
+						ceil(
+							f32(semantic_info.element_count)
+								/ 4.0f
+						)
+					);
+				}
+					break;
+				case E_nsl_element_format::UINT_16:
+				{
+					static ED_format formats[] = {
+						ED_format::R16G16B16A16_UINT,
+						ED_format::R16G16B16A16_UINT,
+						ED_format::R16G16_UINT,
+						ED_format::R16_UINT
+					};
+					format = formats[
+						4 - eastl::min<u32>(
+							semantic_info.element_count,
+							4
+						)
+					];
+					duplicate_count = u32(
+						ceil(
+							f32(semantic_info.element_count)
+								/ 4.0f
+						)
+					);
+				}
+					break;
+				case E_nsl_element_format::UINT_8:
+				{
+					static ED_format formats[] = {
+						ED_format::R8G8B8A8_UINT,
+						ED_format::R8G8B8A8_UINT,
+						ED_format::R8G8_UINT,
+						ED_format::R8_UINT
+					};
+					format = formats[
+						4 - eastl::min<u32>(
+							semantic_info.element_count,
+							4
+						)
+					];
+					duplicate_count = u32(
+						ceil(
+							f32(semantic_info.element_count)
+								/ 4.0f
+						)
+					);
+				}
+					break;
+
+				case E_nsl_element_format::SINT_32:
+				{
+					static ED_format formats[] = {
+						ED_format::R32G32B32A32_SINT,
+						ED_format::R32G32B32_SINT,
+						ED_format::R32G32_SINT,
+						ED_format::R32_SINT
+					};
+					format = formats[
+						4 - eastl::min<u32>(
+							semantic_info.element_count,
+							4
+						)
+					];
+					duplicate_count = u32(
+						ceil(
+							f32(semantic_info.element_count)
+								/ 4.0f
+						)
+					);
+				}
+					break;
+				case E_nsl_element_format::SINT_16:
+				{
+					static ED_format formats[] = {
+						ED_format::R16G16B16A16_SINT,
+						ED_format::R16G16B16A16_SINT,
+						ED_format::R16G16_SINT,
+						ED_format::R16_SINT
+					};
+					format = formats[
+						4 - eastl::min<u32>(
+							semantic_info.element_count,
+							4
+						)
+					];
+					duplicate_count = u32(
+						ceil(
+							f32(semantic_info.element_count)
+								/ 4.0f
+						)
+					);
+				}
+					break;
+				case E_nsl_element_format::SINT_8:
+				{
+					static ED_format formats[] = {
+						ED_format::R8G8B8A8_SINT,
+						ED_format::R8G8B8A8_SINT,
+						ED_format::R8G8_SINT,
+						ED_format::R8_SINT
+					};
+					format = formats[
+						4 - eastl::min<u32>(
+							semantic_info.element_count,
+							4
+						)
+					];
+					duplicate_count = u32(
+						ceil(
+							f32(semantic_info.element_count)
+								/ 4.0f
+						)
+					);
+				}
+					break;
+
+				case E_nsl_element_format::TYPELESS_32:
+				{
+					static ED_format formats[] = {
+						ED_format::R32G32B32A32_TYPELESS,
+						ED_format::R32G32B32_TYPELESS,
+						ED_format::R32G32_TYPELESS,
+						ED_format::R32_TYPELESS
+					};
+					format = formats[
+						4 - eastl::min<u32>(
+							semantic_info.element_count,
+							4
+						)
+					];
+					duplicate_count = u32(
+						ceil(
+							f32(semantic_info.element_count)
+								/ 4.0f
+						)
+					);
+				}
+					break;
+				case E_nsl_element_format::TYPELESS_16:
+				{
+					static ED_format formats[] = {
+						ED_format::R16G16B16A16_TYPELESS,
+						ED_format::R16G16B16A16_TYPELESS,
+						ED_format::R16G16_TYPELESS,
+						ED_format::R16_TYPELESS
+					};
+					format = formats[
+						4 - eastl::min<u32>(
+							semantic_info.element_count,
+							4
+						)
+					];
+					duplicate_count = u32(
+						ceil(
+							f32(semantic_info.element_count)
+								/ 4.0f
+						)
+					);
+				}
+					break;
+				case E_nsl_element_format::TYPELESS_8:
+				{
+					static ED_format formats[] = {
+						ED_format::R8G8B8A8_TYPELESS,
+						ED_format::R8G8B8A8_TYPELESS,
+						ED_format::R8G8_TYPELESS,
+						ED_format::R8_TYPELESS
+					};
+					format = formats[
+						4 - eastl::min<u32>(
+							semantic_info.element_count,
+							4
+						)
+					];
+					duplicate_count = u32(
+						ceil(
+							f32(semantic_info.element_count)
+								/ 4.0f
+						)
+					);
+				}
+					break;
+				}
+
+				switch (semantic_info.input_class)
+				{
+				case E_nsl_semantic_input_class::PER_VERTEX:
+					desc.vertex_attribute_groups.resize(
+						eastl::max<u32>(
+							desc.vertex_attribute_groups.size(),
+							attribute.buffer + 1
+						)
+					);
+					desc.vertex_attribute_groups[attribute.buffer].push_back(
+						F_vertex_attribute {
+
+							.name = attribute.semantic,
+							.format = format,
+							.duplicate_count = duplicate_count,
+							.offset = attribute.offset
+
+						}
+					);
+					break;
+				case E_nsl_semantic_input_class::PER_INSTANCE:
+					desc.instance_attribute_groups.resize(
+						eastl::max<u32>(
+							desc.instance_attribute_groups.size(),
+							attribute.buffer + 1
+						)
+					);
+					desc.instance_attribute_groups[attribute.buffer].push_back(
+						F_instance_attribute {
+
+							.name = attribute.semantic,
+							.format = format,
+							.duplicate_count = duplicate_count,
+							.offset = attribute.offset
+
+						}
+					);
+					break;
+				}
+
+			}
+		}
+
+		return std::move(desc);
 	}
 
 
@@ -5035,191 +5601,6 @@ namespace nrhi {
 
 		auto object_p = register_object(
 			TU<F_nsl_default_pipeline_state_options_object>()(
-				shader_compiler_p(),
-				NCPP_KTHIS(),
-				translation_unit_p,
-				tree.object_implementation.name
-			)
-		);
-
-		tree.object_implementation.attached_object_p = object_p;
-
-		return object_p;
-	}
-
-
-
-	F_nsl_input_assembler_object::F_nsl_input_assembler_object(
-		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
-		TKPA_valid<A_nsl_object_type> type_p,
-		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
-		const G_string& name
-	) :
-		A_nsl_object(
-			shader_compiler_p,
-			type_p,
-			translation_unit_p,
-			name
-		)
-	{
-	}
-	F_nsl_input_assembler_object::~F_nsl_input_assembler_object() {
-	}
-
-	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_input_assembler_object::recursive_build_ast_tree(
-		F_nsl_context& context,
-		TK_valid<F_nsl_translation_unit> unit_p,
-		TG_vector<F_nsl_ast_tree>& trees,
-		sz index,
-		F_nsl_error_stack* error_stack_p
-	) {
-		auto& tree = trees[index];
-		auto& object_implementation = tree.object_implementation;
-
-		context.parent_object_p = NCPP_KTHIS().no_requirements();
-
-		auto name_manager_p = shader_compiler_p()->name_manager_p();
-		auto translation_unit_compiler_p = shader_compiler_p()->translation_unit_compiler_p();
-		auto input_assembler_manager_p = shader_compiler_p()->input_assembler_manager_p();
-
-		F_nsl_input_assembler_info input_assembler_info;
-		input_assembler_info.config_map = context.current_object_config;
-
-		input_assembler_info.begin_location = tree.begin_location;
-		input_assembler_info.end_location = tree.end_location;
-		input_assembler_info.translation_unit_p = unit_p.no_requirements();
-
-		// parse child info trees
-		auto child_info_trees_opt = H_nsl_utilities::build_info_trees(
-			object_implementation.bodies[0].content,
-			object_implementation.bodies[0].begin_location,
-			&(unit_p->error_group_p()->stack())
-		);
-		if(!child_info_trees_opt) {
-
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				&(unit_p->error_group_p()->stack()),
-				object_implementation.bodies[0].begin_location,
-				"can't not parse input_assembler shaders"
-			);
-			return eastl::nullopt;
-		}
-
-		F_nsl_input_attribute_config_map attribute_config_map;
-
-		auto& child_info_trees = child_info_trees_opt.value();
-
-		if(child_info_trees.size() == 0) {
-
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				&(unit_p->error_group_p()->stack()),
-				object_implementation.bodies[0].begin_location,
-				"require input_assembler shaders"
-			);
-			return eastl::nullopt;
-		}
-
-		u32 shader_count = child_info_trees.size();
-
-		TG_vector<F_nsl_ast_tree> child_trees(shader_count);
-		for(u32 i = 0; i < shader_count; ++i) {
-
-			auto& child_info_tree = child_info_trees[i];
-
-			if(child_info_tree.name[0] == '@') {
-
-				attribute_config_map[
-					child_info_tree.name.substr(1, child_info_tree.name.length() - 1)
-				] = F_nsl_info_tree_reader(
-					shader_compiler_p(),
-					child_info_tree.childs,
-					child_info_tree.begin_childs_location,
-					&(unit_p->error_group_p()->stack())
-				);
-				continue;
-			}
-
-			F_nsl_input_attribute attribute = {
-				.semantic = name_manager_p->target(child_info_tree.name)
-			};
-
-			// @buffer annotation
-			{
-				auto it = attribute_config_map.find("buffer");
-				if(it != attribute_config_map.end()) {
-
-					auto value_opt = it->second.read_u32(0);
-
-					if(!value_opt)
-						return eastl::nullopt;
-
-					attribute.buffer = value_opt.value();
-				}
- 			}
-
-			// @offset annotation
-			{
-				auto it = attribute_config_map.find("offset");
-				if(it != attribute_config_map.end()) {
-
-					auto value_opt = it->second.read_i32(0);
-
-					if(!value_opt)
-						return eastl::nullopt;
-
-					attribute.offset = value_opt.value();
-				}
-			}
-
-			input_assembler_info.attributes.push_back(attribute);
-
-			child_trees[i] = F_nsl_ast_tree {
-				.type = E_nsl_ast_tree_type::INFO_TREE,
-				.info_tree = child_info_tree,
-				.begin_location = child_info_tree.begin_location,
-				.end_location = child_info_tree.end_location
-			};
-
-			attribute_config_map = {};
-		}
-
-		// register input_assembler
-		name_manager_p->template T_register_name<FE_nsl_name_types::PIPELINE_STATE>(tree.object_implementation.name);
-		input_assembler_manager_p->register_input_assembler(
-			tree.object_implementation.name,
-			input_assembler_info
-		);
-
-		return std::move(child_trees);
-	}
-
-
-
-	F_nsl_input_assembler_object_type::F_nsl_input_assembler_object_type(
-		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
-	) :
-		A_nsl_object_type(
-			shader_compiler_p,
-			"input_assembler",
-			true,
-			1,
-			1,
-			nsl_global_object_type_channel_mask
-		)
-	{
-	}
-	F_nsl_input_assembler_object_type::~F_nsl_input_assembler_object_type() {
-	}
-
-	TK<A_nsl_object> F_nsl_input_assembler_object_type::create_object(
-		F_nsl_ast_tree& tree,
-		F_nsl_context& context,
-		TKPA_valid<F_nsl_translation_unit> translation_unit_p
-	) {
-		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
-
-		auto object_p = register_object(
-			TU<F_nsl_input_assembler_object>()(
 				shader_compiler_p(),
 				NCPP_KTHIS(),
 				translation_unit_p,
@@ -5786,9 +6167,6 @@ namespace nrhi {
 		);
 		register_type(
 			TU<F_nsl_default_pipeline_state_options_object_type>()(shader_compiler_p_)
-		);
-		register_type(
-			TU<F_nsl_input_assembler_object_type>()(shader_compiler_p_)
 		);
 	}
 	F_nsl_object_manager::~F_nsl_object_manager() {
@@ -8272,502 +8650,6 @@ namespace nrhi {
 
 
 
-	F_nsl_input_assembler_manager::F_nsl_input_assembler_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
-		shader_compiler_p_(shader_compiler_p)
-	{
-	}
-	F_nsl_input_assembler_manager::~F_nsl_input_assembler_manager() {
-	}
-
-	F_nsl_input_assembler_info F_nsl_input_assembler_manager::process_input_assembler_info(const G_string& name, const F_nsl_input_assembler_info& input_assembler_info) {
-
-		F_nsl_input_assembler_info result = input_assembler_info;
-
-		auto data_type_manager_p = shader_compiler_p_->data_type_manager_p();
-
-		// build desc
-		{
-			u32 attribute_count = result.attributes.size();
-
-			F_input_assembler_desc& desc = result.desc;
-
-			for(u32 i = 0; i < attribute_count; ++i) {
-
-				auto& attribute = result.attributes[i];
-
-				const auto& semantic_info = data_type_manager_p->semantic_info(attribute.semantic);
-
-				ED_format format = ED_format::NONE;
-				u32 duplicate_count = 0;
-
-				switch (semantic_info.element_format)
-				{
-				case E_nsl_element_format::FLOAT_64:
-					{
-						static ED_format formats[] = {
-							ED_format::R32G32B32A32_FLOAT,
-							ED_format::R32G32_FLOAT
-						};
-						format = formats[
-							4 - eastl::min<u32>(
-								semantic_info.element_count,
-								2
-							)
-						];
-						duplicate_count = u32(
-							ceil(
-								f32(semantic_info.element_count)
-								/ 8.0f
-							)
-						);
-					}
-					break;
-				case E_nsl_element_format::UINT_64:
-					{
-						static ED_format formats[] = {
-							ED_format::R32G32B32A32_UINT,
-							ED_format::R32G32_UINT
-						};
-						format = formats[
-							4 - eastl::min<u32>(
-								semantic_info.element_count,
-								2
-							)
-						];
-						duplicate_count = u32(
-							ceil(
-								f32(semantic_info.element_count)
-								/ 8.0f
-							)
-						);
-					}
-					break;
-				case E_nsl_element_format::SINT_64:
-					{
-						static ED_format formats[] = {
-							ED_format::R32G32B32A32_SINT,
-							ED_format::R32G32_SINT
-						};
-						format = formats[
-							4 - eastl::min<u32>(
-								semantic_info.element_count,
-								2
-							)
-						];
-						duplicate_count = u32(
-							ceil(
-								f32(semantic_info.element_count)
-								/ 8.0f
-							)
-						);
-					}
-					break;
-				case E_nsl_element_format::TYPELESS_64:
-					{
-						static ED_format formats[] = {
-							ED_format::R32G32B32A32_TYPELESS,
-							ED_format::R32G32_TYPELESS
-						};
-						format = formats[
-							4 - eastl::min<u32>(
-								semantic_info.element_count,
-								2
-							)
-						];
-						duplicate_count = u32(
-							ceil(
-								f32(semantic_info.element_count)
-								/ 8.0f
-							)
-						);
-					}
-					break;
-
-				case E_nsl_element_format::FLOAT_32:
-					{
-						static ED_format formats[] = {
-							ED_format::R32G32B32A32_FLOAT,
-							ED_format::R32G32B32_FLOAT,
-							ED_format::R32G32_FLOAT,
-							ED_format::R32_FLOAT
-						};
-						format = formats[
-							4 - eastl::min<u32>(
-								semantic_info.element_count,
-								4
-							)
-						];
-						duplicate_count = u32(
-							ceil(
-								f32(semantic_info.element_count)
-								/ 4.0f
-							)
-						);
-					}
-					break;
-				case E_nsl_element_format::FLOAT_16:
-					{
-						static ED_format formats[] = {
-							ED_format::R16G16B16A16_FLOAT,
-							ED_format::R16G16B16A16_FLOAT,
-							ED_format::R16G16_FLOAT,
-							ED_format::R16_FLOAT
-						};
-						format = formats[
-							4 - eastl::min<u32>(
-								semantic_info.element_count,
-								4
-							)
-						];
-						duplicate_count = u32(
-							ceil(
-								f32(semantic_info.element_count)
-								/ 4.0f
-							)
-						);
-					}
-					break;
-
-				case E_nsl_element_format::UNORM_16:
-					{
-						static ED_format formats[] = {
-							ED_format::R16G16B16A16_UNORM,
-							ED_format::R16G16B16A16_UNORM,
-							ED_format::R16G16_UNORM,
-							ED_format::R16_UNORM
-						};
-						format = formats[
-							4 - eastl::min<u32>(
-								semantic_info.element_count,
-								4
-							)
-						];
-						duplicate_count = u32(
-							ceil(
-								f32(semantic_info.element_count)
-								/ 4.0f
-							)
-						);
-					}
-					break;
-				case E_nsl_element_format::UNORM_8:
-					{
-						static ED_format formats[] = {
-							ED_format::R8G8B8A8_UNORM,
-							ED_format::R8G8B8A8_UNORM,
-							ED_format::R8G8_UNORM,
-							ED_format::R8_UNORM
-						};
-						format = formats[
-							4 - eastl::min<u32>(
-								semantic_info.element_count,
-								4
-							)
-						];
-						duplicate_count = u32(
-							ceil(
-								f32(semantic_info.element_count)
-								/ 4.0f
-							)
-						);
-					}
-					break;
-
-				case E_nsl_element_format::SNORM_16:
-					{
-						static ED_format formats[] = {
-							ED_format::R16G16B16A16_SNORM,
-							ED_format::R16G16B16A16_SNORM,
-							ED_format::R16G16_SNORM,
-							ED_format::R16_SNORM
-						};
-						format = formats[
-							4 - eastl::min<u32>(
-								semantic_info.element_count,
-								4
-							)
-						];
-						duplicate_count = u32(
-							ceil(
-								f32(semantic_info.element_count)
-								/ 4.0f
-							)
-						);
-					}
-					break;
-				case E_nsl_element_format::SNORM_8:
-					{
-						static ED_format formats[] = {
-							ED_format::R8G8B8A8_SNORM,
-							ED_format::R8G8B8A8_SNORM,
-							ED_format::R8G8_SNORM,
-							ED_format::R8_SNORM
-						};
-						format = formats[
-							4 - eastl::min<u32>(
-								semantic_info.element_count,
-								4
-							)
-						];
-						duplicate_count = u32(
-							ceil(
-								f32(semantic_info.element_count)
-								/ 4.0f
-							)
-						);
-					}
-					break;
-
-				case E_nsl_element_format::UINT_32:
-					{
-						static ED_format formats[] = {
-							ED_format::R32G32B32A32_UINT,
-							ED_format::R32G32B32_UINT,
-							ED_format::R32G32_UINT,
-							ED_format::R32_UINT
-						};
-						format = formats[
-							4 - eastl::min<u32>(
-								semantic_info.element_count,
-								4
-							)
-						];
-						duplicate_count = u32(
-							ceil(
-								f32(semantic_info.element_count)
-								/ 4.0f
-							)
-						);
-					}
-					break;
-				case E_nsl_element_format::UINT_16:
-					{
-						static ED_format formats[] = {
-							ED_format::R16G16B16A16_UINT,
-							ED_format::R16G16B16A16_UINT,
-							ED_format::R16G16_UINT,
-							ED_format::R16_UINT
-						};
-						format = formats[
-							4 - eastl::min<u32>(
-								semantic_info.element_count,
-								4
-							)
-						];
-						duplicate_count = u32(
-							ceil(
-								f32(semantic_info.element_count)
-								/ 4.0f
-							)
-						);
-					}
-					break;
-				case E_nsl_element_format::UINT_8:
-					{
-						static ED_format formats[] = {
-							ED_format::R8G8B8A8_UINT,
-							ED_format::R8G8B8A8_UINT,
-							ED_format::R8G8_UINT,
-							ED_format::R8_UINT
-						};
-						format = formats[
-							4 - eastl::min<u32>(
-								semantic_info.element_count,
-								4
-							)
-						];
-						duplicate_count = u32(
-							ceil(
-								f32(semantic_info.element_count)
-								/ 4.0f
-							)
-						);
-					}
-					break;
-
-				case E_nsl_element_format::SINT_32:
-					{
-						static ED_format formats[] = {
-							ED_format::R32G32B32A32_SINT,
-							ED_format::R32G32B32_SINT,
-							ED_format::R32G32_SINT,
-							ED_format::R32_SINT
-						};
-						format = formats[
-							4 - eastl::min<u32>(
-								semantic_info.element_count,
-								4
-							)
-						];
-						duplicate_count = u32(
-							ceil(
-								f32(semantic_info.element_count)
-								/ 4.0f
-							)
-						);
-					}
-					break;
-				case E_nsl_element_format::SINT_16:
-					{
-						static ED_format formats[] = {
-							ED_format::R16G16B16A16_SINT,
-							ED_format::R16G16B16A16_SINT,
-							ED_format::R16G16_SINT,
-							ED_format::R16_SINT
-						};
-						format = formats[
-							4 - eastl::min<u32>(
-								semantic_info.element_count,
-								4
-							)
-						];
-						duplicate_count = u32(
-							ceil(
-								f32(semantic_info.element_count)
-								/ 4.0f
-							)
-						);
-					}
-					break;
-				case E_nsl_element_format::SINT_8:
-					{
-						static ED_format formats[] = {
-							ED_format::R8G8B8A8_SINT,
-							ED_format::R8G8B8A8_SINT,
-							ED_format::R8G8_SINT,
-							ED_format::R8_SINT
-						};
-						format = formats[
-							4 - eastl::min<u32>(
-								semantic_info.element_count,
-								4
-							)
-						];
-						duplicate_count = u32(
-							ceil(
-								f32(semantic_info.element_count)
-								/ 4.0f
-							)
-						);
-					}
-					break;
-
-				case E_nsl_element_format::TYPELESS_32:
-					{
-						static ED_format formats[] = {
-							ED_format::R32G32B32A32_TYPELESS,
-							ED_format::R32G32B32_TYPELESS,
-							ED_format::R32G32_TYPELESS,
-							ED_format::R32_TYPELESS
-						};
-						format = formats[
-							4 - eastl::min<u32>(
-								semantic_info.element_count,
-								4
-							)
-						];
-						duplicate_count = u32(
-							ceil(
-								f32(semantic_info.element_count)
-								/ 4.0f
-							)
-						);
-					}
-					break;
-				case E_nsl_element_format::TYPELESS_16:
-					{
-						static ED_format formats[] = {
-							ED_format::R16G16B16A16_TYPELESS,
-							ED_format::R16G16B16A16_TYPELESS,
-							ED_format::R16G16_TYPELESS,
-							ED_format::R16_TYPELESS
-						};
-						format = formats[
-							4 - eastl::min<u32>(
-								semantic_info.element_count,
-								4
-							)
-						];
-						duplicate_count = u32(
-							ceil(
-								f32(semantic_info.element_count)
-								/ 4.0f
-							)
-						);
-					}
-					break;
-				case E_nsl_element_format::TYPELESS_8:
-					{
-						static ED_format formats[] = {
-							ED_format::R8G8B8A8_TYPELESS,
-							ED_format::R8G8B8A8_TYPELESS,
-							ED_format::R8G8_TYPELESS,
-							ED_format::R8_TYPELESS
-						};
-						format = formats[
-							4 - eastl::min<u32>(
-								semantic_info.element_count,
-								4
-							)
-						];
-						duplicate_count = u32(
-							ceil(
-								f32(semantic_info.element_count)
-								/ 4.0f
-							)
-						);
-					}
-					break;
-				}
-
-				switch (semantic_info.input_class)
-				{
-				case E_nsl_semantic_input_class::PER_VERTEX:
-					desc.vertex_attribute_groups.resize(
-						eastl::max<u32>(
-							desc.vertex_attribute_groups.size(),
-							attribute.buffer + 1
-						)
-					);
-					desc.vertex_attribute_groups[attribute.buffer].push_back(
-						F_vertex_attribute {
-
-							.name = attribute.semantic,
-							.format = format,
-							.duplicate_count = duplicate_count,
-							.offset = attribute.offset
-
-						}
-					);
-					break;
-				case E_nsl_semantic_input_class::PER_INSTANCE:
-					desc.instance_attribute_groups.resize(
-						eastl::max<u32>(
-							desc.instance_attribute_groups.size(),
-							attribute.buffer + 1
-						)
-					);
-					desc.instance_attribute_groups[attribute.buffer].push_back(
-						F_instance_attribute {
-
-							.name = attribute.semantic,
-							.format = format,
-							.duplicate_count = duplicate_count,
-							.offset = attribute.offset
-
-						}
-					);
-					break;
-				}
-
-			}
-		}
-
-		return std::move(result);
-	}
-
-
-
 	F_nsl_reflector::F_nsl_reflector(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
 		shader_compiler_p_(shader_compiler_p)
 	{
@@ -8785,7 +8667,6 @@ namespace nrhi {
 		auto sampler_state_manager_p = shader_compiler_p_->sampler_state_manager_p();
 		auto resource_manager_p = shader_compiler_p_->resource_manager_p();
 		auto uniform_manager_p = shader_compiler_p_->uniform_manager_p();
-		auto input_assembler_manager_p = shader_compiler_p_->input_assembler_manager_p();
 
 		auto& name_to_primitive_data_type_map = data_type_manager_p->name_to_primitive_data_type_map();
 		auto& name_to_structure_info_map = data_type_manager_p->name_to_structure_info_map();
@@ -8793,35 +8674,8 @@ namespace nrhi {
 		auto& name_to_pipeline_state_info_map = pipeline_state_manager_p->name_to_pipeline_state_info_map();
 		auto& name_to_sampler_state_info_map = sampler_state_manager_p->name_to_sampler_state_info_map();
 		auto& name_to_resource_info_map = resource_manager_p->name_to_resource_info_map();
-		auto& name_to_input_assembler_info_map = input_assembler_manager_p->name_to_input_assembler_info_map();
 
 		TG_unordered_map<G_string, u32> name_to_type_index_map;
-		TG_unordered_map<G_string, u32> name_to_input_assembler_index_map;
-
-		// input assemblers
-		{
-			u32 input_assembler_count = name_to_input_assembler_info_map.size();
-
-			auto it = name_to_input_assembler_info_map.begin();
-
-			for(u32 i = 0; i < input_assembler_count; ++i) {
-
-				auto& input_assembler_info = it->second;
-
-				name_to_input_assembler_index_map[it->first] = i;
-
-				reflection.input_assemblers.push_back(
-					F_nsl_input_assembler_reflection {
-
-						.name = it->first,
-						.desc = input_assembler_info.desc
-
-					}
-				);
-
-				++it;
-			}
-		}
 
 		// primitive data types
 		{
@@ -9105,7 +8959,6 @@ namespace nrhi {
 		uniform_manager_p_(customizer.uniform_manager_creator(NCPP_KTHIS())),
 		sampler_state_manager_p_(customizer.sampler_state_manager_creator(NCPP_KTHIS())),
 		pipeline_state_manager_p_(customizer.pipeline_state_manager_creator(NCPP_KTHIS())),
-		input_assembler_manager_p_(customizer.input_assembler_manager_creator(NCPP_KTHIS())),
 		reflector_p_(customizer.reflector_creator(NCPP_KTHIS()))
 	{
 	}
