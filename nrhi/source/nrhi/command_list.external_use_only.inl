@@ -575,6 +575,37 @@ namespace nrhi {
 			);
 		);
 	}
+
+	NCPP_FORCE_INLINE void A_command_list::async_copy_resource(
+		TKPA_valid<A_resource> dst_resource_p,
+		TKPA_valid<A_resource> src_resource_p
+	) {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			H_command_list::async_copy_resource(
+				NCPP_KTHIS(),
+				dst_resource_p,
+				src_resource_p
+			);
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::async_copy_buffer_region(
+		TKPA_valid<A_resource> dst_resource_p,
+		TKPA_valid<A_resource> src_resource_p,
+		u64 dst_offset,
+		u64 src_offset,
+		u64 size
+	) {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			H_command_list::async_copy_buffer_region(
+				NCPP_KTHIS(),
+				dst_resource_p,
+				src_resource_p,
+				dst_offset,
+				src_offset,
+				size
+			);
+		);
+	}
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 }

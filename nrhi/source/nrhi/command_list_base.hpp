@@ -328,6 +328,19 @@ namespace nrhi {
 			f32 depth,
 			u8 stencil
 		);
+
+	public:
+		void async_copy_resource(
+			TKPA_valid<A_resource> dst_resource_p,
+			TKPA_valid<A_resource> src_resource_p
+		);
+		void async_copy_buffer_region(
+			TKPA_valid<A_resource> dst_resource_p,
+			TKPA_valid<A_resource> src_resource_p,
+			u64 dst_offset,
+			u64 src_offset,
+			u64 size
+		);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
     };

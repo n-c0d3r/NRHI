@@ -1,10 +1,14 @@
 
 add_subdirectory(hello_nrhi)
+if(NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING AND NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT AND NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION)
+add_subdirectory(hello_nrhi_advanced)
+endif()
 
 add_subdirectory(adapter)
 add_subdirectory(device)
 add_subdirectory(command_queue)
 add_subdirectory(command_list)
+add_subdirectory(command_list_copy_resource_advanced)
 if(NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION)
     add_subdirectory(command_allocator)
 endif()

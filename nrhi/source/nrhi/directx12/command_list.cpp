@@ -180,4 +180,40 @@ namespace nrhi {
 		);
 	}
 
+	void HD_directx12_command_list::async_copy_resource(
+		TKPA_valid<A_command_list> command_list_p,
+		TKPA_valid<A_resource> dst_resource_p,
+		TKPA_valid<A_resource> src_resource_p
+	) {
+		auto dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
+
+		NCPP_ASSERT(
+			dst_resource_p->desc().size
+			== src_resource_p->desc().size
+		) << "src resource and dst resource are required to have the same size";
+
+		dx12_command_list_p->d3d12_command_list_p()->CopyResource(
+			dst_resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p(),
+			src_resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p()
+		);
+	}
+	void HD_directx12_command_list::async_copy_buffer_region(
+		TKPA_valid<A_command_list> command_list_p,
+		TKPA_valid<A_resource> dst_resource_p,
+		TKPA_valid<A_resource> src_resource_p,
+		u64 dst_offset,
+		u64 src_offset,
+		u64 size
+	) {
+		auto dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
+
+		dx12_command_list_p->d3d12_command_list_p()->CopyBufferRegion(
+			dst_resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p(),
+			dst_offset,
+			src_resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p(),
+			src_offset,
+			size
+		);
+	}
+
 }

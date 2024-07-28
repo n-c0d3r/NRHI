@@ -181,9 +181,7 @@ int main() {
 			E_nsl_resource_type_class::SRV
 		);
 
-		NCPP_INFO() << compiled_result.build(
-			0
-		);
+		NCPP_INFO() << compiled_result.build(0);
 	}
 
 	return 0;

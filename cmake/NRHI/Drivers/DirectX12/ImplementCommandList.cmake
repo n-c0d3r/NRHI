@@ -55,6 +55,19 @@ NRHI_FunctionHelper_CreateFunctionClass(
             f32 depth,
             u8 stencil
         )"
+        "async_copy_resource" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			TKPA_valid<A_resource> dst_resource_p,
+			TKPA_valid<A_resource> src_resource_p
+		)"
+		"async_copy_buffer_region" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			TKPA_valid<A_resource> dst_resource_p,
+			TKPA_valid<A_resource> src_resource_p,
+			u64 dst_offset,
+			u64 src_offset,
+			u64 size
+		);"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement command list done")

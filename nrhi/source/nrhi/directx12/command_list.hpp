@@ -123,6 +123,21 @@ namespace nrhi {
 			u8 stencil
 		);
 
+	public:
+		static void async_copy_resource(
+			TKPA_valid<A_command_list> command_list_p,
+			TKPA_valid<A_resource> dst_resource_p,
+			TKPA_valid<A_resource> src_resource_p
+		);
+		static void async_copy_buffer_region(
+			TKPA_valid<A_command_list> command_list_p,
+			TKPA_valid<A_resource> dst_resource_p,
+			TKPA_valid<A_resource> src_resource_p,
+			u64 dst_offset,
+			u64 src_offset,
+			u64 size
+		);
+
     };
 
 }
