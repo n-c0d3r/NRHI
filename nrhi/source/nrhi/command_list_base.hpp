@@ -324,7 +324,6 @@ namespace nrhi {
 		);
 
 	public:
-		void async_clear_state();
 		void async_clear_rtv(
 			K_valid_rtv_handle rtv_p,
 			PA_vector4_f32 color
@@ -347,118 +346,102 @@ namespace nrhi {
 		);
 
 	public:
-		void async_set_descriptor_heaps(
+		void set_descriptor_heaps(
 			const TG_span<TK_valid<A_descriptor_heap>>& descriptor_heap_p_span
 		);
 
 	public:
-		void async_set_pipeline_state(
-			TKPA_valid<A_pipeline_state> pipeline_state_p
-		);
-
-	public:
-		void ZC_async_set_pipeline_state(
-			KPA_valid_compute_pipeline_state_handle pipeline_state_p
-		);
-		void ZC_async_set_root_signature(
+		void ZC_set_root_signature(
 			TKPA_valid<A_root_signature> root_signature_p
 		);
-		void ZC_async_set_root_constants(
+		void ZC_set_root_constants(
 			u32 root_param_index,
 			const TG_span<u32>& constant_span,
 			u32 offset_in_constants
 		);
-		void ZC_async_set_root_constant(
+		void ZC_set_root_constant(
 			u32 root_param_index,
 			u32 root_constant,
 			u32 offset_in_constants
 		);
-		void ZC_async_set_srv(
+		void ZC_set_srv(
 			u32 root_param_index,
 			KPA_valid_srv_handle srv_p
 		);
-		void ZC_async_set_uav(
+		void ZC_set_uav(
 			u32 root_param_index,
 			KPA_valid_uav_handle uav_p
 		);
-		void ZC_async_set_cbv_with_resource(
+		void ZC_set_cbv_with_resource(
 			u32 root_param_index,
 			TKPA_valid<A_resource> resource_p
 		);
-		void ZC_async_set_srv_with_resource(
+		void ZC_set_srv_with_resource(
 			u32 root_param_index,
 			TKPA_valid<A_resource> resource_p
 		);
-		void ZC_async_set_uav_with_resource(
+		void ZC_set_uav_with_resource(
 			u32 root_param_index,
 			TKPA_valid<A_resource> resource_p
 		);
-		void ZC_async_set_cbv_with_gpu_virtual_address(
+		void ZC_set_cbv_with_gpu_virtual_address(
 			u32 root_param_index,
 			F_resource_gpu_virtual_address gpu_virtual_address
 		);
-		void ZC_async_set_srv_with_gpu_virtual_address(
+		void ZC_set_srv_with_gpu_virtual_address(
 			u32 root_param_index,
 			F_resource_gpu_virtual_address gpu_virtual_address
 		);
-		void ZC_async_set_uav_with_gpu_virtual_address(
+		void ZC_set_uav_with_gpu_virtual_address(
 			u32 root_param_index,
 			F_resource_gpu_virtual_address gpu_virtual_address
 		);
 
 	public:
-		void ZG_async_set_pipeline_state(
-			KPA_valid_graphics_pipeline_state_handle pipeline_state_p
-		);
-		void ZG_async_set_root_signature(
+		void ZG_set_root_signature(
 			TKPA_valid<A_root_signature> root_signature_p
 		);
-		void ZG_async_set_root_constants(
+		void ZG_set_root_constants(
 			u32 root_param_index,
 			const TG_span<u32>& constant_span,
 			u32 offset_in_constants
 		);
-		void ZG_async_set_root_constant(
+		void ZG_set_root_constant(
 			u32 root_param_index,
 			u32 root_constant,
 			u32 offset_in_constants
 		);
-		void ZG_async_set_srv(
+		void ZG_set_srv(
 			u32 root_param_index,
 			KPA_valid_srv_handle srv_p
 		);
-		void ZG_async_set_uav(
+		void ZG_set_uav(
 			u32 root_param_index,
 			KPA_valid_uav_handle uav_p
 		);
-		void ZG_async_set_cbv_with_resource(
+		void ZG_set_cbv_with_resource(
 			u32 root_param_index,
 			TKPA_valid<A_resource> resource_p
 		);
-		void ZG_async_set_srv_with_resource(
+		void ZG_set_srv_with_resource(
 			u32 root_param_index,
 			TKPA_valid<A_resource> resource_p
 		);
-		void ZG_async_set_uav_with_resource(
+		void ZG_set_uav_with_resource(
 			u32 root_param_index,
 			TKPA_valid<A_resource> resource_p
 		);
-		void ZG_async_set_cbv_with_gpu_virtual_address(
+		void ZG_set_cbv_with_gpu_virtual_address(
 			u32 root_param_index,
 			F_resource_gpu_virtual_address gpu_virtual_address
 		);
-		void ZG_async_set_srv_with_gpu_virtual_address(
+		void ZG_set_srv_with_gpu_virtual_address(
 			u32 root_param_index,
 			F_resource_gpu_virtual_address gpu_virtual_address
 		);
-		void ZG_async_set_uav_with_gpu_virtual_address(
+		void ZG_set_uav_with_gpu_virtual_address(
 			u32 root_param_index,
 			F_resource_gpu_virtual_address gpu_virtual_address
-		);
-
-	public:
-		void ZOM_async_set_frame_buffer(
-			TKPA_valid<A_frame_buffer> frame_buffer_p
 		);
 
 	public:

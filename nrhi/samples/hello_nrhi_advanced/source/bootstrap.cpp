@@ -564,17 +564,17 @@ int main() {
 				);
 
 				// render text
-				command_list_p->ZG_async_set_pipeline_state(
+				command_list_p->ZG_set_pipeline_state(
 					NCPP_FOH_VALID(pipeline_state_p)
 				);
-				command_list_p->ZG_async_set_root_signature(
+				command_list_p->ZG_set_root_signature(
 					NCPP_FOH_VALID(root_signature_p)
 				);
-				command_list_p->ZG_async_set_cbv_with_resource(
+				command_list_p->ZG_set_cbv_with_resource(
 					0,
 					NCPP_AOH_VALID(cbuffer_p)
 				);
-				command_list_p->ZOM_async_set_frame_buffer(
+				command_list_p->ZOM_set_frame_buffer(
 					NCPP_FOH_VALID(frame_buffer_p)
 				);
 
