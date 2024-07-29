@@ -67,6 +67,10 @@ NRHI_FunctionHelper_CreateFunctionClass(
             f32 depth,
             u8 stencil
         )"
+		"ZOM_async_bind_frame_buffer" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			TKPA_valid<A_frame_buffer> frame_buffer_p
+		)"
         "async_copy_resource" "void(
 			TKPA_valid<A_command_list> command_list_p,
 			TKPA_valid<A_resource> dst_resource_p,

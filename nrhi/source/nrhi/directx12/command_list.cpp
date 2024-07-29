@@ -2,6 +2,7 @@
 #include <nrhi/directx12/device.hpp>
 #include <nrhi/directx12/resource.hpp>
 #include <nrhi/directx12/resource_view.hpp>
+#include <nrhi/directx12/frame_buffer.hpp>
 #include <nrhi/command_allocator.hpp>
 
 
@@ -179,6 +180,8 @@ namespace nrhi {
 		F_descriptor_cpu_address rtv_cpu_address,
 		PA_vector4_f32 color
 	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
 		auto dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
 
 		dx12_command_list_p->d3d12_command_list_p()->ClearRenderTargetView(
@@ -195,6 +198,8 @@ namespace nrhi {
 		f32 depth,
 		u8 stencil
 	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
 		auto dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
 
 		dx12_command_list_p->d3d12_command_list_p()->ClearDepthStencilView(
@@ -207,11 +212,67 @@ namespace nrhi {
 		);
 	}
 
+	void HD_directx12_command_list::ZOM_async_bind_frame_buffer(
+		TKPA_valid<A_command_list> command_list_p,
+		TKPA_valid<A_frame_buffer> frame_buffer_p
+	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
+		NCPP_ASSERT(frame_buffer_p->is_valid_generation()) << "frame buffer's generation is not valid";
+
+		const auto& frame_buffer_desc = frame_buffer_p->desc();
+
+		const auto& color_attachments = frame_buffer_desc.color_attachments;
+		u32 color_attachment_count = (u32)(color_attachments.size());
+
+		auto d3d12_command_list_p = command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p();
+
+		d3d12_command_list_p->RSSetViewports(
+			1,
+			&(frame_buffer_p.T_cast<F_directx12_frame_buffer>()->d3d12_viewport())
+		);
+		d3d12_command_list_p->RSSetScissorRects(
+			1,
+			&(frame_buffer_p.T_cast<F_directx12_frame_buffer>()->d3d12_scissor_rect())
+		);
+
+		F_descriptor_cpu_address d3d12_rtv_addresses[NRHI_MAX_RTV_COUNT_PER_DRAWCALL];
+		for(u32 i = 0; i < color_attachment_count; ++i) {
+
+			NCPP_ASSERT(color_attachments[i]->is_valid_generation()) << "color attachment's generation is not valid";
+
+			d3d12_rtv_addresses[i] = color_attachments[i]
+				.T_cast<F_directx12_resource_view>()
+				->descriptor().handle.cpu_address;
+		}
+
+		F_descriptor_cpu_address d3d12_dsv_address = 0;
+		if(frame_buffer_p->is_has_dsv()) {
+
+			const auto& depth_stencil_attachment = frame_buffer_desc.depth_stencil_attachment;
+
+			NCPP_ASSERT(depth_stencil_attachment->is_valid_generation()) << "depth stencil attachment's generation is not valid";
+
+			d3d12_dsv_address = depth_stencil_attachment
+				.T_cast<F_directx12_resource_view>()
+				->descriptor().handle.cpu_address;
+		}
+
+		d3d12_command_list_p->OMSetRenderTargets(
+			color_attachment_count,
+			(const D3D12_CPU_DESCRIPTOR_HANDLE*)d3d12_rtv_addresses,
+			false,
+			(const D3D12_CPU_DESCRIPTOR_HANDLE*)d3d12_dsv_address
+		);
+	}
+
 	void HD_directx12_command_list::async_copy_resource(
 		TKPA_valid<A_command_list> command_list_p,
 		TKPA_valid<A_resource> dst_resource_p,
 		TKPA_valid<A_resource> src_resource_p
 	) {
+		NCPP_ASSERT(command_list_p->supports_blit()) << "command list does not support blit";
+
 		auto dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
 
 		NCPP_ASSERT(
@@ -232,6 +293,8 @@ namespace nrhi {
 		u64 src_offset,
 		u64 size
 	) {
+		NCPP_ASSERT(command_list_p->supports_blit()) << "command list does not support blit";
+
 		auto dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
 
 		dx12_command_list_p->d3d12_command_list_p()->CopyBufferRegion(

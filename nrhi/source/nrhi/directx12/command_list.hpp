@@ -136,6 +136,12 @@ namespace nrhi {
 		);
 
 	public:
+		static void ZOM_async_bind_frame_buffer(
+			TKPA_valid<A_command_list> command_list_p,
+			TKPA_valid<A_frame_buffer> frame_buffer_p
+		);
+
+	public:
 		static void async_copy_resource(
 			TKPA_valid<A_command_list> command_list_p,
 			TKPA_valid<A_resource> dst_resource_p,

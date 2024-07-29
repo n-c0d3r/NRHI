@@ -604,6 +604,17 @@ namespace nrhi {
 		);
 	}
 
+	NCPP_FORCE_INLINE void A_command_list::ZOM_async_bind_frame_buffer(
+		TKPA_valid<A_frame_buffer> frame_buffer_p
+	) {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			H_command_list::ZOM_async_bind_frame_buffer(
+				NCPP_KTHIS(),
+				frame_buffer_p
+			);
+		);
+	}
+
 	NCPP_FORCE_INLINE void A_command_list::async_copy_resource(
 		TKPA_valid<A_resource> dst_resource_p,
 		TKPA_valid<A_resource> src_resource_p
