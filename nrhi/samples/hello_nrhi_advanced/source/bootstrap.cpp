@@ -5,6 +5,137 @@ using namespace nrhi;
 
 
 
+template<typename F_element__>
+auto T_create_buffer(
+	TKPA_valid<A_device> device_p,
+	const TG_span<F_element__>& elements,
+	TKPA_valid<A_command_list> copy_command_list_p,
+	ED_resource_bind_flag bind_flag = ED_resource_bind_flag::NONE,
+	ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
+) {
+	// create buffers
+	auto result_p = H_buffer::T_create_committed<F_element__>(
+		NCPP_FOH_VALID(device_p),
+		elements.size(),
+		bind_flag,
+		heap_type
+	);
+	auto intermediate_p = H_buffer::T_create_committed<F_element__>(
+		NCPP_FOH_VALID(device_p),
+		elements.size(),
+		ED_resource_bind_flag::NONE,
+		ED_resource_heap_type::GREAD_CWRITE,
+		ED_resource_state::_GENERIC_READ
+	);
+
+	// upload data to intermediate buffer
+	auto mapped_resource = intermediate_p->map(0);
+	memcpy(
+		mapped_resource.data(),
+		elements.data(),
+		elements.size() * sizeof(F_element__)
+	);
+	intermediate_p->unmap(0);
+
+	// copy intermediate buffer to result buffer
+	copy_command_list_p->async_copy_resource(
+		NCPP_FOH_VALID(result_p),
+		NCPP_FOH_VALID(intermediate_p)
+	);
+
+	// return result buffer
+	return std::move(result_p);
+}
+
+template<typename F_element__>
+auto T_create_buffer(
+	TKPA_valid<A_device> device_p,
+	const TG_span<F_element__>& elements,
+	ED_format format,
+	TKPA_valid<A_command_list> copy_command_list_p,
+	ED_resource_bind_flag bind_flag = ED_resource_bind_flag::NONE,
+	ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
+) {
+	// create buffers
+	auto result_p = H_buffer::T_create_committed<F_element__>(
+		NCPP_FOH_VALID(device_p),
+		elements.size(),
+		format,
+		bind_flag,
+		heap_type
+	);
+	auto intermediate_p = H_buffer::T_create_committed<F_element__>(
+		NCPP_FOH_VALID(device_p),
+		elements.size(),
+		format,
+		ED_resource_bind_flag::NONE,
+		ED_resource_heap_type::GREAD_CWRITE,
+		ED_resource_state::_GENERIC_READ
+	);
+
+	// upload data to intermediate buffer
+	auto mapped_resource = intermediate_p->map(0);
+	memcpy(
+		mapped_resource.data(),
+		elements.data(),
+		elements.size() * sizeof(F_element__)
+	);
+	intermediate_p->unmap(0);
+
+	// copy intermediate buffer to result buffer
+	copy_command_list_p->async_copy_resource(
+		NCPP_FOH_VALID(result_p),
+		NCPP_FOH_VALID(intermediate_p)
+	);
+
+	// return result buffer
+	return std::move(result_p);
+}
+
+template<typename F_element__>
+auto T_create_structured_buffer(
+	TKPA_valid<A_device> device_p,
+	const TG_span<F_element__>& elements,
+	TKPA_valid<A_command_list> copy_command_list_p,
+	ED_resource_bind_flag bind_flag = ED_resource_bind_flag::NONE,
+	ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
+) {
+	// create buffers
+	auto result_p = H_buffer::T_create_committed_structured<F_element__>(
+		NCPP_FOH_VALID(device_p),
+		elements.size(),
+		bind_flag,
+		heap_type
+	);
+	auto intermediate_p = H_buffer::T_create_committed_structured<F_element__>(
+		NCPP_FOH_VALID(device_p),
+		elements.size(),
+		ED_resource_bind_flag::NONE,
+		ED_resource_heap_type::GREAD_CWRITE,
+		ED_resource_state::_GENERIC_READ
+	);
+
+	// upload data to intermediate buffer
+	auto mapped_resource = intermediate_p->map(0);
+	memcpy(
+		mapped_resource.data(),
+		elements.data(),
+		elements.size() * sizeof(F_element__)
+	);
+	intermediate_p->unmap(0);
+
+	// copy intermediate buffer to result buffer
+	copy_command_list_p->async_copy_resource(
+		NCPP_FOH_VALID(result_p),
+		NCPP_FOH_VALID(intermediate_p)
+	);
+
+	// return result buffer
+	return std::move(result_p);
+}
+
+
+
 int main() {
 
     NCPP_INFO()
@@ -59,12 +190,47 @@ int main() {
 
 
 	// create fence
-	TU<A_fence> fence_p;
-
-	fence_p = H_fence::create(
+	TU<A_fence> fence_p = H_fence::create(
 		NCPP_FOREF_VALID(device_p),
 		F_fence_desc {}
 	);
+	u32 frame_index = 0;
+
+
+
+	// create copy command queue and copy command list
+	auto copy_command_list_type = ED_command_list_type::BLIT;
+
+	auto copy_command_queue_p = H_command_queue::create(
+		NCPP_FOREF_VALID(device_p),
+		F_command_queue_desc {
+			command_list_type
+		}
+	);
+
+	auto copy_command_allocator_p = H_command_allocator::create(
+		NCPP_FOREF_VALID(device_p),
+		F_command_allocator_desc {
+			command_list_type
+		}
+	);
+	auto copy_command_list_p = H_command_list::create_with_command_allocator(
+		NCPP_FOREF_VALID(device_p),
+		F_command_list_desc {
+			command_list_type,
+			copy_command_allocator_p.keyed()
+		}
+	);
+	copy_command_list_p->async_end();
+
+
+
+	// create fence
+	TU<A_fence> copy_fence_p = H_fence::create(
+		NCPP_FOREF_VALID(device_p),
+		F_fence_desc {}
+	);
+	u32 copy_index = 0;
 
 
 
@@ -96,15 +262,24 @@ int main() {
 
 
 
+	// begin copy command list for resource uploading
+	copy_command_list_p->async_begin(
+		NCPP_FOH_VALID(copy_command_allocator_p)
+	);
+
+
+
+	// create resources
     TG_vector<F_vector4> vertices = {
 		{ 0.05f, 0.0f, 0.5f, 1.0f },
 		{ 0.0f, 0.0f, 0.5f, 1.0f },
 		{ 0.0f, 0.05f, 0.5f, 1.0f },
 		{ 0.05f, 0.05f, 0.5f, 1.0f }
 	};
-    U_buffer_handle vbuffer_p = H_buffer::T_create<F_vector4>(
-        NCPP_FOREF_VALID(device_p),
-        vertices,
+    U_buffer_handle vbuffer_p = T_create_buffer<F_vector4>(
+        NCPP_FOH_VALID(device_p),
+		vertices,
+		NCPP_FOH_VALID(copy_command_list_p),
         ED_resource_bind_flag::VBV
     );
 
@@ -159,9 +334,10 @@ int main() {
 		{ 0.35f, 0.1f, 0.0f, 1.0f },
 		{ 0.35f, 0.15f, 0.0f, 1.0f }
 	};
-	U_buffer_handle instance_buffer_p = H_buffer::T_create<F_vector4>(
-		NCPP_FOREF_VALID(device_p),
+	U_buffer_handle instance_buffer_p = T_create_buffer<F_vector4>(
+		NCPP_FOH_VALID(device_p),
 		instances,
+		NCPP_FOH_VALID(copy_command_list_p),
 		ED_resource_bind_flag::INSTBV
 	);
 
@@ -173,112 +349,129 @@ int main() {
 		2,
 		3
 	};
-    U_buffer_handle ibuffer_p = H_buffer::T_create<u32>(
-        NCPP_FOREF_VALID(device_p),
+    U_buffer_handle ibuffer_p = T_create_buffer<u32>(
+		NCPP_FOH_VALID(device_p),
         indices,
         ED_format::R32_UINT,
+		NCPP_FOH_VALID(copy_command_list_p),
         ED_resource_bind_flag::IBV
     );
 
-    TG_vector<F_matrix4x4> buffer2_data(128);
-    U_structured_buffer_handle buffer2_p = H_buffer::T_create_structured<F_matrix4x4>(
-        NCPP_FOREF_VALID(device_p),
-        buffer2_data,
-        ED_resource_bind_flag::SRV
-    );
-    U_srv_handle buffer2_srv_p = H_resource_view::create_srv(
-        NCPP_FOREF_VALID(device_p),
-        {
-            .resource_p = NCPP_FHANDLE_VALID_AS_OREF(buffer2_p)
-        }
-    );
-
-    F_vector4 output_color = { 0.5f, 0.5f, 0.5f, 1.0f };
-    U_buffer_handle cbuffer_p = H_buffer::T_create<F_vector4>(
-        NCPP_FOREF_VALID(device_p),
+    F_vector4 output_color = { 0.2f, 0.2f, 0.2f, 1.0f };
+    U_buffer_handle cbuffer_p = T_create_buffer<F_vector4>(
+		NCPP_FOH_VALID(device_p),
         NCPP_INIL_SPAN(output_color),
-        ED_resource_bind_flag::CBV,
-        ED_resource_heap_type::GREAD_CWRITE
+		NCPP_FOH_VALID(copy_command_list_p),
+        ED_resource_bind_flag::CBV
     );
 
-    U_texture_2d_handle texture_2d_p = H_texture::create_2d(
-        NCPP_FOREF_VALID(device_p),
-        {},
-        1024,
-        1024,
-        ED_format::R8G8B8A8_UNORM,
-        1,
-        {},
-        flag_combine(
-            ED_resource_bind_flag::SRV,
-            ED_resource_bind_flag::RTV
-        )
-    );
-    U_srv_handle texture_2d_srv_p = H_resource_view::create_srv(
-        NCPP_FOREF_VALID(device_p),
-        {
-            .resource_p = NCPP_FHANDLE_VALID_AS_OREF(texture_2d_p)
-        }
-    );
-    U_rtv_handle texture_2d_rtv_p = H_resource_view::create_rtv(
-        NCPP_FOREF_VALID(device_p),
-        {
-            .resource_p = NCPP_FHANDLE_VALID_AS_OREF(texture_2d_p)
-        }
-    );
 
-	// input assembler desc
-	F_input_assembler_desc input_assembler_desc = {
-		.vertex_attribute_groups = {
-			{
-				{
-					{
-						.name = "VERTEX_POSITION",
-						.format = ED_format::R32G32B32A32_FLOAT
-					}
-				}
-			}
-		},
-		.instance_attribute_groups = {
-			{
-				{
-					{
-						.name = "INSTANCE_POSITION",
-						.format = ED_format::R32G32B32A32_FLOAT
-					}
-				}
-			}
+
+	// submit copy commands to GPU and wait it done
+	copy_command_list_p->async_end();
+
+	++copy_index;
+	copy_command_queue_p->async_execute_command_list(
+		NCPP_FOH_VALID(copy_command_list_p)
+	);
+	copy_command_queue_p->async_signal(
+		NCPP_FOH_VALID(copy_fence_p),
+		copy_index
+	);
+	copy_fence_p->wait(copy_index);
+
+
+
+
+	// create and compile pipeline state
+	G_string shader_src_content = "\n"
+"import(nrhi)\n"
+"\n"
+"@shaders(ps_main)\n"
+"resource cb\n"
+"(\n"
+"	ConstantBuffer\n"
+")\n"
+"default_constant_buffer(cb)\n"
+"uniform text_color(float4)\n"
+"\n"
+"semantic VERTEX_POSITION(float4)\n"
+"\n"
+"@input_class(PER_INSTANCE)\n"
+"semantic INSTANCE_POSITION(float4)\n"
+"\n"
+"vertex_shader vs_main\n"
+"(\n"
+"	vertex_position(VERTEX_POSITION)\n"
+"	instance_position(INSTANCE_POSITION)\n"
+"	out clip_position(SV_POSITION)\n"
+")\n"
+"{\n"
+"	clip_position = float4(instance_position.xyz + vertex_position.xyz, 1);\n"
+"}\n"
+"pixel_shader ps_main\n"
+"(\n"
+"	out color(SV_TARGET)\n"
+")\n"
+"{\n"
+"	color = text_color;\n"
+"}\n"
+"\n"
+"@color_formats(R8G8B8A8_UNORM)\n"
+"@rasterizer\n"
+"(\n"
+"	cull_mode(BACK)\n"
+"	fill_mode(SOLID)\n"
+")\n"
+"@input_assembler\n"
+"(\n"
+"	@buffer(0)\n"
+"	VERTEX_POSITION\n"
+"	@buffer(1)\n"
+"	INSTANCE_POSITION\n"
+")\n"
+"@primitive_topology(TRIANGLE_LIST)\n"
+"pipeline_state graphics_pso_main\n"
+"(\n"
+"	vs_main\n"
+"	ps_main\n"
+")\n"
+"\n";
+
+	auto compiler_p = TU<F_nsl_shader_compiler>()();
+	auto nsl_shader_compiled_result_opt = compiler_p->compile(shader_src_content);
+	NCPP_ASSERT(nsl_shader_compiled_result_opt);
+
+	const auto& nsl_shader_compiled_result = nsl_shader_compiled_result_opt.value();
+
+	F_root_param_desc cbv_root_param_desc(
+		ED_root_param_type::CBV,
+		F_root_descriptor_desc {
+			0,
+			0
 		}
-	};
-
-	// demo shader src
-	G_string demo_shader_src = ""
-		"cbuffer uniform_data : register(b0) { float4 output_color; };"
-	   	"float4 vmain(float4 vertex_pos : VERTEX_POSITION, float4 instance_pos : INSTANCE_POSITION) : SV_POSITION"
-	   	"{ return float4(instance_pos.xyz + vertex_pos.xyz, 1); }"
-	   	"float4 pmain(float4 pos : SV_POSITION) : SV_TARGET"
-	   	"{ return output_color; }";
-
-	// create vertex shader
-	auto vshader_binary = H_shader_compiler::compile_hlsl_from_src_content(
-		"DemoShaderClass",
-		"vmain",
-		demo_shader_src,
-		"",
-		5,
-		0,
-		ED_shader_type::VERTEX
 	);
 
-	// create pixel shader
-	auto pshader_binary = H_shader_compiler::compile_hlsl_from_src_content(
-		"DemoShaderClass",
-		"pmain",
-		demo_shader_src,
-		"",
-		5,
-		0,
-		ED_shader_type::PIXEL
+	auto root_signature_p = H_root_signature::create(
+		NCPP_FOH_VALID(device_p),
+		{
+			.param_descs = {
+				cbv_root_param_desc
+			},
+			.flags = ED_root_signature_flag::ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT
+		}
+	);
+
+	F_graphics_pipeline_state_shader_binaries shader_binaries;
+
+	auto pipeline_state_p = H_graphics_pipeline_state::create_with_root_signature(
+		NCPP_FOH_VALID(device_p),
+		H_pipeline_state_compiler::compile_graphics_nsl(
+			nsl_shader_compiled_result,
+			shader_binaries,
+			0
+		),
+		NCPP_FOH_VALID(root_signature_p)
 	);
 
 	// create frame buffer
@@ -291,23 +484,12 @@ int main() {
 		}
 	);
 
-	// resize frame buffer when surface is sized
-	surface_p->T_get_event<F_surface_resize_event>().T_push_back_listener([&](auto& e){
+	// release some objects when surface destroyed
+	surface_p->T_get_event<F_surface_destroy_event>().T_push_back_listener([&](auto& e){
 
-	  	frame_buffer_p->rebuild();
+		frame_buffer_p.reset();
+		swapchain_p.reset();
 	});
-
-	// create graphics pipeline state
-	auto graphics_pipeline_state_p = H_graphics_pipeline_state::create(
-		NCPP_FOREF_VALID(device_p),
-		{
-			.input_assembler_desc = input_assembler_desc,
-			.shader_binaries = {
-				.vertex = vshader_binary,
-				.pixel = eastl::optional<F_shader_binary_temp>(pshader_binary)
-			}
-		}
-	);
 
 	f32 delta_time = 0.0f;
 
@@ -316,82 +498,40 @@ int main() {
 
 		auto start_time = std::chrono::high_resolution_clock::now();
 
-		if(swapchain_p.is_valid()) {
+		if(swapchain_p) {
+
+			// guarantee frame buffer generation
+			frame_buffer_p->guarantee_generation();
 
 			// update frame buffer
 			frame_buffer_p->update_viewport();
 
-			// clear main render target view to cyan (r: 0, g: 255, b:255, a: 1.0)
-			command_list_p->clear_rtv(
-				NCPP_FHANDLE_VALID(back_rtv_p),
-				{ 0.0f, 1.0f, 1.0f, 1.0f }
-			);
-
-			// update uniform data
+			// fill command list
 			{
-				static f64 t = 0.0;
-				t += delta_time;
-
-				output_color = lerp(
-					F_vector4 { 0.2f, 0.2f, 0.2f, 1.0f },
-					F_vector4 { 0.2f, 0.5f, 0.5f, 1.0f },
-					sin(t * 15.0) * 0.5f + 0.5f
+				NRHI_COMMAND_LIST_ASYNC_SCOPE(
+					NCPP_FOH_VALID(command_list_p),
+					NCPP_FOH_VALID(command_allocator_p)
 				);
-				command_list_p->update_resource_data(
-					NCPP_FHANDLE_VALID(cbuffer_p),
-					&output_color,
-					sizeof(F_vector4)
+
+				command_list_p->async_clear_rtv(
+					swapchain_p->back_rtv_p()->descriptor().handle.cpu_address,
+					F_vector4_f32 { 0, 0.75f, 0.75f, 1.0f }
 				);
 			}
 
-			// draw triangle
-			{
-				command_list_p->clear_state();
-
-				command_list_p->set_graphics_pipeline_state(
-					NCPP_FHANDLE_VALID(graphics_pipeline_state_p)
-				);
-
-				command_list_p->ZIA_bind_index_buffer(
-					NCPP_FHANDLE_VALID(ibuffer_p),
-					0
-				);
-				command_list_p->ZIA_bind_vertex_buffer(
-					NCPP_FHANDLE_VALID(vbuffer_p),
-					0,
-					0
-				);
-				command_list_p->ZIA_bind_instance_buffer(
-					NCPP_FHANDLE_VALID(instance_buffer_p),
-					0,
-					0
-				);
-
-				command_list_p->ZPS_bind_constant_buffer(
-					NCPP_FHANDLE_VALID(cbuffer_p),
-					0
-				);
-
-				command_list_p->ZOM_bind_frame_buffer(
-					NCPP_FOREF_VALID(frame_buffer_p)
-				);
-
-				command_list_p->draw_indexed_instanced(
-					indices.size(),
-					instances.size(),
-					0,
-					0,
-					0
-				);
-			}
-
-			// submit command lists to GPU
-			command_queue_p->execute_command_list(
-				NCPP_FOREF_VALID(command_list_p)
+			// submit command list and present swapchain
+			++frame_index;
+			command_queue_p->async_execute_command_list(
+				NCPP_FOH_VALID(command_list_p)
 			);
+			swapchain_p->async_present();
+			command_queue_p->async_signal(
+				NCPP_FOH_VALID(fence_p),
+				frame_index
+			);
+			fence_p->wait(frame_index);
 
-			// finalize rendering, swap back buffer and front buffer
-			swapchain_p->present();
+			swapchain_p->update_back_rtv();
 		}
 
 		auto end_time = std::chrono::high_resolution_clock::now();

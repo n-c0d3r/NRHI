@@ -7438,6 +7438,8 @@ namespace nrhi {
 		result += G_string("#define SV_POSITION SV_Position\n");
 		result += G_string("#define SV_TARGET SV_Target\n");
 
+		result += G_string("#define NSL_GLUE(A, B) A##B\n");
+
 		return std::move(result);
 	}
 
@@ -7957,8 +7959,9 @@ namespace nrhi {
 
 			+ "#define NSL_REGISTER_"
 			+ sampler_state.first
-			+ " register(s##"
+			+ " register(NSL_GLUE(s,"
 			+ sampler_state_register_slot_macro
+			+ ")"
 			+ ")\n"
 
 			+ "SamplerState "
@@ -8181,10 +8184,11 @@ namespace nrhi {
 
 			+ "#define NSL_REGISTER_"
 			+ resource.first
-			+ " register("
+			+ " register(NSL_GLUE("
 		  	+ G_string(1, register_type)
-			+ "##"
+			+ ","
 			+ resource_register_slot_macro
+			+ ")"
 			+ ")\n"
 		);
 

@@ -18,5 +18,6 @@ include(NRHI/Drivers/DirectX12/ImplementSamplerState)
 include(NRHI/Drivers/DirectX12/ImplementPipelineState)
 include(NRHI/Drivers/DirectX12/ImplementShaderCompiler)
 include(NRHI/Drivers/DirectX12/ImplementRootSignature)
+include(NRHI/Drivers/DirectX12/ImplementFrameBuffer)
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement functions done")

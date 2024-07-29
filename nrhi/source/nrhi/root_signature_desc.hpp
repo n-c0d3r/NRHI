@@ -97,6 +97,82 @@ namespace nrhi {
 			F_root_constant_desc constant_desc;
 		};
 
+		NCPP_FORCE_INLINE F_root_param_desc() noexcept :
+			shader_visibility(ED_shader_visibility::ALL),
+			descriptor_table_desc(),
+			constant_desc()
+		{
+		}
+		NCPP_FORCE_INLINE F_root_param_desc(
+			const F_root_descriptor_table_desc& descriptor_table_desc,
+			ED_shader_visibility shader_visibility = ED_shader_visibility::ALL
+		) noexcept :
+			type(ED_root_param_type::DESCRIPTOR_TABLE),
+			shader_visibility(shader_visibility),
+			descriptor_table_desc(descriptor_table_desc)
+		{
+		}
+		NCPP_FORCE_INLINE F_root_param_desc(
+			F_root_descriptor_table_desc&& descriptor_table_desc,
+			ED_shader_visibility shader_visibility = ED_shader_visibility::ALL
+		) noexcept :
+			type(ED_root_param_type::DESCRIPTOR_TABLE),
+			shader_visibility(shader_visibility),
+			descriptor_table_desc(std::move(descriptor_table_desc))
+		{
+		}
+		NCPP_FORCE_INLINE F_root_param_desc(
+			ED_root_param_type type,
+			const F_root_descriptor_desc& descriptor_desc,
+			ED_shader_visibility shader_visibility = ED_shader_visibility::ALL
+		) noexcept :
+			type(type),
+			shader_visibility(shader_visibility),
+			descriptor_desc(descriptor_desc)
+		{
+		}
+		NCPP_FORCE_INLINE F_root_param_desc(
+			const F_root_constant_desc& constant_desc,
+			ED_shader_visibility shader_visibility = ED_shader_visibility::ALL
+		) noexcept :
+			type(ED_root_param_type::CONSTANT_32BITS),
+			shader_visibility(shader_visibility),
+			constant_desc(constant_desc)
+		{
+		}
+		NCPP_FORCE_INLINE F_root_param_desc(const F_root_param_desc& x) noexcept :
+			type(x.type),
+			shader_visibility(x.shader_visibility),
+			descriptor_table_desc(x.descriptor_table_desc),
+			constant_desc(x.constant_desc)
+		{
+		}
+		NCPP_FORCE_INLINE F_root_param_desc& operator = (const F_root_param_desc& x) noexcept
+		{
+			type = x.type;
+			shader_visibility = x.shader_visibility;
+			descriptor_table_desc = x.descriptor_table_desc;
+			constant_desc = x.constant_desc;
+
+			return *this;
+		}
+		NCPP_FORCE_INLINE F_root_param_desc(F_root_param_desc&& x) noexcept :
+			type(x.type),
+			shader_visibility(x.shader_visibility),
+			descriptor_table_desc(std::move(x.descriptor_table_desc)),
+			constant_desc(x.constant_desc)
+		{
+		}
+		NCPP_FORCE_INLINE F_root_param_desc& operator = (F_root_param_desc&& x) noexcept
+		{
+			type = x.type;
+			shader_visibility = x.shader_visibility;
+			descriptor_table_desc = std::move(x.descriptor_table_desc);
+			constant_desc = x.constant_desc;
+
+			return *this;
+		}
+
 	};
 
 	struct F_static_sampler_state_desc {
