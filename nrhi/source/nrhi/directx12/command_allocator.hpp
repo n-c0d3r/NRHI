@@ -75,7 +75,7 @@ namespace nrhi {
 		static TU<A_command_allocator> create(TKPA_valid<A_device> device_p, const F_command_allocator_desc& desc);
 
 	public:
-		static void reset(TKPA_valid<A_command_allocator> command_allocator_p);
+		static void flush(TKPA_valid<A_command_allocator> command_allocator_p);
 
 	};
 

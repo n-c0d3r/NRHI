@@ -44,9 +44,9 @@
 namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-	NCPP_FORCE_INLINE void A_command_allocator::reset() {
+	NCPP_FORCE_INLINE void A_command_allocator::flush() {
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
-			H_command_allocator::reset(NCPP_KTHIS());
+			H_command_allocator::flush(NCPP_KTHIS());
 		);
 	}
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION

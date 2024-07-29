@@ -24,7 +24,7 @@ namespace nrhi {
 		return TU<F_directx12_command_allocator>()(device_p, desc);
 	}
 
-	void HD_directx12_command_allocator::reset(TKPA_valid<A_command_allocator> command_allocator_p) {
+	void HD_directx12_command_allocator::flush(TKPA_valid<A_command_allocator> command_allocator_p) {
 
 		command_allocator_p.T_cast<F_directx12_command_allocator>()->d3d12_command_allocator_p()->Reset();
 	}

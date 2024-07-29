@@ -52,6 +52,7 @@ namespace nrhi {
     struct F_swapchain_desc {
         ED_format format = ED_format::R8G8B8A8_UNORM;
         F_sample_desc sample_desc;
+		u32 refresh_rate = 0;
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 		u32 rtv_count = 2;

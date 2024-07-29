@@ -129,7 +129,7 @@ int main() {
 			);
 	  	)
 	  	else NRHI_DRIVER_ENABLE_IF_SUPPORT_ADVANCED_WORK_SUBMISSION(
-		  	command_allocator_p->reset();
+		  	command_allocator_p->flush();
 
 			command_list_p->async_begin(
 				NCPP_FOH_VALID(command_allocator_p)

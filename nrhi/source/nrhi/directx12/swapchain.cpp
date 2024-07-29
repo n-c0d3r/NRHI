@@ -26,26 +26,33 @@ namespace nrhi {
 		auto device_p = command_queue_p->device_p();
 		auto rtv_descriptor_increment_size = HD_directx12_device::descriptor_increment_size(device_p, ED_descriptor_heap_type::RTV);
 
+		if(desc.refresh_rate == 0) {
+
+			((u32&)(desc.refresh_rate)) = 10000;
+		}
+
 		// create d3d12 swapchain
-		DXGI_SWAP_CHAIN_DESC1 dxgi_swapchain_desc;
-		ZeroMemory(&dxgi_swapchain_desc, sizeof(dxgi_swapchain_desc));
-		dxgi_swapchain_desc.BufferCount = desc.rtv_count;
-		dxgi_swapchain_desc.Width = surface_p->client_size().x;
-		dxgi_swapchain_desc.Height = surface_p->client_size().y;
-		dxgi_swapchain_desc.Format = (DXGI_FORMAT)(desc.format);
+		DXGI_SWAP_CHAIN_DESC dxgi_swapchain_desc;
+		dxgi_swapchain_desc.BufferDesc.Width = surface_p->client_size().x;
+		dxgi_swapchain_desc.BufferDesc.Height = surface_p->client_size().y;
+		dxgi_swapchain_desc.BufferDesc.RefreshRate.Numerator = desc.refresh_rate;
+		dxgi_swapchain_desc.BufferDesc.RefreshRate.Denominator = 1;
+		dxgi_swapchain_desc.BufferDesc.Format = (DXGI_FORMAT)(desc.format);
+		dxgi_swapchain_desc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+		dxgi_swapchain_desc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 		dxgi_swapchain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-//		dxgi_swapchain_desc.OutputWindow = surface_p.T_cast<F_windows_surface>()->handle();
+		dxgi_swapchain_desc.BufferCount = desc.rtv_count;
+		dxgi_swapchain_desc.OutputWindow = surface_p.T_cast<F_windows_surface>()->handle();
 		dxgi_swapchain_desc.SampleDesc.Count = desc.sample_desc.count;
 		dxgi_swapchain_desc.SampleDesc.Quality = desc.sample_desc.quality;
+		dxgi_swapchain_desc.Windowed = true;
 		dxgi_swapchain_desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+		dxgi_swapchain_desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
-		((IDXGIFactory4*)F_directx12_factory_helper::factory_p())->CreateSwapChainForHwnd(
+		((IDXGIFactory4*)F_directx12_factory_helper::factory_p())->CreateSwapChain(
 			command_queue_p.T_cast<F_directx12_command_queue>()->d3d12_command_queue_p(),
-			surface_p.T_cast<F_windows_surface>()->handle(),
 			&dxgi_swapchain_desc,
-			0,
-			0,
-			(IDXGISwapChain1**)&dxgi_swapchain_p_
+			(IDXGISwapChain**)&dxgi_swapchain_p_
 		);
 
 		NCPP_ASSERT(dxgi_swapchain_p_) << "can't create swapchain";
@@ -143,7 +150,7 @@ namespace nrhi {
 		);
 
 		// also update_d3d12_object_for_buffer_rtvs when surface is resized
-		surface_resize_handle_ = surface_p->T_get_event<F_surface_resize_event>().T_push_back_listener([this](auto& event){
+		surface_resize_handle_ = surface_p->T_get_event<F_surface_resize_event>().T_push_back_listener([this, surface_p](auto& event){
 
 		  	u32 rtv_count = this->desc().rtv_count;
 		  	for(u32 i = 0; i < rtv_count; ++i)
@@ -151,23 +158,29 @@ namespace nrhi {
 			  	auto dx12_buffer_p = NCPP_FOH_VALID(buffer_p_vector_[i]).T_cast<F_directx12_committed_resource>();
 			  	auto dx12_rtv_p = NCPP_FOH_VALID(rtv_p_vector_[i]).T_cast<F_directx12_resource_view>();
 
+			  	if(dx12_buffer_p->d3d12_resource_p()) {
+
+					dx12_buffer_p->d3d12_resource_p()->Release();
+					dx12_buffer_p->set_d3d12_resource_p_unsafe(0);
+			  	}
+
 			  	auto surface_size = this->surface_p()->client_size();
 
 			  	auto& texture_2d_desc = inject_resource_desc(NCPP_FHANDLE_VALID_AS_OREF(dx12_buffer_p));
 			  	texture_2d_desc.width = surface_size.x;
 			  	texture_2d_desc.height = surface_size.y;
-
-			  	HRESULT hr = dxgi_swapchain_p_->ResizeBuffers(
-				  	0,
-				  	surface_size.x,
-				  	surface_size.y,
-				  	(DXGI_FORMAT)(this->desc().format),
-				  	DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH
-			  	);
-			 	NCPP_ASSERT(!FAILED(hr)) << "resize d3d12 swapchain failed";
-
-			  	update_d3d12_object_for_buffer_rtvs();
 		  	}
+
+		  	HRESULT hr = dxgi_swapchain_p_->ResizeBuffers(
+			  	this->desc().rtv_count,
+				surface_p->desc().size.x,
+				surface_p->desc().size.y,
+			  	(DXGI_FORMAT)(this->desc().format),
+			  	DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH
+		  	);
+		  	NCPP_ASSERT(!FAILED(hr)) << "resize d3d12 swapchain failed";
+
+		  	update_d3d12_object_for_buffer_rtvs();
 
 		  	HD_directx12_swapchain::update_back_rtv(
 			  	NCPP_KTHIS()

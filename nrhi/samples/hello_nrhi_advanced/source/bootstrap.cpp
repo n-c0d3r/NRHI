@@ -10,6 +10,7 @@ auto T_create_buffer(
 	TKPA_valid<A_device> device_p,
 	const TG_span<F_element__>& elements,
 	TKPA_valid<A_command_list> copy_command_list_p,
+	TG_vector<TU<A_resource>>& intermediate_resource_p_vector,
 	ED_resource_bind_flag bind_flag = ED_resource_bind_flag::NONE,
 	ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 ) {
@@ -41,6 +42,11 @@ auto T_create_buffer(
 	copy_command_list_p->async_copy_resource(
 		NCPP_FOH_VALID(result_p),
 		NCPP_FOH_VALID(intermediate_p)
+	);
+
+	// push + move intermediate resource to intermediate resource pointer vectors
+	intermediate_resource_p_vector.push_back(
+		std::move(intermediate_p.oref)
 	);
 
 	// return result buffer
@@ -53,6 +59,7 @@ auto T_create_buffer(
 	const TG_span<F_element__>& elements,
 	ED_format format,
 	TKPA_valid<A_command_list> copy_command_list_p,
+	TG_vector<TU<A_resource>>& intermediate_resource_p_vector,
 	ED_resource_bind_flag bind_flag = ED_resource_bind_flag::NONE,
 	ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 ) {
@@ -88,6 +95,11 @@ auto T_create_buffer(
 		NCPP_FOH_VALID(intermediate_p)
 	);
 
+	// push + move intermediate resource to intermediate resource pointer vectors
+	intermediate_resource_p_vector.push_back(
+		std::move(intermediate_p.oref)
+	);
+
 	// return result buffer
 	return std::move(result_p);
 }
@@ -97,6 +109,7 @@ auto T_create_structured_buffer(
 	TKPA_valid<A_device> device_p,
 	const TG_span<F_element__>& elements,
 	TKPA_valid<A_command_list> copy_command_list_p,
+	TG_vector<TU<A_resource>>& intermediate_resource_p_vector,
 	ED_resource_bind_flag bind_flag = ED_resource_bind_flag::NONE,
 	ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 ) {
@@ -128,6 +141,11 @@ auto T_create_structured_buffer(
 	copy_command_list_p->async_copy_resource(
 		NCPP_FOH_VALID(result_p),
 		NCPP_FOH_VALID(intermediate_p)
+	);
+
+	// push + move intermediate resource to intermediate resource pointer vectors
+	intermediate_resource_p_vector.push_back(
+		std::move(intermediate_p.oref)
 	);
 
 	// return result buffer
@@ -225,6 +243,11 @@ int main() {
 
 
 
+	// create a vector to store intermediate resources
+	TG_vector<TU<A_resource>> intermediate_resource_p_vector;
+
+
+
 	// create fence
 	TU<A_fence> copy_fence_p = H_fence::create(
 		NCPP_FOREF_VALID(device_p),
@@ -280,6 +303,7 @@ int main() {
         NCPP_FOH_VALID(device_p),
 		vertices,
 		NCPP_FOH_VALID(copy_command_list_p),
+		intermediate_resource_p_vector,
         ED_resource_bind_flag::VBV
     );
 
@@ -338,6 +362,7 @@ int main() {
 		NCPP_FOH_VALID(device_p),
 		instances,
 		NCPP_FOH_VALID(copy_command_list_p),
+		intermediate_resource_p_vector,
 		ED_resource_bind_flag::INSTBV
 	);
 
@@ -354,6 +379,7 @@ int main() {
         indices,
         ED_format::R32_UINT,
 		NCPP_FOH_VALID(copy_command_list_p),
+		intermediate_resource_p_vector,
         ED_resource_bind_flag::IBV
     );
 
@@ -362,6 +388,7 @@ int main() {
 		NCPP_FOH_VALID(device_p),
         NCPP_INIL_SPAN(output_color),
 		NCPP_FOH_VALID(copy_command_list_p),
+		intermediate_resource_p_vector,
         ED_resource_bind_flag::CBV
     );
 
@@ -379,6 +406,14 @@ int main() {
 		copy_index
 	);
 	copy_fence_p->wait(copy_index);
+
+	//
+	copy_command_allocator_p->flush();
+
+
+
+	// clear intermediate resources to save memory
+	intermediate_resource_p_vector.clear();
 
 
 
@@ -513,9 +548,25 @@ int main() {
 					NCPP_FOH_VALID(command_allocator_p)
 				);
 
+				command_list_p->async_resource_barrier(
+					H_resource_barrier::transition({
+						.resource_p = swapchain_p->back_buffer_p().no_requirements(),
+						.state_before = ED_resource_state::PRESENT,
+						.state_after = ED_resource_state::RENDER_TARGET
+					})
+				);
+
 				command_list_p->async_clear_rtv(
 					swapchain_p->back_rtv_p(),
 					F_vector4_f32 { 0, 0.84f, 0.96f, 1.0f }
+				);
+
+				command_list_p->async_resource_barrier(
+					H_resource_barrier::transition({
+						.resource_p = swapchain_p->back_buffer_p().no_requirements(),
+						.state_before = ED_resource_state::RENDER_TARGET,
+						.state_after = ED_resource_state::PRESENT
+					})
 				);
 			}
 
@@ -532,6 +583,9 @@ int main() {
 			fence_p->wait(frame_index);
 
 			swapchain_p->update_back_rtv();
+
+			//
+			command_allocator_p->flush();
 		}
 
 		auto end_time = std::chrono::high_resolution_clock::now();
