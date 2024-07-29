@@ -46,6 +46,7 @@ namespace nrhi {
 
 		H_command_list::clear_state(NCPP_KTHIS());
 	}
+#ifdef NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
 	NCPP_FORCE_INLINE void A_command_list::clear_rtv(KPA_valid_rtv_handle rtv_p, PA_vector4 color) {
 
 		H_command_list::clear_rtv(NCPP_KTHIS(), rtv_p, color);
@@ -64,6 +65,7 @@ namespace nrhi {
 			stencil
 		);
 	}
+#endif // NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
 
 	NCPP_FORCE_INLINE void A_command_list::set_pipeline_state(TKPA_valid<A_pipeline_state> pipeline_state_p) {
 
@@ -78,6 +80,12 @@ namespace nrhi {
 		H_command_list::ZC_set_pipeline_state(NCPP_KTHIS(), compute_pipeline_state_p);
 	}
 
+	NCPP_FORCE_INLINE void A_command_list::ZOM_set_frame_buffer(TKPA_valid<A_frame_buffer> frame_buffer_p) {
+
+		H_command_list::ZOM_set_frame_buffer(NCPP_KTHIS(), frame_buffer_p);
+	}
+
+#ifdef NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_BINDING
 	NCPP_FORCE_INLINE void A_command_list::ZIA_bind_index_buffer(
 		KPA_valid_buffer_handle index_buffer_p,
 		u32 offset
@@ -259,11 +267,6 @@ namespace nrhi {
 		);
 	}
 
-	NCPP_FORCE_INLINE void A_command_list::ZOM_set_frame_buffer(TKPA_valid<A_frame_buffer> frame_buffer_p) {
-
-		H_command_list::ZOM_set_frame_buffer(NCPP_KTHIS(), frame_buffer_p);
-	}
-
 	NCPP_FORCE_INLINE void A_command_list::ZCS_bind_constant_buffers(
 		const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
 		u32 base_slot_index
@@ -344,6 +347,7 @@ namespace nrhi {
 			slot_index
 		);
 	}
+#endif // NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_BINDING
 
 #ifdef NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
 	NCPP_FORCE_INLINE void A_command_list::draw(

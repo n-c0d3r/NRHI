@@ -5,6 +5,7 @@
 
 namespace nrhi {
 
+#ifdef NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_MANAGEMENT
     U_buffer_handle H_buffer::create(
         TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_data,
@@ -158,6 +159,7 @@ namespace nrhi {
 			)
 		);
 	}
+#endif // NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_MANAGEMENT
 
 
 

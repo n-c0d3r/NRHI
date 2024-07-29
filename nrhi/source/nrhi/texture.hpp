@@ -49,6 +49,7 @@ namespace nrhi {
 
     class NRHI_API H_texture {
 
+#ifdef NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_MANAGEMENT
     public:
         static U_texture_1d_handle create_1d(
             TKPA_valid<A_device> device_p,
@@ -186,6 +187,7 @@ namespace nrhi {
 			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE,
 			b8 is_mip_map_generatable = false
 		);
+#endif // NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_MANAGEMENT
 
 
 

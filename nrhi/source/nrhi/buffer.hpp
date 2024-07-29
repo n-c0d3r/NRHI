@@ -49,6 +49,7 @@ namespace nrhi {
 
     class NRHI_API H_buffer {
 
+#ifdef NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_MANAGEMENT
     public:
         static U_buffer_handle create(
             TKPA_valid<A_device> device_p,
@@ -353,6 +354,7 @@ namespace nrhi {
 				heap_type
 			);
 		}
+#endif // NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_MANAGEMENT
 
 
 

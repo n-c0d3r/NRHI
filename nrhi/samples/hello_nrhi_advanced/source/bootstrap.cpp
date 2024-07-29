@@ -549,6 +549,7 @@ int main() {
 					NCPP_FOH_VALID(command_allocator_p)
 				);
 
+				// transition back buffer state to RENDER_TARGET
 				command_list_p->async_resource_barrier(
 					H_resource_barrier::transition({
 						.resource_p = swapchain_p->back_buffer_p().no_requirements(),
@@ -578,6 +579,7 @@ int main() {
 					NCPP_FOH_VALID(frame_buffer_p)
 				);
 
+				// transition back buffer state back to PRESENT
 				command_list_p->async_resource_barrier(
 					H_resource_barrier::transition({
 						.resource_p = swapchain_p->back_buffer_p().no_requirements(),

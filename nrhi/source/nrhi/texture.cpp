@@ -5,6 +5,7 @@
 
 namespace nrhi {
 
+#ifdef NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_MANAGEMENT
     U_texture_1d_handle H_texture::create_1d(
         TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_data,
@@ -283,6 +284,9 @@ namespace nrhi {
 			)
 		);
 	}
+#endif // NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_MANAGEMENT
+
+
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	U_texture_1d_handle H_texture::create_committed_1d(
@@ -308,7 +312,8 @@ namespace nrhi {
 				format,
 				mip_level_count,
 				bind_flags,
-				heap_type
+				heap_type,
+				false
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 				, initial_state
@@ -348,7 +353,8 @@ namespace nrhi {
 				mip_level_count,
 				sample_desc,
 				bind_flags,
-				heap_type
+				heap_type,
+				false
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 				, initial_state
@@ -388,7 +394,8 @@ namespace nrhi {
 				format,
 				mip_level_count,
 				bind_flags,
-				heap_type
+				heap_type,
+				false
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 				, initial_state
@@ -430,7 +437,8 @@ namespace nrhi {
 				mip_level_count,
 				sample_desc,
 				bind_flags,
-				heap_type
+				heap_type,
+				false
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 				, initial_state
@@ -468,7 +476,8 @@ namespace nrhi {
 				mip_level_count,
 				sample_desc,
 				bind_flags,
-				heap_type
+				heap_type,
+				false
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 				, initial_state
@@ -506,7 +515,8 @@ namespace nrhi {
 				format,
 				mip_level_count,
 				bind_flags,
-				heap_type
+				heap_type,
+				false
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 				, initial_state
@@ -546,7 +556,8 @@ namespace nrhi {
 				mip_level_count,
 				sample_desc,
 				bind_flags,
-				heap_type
+				heap_type,
+				false
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 				, initial_state
@@ -586,7 +597,8 @@ namespace nrhi {
 				format,
 				mip_level_count,
 				bind_flags,
-				heap_type
+				heap_type,
+				false
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 				, initial_state
@@ -628,7 +640,8 @@ namespace nrhi {
 				mip_level_count,
 				sample_desc,
 				bind_flags,
-				heap_type
+				heap_type,
+				false
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 				, initial_state
@@ -666,7 +679,8 @@ namespace nrhi {
 				mip_level_count,
 				sample_desc,
 				bind_flags,
-				heap_type
+				heap_type,
+				false
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 				, initial_state

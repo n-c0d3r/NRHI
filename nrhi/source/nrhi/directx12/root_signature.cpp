@@ -115,7 +115,7 @@ namespace nrhi {
 
 			d3d12_static_sampler_state_desc.ShaderRegister = static_sampler_state_desc.base_register;
 			d3d12_static_sampler_state_desc.RegisterSpace = static_sampler_state_desc.register_space;
-			d3d12_static_sampler_state_desc.ShaderVisibility = static_sampler_state_desc.shader_visibility;
+			d3d12_static_sampler_state_desc.ShaderVisibility = D3D12_SHADER_VISIBILITY(static_sampler_state_desc.shader_visibility);
 
 			d3d12_static_sampler_state_desc.Filter = D3D12_FILTER(sampler_state_desc.filter);
 			d3d12_static_sampler_state_desc.AddressU = D3D12_TEXTURE_ADDRESS_MODE(sampler_state_desc.texcoord_address_modes[0]);
