@@ -266,7 +266,7 @@ namespace nrhi {
 			root_signature_p.T_cast<F_directx12_root_signature>()->d3d12_root_signature_p()
 		);
 	}
-	void HD_directx12_command_list::ZG_bind_root_descriptor_table(
+	void HD_directx12_command_list::ZC_bind_root_descriptor_table(
 		TKPA_valid<A_command_list> command_list_p,
 		u32 root_param_index,
 		F_descriptor_gpu_address gpu_address
@@ -275,7 +275,7 @@ namespace nrhi {
 
 		command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p()->SetComputeRootDescriptorTable(
 			root_param_index,
-			gpu_address
+			{ gpu_address }
 		);
 	}
 	void HD_directx12_command_list::ZC_bind_root_constants(
@@ -428,7 +428,7 @@ namespace nrhi {
 
 		command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p()->SetGraphicsRootDescriptorTable(
 			root_param_index,
-			gpu_address
+			{ gpu_address }
 		);
 	}
 	void HD_directx12_command_list::ZG_bind_root_constants(
