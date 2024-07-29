@@ -37,6 +37,7 @@
 #include <nrhi/resource_desc.hpp>
 #include <nrhi/resource_type.hpp>
 #include <nrhi/mapped_subresource.hpp>
+#include <nrhi/resource_gpu_virtual_address.hpp>
 
 #pragma endregion
 
@@ -105,6 +106,9 @@ namespace nrhi {
 	public:
 		F_mapped_subresource map(u32 subresource_index);
 		void unmap(u32 subresource_index);
+
+	public:
+		F_resource_gpu_virtual_address gpu_virtual_address();
 
     };
 

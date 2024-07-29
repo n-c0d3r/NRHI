@@ -142,11 +142,11 @@ namespace nrhi {
 			TKPA_valid<A_command_list> command_list_p,
 			TKPA_valid<A_pipeline_state> pipeline_state_p
 		);
-		static void set_graphics_pipeline_state(
+		static void ZG_set_pipeline_state(
 			TKPA_valid<A_command_list> command_list_p,
 			KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p
 		);
-		static void set_compute_pipeline_state(
+		static void ZC_set_pipeline_state(
 			TKPA_valid<A_command_list> command_list_p,
 			KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p
 		);
@@ -247,7 +247,7 @@ namespace nrhi {
 		);
 
 	public:
-		static void ZOM_bind_frame_buffer(
+		static void ZOM_set_frame_buffer(
 			TKPA_valid<A_command_list> command_list_p,
 			TKPA_valid<A_frame_buffer> frame_buffer_p
 		);

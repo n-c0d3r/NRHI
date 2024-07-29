@@ -44,11 +44,11 @@ NRHI_FunctionHelper_CreateFunctionClass(
             TKPA_valid<A_command_list> command_list_p,
             TKPA_valid<A_pipeline_state> pipeline_state_p
         )"
-        "set_graphics_pipeline_state" "void(
+        "ZG_set_pipeline_state" "void(
             TKPA_valid<A_command_list> command_list_p,
             KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p
         )"
-        "set_compute_pipeline_state" "void(
+        "ZC_set_pipeline_state" "void(
             TKPA_valid<A_command_list> command_list_p,
             KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p
         )"
@@ -141,7 +141,7 @@ NRHI_FunctionHelper_CreateFunctionClass(
             TKPA_valid<A_sampler_state> sampler_state_p,
             u32 slot_index
         )"
-        "ZOM_bind_frame_buffer" "void(
+        "ZOM_set_frame_buffer" "void(
             TKPA_valid<A_command_list> command_list_p,
             TKPA_valid<A_frame_buffer> frame_buffer_p
         )"

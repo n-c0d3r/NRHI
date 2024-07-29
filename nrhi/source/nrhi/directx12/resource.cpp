@@ -118,4 +118,10 @@ namespace nrhi {
 		);
 	}
 
+	F_resource_gpu_virtual_address HD_directx12_resource::gpu_virtual_address(
+		TKPA_valid<A_resource> resource_p
+	) {
+		return resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p()->GetGPUVirtualAddress();
+	}
+
 }

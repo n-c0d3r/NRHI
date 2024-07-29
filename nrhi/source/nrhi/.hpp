@@ -68,6 +68,8 @@ namespace nrhi { }
 #include <nrhi/nsl_shader_compiler.hpp>
 #include <nrhi/pipeline_state_compiler.hpp>
 
+#include <nrhi/resource_gpu_virtual_address.hpp>
+
 #ifdef NRHI_DRIVER_DIRECTX_11
 #include <nrhi/directx11/buffer.hpp>
 #include <nrhi/directx11/texture.hpp>

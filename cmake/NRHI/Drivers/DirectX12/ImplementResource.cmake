@@ -66,6 +66,9 @@ NRHI_FunctionHelper_CreateFunctionClass(
             TKPA_valid<A_resource> resource_p,
             u32 subresource_index
         )"
+        "gpu_virtual_address" "F_resource_gpu_virtual_address(
+			TKPA_valid<A_resource> resource_p
+		)"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement resource done")

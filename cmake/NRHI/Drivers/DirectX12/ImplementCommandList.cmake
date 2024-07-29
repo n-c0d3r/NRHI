@@ -67,7 +67,135 @@ NRHI_FunctionHelper_CreateFunctionClass(
             f32 depth,
             u8 stencil
         )"
-		"ZOM_async_bind_frame_buffer" "void(
+		"async_set_descriptor_heaps" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			const TG_span<TK_valid<A_descriptor_heap>>& descriptor_heap_p_span
+		)"
+		"async_set_pipeline_state" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			TKPA_valid<A_pipeline_state> pipeline_state_p
+		)"
+		"ZC_async_set_pipeline_state" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			KPA_valid_compute_pipeline_state_handle pipeline_state_p
+		)"
+		"ZC_async_set_root_signature" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			TKPA_valid<A_root_signature> root_signature_p
+		)"
+		"ZC_async_set_root_constants" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			u32 root_param_index,
+			const TG_span<u32>& constant_span,
+			u32 offset_in_constants
+		)"
+		"ZC_async_set_root_constant" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			u32 root_param_index,
+			u32 root_constant,
+			u32 offset_in_constants
+		)"
+		"ZC_async_set_srv" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			u32 root_param_index,
+			KPA_valid_srv_handle srv_p
+		)"
+		"ZC_async_set_uav" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			u32 root_param_index,
+			KPA_valid_uav_handle uav_p
+		)"
+		"ZC_async_set_cbv_with_resource" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			u32 root_param_index,
+			TKPA_valid<A_resource> resource_p
+		)"
+		"ZC_async_set_srv_with_resource" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			u32 root_param_index,
+			TKPA_valid<A_resource> resource_p
+		)"
+		"ZC_async_set_uav_with_resource" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			u32 root_param_index,
+			TKPA_valid<A_resource> resource_p
+		)"
+		"ZC_async_set_cbv_with_gpu_virtual_address" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			u32 root_param_index,
+			F_resource_gpu_virtual_address gpu_virtual_address
+		)"
+		"ZC_async_set_srv_with_gpu_virtual_address" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			u32 root_param_index,
+			F_resource_gpu_virtual_address gpu_virtual_address
+		)"
+		"ZC_async_set_uav_with_gpu_virtual_address" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			u32 root_param_index,
+			F_resource_gpu_virtual_address gpu_virtual_address
+		)"
+		"ZG_async_set_pipeline_state" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			KPA_valid_graphics_pipeline_state_handle pipeline_state_p
+		)"
+		"ZG_async_set_root_signature" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			TKPA_valid<A_root_signature> root_signature_p
+		)"
+		"ZG_async_set_root_constants" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			u32 root_param_index,
+			const TG_span<u32>& constant_span,
+			u32 offset_in_constants
+		)"
+		"ZG_async_set_root_constant" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			u32 root_param_index,
+			u32 root_constant,
+			u32 offset_in_constants
+		)"
+		"ZG_async_set_srv" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			u32 root_param_index,
+			KPA_valid_srv_handle srv_p
+		)"
+		"ZG_async_set_uav" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			u32 root_param_index,
+			KPA_valid_uav_handle uav_p
+		)"
+		"ZG_async_set_cbv_with_resource" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			u32 root_param_index,
+			TKPA_valid<A_resource> resource_p
+		)"
+		"ZG_async_set_srv_with_resource" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			u32 root_param_index,
+			TKPA_valid<A_resource> resource_p
+		)"
+		"ZG_async_set_uav_with_resource" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			u32 root_param_index,
+			TKPA_valid<A_resource> resource_p
+		)"
+		"ZG_async_set_cbv_with_gpu_virtual_address" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			u32 root_param_index,
+			F_resource_gpu_virtual_address gpu_virtual_address
+		)"
+		"ZG_async_set_srv_with_gpu_virtual_address" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			u32 root_param_index,
+			F_resource_gpu_virtual_address gpu_virtual_address
+		)"
+		"ZG_async_set_uav_with_gpu_virtual_address" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			u32 root_param_index,
+			F_resource_gpu_virtual_address gpu_virtual_address
+		)"
+		"ZOM_async_set_frame_buffer" "void(
 			TKPA_valid<A_command_list> command_list_p,
 			TKPA_valid<A_frame_buffer> frame_buffer_p
 		)"
@@ -83,7 +211,7 @@ NRHI_FunctionHelper_CreateFunctionClass(
 			u64 dst_offset,
 			u64 src_offset,
 			u64 size
-		);"
+		)"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement command list done")

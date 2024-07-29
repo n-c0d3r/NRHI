@@ -56,7 +56,7 @@ namespace nrhi {
 
 			const auto& root_descriptor_table_desc = root_param_desc.descriptor_table_desc;
 			const auto& root_descriptor_desc = root_param_desc.descriptor_desc;
-			const auto& root_constant_desc = root_param_desc.constant_desc;
+			const auto& root_constants_desc = root_param_desc.constants_desc;
 
 			switch (d3d12_root_param.ParameterType)
 			{
@@ -83,9 +83,9 @@ namespace nrhi {
 				}
 				break;
 			case D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS:
-				d3d12_root_param.Constants.ShaderRegister = root_constant_desc.base_register;
-				d3d12_root_param.Constants.RegisterSpace = root_constant_desc.register_space;
-				d3d12_root_param.Constants.Num32BitValues = root_constant_desc.value;
+				d3d12_root_param.Constants.ShaderRegister = root_constants_desc.base_register;
+				d3d12_root_param.Constants.RegisterSpace = root_constants_desc.register_space;
+				d3d12_root_param.Constants.Num32BitValues = root_constants_desc.constant_count;
 				break;
 			case D3D12_ROOT_PARAMETER_TYPE_CBV:
 				d3d12_root_param.Descriptor.ShaderRegister = root_descriptor_desc.base_register;

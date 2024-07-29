@@ -130,6 +130,11 @@ namespace nrhi {
 			u32 subresource_index
 		);
 
+	public:
+		static F_resource_gpu_virtual_address gpu_virtual_address(
+			TKPA_valid<A_resource> resource_p
+		);
+
 	};
 
 }

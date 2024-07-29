@@ -75,11 +75,11 @@ namespace nrhi {
 
 	};
 
-	struct F_root_constant_desc {
+	struct F_root_constants_desc {
 
 		u32 base_register = 0;
 		u32 register_space = 0;
-		u32 value = 0;
+		u32 constant_count = 0;
 
 	};
 
@@ -94,13 +94,13 @@ namespace nrhi {
 		// these two structs just have primitive data types, so it's ok to use union
 		union {
 			F_root_descriptor_desc descriptor_desc;
-			F_root_constant_desc constant_desc;
+			F_root_constants_desc constants_desc;
 		};
 
 		NCPP_FORCE_INLINE F_root_param_desc() noexcept :
 			shader_visibility(ED_shader_visibility::ALL),
 			descriptor_table_desc(),
-			constant_desc()
+			constants_desc()
 		{
 		}
 		NCPP_FORCE_INLINE F_root_param_desc(
@@ -132,19 +132,19 @@ namespace nrhi {
 		{
 		}
 		NCPP_FORCE_INLINE F_root_param_desc(
-			const F_root_constant_desc& constant_desc,
+			const F_root_constants_desc& constants_desc,
 			ED_shader_visibility shader_visibility = ED_shader_visibility::ALL
 		) noexcept :
 			type(ED_root_param_type::CONSTANT_32BITS),
 			shader_visibility(shader_visibility),
-			constant_desc(constant_desc)
+			constants_desc(constants_desc)
 		{
 		}
 		NCPP_FORCE_INLINE F_root_param_desc(const F_root_param_desc& x) noexcept :
 			type(x.type),
 			shader_visibility(x.shader_visibility),
 			descriptor_table_desc(x.descriptor_table_desc),
-			constant_desc(x.constant_desc)
+			constants_desc(x.constants_desc)
 		{
 		}
 		NCPP_FORCE_INLINE F_root_param_desc& operator = (const F_root_param_desc& x) noexcept
@@ -152,7 +152,7 @@ namespace nrhi {
 			type = x.type;
 			shader_visibility = x.shader_visibility;
 			descriptor_table_desc = x.descriptor_table_desc;
-			constant_desc = x.constant_desc;
+			constants_desc = x.constants_desc;
 
 			return *this;
 		}
@@ -160,7 +160,7 @@ namespace nrhi {
 			type(x.type),
 			shader_visibility(x.shader_visibility),
 			descriptor_table_desc(std::move(x.descriptor_table_desc)),
-			constant_desc(x.constant_desc)
+			constants_desc(x.constants_desc)
 		{
 		}
 		NCPP_FORCE_INLINE F_root_param_desc& operator = (F_root_param_desc&& x) noexcept
@@ -168,7 +168,7 @@ namespace nrhi {
 			type = x.type;
 			shader_visibility = x.shader_visibility;
 			descriptor_table_desc = std::move(x.descriptor_table_desc);
-			constant_desc = x.constant_desc;
+			constants_desc = x.constants_desc;
 
 			return *this;
 		}

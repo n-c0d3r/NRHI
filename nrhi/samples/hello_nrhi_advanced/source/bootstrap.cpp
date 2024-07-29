@@ -484,7 +484,8 @@ int main() {
 		F_root_descriptor_desc {
 			0,
 			0
-		}
+		},
+		ED_shader_visibility::PIXEL
 	);
 
 	auto root_signature_p = H_root_signature::create(
@@ -526,12 +527,12 @@ int main() {
 		swapchain_p.reset();
 	});
 
+	// time counting variables
 	f32 delta_time = 0.0f;
+	auto start_time = std::chrono::high_resolution_clock::now();
 
     // run app
     surface_manager.T_run([&](F_surface_manager& surface_manager){
-
-		auto start_time = std::chrono::high_resolution_clock::now();
 
 		if(swapchain_p) {
 
@@ -556,12 +557,24 @@ int main() {
 					})
 				);
 
+				// clear rtv
 				command_list_p->async_clear_rtv(
 					swapchain_p->back_rtv_p(),
 					F_vector4_f32 { 0, 0.84f, 0.96f, 1.0f }
 				);
 
-				command_list_p->ZOM_async_bind_frame_buffer(
+				// render text
+				command_list_p->ZG_async_set_pipeline_state(
+					NCPP_FOH_VALID(pipeline_state_p)
+				);
+				command_list_p->ZG_async_set_root_signature(
+					NCPP_FOH_VALID(root_signature_p)
+				);
+				command_list_p->ZG_async_set_cbv_with_resource(
+					0,
+					NCPP_AOH_VALID(cbuffer_p)
+				);
+				command_list_p->ZOM_async_set_frame_buffer(
 					NCPP_FOH_VALID(frame_buffer_p)
 				);
 
@@ -596,6 +609,8 @@ int main() {
 
 		u64 nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(end_time - start_time).count();
 		delta_time = (((f32)nanoseconds) * 0.000000001f);
+
+	  	start_time = end_time;
 
 		f32 fps = 1.0f / delta_time;
 

@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/resource.external_use_only.inl
+/** @file nrhi/resource_desc.hpp
 *
-*   Implement resource inline functions that is only used by external.
+*   Implement resource desc.
 */
 
 
@@ -33,7 +33,21 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/resource.hpp>
+#include <nrhi/format.hpp>
+#include <nrhi/resource_heap_type.hpp>
+#include <nrhi/resource_bind_flag.hpp>
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+#include <nrhi/resource_state.hpp>
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#include <nrhi/resource_type.hpp>
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+#include <nrhi/resource_layout.hpp>
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+
+#include <nrhi/sample_desc.hpp>
 
 #pragma endregion
 
@@ -41,22 +55,6 @@
 
 namespace nrhi {
 
-	NCPP_FORCE_INLINE F_mapped_subresource A_resource::map(u32 subresource_index) {
-
-		return H_resource::map(NCPP_KTHIS(), subresource_index);
-	}
-	NCPP_FORCE_INLINE void A_resource::unmap(u32 subresource_index) {
-
-		H_resource::unmap(NCPP_KTHIS(), subresource_index);
-	}
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-	NCPP_FORCE_INLINE F_resource_gpu_virtual_address A_resource::gpu_virtual_address() {
-
-		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT(
-			return H_resource::gpu_virtual_address(NCPP_KTHIS());
-		);
-	}
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+	using F_resource_gpu_virtual_address = u64;
 
 }

@@ -291,11 +291,10 @@ int main() {
 	);
 
 	f32 delta_time = 0.0f;
+	auto start_time = std::chrono::high_resolution_clock::now();
 
     // run app
     surface_manager.T_run([&](F_surface_manager& surface_manager){
-
-		auto start_time = std::chrono::high_resolution_clock::now();
 
 		if(swapchain_p.is_valid()) {
 
@@ -329,7 +328,7 @@ int main() {
 			{
 				command_list_p->clear_state();
 
-				command_list_p->set_graphics_pipeline_state(
+				command_list_p->ZG_set_pipeline_state(
 					NCPP_FHANDLE_VALID(graphics_pipeline_state_p)
 				);
 
@@ -353,7 +352,7 @@ int main() {
 					0
 				);
 
-				command_list_p->ZOM_bind_frame_buffer(
+				command_list_p->ZOM_set_frame_buffer(
 					NCPP_FOREF_VALID(frame_buffer_p)
 				);
 
@@ -379,6 +378,8 @@ int main() {
 
 		u64 nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(end_time - start_time).count();
 		delta_time = (((f32)nanoseconds) * 0.000000001f);
+
+		start_time = end_time;
 
 		f32 fps = 1.0f / delta_time;
 
