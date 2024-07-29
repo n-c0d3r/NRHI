@@ -564,12 +564,14 @@ int main() {
 					F_vector4_f32 { 0, 0.84f, 0.96f, 1.0f }
 				);
 
+				//
+				command_list_p->ZG_bind_root_signature(
+					NCPP_FOH_VALID(root_signature_p)
+				);
+
 				// render text
 				command_list_p->ZG_bind_pipeline_state(
 					NCPP_FOH_VALID(pipeline_state_p)
-				);
-				command_list_p->ZG_bind_root_signature(
-					NCPP_FOH_VALID(root_signature_p)
 				);
 				command_list_p->ZG_bind_root_cbv_with_resource(
 					0,
