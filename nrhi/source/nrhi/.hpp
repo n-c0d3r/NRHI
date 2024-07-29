@@ -58,6 +58,8 @@ namespace nrhi { }
 #include <nrhi/frame_buffer_desc.hpp>
 #include <nrhi/root_signature_desc.hpp>
 
+#include <nrhi/mapped_subresource.hpp>
+
 #include <nrhi/buffer.hpp>
 #include <nrhi/texture.hpp>
 
@@ -90,8 +92,8 @@ namespace nrhi { }
 #include <nrhi/command_allocator.external_use_only.inl>
 #include <nrhi/graphics_pipeline_state_handle.external_use_only.inl>
 #include <nrhi/compute_pipeline_state_handle.external_use_only.inl>
-
 #include <nrhi/texture_handle.external_use_only.inl>
+#include <nrhi/resource.external_use_only.inl>
 
 #pragma endregion
 

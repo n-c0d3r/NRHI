@@ -69,14 +69,27 @@ int main() {
 
 
 	// create resources
-	auto resource_1_p = H_buffer::T_create_committed<F_vector4_f32>(
+	auto resource_1_p = H_buffer::create_committed(
 		NCPP_FOH_VALID(device_p),
-		128
+		128,
+		1
 	);
-	auto resource_2_p = H_buffer::T_create_committed<F_vector4_f32>(
+	auto resource_2_p = H_buffer::create_committed(
 		NCPP_FOH_VALID(device_p),
-		128
+		128,
+		1,
+		ED_resource_bind_flag::NONE,
+		ED_resource_heap_type::GREAD_CWRITE,
+		ED_resource_state::_GENERIC_READ
 	);
+
+
+
+	// upload data to resource 2
+	auto mapped_subresource = resource_2_p->map(0);
+	for(u32 i = 0; i < 128; ++i)
+		mapped_subresource[i] = i;
+	resource_2_p->unmap(0);
 
 
 

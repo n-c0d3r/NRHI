@@ -120,6 +120,16 @@ namespace nrhi {
 			const F_resource_desc& desc
 		);
 
+	public:
+		static F_mapped_subresource map(
+			TKPA_valid<A_resource> resource_p,
+			u32 subresource_index
+		);
+		static void unmap(
+			TKPA_valid<A_resource> resource_p,
+			u32 subresource_index
+		);
+
 	};
 
 }

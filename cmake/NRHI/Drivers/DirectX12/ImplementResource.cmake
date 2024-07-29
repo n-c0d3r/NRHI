@@ -58,6 +58,14 @@ NRHI_FunctionHelper_CreateFunctionClass(
             TKPA_valid<A_device> device_p,
             const F_resource_desc& desc
         )"
+        "map" "F_mapped_subresource(
+            TKPA_valid<A_resource> resource_p,
+            u32 subresource_index
+        )"
+        "unmap" "void(
+            TKPA_valid<A_resource> resource_p,
+            u32 subresource_index
+        )"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement resource done")
