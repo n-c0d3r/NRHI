@@ -328,7 +328,7 @@ int main() {
 			{
 				command_list_p->clear_state();
 
-				command_list_p->ZG_set_pipeline_state(
+				command_list_p->ZG_bind_pipeline_state(
 					NCPP_FHANDLE_VALID(graphics_pipeline_state_p)
 				);
 
@@ -352,7 +352,7 @@ int main() {
 					0
 				);
 
-				command_list_p->ZOM_set_frame_buffer(
+				command_list_p->ZOM_bind_frame_buffer(
 					NCPP_FOREF_VALID(frame_buffer_p)
 				);
 

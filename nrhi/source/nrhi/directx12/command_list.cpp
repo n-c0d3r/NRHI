@@ -215,7 +215,7 @@ namespace nrhi {
 		);
 	}
 
-	void HD_directx12_command_list::set_descriptor_heaps(
+	void HD_directx12_command_list::bind_descriptor_heaps(
 		TKPA_valid<A_command_list> command_list_p,
 		const TG_span<TK_valid<A_descriptor_heap>>& descriptor_heap_p_span
 	) {
@@ -235,7 +235,7 @@ namespace nrhi {
 		);
 	}
 
-	void HD_directx12_command_list::set_pipeline_state(
+	void HD_directx12_command_list::bind_pipeline_state(
 		TKPA_valid<A_command_list> command_list_p,
 		TKPA_valid<A_pipeline_state> pipeline_state_p
 	) {
@@ -246,7 +246,7 @@ namespace nrhi {
 		);
 	}
 
-	void HD_directx12_command_list::ZC_set_pipeline_state(
+	void HD_directx12_command_list::ZC_bind_pipeline_state(
 		TKPA_valid<A_command_list> command_list_p,
 		KPA_valid_compute_pipeline_state_handle pipeline_state_p
 	) {
@@ -256,7 +256,7 @@ namespace nrhi {
 			pipeline_state_p.T_cast<F_directx12_pipeline_state>()->d3d12_pipeline_state_p()
 		);
 	}
-	void HD_directx12_command_list::ZC_set_root_signature(
+	void HD_directx12_command_list::ZC_bind_root_signature(
 		TKPA_valid <nrhi::A_command_list> command_list_p,
 		TKPA_valid <nrhi::A_root_signature> root_signature_p
 	) {
@@ -266,7 +266,19 @@ namespace nrhi {
 			root_signature_p.T_cast<F_directx12_root_signature>()->d3d12_root_signature_p()
 		);
 	}
-	void HD_directx12_command_list::ZC_set_root_constants(
+	void HD_directx12_command_list::ZG_bind_root_descriptor_table(
+		TKPA_valid<A_command_list> command_list_p,
+		u32 root_param_index,
+		F_descriptor_gpu_address gpu_address
+	) {
+		NCPP_ASSERT(command_list_p->supports_compute()) << "command list does not support compute";
+
+		command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p()->SetComputeRootDescriptorTable(
+			root_param_index,
+			gpu_address
+		);
+	}
+	void HD_directx12_command_list::ZC_bind_root_constants(
 		TKPA_valid<A_command_list> command_list_p,
 		u32 root_param_index,
 		const TG_span<u32>& constant_span,
@@ -281,7 +293,7 @@ namespace nrhi {
 			offset_in_constants
 		);
 	}
-	void HD_directx12_command_list::ZC_set_root_constant(
+	void HD_directx12_command_list::ZC_bind_root_constant(
 		TKPA_valid<A_command_list> command_list_p,
 		u32 root_param_index,
 		u32 root_constant,
@@ -295,62 +307,62 @@ namespace nrhi {
 			offset_in_constants
 		);
 	}
-	void HD_directx12_command_list::ZC_set_srv(
+	void HD_directx12_command_list::ZC_bind_root_srv(
 		TKPA_valid<A_command_list> command_list_p,
 		u32 root_param_index,
 		KPA_valid_srv_handle srv_p
 	) {
-		return ZC_set_srv_with_resource(
+		return ZC_bind_root_srv_with_resource(
 			command_list_p,
 			root_param_index,
 			NCPP_FOH_VALID(srv_p->desc().resource_p)
 		);
 	}
-	void HD_directx12_command_list::ZC_set_uav(
+	void HD_directx12_command_list::ZC_bind_root_uav(
 		TKPA_valid<A_command_list> command_list_p,
 		u32 root_param_index,
 		KPA_valid_uav_handle uav_p
 	) {
-		return ZC_set_uav_with_resource(
+		return ZC_bind_root_uav_with_resource(
 			command_list_p,
 			root_param_index,
 			NCPP_FOH_VALID(uav_p->desc().resource_p)
 		);
 	}
-	void HD_directx12_command_list::ZC_set_cbv_with_resource(
+	void HD_directx12_command_list::ZC_bind_root_cbv_with_resource(
 		TKPA_valid<A_command_list> command_list_p,
 		u32 root_param_index,
 		TKPA_valid<A_resource> resource_p
 	) {
-		ZC_set_cbv_with_gpu_virtual_address(
+		ZC_bind_root_cbv_with_gpu_virtual_address(
 			command_list_p,
 			root_param_index,
 			HD_directx12_resource::gpu_virtual_address(resource_p)
 		);
 	}
-	void HD_directx12_command_list::ZC_set_srv_with_resource(
+	void HD_directx12_command_list::ZC_bind_root_srv_with_resource(
 		TKPA_valid<A_command_list> command_list_p,
 		u32 root_param_index,
 		TKPA_valid<A_resource> resource_p
 	) {
-		ZC_set_srv_with_gpu_virtual_address(
+		ZC_bind_root_srv_with_gpu_virtual_address(
 			command_list_p,
 			root_param_index,
 			HD_directx12_resource::gpu_virtual_address(resource_p)
 		);
 	}
-	void HD_directx12_command_list::ZC_set_uav_with_resource(
+	void HD_directx12_command_list::ZC_bind_root_uav_with_resource(
 		TKPA_valid<A_command_list> command_list_p,
 		u32 root_param_index,
 		TKPA_valid<A_resource> resource_p
 	) {
-		ZC_set_uav_with_gpu_virtual_address(
+		ZC_bind_root_uav_with_gpu_virtual_address(
 			command_list_p,
 			root_param_index,
 			HD_directx12_resource::gpu_virtual_address(resource_p)
 		);
 	}
-	void HD_directx12_command_list::ZC_set_cbv_with_gpu_virtual_address(
+	void HD_directx12_command_list::ZC_bind_root_cbv_with_gpu_virtual_address(
 		TKPA_valid<A_command_list> command_list_p,
 		u32 root_param_index,
 		F_resource_gpu_virtual_address gpu_virtual_address
@@ -362,7 +374,7 @@ namespace nrhi {
 			gpu_virtual_address
 		);
 	}
-	void HD_directx12_command_list::ZC_set_srv_with_gpu_virtual_address(
+	void HD_directx12_command_list::ZC_bind_root_srv_with_gpu_virtual_address(
 		TKPA_valid<A_command_list> command_list_p,
 		u32 root_param_index,
 		F_resource_gpu_virtual_address gpu_virtual_address
@@ -374,7 +386,7 @@ namespace nrhi {
 			gpu_virtual_address
 		);
 	}
-	void HD_directx12_command_list::ZC_set_uav_with_gpu_virtual_address(
+	void HD_directx12_command_list::ZC_bind_root_uav_with_gpu_virtual_address(
 		TKPA_valid<A_command_list> command_list_p,
 		u32 root_param_index,
 		F_resource_gpu_virtual_address gpu_virtual_address
@@ -387,7 +399,7 @@ namespace nrhi {
 		);
 	}
 
-	void HD_directx12_command_list::ZG_set_pipeline_state(
+	void HD_directx12_command_list::ZG_bind_pipeline_state(
 		TKPA_valid<A_command_list> command_list_p,
 		KPA_valid_graphics_pipeline_state_handle pipeline_state_p
 	) {
@@ -397,7 +409,7 @@ namespace nrhi {
 			pipeline_state_p.T_cast<F_directx12_pipeline_state>()->d3d12_pipeline_state_p()
 		);
 	}
-	void HD_directx12_command_list::ZG_set_root_signature(
+	void HD_directx12_command_list::ZG_bind_root_signature(
 		TKPA_valid <nrhi::A_command_list> command_list_p,
 		TKPA_valid <nrhi::A_root_signature> root_signature_p
 	) {
@@ -407,7 +419,19 @@ namespace nrhi {
 			root_signature_p.T_cast<F_directx12_root_signature>()->d3d12_root_signature_p()
 		);
 	}
-	void HD_directx12_command_list::ZG_set_root_constants(
+	void HD_directx12_command_list::ZG_bind_root_descriptor_table(
+		TKPA_valid<A_command_list> command_list_p,
+		u32 root_param_index,
+		F_descriptor_gpu_address gpu_address
+	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
+		command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p()->SetGraphicsRootDescriptorTable(
+			root_param_index,
+			gpu_address
+		);
+	}
+	void HD_directx12_command_list::ZG_bind_root_constants(
 		TKPA_valid<A_command_list> command_list_p,
 		u32 root_param_index,
 		const TG_span<u32>& constant_span,
@@ -422,7 +446,7 @@ namespace nrhi {
 			offset_in_constants
 		);
 	}
-	void HD_directx12_command_list::ZG_set_root_constant(
+	void HD_directx12_command_list::ZG_bind_root_constant(
 		TKPA_valid<A_command_list> command_list_p,
 		u32 root_param_index,
 		u32 root_constant,
@@ -436,62 +460,62 @@ namespace nrhi {
 			offset_in_constants
 		);
 	}
-	void HD_directx12_command_list::ZG_set_srv(
+	void HD_directx12_command_list::ZG_bind_root_srv(
 		TKPA_valid<A_command_list> command_list_p,
 		u32 root_param_index,
 		KPA_valid_srv_handle srv_p
 	) {
-		return ZG_set_srv_with_resource(
+		return ZG_bind_root_srv_with_resource(
 			command_list_p,
 			root_param_index,
 			NCPP_FOH_VALID(srv_p->desc().resource_p)
 		);
 	}
-	void HD_directx12_command_list::ZG_set_uav(
+	void HD_directx12_command_list::ZG_bind_root_uav(
 		TKPA_valid<A_command_list> command_list_p,
 		u32 root_param_index,
 		KPA_valid_uav_handle uav_p
 	) {
-		return ZG_set_uav_with_resource(
+		return ZG_bind_root_uav_with_resource(
 			command_list_p,
 			root_param_index,
 			NCPP_FOH_VALID(uav_p->desc().resource_p)
 		);
 	}
-	void HD_directx12_command_list::ZG_set_cbv_with_resource(
+	void HD_directx12_command_list::ZG_bind_root_cbv_with_resource(
 		TKPA_valid<A_command_list> command_list_p,
 		u32 root_param_index,
 		TKPA_valid<A_resource> resource_p
 	) {
-		ZG_set_cbv_with_gpu_virtual_address(
+		ZG_bind_root_cbv_with_gpu_virtual_address(
 			command_list_p,
 			root_param_index,
 			HD_directx12_resource::gpu_virtual_address(resource_p)
 		);
 	}
-	void HD_directx12_command_list::ZG_set_srv_with_resource(
+	void HD_directx12_command_list::ZG_bind_root_srv_with_resource(
 		TKPA_valid<A_command_list> command_list_p,
 		u32 root_param_index,
 		TKPA_valid<A_resource> resource_p
 	) {
-		ZG_set_srv_with_gpu_virtual_address(
+		ZG_bind_root_srv_with_gpu_virtual_address(
 			command_list_p,
 			root_param_index,
 			HD_directx12_resource::gpu_virtual_address(resource_p)
 		);
 	}
-	void HD_directx12_command_list::ZG_set_uav_with_resource(
+	void HD_directx12_command_list::ZG_bind_root_uav_with_resource(
 		TKPA_valid<A_command_list> command_list_p,
 		u32 root_param_index,
 		TKPA_valid<A_resource> resource_p
 	) {
-		ZG_set_uav_with_gpu_virtual_address(
+		ZG_bind_root_uav_with_gpu_virtual_address(
 			command_list_p,
 			root_param_index,
 			HD_directx12_resource::gpu_virtual_address(resource_p)
 		);
 	}
-	void HD_directx12_command_list::ZG_set_cbv_with_gpu_virtual_address(
+	void HD_directx12_command_list::ZG_bind_root_cbv_with_gpu_virtual_address(
 		TKPA_valid<A_command_list> command_list_p,
 		u32 root_param_index,
 		F_resource_gpu_virtual_address gpu_virtual_address
@@ -503,7 +527,7 @@ namespace nrhi {
 			gpu_virtual_address
 		);
 	}
-	void HD_directx12_command_list::ZG_set_srv_with_gpu_virtual_address(
+	void HD_directx12_command_list::ZG_bind_root_srv_with_gpu_virtual_address(
 		TKPA_valid<A_command_list> command_list_p,
 		u32 root_param_index,
 		F_resource_gpu_virtual_address gpu_virtual_address
@@ -515,7 +539,7 @@ namespace nrhi {
 			gpu_virtual_address
 		);
 	}
-	void HD_directx12_command_list::ZG_set_uav_with_gpu_virtual_address(
+	void HD_directx12_command_list::ZG_bind_root_uav_with_gpu_virtual_address(
 		TKPA_valid<A_command_list> command_list_p,
 		u32 root_param_index,
 		F_resource_gpu_virtual_address gpu_virtual_address
@@ -528,7 +552,7 @@ namespace nrhi {
 		);
 	}
 
-	void HD_directx12_command_list::ZOM_set_frame_buffer(
+	void HD_directx12_command_list::ZOM_bind_frame_buffer(
 		TKPA_valid<A_command_list> command_list_p,
 		TKPA_valid<A_frame_buffer> frame_buffer_p
 	) {

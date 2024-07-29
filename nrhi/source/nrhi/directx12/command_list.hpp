@@ -132,143 +132,153 @@ namespace nrhi {
 		);
 
 	public:
-		static void set_descriptor_heaps(
+		static void bind_descriptor_heaps(
 			TKPA_valid<A_command_list> command_list_p,
 			const TG_span<TK_valid<A_descriptor_heap>>& descriptor_heap_p_span
 		);
 
 	public:
-		static void set_pipeline_state(
+		static void bind_pipeline_state(
 			TKPA_valid<A_command_list> command_list_p,
 			TKPA_valid<A_pipeline_state> pipeline_state_p
 		);
 
 	public:
-		static void ZC_set_pipeline_state(
+		static void ZC_bind_pipeline_state(
 			TKPA_valid<A_command_list> command_list_p,
 			KPA_valid_compute_pipeline_state_handle pipeline_state_p
 		);
-		static void ZC_set_root_signature(
+		static void ZC_bind_root_signature(
 			TKPA_valid<A_command_list> command_list_p,
 			TKPA_valid<A_root_signature> root_signature_p
 		);
-		static void ZC_set_root_constants(
+		static void ZC_bind_root_descriptor_table(
+			TKPA_valid<A_command_list> command_list_p,
+			u32 root_param_index,
+			F_descriptor_gpu_address gpu_address
+		);
+		static void ZC_bind_root_constants(
 			TKPA_valid<A_command_list> command_list_p,
 			u32 root_param_index,
 			const TG_span<u32>& constant_span,
 			u32 offset_in_constants
 		);
-		static void ZC_set_root_constant(
+		static void ZC_bind_root_constant(
 			TKPA_valid<A_command_list> command_list_p,
 			u32 root_param_index,
 			u32 root_constant,
 			u32 offset_in_constants
 		);
-		static void ZC_set_srv(
+		static void ZC_bind_root_srv(
 			TKPA_valid<A_command_list> command_list_p,
 			u32 root_param_index,
 			KPA_valid_srv_handle srv_p
 		);
-		static void ZC_set_uav(
+		static void ZC_bind_root_uav(
 			TKPA_valid<A_command_list> command_list_p,
 			u32 root_param_index,
 			KPA_valid_uav_handle uav_p
 		);
-		static void ZC_set_cbv_with_resource(
+		static void ZC_bind_root_cbv_with_resource(
 			TKPA_valid<A_command_list> command_list_p,
 			u32 root_param_index,
 			TKPA_valid<A_resource> resource_p
 		);
-		static void ZC_set_srv_with_resource(
+		static void ZC_bind_root_srv_with_resource(
 			TKPA_valid<A_command_list> command_list_p,
 			u32 root_param_index,
 			TKPA_valid<A_resource> resource_p
 		);
-		static void ZC_set_uav_with_resource(
+		static void ZC_bind_root_uav_with_resource(
 			TKPA_valid<A_command_list> command_list_p,
 			u32 root_param_index,
 			TKPA_valid<A_resource> resource_p
 		);
-		static void ZC_set_cbv_with_gpu_virtual_address(
+		static void ZC_bind_root_cbv_with_gpu_virtual_address(
 			TKPA_valid<A_command_list> command_list_p,
 			u32 root_param_index,
 			F_resource_gpu_virtual_address gpu_virtual_address
 		);
-		static void ZC_set_srv_with_gpu_virtual_address(
+		static void ZC_bind_root_srv_with_gpu_virtual_address(
 			TKPA_valid<A_command_list> command_list_p,
 			u32 root_param_index,
 			F_resource_gpu_virtual_address gpu_virtual_address
 		);
-		static void ZC_set_uav_with_gpu_virtual_address(
+		static void ZC_bind_root_uav_with_gpu_virtual_address(
 			TKPA_valid<A_command_list> command_list_p,
 			u32 root_param_index,
 			F_resource_gpu_virtual_address gpu_virtual_address
 		);
 
 	public:
-		static void ZG_set_pipeline_state(
+		static void ZG_bind_pipeline_state(
 			TKPA_valid<A_command_list> command_list_p,
 			KPA_valid_graphics_pipeline_state_handle pipeline_state_p
 		);
-		static void ZG_set_root_signature(
+		static void ZG_bind_root_signature(
 			TKPA_valid<A_command_list> command_list_p,
 			TKPA_valid<A_root_signature> root_signature_p
 		);
-		static void ZG_set_root_constants(
+		static void ZG_bind_root_descriptor_table(
+			TKPA_valid<A_command_list> command_list_p,
+			u32 root_param_index,
+			F_descriptor_gpu_address gpu_address
+		);
+		static void ZG_bind_root_constants(
 			TKPA_valid<A_command_list> command_list_p,
 			u32 root_param_index,
 			const TG_span<u32>& constant_span,
 			u32 offset_in_constants
 		);
-		static void ZG_set_root_constant(
+		static void ZG_bind_root_constant(
 			TKPA_valid<A_command_list> command_list_p,
 			u32 root_param_index,
 			u32 root_constant,
 			u32 offset_in_constants
 		);
-		static void ZG_set_srv(
+		static void ZG_bind_root_srv(
 			TKPA_valid<A_command_list> command_list_p,
 			u32 root_param_index,
 			KPA_valid_srv_handle srv_p
 		);
-		static void ZG_set_uav(
+		static void ZG_bind_root_uav(
 			TKPA_valid<A_command_list> command_list_p,
 			u32 root_param_index,
 			KPA_valid_uav_handle uav_p
 		);
-		static void ZG_set_cbv_with_resource(
+		static void ZG_bind_root_cbv_with_resource(
 			TKPA_valid<A_command_list> command_list_p,
 			u32 root_param_index,
 			TKPA_valid<A_resource> resource_p
 		);
-		static void ZG_set_srv_with_resource(
+		static void ZG_bind_root_srv_with_resource(
 			TKPA_valid<A_command_list> command_list_p,
 			u32 root_param_index,
 			TKPA_valid<A_resource> resource_p
 		);
-		static void ZG_set_uav_with_resource(
+		static void ZG_bind_root_uav_with_resource(
 			TKPA_valid<A_command_list> command_list_p,
 			u32 root_param_index,
 			TKPA_valid<A_resource> resource_p
 		);
-		static void ZG_set_cbv_with_gpu_virtual_address(
+		static void ZG_bind_root_cbv_with_gpu_virtual_address(
 			TKPA_valid<A_command_list> command_list_p,
 			u32 root_param_index,
 			F_resource_gpu_virtual_address gpu_virtual_address
 		);
-		static void ZG_set_srv_with_gpu_virtual_address(
+		static void ZG_bind_root_srv_with_gpu_virtual_address(
 			TKPA_valid<A_command_list> command_list_p,
 			u32 root_param_index,
 			F_resource_gpu_virtual_address gpu_virtual_address
 		);
-		static void ZG_set_uav_with_gpu_virtual_address(
+		static void ZG_bind_root_uav_with_gpu_virtual_address(
 			TKPA_valid<A_command_list> command_list_p,
 			u32 root_param_index,
 			F_resource_gpu_virtual_address gpu_virtual_address
 		);
 
 	public:
-		static void ZOM_set_frame_buffer(
+		static void ZOM_bind_frame_buffer(
 			TKPA_valid<A_command_list> command_list_p,
 			TKPA_valid<A_frame_buffer> frame_buffer_p
 		);

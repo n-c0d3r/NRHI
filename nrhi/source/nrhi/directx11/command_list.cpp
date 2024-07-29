@@ -88,7 +88,7 @@ namespace nrhi {
 		);
 	}
 
-	void HD_directx11_command_list::set_pipeline_state(
+	void HD_directx11_command_list::bind_pipeline_state(
 		TKPA_valid<A_command_list> command_list_p,
 		TKPA_valid<A_pipeline_state> pipeline_state_p
 	) {
@@ -96,7 +96,7 @@ namespace nrhi {
 			pipeline_state_p->type(),
 			NRHI_ENUM_CASE(
 				ED_pipeline_state_type::GRAPHICS,
-				ZG_set_pipeline_state(
+				ZG_bind_pipeline_state(
 					command_list_p,
 					{
 						pipeline_state_p
@@ -106,7 +106,7 @@ namespace nrhi {
             )
 			NRHI_ENUM_CASE(
 				ED_pipeline_state_type::COMPUTE,
-				ZC_set_pipeline_state(
+				ZC_bind_pipeline_state(
 					command_list_p,
 					{
 						pipeline_state_p
@@ -116,7 +116,7 @@ namespace nrhi {
             )
 		);
 	}
-	void HD_directx11_command_list::ZG_set_pipeline_state(
+	void HD_directx11_command_list::ZG_bind_pipeline_state(
 		TKPA_valid<A_command_list> command_list_p,
 		KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p
 	) {
@@ -190,7 +190,7 @@ namespace nrhi {
 			}
 		}
 	}
-	void HD_directx11_command_list::ZC_set_pipeline_state(
+	void HD_directx11_command_list::ZC_bind_pipeline_state(
 		TKPA_valid<A_command_list> command_list_p,
 		KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p
 	) {
@@ -741,7 +741,7 @@ namespace nrhi {
 		);
 	}
 
-	void HD_directx11_command_list::ZOM_set_frame_buffer(
+	void HD_directx11_command_list::ZOM_bind_frame_buffer(
 		TKPA_valid<A_command_list> command_list_p,
 		TKPA_valid<A_frame_buffer> frame_buffer_p
 	) {

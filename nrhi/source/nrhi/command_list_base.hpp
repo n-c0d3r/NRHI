@@ -128,9 +128,9 @@ namespace nrhi {
 		);
 
 	public:
-		void set_pipeline_state(TKPA_valid<A_pipeline_state> pipeline_state_p);
-		void ZG_set_pipeline_state(KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p);
-		void ZC_set_pipeline_state(KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p);
+		void bind_pipeline_state(TKPA_valid<A_pipeline_state> pipeline_state_p);
+		void ZG_bind_pipeline_state(KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p);
+		void ZC_bind_pipeline_state(KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p);
 
 	public:
 		void ZIA_bind_index_buffer(
@@ -211,7 +211,7 @@ namespace nrhi {
 		);
 
 	public:
-		void ZOM_set_frame_buffer(TKPA_valid<A_frame_buffer> frame_buffer_p);
+		void ZOM_bind_frame_buffer(TKPA_valid<A_frame_buffer> frame_buffer_p);
 
 	public:
 		void ZCS_bind_constant_buffers(
@@ -346,100 +346,108 @@ namespace nrhi {
 		);
 
 	public:
-		void set_descriptor_heaps(
+		void bind_descriptor_heaps(
 			const TG_span<TK_valid<A_descriptor_heap>>& descriptor_heap_p_span
 		);
 
 	public:
-		void ZC_set_root_signature(
+		void ZC_bind_root_signature(
 			TKPA_valid<A_root_signature> root_signature_p
 		);
-		void ZC_set_root_constants(
+		void ZC_bind_root_descriptor_table(
+			u32 root_param_index,
+			F_descriptor_gpu_address gpu_address
+		);
+		void ZC_bind_root_constants(
 			u32 root_param_index,
 			const TG_span<u32>& constant_span,
 			u32 offset_in_constants
 		);
-		void ZC_set_root_constant(
+		void ZC_bind_root_constant(
 			u32 root_param_index,
 			u32 root_constant,
 			u32 offset_in_constants
 		);
-		void ZC_set_srv(
+		void ZC_bind_root_srv(
 			u32 root_param_index,
 			KPA_valid_srv_handle srv_p
 		);
-		void ZC_set_uav(
+		void ZC_bind_root_uav(
 			u32 root_param_index,
 			KPA_valid_uav_handle uav_p
 		);
-		void ZC_set_cbv_with_resource(
+		void ZC_bind_root_cbv_with_resource(
 			u32 root_param_index,
 			TKPA_valid<A_resource> resource_p
 		);
-		void ZC_set_srv_with_resource(
+		void ZC_bind_root_srv_with_resource(
 			u32 root_param_index,
 			TKPA_valid<A_resource> resource_p
 		);
-		void ZC_set_uav_with_resource(
+		void ZC_bind_root_uav_with_resource(
 			u32 root_param_index,
 			TKPA_valid<A_resource> resource_p
 		);
-		void ZC_set_cbv_with_gpu_virtual_address(
+		void ZC_bind_root_cbv_with_gpu_virtual_address(
 			u32 root_param_index,
 			F_resource_gpu_virtual_address gpu_virtual_address
 		);
-		void ZC_set_srv_with_gpu_virtual_address(
+		void ZC_bind_root_srv_with_gpu_virtual_address(
 			u32 root_param_index,
 			F_resource_gpu_virtual_address gpu_virtual_address
 		);
-		void ZC_set_uav_with_gpu_virtual_address(
+		void ZC_bind_root_uav_with_gpu_virtual_address(
 			u32 root_param_index,
 			F_resource_gpu_virtual_address gpu_virtual_address
 		);
 
 	public:
-		void ZG_set_root_signature(
+		void ZG_bind_root_signature(
 			TKPA_valid<A_root_signature> root_signature_p
 		);
-		void ZG_set_root_constants(
+		void ZG_bind_root_descriptor_table(
+			u32 root_param_index,
+			F_descriptor_gpu_address gpu_address
+		);
+		void ZG_bind_root_constants(
 			u32 root_param_index,
 			const TG_span<u32>& constant_span,
 			u32 offset_in_constants
 		);
-		void ZG_set_root_constant(
+		void ZG_bind_root_constant(
 			u32 root_param_index,
 			u32 root_constant,
 			u32 offset_in_constants
 		);
-		void ZG_set_srv(
+		void ZG_bind_root_srv(
 			u32 root_param_index,
 			KPA_valid_srv_handle srv_p
 		);
-		void ZG_set_uav(
+		void ZG_bind_root_uav(
 			u32 root_param_index,
 			KPA_valid_uav_handle uav_p
 		);
-		void ZG_set_cbv_with_resource(
+		void ZG_bind_root_cbv_with_resource(
 			u32 root_param_index,
 			TKPA_valid<A_resource> resource_p
 		);
-		void ZG_set_srv_with_resource(
+		void ZG_bind_root_srv_with_resource(
 			u32 root_param_index,
 			TKPA_valid<A_resource> resource_p
 		);
-		void ZG_set_uav_with_resource(
+		void ZG_bind_root_uav_with_resource(
 			u32 root_param_index,
 			TKPA_valid<A_resource> resource_p
 		);
-		void ZG_set_cbv_with_gpu_virtual_address(
+		void ZG_bind_root_cbv_with_gpu_virtual_address(
 			u32 root_param_index,
 			F_resource_gpu_virtual_address gpu_virtual_address
 		);
-		void ZG_set_srv_with_gpu_virtual_address(
+		void ZG_bind_root_srv_with_gpu_virtual_address(
 			u32 root_param_index,
 			F_resource_gpu_virtual_address gpu_virtual_address
 		);
-		void ZG_set_uav_with_gpu_virtual_address(
+		void ZG_bind_root_uav_with_gpu_virtual_address(
 			u32 root_param_index,
 			F_resource_gpu_virtual_address gpu_virtual_address
 		);

@@ -67,22 +67,22 @@ namespace nrhi {
 	}
 #endif // NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
 
-	NCPP_FORCE_INLINE void A_command_list::set_pipeline_state(TKPA_valid<A_pipeline_state> pipeline_state_p) {
+	NCPP_FORCE_INLINE void A_command_list::bind_pipeline_state(TKPA_valid<A_pipeline_state> pipeline_state_p) {
 
-		H_command_list::set_pipeline_state(NCPP_KTHIS(), pipeline_state_p);
+		H_command_list::bind_pipeline_state(NCPP_KTHIS(), pipeline_state_p);
 	}
-	NCPP_FORCE_INLINE void A_command_list::ZG_set_pipeline_state(KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p) {
+	NCPP_FORCE_INLINE void A_command_list::ZG_bind_pipeline_state(KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p) {
 
-		H_command_list::ZG_set_pipeline_state(NCPP_KTHIS(), graphics_pipeline_state_p);
+		H_command_list::ZG_bind_pipeline_state(NCPP_KTHIS(), graphics_pipeline_state_p);
 	}
-	NCPP_FORCE_INLINE void A_command_list::ZC_set_pipeline_state(KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p) {
+	NCPP_FORCE_INLINE void A_command_list::ZC_bind_pipeline_state(KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p) {
 
-		H_command_list::ZC_set_pipeline_state(NCPP_KTHIS(), compute_pipeline_state_p);
+		H_command_list::ZC_bind_pipeline_state(NCPP_KTHIS(), compute_pipeline_state_p);
 	}
 
-	NCPP_FORCE_INLINE void A_command_list::ZOM_set_frame_buffer(TKPA_valid<A_frame_buffer> frame_buffer_p) {
+	NCPP_FORCE_INLINE void A_command_list::ZOM_bind_frame_buffer(TKPA_valid<A_frame_buffer> frame_buffer_p) {
 
-		H_command_list::ZOM_set_frame_buffer(NCPP_KTHIS(), frame_buffer_p);
+		H_command_list::ZOM_bind_frame_buffer(NCPP_KTHIS(), frame_buffer_p);
 	}
 
 #ifdef NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_BINDING
@@ -600,34 +600,46 @@ namespace nrhi {
 		);
 	}
 
-	NCPP_FORCE_INLINE void A_command_list::set_descriptor_heaps(
+	NCPP_FORCE_INLINE void A_command_list::bind_descriptor_heaps(
 		const TG_span<TK_valid<A_descriptor_heap>>& descriptor_heap_p_span
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
-			H_command_list::set_descriptor_heaps(
+			H_command_list::bind_descriptor_heaps(
 				NCPP_KTHIS(),
 				descriptor_heap_p_span
 			);
 		);
 	}
 
-	NCPP_FORCE_INLINE void A_command_list::ZC_set_root_signature(
+	NCPP_FORCE_INLINE void A_command_list::ZC_bind_root_signature(
 		TKPA_valid<A_root_signature> root_signature_p
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
-			H_command_list::ZC_set_root_signature(
+			H_command_list::ZC_bind_root_signature(
 				NCPP_KTHIS(),
 				root_signature_p
 			);
 		);
 	}
-	NCPP_FORCE_INLINE void A_command_list::ZC_set_root_constants(
+	NCPP_FORCE_INLINE void A_command_list::ZC_bind_root_descriptor_table(
+		u32 root_param_index,
+		F_descriptor_gpu_address gpu_address
+	) {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
+			H_command_list::ZC_bind_root_descriptor_table(
+				NCPP_KTHIS(),
+				root_param_index,
+				gpu_address
+			);
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::ZC_bind_root_constants(
 		u32 root_param_index,
 		const TG_span<u32>& constant_span,
 		u32 offset_in_constants
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
-			H_command_list::ZC_set_root_constants(
+			H_command_list::ZC_bind_root_constants(
 				NCPP_KTHIS(),
 				root_param_index,
 				constant_span,
@@ -635,13 +647,13 @@ namespace nrhi {
 			);
 		);
 	}
-	NCPP_FORCE_INLINE void A_command_list::ZC_set_root_constant(
+	NCPP_FORCE_INLINE void A_command_list::ZC_bind_root_constant(
 		u32 root_param_index,
 		u32 root_constant,
 		u32 offset_in_constants
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
-			H_command_list::ZC_set_root_constant(
+			H_command_list::ZC_bind_root_constant(
 				NCPP_KTHIS(),
 				root_param_index,
 				root_constant,
@@ -649,96 +661,96 @@ namespace nrhi {
 			);
 		);
 	}
-	NCPP_FORCE_INLINE void A_command_list::ZC_set_srv(
+	NCPP_FORCE_INLINE void A_command_list::ZC_bind_root_srv(
 		u32 root_param_index,
 		KPA_valid_srv_handle srv_p
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
-			H_command_list::ZC_set_srv(
+			H_command_list::ZC_bind_root_srv(
 				NCPP_KTHIS(),
 				root_param_index,
 				srv_p
 			);
 		);
 	}
-	NCPP_FORCE_INLINE void A_command_list::ZC_set_uav(
+	NCPP_FORCE_INLINE void A_command_list::ZC_bind_root_uav(
 		u32 root_param_index,
 		KPA_valid_uav_handle uav_p
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
-			H_command_list::ZC_set_uav(
+			H_command_list::ZC_bind_root_uav(
 				NCPP_KTHIS(),
 				root_param_index,
 				uav_p
 			);
 		);
 	}
-	NCPP_FORCE_INLINE void A_command_list::ZC_set_cbv_with_resource(
+	NCPP_FORCE_INLINE void A_command_list::ZC_bind_root_cbv_with_resource(
 		u32 root_param_index,
 		TKPA_valid<A_resource> resource_p
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
-			H_command_list::ZC_set_cbv_with_resource(
+			H_command_list::ZC_bind_root_cbv_with_resource(
 				NCPP_KTHIS(),
 				root_param_index,
 				resource_p
 			);
 		);
 	}
-	NCPP_FORCE_INLINE void A_command_list::ZC_set_srv_with_resource(
+	NCPP_FORCE_INLINE void A_command_list::ZC_bind_root_srv_with_resource(
 		u32 root_param_index,
 		TKPA_valid<A_resource> resource_p
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
-			H_command_list::ZC_set_srv_with_resource(
+			H_command_list::ZC_bind_root_srv_with_resource(
 				NCPP_KTHIS(),
 				root_param_index,
 				resource_p
 			);
 		);
 	}
-	NCPP_FORCE_INLINE void A_command_list::ZC_set_uav_with_resource(
+	NCPP_FORCE_INLINE void A_command_list::ZC_bind_root_uav_with_resource(
 		u32 root_param_index,
 		TKPA_valid<A_resource> resource_p
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
-			H_command_list::ZC_set_uav_with_resource(
+			H_command_list::ZC_bind_root_uav_with_resource(
 				NCPP_KTHIS(),
 				root_param_index,
 				resource_p
 			);
 		);
 	}
-	NCPP_FORCE_INLINE void A_command_list::ZC_set_cbv_with_gpu_virtual_address(
+	NCPP_FORCE_INLINE void A_command_list::ZC_bind_root_cbv_with_gpu_virtual_address(
 		u32 root_param_index,
 		F_resource_gpu_virtual_address gpu_virtual_address
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
-			H_command_list::ZC_set_cbv_with_gpu_virtual_address(
+			H_command_list::ZC_bind_root_cbv_with_gpu_virtual_address(
 				NCPP_KTHIS(),
 				root_param_index,
 				gpu_virtual_address
 			);
 		);
 	}
-	NCPP_FORCE_INLINE void A_command_list::ZC_set_srv_with_gpu_virtual_address(
+	NCPP_FORCE_INLINE void A_command_list::ZC_bind_root_srv_with_gpu_virtual_address(
 		u32 root_param_index,
 		F_resource_gpu_virtual_address gpu_virtual_address
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
-			H_command_list::ZC_set_srv_with_gpu_virtual_address(
+			H_command_list::ZC_bind_root_srv_with_gpu_virtual_address(
 				NCPP_KTHIS(),
 				root_param_index,
 				gpu_virtual_address
 			);
 		);
 	}
-	NCPP_FORCE_INLINE void A_command_list::ZC_set_uav_with_gpu_virtual_address(
+	NCPP_FORCE_INLINE void A_command_list::ZC_bind_root_uav_with_gpu_virtual_address(
 		u32 root_param_index,
 		F_resource_gpu_virtual_address gpu_virtual_address
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
-			H_command_list::ZC_set_uav_with_gpu_virtual_address(
+			H_command_list::ZC_bind_root_uav_with_gpu_virtual_address(
 				NCPP_KTHIS(),
 				root_param_index,
 				gpu_virtual_address
@@ -746,23 +758,35 @@ namespace nrhi {
 		);
 	}
 
-	NCPP_FORCE_INLINE void A_command_list::ZG_set_root_signature(
+	NCPP_FORCE_INLINE void A_command_list::ZG_bind_root_signature(
 		TKPA_valid<A_root_signature> root_signature_p
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
-			H_command_list::ZG_set_root_signature(
+			H_command_list::ZG_bind_root_signature(
 				NCPP_KTHIS(),
 				root_signature_p
 			);
 		);
 	}
-	NCPP_FORCE_INLINE void A_command_list::ZG_set_root_constants(
+	NCPP_FORCE_INLINE void A_command_list::ZG_bind_root_descriptor_table(
+		u32 root_param_index,
+		F_descriptor_gpu_address gpu_address
+	) {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
+			H_command_list::ZG_bind_root_descriptor_table(
+				NCPP_KTHIS(),
+				root_param_index,
+				gpu_address
+			);
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::ZG_bind_root_constants(
 		u32 root_param_index,
 		const TG_span<u32>& constant_span,
 		u32 offset_in_constants
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
-			H_command_list::ZG_set_root_constants(
+			H_command_list::ZG_bind_root_constants(
 				NCPP_KTHIS(),
 				root_param_index,
 				constant_span,
@@ -770,13 +794,13 @@ namespace nrhi {
 			);
 		);
 	}
-	NCPP_FORCE_INLINE void A_command_list::ZG_set_root_constant(
+	NCPP_FORCE_INLINE void A_command_list::ZG_bind_root_constant(
 		u32 root_param_index,
 		u32 root_constant,
 		u32 offset_in_constants
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
-			H_command_list::ZG_set_root_constant(
+			H_command_list::ZG_bind_root_constant(
 				NCPP_KTHIS(),
 				root_param_index,
 				root_constant,
@@ -784,96 +808,96 @@ namespace nrhi {
 			);
 		);
 	}
-	NCPP_FORCE_INLINE void A_command_list::ZG_set_srv(
+	NCPP_FORCE_INLINE void A_command_list::ZG_bind_root_srv(
 		u32 root_param_index,
 		KPA_valid_srv_handle srv_p
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
-			H_command_list::ZG_set_srv(
+			H_command_list::ZG_bind_root_srv(
 				NCPP_KTHIS(),
 				root_param_index,
 				srv_p
 			);
 		);
 	}
-	NCPP_FORCE_INLINE void A_command_list::ZG_set_uav(
+	NCPP_FORCE_INLINE void A_command_list::ZG_bind_root_uav(
 		u32 root_param_index,
 		KPA_valid_uav_handle uav_p
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
-			H_command_list::ZG_set_uav(
+			H_command_list::ZG_bind_root_uav(
 				NCPP_KTHIS(),
 				root_param_index,
 				uav_p
 			);
 		);
 	}
-	NCPP_FORCE_INLINE void A_command_list::ZG_set_cbv_with_resource(
+	NCPP_FORCE_INLINE void A_command_list::ZG_bind_root_cbv_with_resource(
 		u32 root_param_index,
 		TKPA_valid<A_resource> resource_p
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
-			H_command_list::ZG_set_cbv_with_resource(
+			H_command_list::ZG_bind_root_cbv_with_resource(
 				NCPP_KTHIS(),
 				root_param_index,
 				resource_p
 			);
 		);
 	}
-	NCPP_FORCE_INLINE void A_command_list::ZG_set_srv_with_resource(
+	NCPP_FORCE_INLINE void A_command_list::ZG_bind_root_srv_with_resource(
 		u32 root_param_index,
 		TKPA_valid<A_resource> resource_p
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
-			H_command_list::ZG_set_srv_with_resource(
+			H_command_list::ZG_bind_root_srv_with_resource(
 				NCPP_KTHIS(),
 				root_param_index,
 				resource_p
 			);
 		);
 	}
-	NCPP_FORCE_INLINE void A_command_list::ZG_set_uav_with_resource(
+	NCPP_FORCE_INLINE void A_command_list::ZG_bind_root_uav_with_resource(
 		u32 root_param_index,
 		TKPA_valid<A_resource> resource_p
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
-			H_command_list::ZG_set_uav_with_resource(
+			H_command_list::ZG_bind_root_uav_with_resource(
 				NCPP_KTHIS(),
 				root_param_index,
 				resource_p
 			);
 		);
 	}
-	NCPP_FORCE_INLINE void A_command_list::ZG_set_cbv_with_gpu_virtual_address(
+	NCPP_FORCE_INLINE void A_command_list::ZG_bind_root_cbv_with_gpu_virtual_address(
 		u32 root_param_index,
 		F_resource_gpu_virtual_address gpu_virtual_address
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
-			H_command_list::ZG_set_cbv_with_gpu_virtual_address(
+			H_command_list::ZG_bind_root_cbv_with_gpu_virtual_address(
 				NCPP_KTHIS(),
 				root_param_index,
 				gpu_virtual_address
 			);
 		);
 	}
-	NCPP_FORCE_INLINE void A_command_list::ZG_set_srv_with_gpu_virtual_address(
+	NCPP_FORCE_INLINE void A_command_list::ZG_bind_root_srv_with_gpu_virtual_address(
 		u32 root_param_index,
 		F_resource_gpu_virtual_address gpu_virtual_address
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
-			H_command_list::ZG_set_srv_with_gpu_virtual_address(
+			H_command_list::ZG_bind_root_srv_with_gpu_virtual_address(
 				NCPP_KTHIS(),
 				root_param_index,
 				gpu_virtual_address
 			);
 		);
 	}
-	NCPP_FORCE_INLINE void A_command_list::ZG_set_uav_with_gpu_virtual_address(
+	NCPP_FORCE_INLINE void A_command_list::ZG_bind_root_uav_with_gpu_virtual_address(
 		u32 root_param_index,
 		F_resource_gpu_virtual_address gpu_virtual_address
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
-			H_command_list::ZG_set_uav_with_gpu_virtual_address(
+			H_command_list::ZG_bind_root_uav_with_gpu_virtual_address(
 				NCPP_KTHIS(),
 				root_param_index,
 				gpu_virtual_address
