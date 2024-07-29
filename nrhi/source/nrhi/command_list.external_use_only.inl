@@ -548,25 +548,53 @@ namespace nrhi {
 		);
 	}
 	NCPP_FORCE_INLINE void A_command_list::async_clear_rtv(
-		F_descriptor_cpu_address rtv_cpu_address,
+		K_valid_rtv_handle rtv_p,
 		PA_vector4_f32 color
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
 			H_command_list::async_clear_rtv(
 				NCPP_KTHIS(),
-				rtv_cpu_address,
+				rtv_p,
 				color
 			);
 		);
 	}
 	NCPP_FORCE_INLINE void A_command_list::async_clear_dsv(
-		F_descriptor_cpu_address dsv_cpu_address,
+		K_valid_dsv_handle dsv_p,
 		ED_clear_flag flag,
 		f32 depth,
 		u8 stencil
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
 			H_command_list::async_clear_dsv(
+				NCPP_KTHIS(),
+				dsv_p,
+				flag,
+				depth,
+				stencil
+			);
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::async_clear_rtv_with_descriptor(
+		F_descriptor_cpu_address rtv_cpu_address,
+		PA_vector4_f32 color
+	) {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			H_command_list::async_clear_rtv_with_descriptor(
+				NCPP_KTHIS(),
+				rtv_cpu_address,
+				color
+			);
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::async_clear_dsv_with_descriptor(
+		F_descriptor_cpu_address dsv_cpu_address,
+		ED_clear_flag flag,
+		f32 depth,
+		u8 stencil
+	) {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			H_command_list::async_clear_dsv_with_descriptor(
 				NCPP_KTHIS(),
 				dsv_cpu_address,
 				flag,

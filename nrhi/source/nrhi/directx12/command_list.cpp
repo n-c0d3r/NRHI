@@ -1,6 +1,7 @@
 #include <nrhi/directx12/command_list.hpp>
 #include <nrhi/directx12/device.hpp>
 #include <nrhi/directx12/resource.hpp>
+#include <nrhi/directx12/resource_view.hpp>
 #include <nrhi/command_allocator.hpp>
 
 
@@ -149,6 +150,32 @@ namespace nrhi {
 	}
 	void HD_directx12_command_list::async_clear_rtv(
 		TKPA_valid<A_command_list> command_list_p,
+		K_valid_rtv_handle rtv_p,
+		PA_vector4_f32 color
+	) {
+		async_clear_rtv_with_descriptor(
+			command_list_p,
+			rtv_p->descriptor().handle.cpu_address,
+			color
+		);
+	}
+	void HD_directx12_command_list::async_clear_dsv(
+		TKPA_valid<A_command_list> command_list_p,
+		K_valid_dsv_handle dsv_p,
+		ED_clear_flag flag,
+		f32 depth,
+		u8 stencil
+	) {
+		async_clear_dsv_with_descriptor(
+			command_list_p,
+			dsv_p->descriptor().handle.cpu_address,
+			flag,
+			depth,
+			stencil
+		);
+	}
+	void HD_directx12_command_list::async_clear_rtv_with_descriptor(
+		TKPA_valid<A_command_list> command_list_p,
 		F_descriptor_cpu_address rtv_cpu_address,
 		PA_vector4_f32 color
 	) {
@@ -161,7 +188,7 @@ namespace nrhi {
 			0
 		);
 	}
-	void HD_directx12_command_list::async_clear_dsv(
+	void HD_directx12_command_list::async_clear_dsv_with_descriptor(
 		TKPA_valid<A_command_list> command_list_p,
 		F_descriptor_cpu_address dsv_cpu_address,
 		ED_clear_flag flag,

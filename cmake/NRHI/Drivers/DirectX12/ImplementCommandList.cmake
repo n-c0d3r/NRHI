@@ -43,12 +43,24 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "async_clear_state" "void(
             TKPA_valid<A_command_list> command_list_p
         )"
-        "async_clear_rtv" "void(
+		"async_clear_rtv" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            K_valid_rtv_handle rtv_p,
+            PA_vector4_f32 color
+        )"
+		"async_clear_dsv" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            K_valid_dsv_handle dsv_p,
+            ED_clear_flag flag,
+            f32 depth,
+            u8 stencil
+        )"
+        "async_clear_rtv_with_descriptor" "void(
             TKPA_valid<A_command_list> command_list_p,
             F_descriptor_cpu_address rtv_cpu_address,
             PA_vector4_f32 color
         )"
-        "async_clear_dsv" "void(
+        "async_clear_dsv_with_descriptor" "void(
             TKPA_valid<A_command_list> command_list_p,
             F_descriptor_cpu_address dsv_cpu_address,
             ED_clear_flag flag,

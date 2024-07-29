@@ -112,10 +112,22 @@ namespace nrhi {
 		);
 		static void async_clear_rtv(
 			TKPA_valid<A_command_list> command_list_p,
-			F_descriptor_cpu_address rtv_cpu_address,
+			K_valid_rtv_handle rtv_p,
 			PA_vector4_f32 color
 		);
 		static void async_clear_dsv(
+			TKPA_valid<A_command_list> command_list_p,
+			K_valid_dsv_handle dsv_p,
+			ED_clear_flag flag,
+			f32 depth,
+			u8 stencil
+		);
+		static void async_clear_rtv_with_descriptor(
+			TKPA_valid<A_command_list> command_list_p,
+			F_descriptor_cpu_address rtv_cpu_address,
+			PA_vector4_f32 color
+		);
+		static void async_clear_dsv_with_descriptor(
 			TKPA_valid<A_command_list> command_list_p,
 			F_descriptor_cpu_address dsv_cpu_address,
 			ED_clear_flag flag,

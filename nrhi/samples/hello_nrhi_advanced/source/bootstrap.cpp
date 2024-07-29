@@ -514,8 +514,8 @@ int main() {
 				);
 
 				command_list_p->async_clear_rtv(
-					swapchain_p->back_rtv_p()->descriptor().handle.cpu_address,
-					F_vector4_f32 { 0, 0.75f, 0.75f, 1.0f }
+					swapchain_p->back_rtv_p(),
+					F_vector4_f32 { 0, 0.84f, 0.96f, 1.0f }
 				);
 			}
 
