@@ -209,6 +209,69 @@ NRHI_FunctionHelper_CreateFunctionClass(
 			TKPA_valid<A_command_list> command_list_p,
 			TKPA_valid<A_frame_buffer> frame_buffer_p
 		)"
+		"ZIA_bind_index_buffer" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			KPA_valid_buffer_handle index_buffer_p,
+			u32 offset
+		)"
+		"ZIA_bind_vertex_buffers" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			const TG_span<K_valid_buffer_handle>& vertex_buffer_p_span,
+			const TG_span<u32>& offset_span,
+			u32 base_slot_index
+		)"
+		"ZIA_bind_vertex_buffer" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			KPA_valid_buffer_handle vertex_buffer_p,
+			u32 offset,
+			u32 slot_index
+		)"
+		"ZIA_bind_instance_buffers" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			const TG_span<K_valid_buffer_handle>& instance_buffer_p_span,
+			const TG_span<u32>& offset_span,
+			u32 base_slot_index
+		)"
+		"ZIA_bind_instance_buffer" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			KPA_valid_buffer_handle instance_buffer_p,
+			u32 offset,
+			u32 slot_index
+		)"
+		"ZIA_bind_index_buffer_with_gpu_virtual_address" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			F_resource_gpu_virtual_address gpu_virtual_address,
+			u32 size,
+			ED_format format
+		)"
+		"ZIA_bind_vertex_buffers_with_gpu_virtual_address" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			TG_span<F_resource_gpu_virtual_address> gpu_virtual_addresses,
+			TG_span<u32> sizes,
+			TG_span<u32> strides,
+			u32 base_slot_index
+		)"
+		"ZIA_bind_vertex_buffer_with_gpu_virtual_address" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			F_resource_gpu_virtual_address gpu_virtual_address,
+			u32 size,
+			u32 stride,
+			u32 slot_index
+		)"
+		"ZIA_bind_instance_buffers_with_gpu_virtual_address" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			TG_span<F_resource_gpu_virtual_address> gpu_virtual_addresses,
+			TG_span<u32> sizes,
+			TG_span<u32> strides,
+			u32 base_slot_index
+		)"
+		"ZIA_bind_instance_buffer_with_gpu_virtual_address" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			F_resource_gpu_virtual_address gpu_virtual_address,
+			u32 size,
+			u32 stride,
+			u32 slot_index
+		)"
         "async_copy_resource" "void(
 			TKPA_valid<A_command_list> command_list_p,
 			TKPA_valid<A_resource> dst_resource_p,
@@ -222,6 +285,51 @@ NRHI_FunctionHelper_CreateFunctionClass(
 			u64 src_offset,
 			u64 size
 		)"
+		"async_draw" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			u32 vertex_count,
+			u32 base_vertex_location
+		)"
+		"async_draw_instanced" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            u32 vertex_count_per_instance,
+            u32 instance_count,
+            u32 base_vertex_location,
+            u32 base_instance_location
+        )"
+		"async_draw_indexed" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            u32 index_count,
+            u32 base_index_location,
+            u32 base_vertex_location
+        )"
+		"async_draw_indexed_instanced" "void(
+            TKPA_valid<A_command_list> command_list_p,
+			u32 index_count_per_instance,
+			u32 instance_count,
+			u32 base_index_location,
+			u32 base_vertex_location,
+			u32 base_instance_location
+        )"
+		"async_dispatch" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            PA_vector3_u32 thread_group_count_3d
+        )"
+		"async_draw_instanced_indirect" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            KPA_indirect_buffer_handle indirect_buffer_p,
+            u32 indirect_buffer_offset
+        )"
+		"async_draw_indexed_instanced_indirect" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            KPA_indirect_buffer_handle indirect_buffer_p,
+            u32 indirect_buffer_offset
+        )"
+		"async_dispatch_indirect" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            KPA_indirect_buffer_handle indirect_buffer_p,
+            u32 indirect_buffer_offset
+        )"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement command list done")

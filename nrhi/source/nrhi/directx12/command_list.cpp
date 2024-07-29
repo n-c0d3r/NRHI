@@ -30,6 +30,13 @@ namespace nrhi {
 			IID_PPV_ARGS(&d3d12_command_list_p_)
 		);
 		NCPP_ASSERT(d3d12_command_list_p_) << "create d3d12 command list failed";
+
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
+			for(auto& e : temp_state_.is_vertex_buffer_binded_array)
+				e = false;
+			for(auto& e : temp_state_.is_instance_buffer_binded_array)
+				e = false;
+		);
 	}
     F_directx12_command_list::~F_directx12_command_list(){
 
@@ -150,6 +157,15 @@ namespace nrhi {
 	) {
 		auto dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
 
+		dx12_command_list_p->temp_state_ = {};
+
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
+			for(auto& e : dx12_command_list_p->temp_state_.is_vertex_buffer_binded_array)
+				e = false;
+			for(auto& e : dx12_command_list_p->temp_state_.is_instance_buffer_binded_array)
+				e = false;
+		);
+
 		dx12_command_list_p->d3d12_command_list_p()->ClearState(0);
 	}
 	void HD_directx12_command_list::async_clear_rtv(
@@ -252,7 +268,16 @@ namespace nrhi {
 	) {
 		NCPP_ASSERT(command_list_p->supports_compute()) << "command list does not support compute";
 
-		command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p()->SetPipelineState(
+		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
+
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
+			const auto& options = HD_directx12_pipeline_state::compute_options(pipeline_state_p);
+
+			auto& temp_state = dx12_command_list_p->temp_state_;
+			temp_state.pipeline_state_p = pipeline_state_p.oref.no_requirements();
+		);
+
+		dx12_command_list_p->d3d12_command_list_p()->SetPipelineState(
 			pipeline_state_p.T_cast<F_directx12_pipeline_state>()->d3d12_pipeline_state_p()
 		);
 	}
@@ -405,8 +430,26 @@ namespace nrhi {
 	) {
 		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
-		command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p()->SetPipelineState(
+		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
+
+		const auto& options = HD_directx12_pipeline_state::graphics_options(pipeline_state_p);
+
+		auto& temp_state = dx12_command_list_p->temp_state_;
+
+		temp_state.vertex_buffer_count = options.input_assembler_desc.vertex_attribute_groups.size();
+		temp_state.instance_buffer_count = options.input_assembler_desc.instance_attribute_groups.size();
+
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
+			temp_state.pipeline_state_p = pipeline_state_p.oref.no_requirements();
+		);
+
+		auto d3d12_command_list_p = dx12_command_list_p->d3d12_command_list_p();
+
+		d3d12_command_list_p->SetPipelineState(
 			pipeline_state_p.T_cast<F_directx12_pipeline_state>()->d3d12_pipeline_state_p()
+		);
+		d3d12_command_list_p->IASetPrimitiveTopology(
+			D3D12_PRIMITIVE_TOPOLOGY(options.primitive_topology)
 		);
 	}
 	void HD_directx12_command_list::ZG_bind_root_signature(
@@ -565,7 +608,7 @@ namespace nrhi {
 		const auto& color_attachments = frame_buffer_desc.color_attachments;
 		u32 color_attachment_count = (u32)(color_attachments.size());
 
-		auto d3d12_command_list_p = command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p();
+		const auto& d3d12_command_list_p = command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p();
 
 		d3d12_command_list_p->RSSetViewports(
 			1,
@@ -606,6 +649,344 @@ namespace nrhi {
 		);
 	}
 
+	void HD_directx12_command_list::ZIA_bind_index_buffer(
+		TKPA_valid<A_command_list> command_list_p,
+		KPA_valid_buffer_handle index_buffer_p,
+		u32 offset
+	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
+		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
+
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
+			auto& temp_state = dx12_command_list_p->temp_state_;
+			temp_state.is_index_buffer_binded = true;
+		);
+
+		ID3D12GraphicsCommandList* d3d12_command_list_p = dx12_command_list_p->d3d12_command_list_p();
+
+		NCPP_ASSERT(
+			u32(
+				flag_combine(
+					index_buffer_p->desc().bind_flags,
+					ED_resource_bind_flag::IBV
+				)
+			)
+		) << "invalid resource bind flag";
+
+		const auto& index_buffer_desc = index_buffer_p->desc();
+
+		u32 offset_in_bytes = offset * index_buffer_desc.stride;
+
+		D3D12_INDEX_BUFFER_VIEW d3d12_index_buffer_view;
+		d3d12_index_buffer_view.BufferLocation = HD_directx12_resource::gpu_virtual_address(
+			NCPP_AOH_VALID(index_buffer_p)
+		) + offset_in_bytes;
+		d3d12_index_buffer_view.SizeInBytes = index_buffer_desc.size - offset_in_bytes;
+		d3d12_index_buffer_view.Format = DXGI_FORMAT(index_buffer_desc.format);
+
+		d3d12_command_list_p->IASetIndexBuffer(
+			&d3d12_index_buffer_view
+		);
+	}
+	void HD_directx12_command_list::ZIA_bind_vertex_buffers(
+		TKPA_valid<A_command_list> command_list_p,
+		const TG_span<K_valid_buffer_handle>& vertex_buffer_p_span,
+		const TG_span<u32>& offset_span,
+		u32 base_slot_index
+	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
+		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
+
+		auto& temp_state = dx12_command_list_p->temp_state_;
+
+		ID3D12GraphicsCommandList* d3d12_command_list_p = dx12_command_list_p->d3d12_command_list_p();
+
+		u32 buffer_count = vertex_buffer_p_span.size();
+
+		D3D12_VERTEX_BUFFER_VIEW d3d12_buffer_views[NRHI_MAX_VERTEX_BUFFER_COUNT_PER_DRAWCALL];
+		for(u32 i = 0; i < buffer_count; ++i)
+		{
+			NCPP_ENABLE_IF_ASSERTION_ENABLED(
+				temp_state.is_vertex_buffer_binded_array[base_slot_index + i] = true;
+			);
+
+			const auto& vertex_buffer_p = vertex_buffer_p_span[i];
+			const auto& desc = vertex_buffer_p->desc();
+
+			u32 offset_in_bytes = offset_span[i] * desc.stride;
+
+			auto& d3d12_buffer_view = d3d12_buffer_views[i];
+			d3d12_buffer_view.BufferLocation = HD_directx12_resource::gpu_virtual_address(
+				NCPP_AOH_VALID(vertex_buffer_p)
+			) + offset_in_bytes;
+			d3d12_buffer_view.SizeInBytes = desc.size - offset_in_bytes;
+			d3d12_buffer_view.StrideInBytes = desc.stride;
+		}
+
+		memcpy(
+			temp_state.d3d12_vertex_buffer_views + base_slot_index,
+			d3d12_buffer_views,
+			buffer_count * sizeof(D3D12_VERTEX_BUFFER_VIEW)
+		);
+	}
+	void HD_directx12_command_list::ZIA_bind_vertex_buffer(
+		TKPA_valid<A_command_list> command_list_p,
+		KPA_valid_buffer_handle vertex_buffer_p,
+		u32 offset,
+		u32 slot_index
+	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
+		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
+
+		auto& temp_state = dx12_command_list_p->temp_state_;
+
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
+			temp_state.is_vertex_buffer_binded_array[slot_index] = true;
+		);
+
+		const auto& desc = vertex_buffer_p->desc();
+
+		u32 offset_in_bytes = offset * desc.stride;
+
+		ID3D12GraphicsCommandList* d3d12_command_list_p = dx12_command_list_p->d3d12_command_list_p();
+
+		D3D12_VERTEX_BUFFER_VIEW d3d12_buffer_view;
+		d3d12_buffer_view.BufferLocation = HD_directx12_resource::gpu_virtual_address(
+			NCPP_AOH_VALID(vertex_buffer_p)
+		) + offset_in_bytes;
+		d3d12_buffer_view.SizeInBytes = desc.size - offset_in_bytes;
+		d3d12_buffer_view.StrideInBytes = desc.stride;
+
+		temp_state.d3d12_vertex_buffer_views[slot_index] = d3d12_buffer_view;
+	}
+	void HD_directx12_command_list::ZIA_bind_instance_buffers(
+		TKPA_valid<A_command_list> command_list_p,
+		const TG_span<K_valid_buffer_handle>& instance_buffer_p_span,
+		const TG_span<u32>& offset_span,
+		u32 base_slot_index
+	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
+		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
+
+		auto& temp_state = dx12_command_list_p->temp_state_;
+
+		ID3D12GraphicsCommandList* d3d12_command_list_p = dx12_command_list_p->d3d12_command_list_p();
+
+		u32 buffer_count = instance_buffer_p_span.size();
+
+		D3D12_VERTEX_BUFFER_VIEW d3d12_buffer_views[NRHI_MAX_VERTEX_BUFFER_COUNT_PER_DRAWCALL];
+		for(u32 i = 0; i < buffer_count; ++i)
+		{
+			NCPP_ENABLE_IF_ASSERTION_ENABLED(
+				temp_state.is_instance_buffer_binded_array[base_slot_index + i] = true;
+			);
+
+			const auto& instance_buffer_p = instance_buffer_p_span[i];
+			const auto& desc = instance_buffer_p->desc();
+
+			u32 offset_in_bytes = offset_span[i] * desc.stride;
+
+			auto& d3d12_buffer_view = d3d12_buffer_views[i];
+			d3d12_buffer_view.BufferLocation = HD_directx12_resource::gpu_virtual_address(
+				NCPP_AOH_VALID(instance_buffer_p)
+			) + offset_in_bytes;
+			d3d12_buffer_view.SizeInBytes = desc.size - offset_in_bytes;
+			d3d12_buffer_view.StrideInBytes = desc.stride;
+		}
+
+		memcpy(
+			temp_state.d3d12_instance_buffer_views + base_slot_index,
+			d3d12_buffer_views,
+			buffer_count * sizeof(D3D12_VERTEX_BUFFER_VIEW)
+		);
+	}
+	void HD_directx12_command_list::ZIA_bind_instance_buffer(
+		TKPA_valid<A_command_list> command_list_p,
+		KPA_valid_buffer_handle instance_buffer_p,
+		u32 offset,
+		u32 slot_index
+	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
+		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
+
+		auto& temp_state = dx12_command_list_p->temp_state_;
+
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
+			temp_state.is_instance_buffer_binded_array[slot_index] = true;
+		);
+
+		const auto& desc = instance_buffer_p->desc();
+
+		u32 offset_in_bytes = offset * desc.stride;
+
+		ID3D12GraphicsCommandList* d3d12_command_list_p = dx12_command_list_p->d3d12_command_list_p();
+
+		D3D12_VERTEX_BUFFER_VIEW d3d12_buffer_view;
+		d3d12_buffer_view.BufferLocation = HD_directx12_resource::gpu_virtual_address(
+			NCPP_AOH_VALID(instance_buffer_p)
+		) + offset_in_bytes;
+		d3d12_buffer_view.SizeInBytes = desc.size - offset_in_bytes;
+		d3d12_buffer_view.StrideInBytes = desc.stride;
+
+		temp_state.d3d12_instance_buffer_views[slot_index] = d3d12_buffer_view;
+	}
+
+	void HD_directx12_command_list::ZIA_bind_index_buffer_with_gpu_virtual_address(
+		TKPA_valid<A_command_list> command_list_p,
+		F_resource_gpu_virtual_address gpu_virtual_address,
+		u32 size,
+		ED_format format
+	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
+		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
+
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
+			auto& temp_state = dx12_command_list_p->temp_state_;
+			temp_state.is_index_buffer_binded = true;
+		);
+
+		ID3D12GraphicsCommandList* d3d12_command_list_p = dx12_command_list_p->d3d12_command_list_p();
+
+		D3D12_INDEX_BUFFER_VIEW d3d12_index_buffer_view;
+		d3d12_index_buffer_view.BufferLocation = gpu_virtual_address;
+		d3d12_index_buffer_view.SizeInBytes = size;
+		d3d12_index_buffer_view.Format = DXGI_FORMAT(format);
+
+		d3d12_command_list_p->IASetIndexBuffer(
+			&d3d12_index_buffer_view
+		);
+	}
+	void HD_directx12_command_list::ZIA_bind_vertex_buffers_with_gpu_virtual_address(
+		TKPA_valid<A_command_list> command_list_p,
+		TG_span<F_resource_gpu_virtual_address> gpu_virtual_addresses,
+		TG_span<u32> sizes,
+		TG_span<u32> strides,
+		u32 base_slot_index
+	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
+		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
+
+		auto& temp_state = dx12_command_list_p->temp_state_;
+
+		ID3D12GraphicsCommandList* d3d12_command_list_p = dx12_command_list_p->d3d12_command_list_p();
+
+		u32 buffer_count = gpu_virtual_addresses.size();
+
+		D3D12_VERTEX_BUFFER_VIEW d3d12_buffer_views[NRHI_MAX_VERTEX_BUFFER_COUNT_PER_DRAWCALL];
+		for(u32 i = 0; i < buffer_count; ++i)
+		{
+			NCPP_ENABLE_IF_ASSERTION_ENABLED(
+				temp_state.is_vertex_buffer_binded_array[base_slot_index + i] = true;
+			);
+
+			auto& d3d12_buffer_view = d3d12_buffer_views[i];
+			d3d12_buffer_view.BufferLocation = gpu_virtual_addresses[i];
+			d3d12_buffer_view.SizeInBytes = sizes[i];
+			d3d12_buffer_view.StrideInBytes = strides[i];
+		}
+
+		memcpy(
+			temp_state.d3d12_vertex_buffer_views + base_slot_index,
+			d3d12_buffer_views,
+			buffer_count * sizeof(D3D12_VERTEX_BUFFER_VIEW)
+		);
+	}
+	void HD_directx12_command_list::ZIA_bind_vertex_buffer_with_gpu_virtual_address(
+		TKPA_valid<A_command_list> command_list_p,
+		F_resource_gpu_virtual_address gpu_virtual_address,
+		u32 size,
+		u32 stride,
+		u32 slot_index
+	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
+		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
+
+		auto& temp_state = dx12_command_list_p->temp_state_;
+
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
+			temp_state.is_vertex_buffer_binded_array[slot_index] = true;
+		);
+
+		ID3D12GraphicsCommandList* d3d12_command_list_p = dx12_command_list_p->d3d12_command_list_p();
+
+		D3D12_VERTEX_BUFFER_VIEW d3d12_buffer_view;
+		d3d12_buffer_view.BufferLocation = gpu_virtual_address;
+		d3d12_buffer_view.SizeInBytes = size;
+		d3d12_buffer_view.StrideInBytes = stride;
+
+		temp_state.d3d12_vertex_buffer_views[slot_index] = d3d12_buffer_view;
+	}
+	void HD_directx12_command_list::ZIA_bind_instance_buffers_with_gpu_virtual_address(
+		TKPA_valid<A_command_list> command_list_p,
+		TG_span<F_resource_gpu_virtual_address> gpu_virtual_addresses,
+		TG_span<u32> sizes,
+		TG_span<u32> strides,
+		u32 base_slot_index
+	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
+		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
+
+		auto& temp_state = dx12_command_list_p->temp_state_;
+
+		ID3D12GraphicsCommandList* d3d12_command_list_p = dx12_command_list_p->d3d12_command_list_p();
+
+		u32 buffer_count = gpu_virtual_addresses.size();
+
+		D3D12_VERTEX_BUFFER_VIEW d3d12_buffer_views[NRHI_MAX_VERTEX_BUFFER_COUNT_PER_DRAWCALL];
+		for(u32 i = 0; i < buffer_count; ++i)
+		{
+			NCPP_ENABLE_IF_ASSERTION_ENABLED(
+				temp_state.is_instance_buffer_binded_array[base_slot_index + i] = true;
+			);
+
+			auto& d3d12_buffer_view = d3d12_buffer_views[i];
+			d3d12_buffer_view.BufferLocation = gpu_virtual_addresses[i];
+			d3d12_buffer_view.SizeInBytes = sizes[i];
+			d3d12_buffer_view.StrideInBytes = strides[i];
+		}
+
+		memcpy(
+			temp_state.d3d12_instance_buffer_views + base_slot_index,
+			d3d12_buffer_views,
+			buffer_count * sizeof(D3D12_VERTEX_BUFFER_VIEW)
+		);
+	}
+	void HD_directx12_command_list::ZIA_bind_instance_buffer_with_gpu_virtual_address(
+		TKPA_valid<A_command_list> command_list_p,
+		F_resource_gpu_virtual_address gpu_virtual_address,
+		u32 size,
+		u32 stride,
+		u32 slot_index
+	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
+		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
+
+		auto& temp_state = dx12_command_list_p->temp_state_;
+
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
+			temp_state.is_instance_buffer_binded_array[slot_index] = true;
+		);
+
+		ID3D12GraphicsCommandList* d3d12_command_list_p = dx12_command_list_p->d3d12_command_list_p();
+
+		D3D12_VERTEX_BUFFER_VIEW d3d12_buffer_view;
+		d3d12_buffer_view.BufferLocation = gpu_virtual_address;
+		d3d12_buffer_view.SizeInBytes = size;
+		d3d12_buffer_view.StrideInBytes = stride;
+
+		temp_state.d3d12_instance_buffer_views[slot_index] = d3d12_buffer_view;
+	}
+
 	void HD_directx12_command_list::async_copy_resource(
 		TKPA_valid<A_command_list> command_list_p,
 		TKPA_valid<A_resource> dst_resource_p,
@@ -613,7 +994,7 @@ namespace nrhi {
 	) {
 		NCPP_ASSERT(command_list_p->supports_blit()) << "command list does not support blit";
 
-		auto dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
+		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
 
 		NCPP_ASSERT(
 			dst_resource_p->desc().size
@@ -635,7 +1016,7 @@ namespace nrhi {
 	) {
 		NCPP_ASSERT(command_list_p->supports_blit()) << "command list does not support blit";
 
-		auto dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
+		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
 
 		dx12_command_list_p->d3d12_command_list_p()->CopyBufferRegion(
 			dst_resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p(),
@@ -643,6 +1024,199 @@ namespace nrhi {
 			src_resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p(),
 			src_offset,
 			size
+		);
+	}
+
+	void HD_directx12_command_list::async_draw(
+		TKPA_valid<A_command_list> command_list_p,
+		u32 vertex_count,
+		u32 base_vertex_location
+	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
+		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
+
+		auto& temp_state = dx12_command_list_p->temp_state_;
+
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
+			NCPP_ASSERT(temp_state.pipeline_state_p->type() == ED_pipeline_state_type::GRAPHICS) << "invalid pipeline state type";
+		);
+
+		ID3D12GraphicsCommandList* d3d12_command_list_p = dx12_command_list_p->d3d12_command_list_p();
+
+		temp_state_apply_vertex_buffers(
+			temp_state,
+			d3d12_command_list_p
+		);
+
+		d3d12_command_list_p->DrawInstanced(
+			vertex_count,
+			1,
+			base_vertex_location,
+			0
+		);
+	}
+	void HD_directx12_command_list::async_draw_instanced(
+		TKPA_valid<A_command_list> command_list_p,
+		u32 vertex_count_per_instance,
+		u32 instance_count,
+		u32 base_vertex_location,
+		u32 base_instance_location
+	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
+		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
+
+		auto& temp_state = dx12_command_list_p->temp_state_;
+
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
+			NCPP_ASSERT(temp_state.pipeline_state_p->type() == ED_pipeline_state_type::GRAPHICS) << "invalid pipeline state type";
+		);
+
+		ID3D12GraphicsCommandList* d3d12_command_list_p = dx12_command_list_p->d3d12_command_list_p();
+
+		temp_state_apply_vertex_buffers_instance_buffers(
+			temp_state,
+			d3d12_command_list_p
+		);
+
+		d3d12_command_list_p->DrawInstanced(
+			vertex_count_per_instance,
+			instance_count,
+			base_vertex_location,
+			base_instance_location
+		);
+	}
+	void HD_directx12_command_list::async_draw_indexed(
+		TKPA_valid<A_command_list> command_list_p,
+		u32 index_count,
+		u32 base_index_location,
+		u32 base_vertex_location
+	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
+		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
+
+		auto& temp_state = dx12_command_list_p->temp_state_;
+
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
+			NCPP_ASSERT(temp_state.pipeline_state_p->type() == ED_pipeline_state_type::GRAPHICS) << "invalid pipeline state type";
+		);
+
+		ID3D12GraphicsCommandList* d3d12_command_list_p = dx12_command_list_p->d3d12_command_list_p();
+
+		temp_state_apply_vertex_buffers(
+			temp_state,
+			d3d12_command_list_p
+		);
+
+		d3d12_command_list_p->DrawIndexedInstanced(
+			index_count,
+			1,
+			base_index_location,
+			base_vertex_location,
+			0
+		);
+	}
+	void HD_directx12_command_list::async_draw_indexed_instanced(
+		TKPA_valid<A_command_list> command_list_p,
+		u32 index_count_per_instance,
+		u32 instance_count,
+		u32 base_index_location,
+		u32 base_vertex_location,
+		u32 base_instance_location
+	) {
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
+		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
+
+		auto& temp_state = dx12_command_list_p->temp_state_;
+
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
+			NCPP_ASSERT(temp_state.pipeline_state_p->type() == ED_pipeline_state_type::GRAPHICS) << "invalid pipeline state type";
+		);
+
+		ID3D12GraphicsCommandList* d3d12_command_list_p = dx12_command_list_p->d3d12_command_list_p();
+
+		temp_state_apply_vertex_buffers_instance_buffers(
+			temp_state,
+			d3d12_command_list_p
+		);
+
+		d3d12_command_list_p->DrawIndexedInstanced(
+			index_count_per_instance,
+			instance_count,
+			base_index_location,
+			base_vertex_location,
+			base_instance_location
+		);
+	}
+
+	void HD_directx12_command_list::async_dispatch(
+		TKPA_valid<A_command_list> command_list_p,
+		PA_vector3_u32 thread_group_count_3d
+	) {
+	}
+
+	void HD_directx12_command_list::async_draw_instanced_indirect(
+		TKPA_valid<A_command_list> command_list_p,
+		KPA_indirect_buffer_handle indirect_buffer_p,
+		u32 indirect_buffer_offset
+	) {
+	}
+	void HD_directx12_command_list::async_draw_indexed_instanced_indirect(
+		TKPA_valid<A_command_list> command_list_p,
+		KPA_indirect_buffer_handle indirect_buffer_p,
+		u32 indirect_buffer_offset
+	) {
+	}
+
+	void HD_directx12_command_list::async_dispatch_indirect(
+		TKPA_valid<A_command_list> command_list_p,
+		KPA_indirect_buffer_handle indirect_buffer_p,
+		u32 indirect_buffer_offset
+	) {
+	}
+
+	void HD_directx12_command_list::temp_state_apply_vertex_buffers(
+		const F_directx12_temp_command_list_state& temp_state,
+		ID3D12GraphicsCommandList* d3d12_command_list_p
+	) {
+#ifdef NCPP_ENABLE_ASSERT
+		for(u32 i = 0; i < temp_state.vertex_buffer_count; ++i) {
+
+			NCPP_ASSERT(temp_state.is_vertex_buffer_binded_array[i]) << "invalid vertex buffer " << i;
+		}
+#endif
+		d3d12_command_list_p->IASetVertexBuffers(
+			0,
+			temp_state.vertex_buffer_count,
+			temp_state.d3d12_vertex_buffer_views
+		);
+	}
+	void HD_directx12_command_list::temp_state_apply_vertex_buffers_instance_buffers(
+		const F_directx12_temp_command_list_state& temp_state,
+		ID3D12GraphicsCommandList* d3d12_command_list_p
+	) {
+#ifdef NCPP_ENABLE_ASSERT
+		for(u32 i = 0; i < temp_state.vertex_buffer_count; ++i) {
+
+			NCPP_ASSERT(temp_state.is_vertex_buffer_binded_array[i]) << "invalid vertex buffer " << i;
+		}
+		for(u32 i = 0; i < temp_state.instance_buffer_count; ++i) {
+
+			NCPP_ASSERT(temp_state.is_instance_buffer_binded_array[i]) << "invalid instance buffer " << i;
+		}
+#endif
+		d3d12_command_list_p->IASetVertexBuffers(
+			0,
+			temp_state.vertex_buffer_count,
+			temp_state.d3d12_vertex_buffer_views
+		);
+		d3d12_command_list_p->IASetVertexBuffers(
+			temp_state.vertex_buffer_count,
+			temp_state.instance_buffer_count,
+			temp_state.d3d12_instance_buffer_views
 		);
 	}
 

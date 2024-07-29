@@ -455,14 +455,12 @@ int main() {
 "@color_formats(R8G8B8A8_UNORM)\n"
 "@rasterizer\n"
 "(\n"
-"	cull_mode(BACK)\n"
+"	cull_mode(NONE)\n"
 "	fill_mode(SOLID)\n"
 ")\n"
 "@input_assembler\n"
 "(\n"
-"	@buffer(0)\n"
 "	VERTEX_POSITION\n"
-"	@buffer(1)\n"
 "	INSTANCE_POSITION\n"
 ")\n"
 "@primitive_topology(TRIANGLE_LIST)\n"
@@ -577,8 +575,29 @@ int main() {
 					0,
 					NCPP_AOH_VALID(cbuffer_p)
 				);
+				command_list_p->ZIA_bind_index_buffer(
+					NCPP_FOH_VALID(ibuffer_p),
+					0
+				);
+				command_list_p->ZIA_bind_vertex_buffer(
+					NCPP_FOH_VALID(vbuffer_p),
+					0,
+					0
+				);
+				command_list_p->ZIA_bind_instance_buffer(
+					NCPP_FOH_VALID(instance_buffer_p),
+					0,
+					0
+				);
 				command_list_p->ZOM_bind_frame_buffer(
 					NCPP_FOH_VALID(frame_buffer_p)
+				);
+				command_list_p->async_draw_indexed_instanced(
+					indices.size(),
+					instances.size(),
+					0,
+					0,
+					0
 				);
 
 				// transition back buffer state back to PRESENT

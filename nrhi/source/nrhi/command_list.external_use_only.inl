@@ -571,6 +571,7 @@ namespace nrhi {
 			);
 		);
 	}
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 	NCPP_FORCE_INLINE void A_command_list::async_clear_rtv_with_descriptor(
 		F_descriptor_cpu_address rtv_cpu_address,
 		PA_vector4_f32 color
@@ -590,16 +591,21 @@ namespace nrhi {
 		u8 stencil
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
-			H_command_list::async_clear_dsv_with_descriptor(
-				NCPP_KTHIS(),
-				dsv_cpu_address,
-				flag,
-				depth,
-				stencil
+			NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
+				H_command_list::async_clear_dsv_with_descriptor(
+					NCPP_KTHIS(),
+					dsv_cpu_address,
+					flag,
+					depth,
+					stencil
+				);
 			);
 		);
 	}
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 	NCPP_FORCE_INLINE void A_command_list::bind_descriptor_heaps(
 		const TG_span<TK_valid<A_descriptor_heap>>& descriptor_heap_p_span
 	) {
@@ -904,7 +910,90 @@ namespace nrhi {
 			);
 		);
 	}
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+	NCPP_FORCE_INLINE void A_command_list::ZIA_bind_index_buffer_with_gpu_virtual_address(
+		F_resource_gpu_virtual_address gpu_virtual_address,
+		u32 size,
+		ED_format format
+	) {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT(
+			H_command_list::ZIA_bind_index_buffer_with_gpu_virtual_address(
+				NCPP_KTHIS(),
+				gpu_virtual_address,
+				size,
+				format
+			);
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::ZIA_bind_vertex_buffers_with_gpu_virtual_address(
+		TG_span<F_resource_gpu_virtual_address> gpu_virtual_addresses,
+		TG_span<u32> sizes,
+		TG_span<u32> strides,
+		u32 base_slot_index
+	) {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT(
+			H_command_list::ZIA_bind_vertex_buffers_with_gpu_virtual_address(
+				NCPP_KTHIS(),
+				gpu_virtual_addresses,
+				sizes,
+				strides,
+				base_slot_index
+			);
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::ZIA_bind_vertex_buffer_with_gpu_virtual_address(
+		F_resource_gpu_virtual_address gpu_virtual_address,
+		u32 size,
+		u32 stride,
+		u32 slot_index
+	) {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT(
+			H_command_list::ZIA_bind_vertex_buffer_with_gpu_virtual_address(
+				NCPP_KTHIS(),
+				gpu_virtual_address,
+				size,
+				stride,
+				slot_index
+			);
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::ZIA_bind_instance_buffers_with_gpu_virtual_address(
+		TG_span<F_resource_gpu_virtual_address> gpu_virtual_addresses,
+		TG_span<u32> sizes,
+		TG_span<u32> strides,
+		u32 base_slot_index
+	) {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT(
+			H_command_list::ZIA_bind_instance_buffers_with_gpu_virtual_address(
+				NCPP_KTHIS(),
+				gpu_virtual_addresses,
+				sizes,
+				strides,
+				base_slot_index
+			);
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::ZIA_bind_instance_buffer_with_gpu_virtual_address(
+		F_resource_gpu_virtual_address gpu_virtual_address,
+		u32 size,
+		u32 stride,
+		u32 slot_index
+	) {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT(
+			H_command_list::ZIA_bind_instance_buffer_with_gpu_virtual_address(
+				NCPP_KTHIS(),
+				gpu_virtual_address,
+				size,
+				stride,
+				slot_index
+			);
+		);
+	}
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 	NCPP_FORCE_INLINE void A_command_list::async_copy_resource(
 		TKPA_valid<A_resource> dst_resource_p,
 		TKPA_valid<A_resource> src_resource_p
@@ -932,6 +1021,116 @@ namespace nrhi {
 				dst_offset,
 				src_offset,
 				size
+			);
+		);
+	}
+
+	NCPP_FORCE_INLINE void A_command_list::async_draw(
+		u32 vertex_count,
+		u32 base_vertex_location
+	) {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			H_command_list::async_draw(
+				NCPP_KTHIS(),
+				vertex_count,
+				base_vertex_location
+			);
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::async_draw_instanced(
+		u32 vertex_count_per_instance,
+		u32 instance_count,
+		u32 base_vertex_location,
+		u32 base_instance_location
+	) {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			H_command_list::async_draw_instanced(
+				NCPP_KTHIS(),
+				vertex_count_per_instance,
+				instance_count,
+				base_vertex_location,
+				base_instance_location
+			);
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::async_draw_indexed(
+		u32 index_count,
+		u32 base_index_location,
+		u32 base_vertex_location
+	) {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			H_command_list::async_draw_indexed(
+				NCPP_KTHIS(),
+				index_count,
+				base_index_location,
+				base_vertex_location
+			);
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::async_draw_indexed_instanced(
+		u32 index_count_per_instance,
+		u32 instance_count,
+		u32 base_index_location,
+		u32 base_vertex_location,
+		u32 base_instance_location
+	) {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			H_command_list::async_draw_indexed_instanced(
+				NCPP_KTHIS(),
+				index_count_per_instance,
+				instance_count,
+				base_index_location,
+				base_vertex_location,
+				base_instance_location
+			);
+		);
+	}
+
+	NCPP_FORCE_INLINE void A_command_list::async_dispatch(
+		PA_vector3_u32 thread_group_count_3d
+	) {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			H_command_list::async_dispatch(
+				NCPP_KTHIS(),
+				thread_group_count_3d
+			);
+		);
+	}
+
+	NCPP_FORCE_INLINE void A_command_list::async_draw_instanced_indirect(
+		KPA_indirect_buffer_handle indirect_buffer_p,
+		u32 indirect_buffer_offset
+	) {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			H_command_list::async_draw_instanced_indirect(
+				NCPP_KTHIS(),
+				indirect_buffer_p,
+				indirect_buffer_offset
+			);
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::async_draw_indexed_instanced_indirect(
+		KPA_indirect_buffer_handle indirect_buffer_p,
+		u32 indirect_buffer_offset
+	) {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			H_command_list::async_draw_indexed_instanced_indirect(
+				NCPP_KTHIS(),
+				indirect_buffer_p,
+				indirect_buffer_offset
+			);
+		);
+	}
+
+	NCPP_FORCE_INLINE void A_command_list::async_dispatch_indirect(
+		KPA_indirect_buffer_handle indirect_buffer_p,
+		u32 indirect_buffer_offset
+	) {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			H_command_list::async_dispatch_indirect(
+				NCPP_KTHIS(),
+				indirect_buffer_p,
+				indirect_buffer_offset
 			);
 		);
 	}

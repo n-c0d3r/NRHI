@@ -7,6 +7,145 @@
 
 namespace nrhi {
 
+	static D3D12_PRIMITIVE_TOPOLOGY_TYPE directx12_primitive_topology_type_table[65];
+
+	struct F_directx12_primitive_topology_type_setup
+	{
+		F_directx12_primitive_topology_type_setup()
+		{
+			memset(directx12_primitive_topology_type_table, 0xFF, sizeof(directx12_primitive_topology_type_table));
+
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_UNDEFINED)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_UNDEFINED;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_POINTLIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_LINELIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_LINESTRIP)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_LINELIST_ADJ)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_LINESTRIP_ADJ)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST_ADJ)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP_ADJ)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_1_CONTROL_POINT_PATCHLIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_2_CONTROL_POINT_PATCHLIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_5_CONTROL_POINT_PATCHLIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_6_CONTROL_POINT_PATCHLIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_7_CONTROL_POINT_PATCHLIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_8_CONTROL_POINT_PATCHLIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_9_CONTROL_POINT_PATCHLIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_10_CONTROL_POINT_PATCHLIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_11_CONTROL_POINT_PATCHLIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_12_CONTROL_POINT_PATCHLIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_13_CONTROL_POINT_PATCHLIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_14_CONTROL_POINT_PATCHLIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_15_CONTROL_POINT_PATCHLIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_16_CONTROL_POINT_PATCHLIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_17_CONTROL_POINT_PATCHLIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_18_CONTROL_POINT_PATCHLIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_19_CONTROL_POINT_PATCHLIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_20_CONTROL_POINT_PATCHLIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_21_CONTROL_POINT_PATCHLIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_22_CONTROL_POINT_PATCHLIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_23_CONTROL_POINT_PATCHLIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_24_CONTROL_POINT_PATCHLIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_25_CONTROL_POINT_PATCHLIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_26_CONTROL_POINT_PATCHLIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_27_CONTROL_POINT_PATCHLIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_28_CONTROL_POINT_PATCHLIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_29_CONTROL_POINT_PATCHLIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_30_CONTROL_POINT_PATCHLIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_31_CONTROL_POINT_PATCHLIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+			directx12_primitive_topology_type_table[
+				u32(D3D_PRIMITIVE_TOPOLOGY_32_CONTROL_POINT_PATCHLIST)
+			] = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+		}
+	};
+
+	static F_directx12_primitive_topology_type_setup directx12_primitive_topology_type_setup;
+
 	F_directx12_graphics_pipeline_state::F_directx12_graphics_pipeline_state(
 		TKPA_valid<A_device> device_p,
 		const F_graphics_pipeline_state_options& options,
@@ -177,6 +316,7 @@ namespace nrhi {
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC  d3d12_pipeline_state_desc = {};
 		d3d12_pipeline_state_desc.pRootSignature = d3d12_root_signature_p;
 
+		d3d12_pipeline_state_desc.RasterizerState.DepthClipEnable = true;
 		d3d12_pipeline_state_desc.RasterizerState.CullMode = D3D12_CULL_MODE(options.rasterizer_desc.cull_mode);
 		d3d12_pipeline_state_desc.RasterizerState.FillMode = D3D12_FILL_MODE(options.rasterizer_desc.fill_mode);
 		d3d12_pipeline_state_desc.RasterizerState.FrontCounterClockwise = options.rasterizer_desc.front_counter_clock_wise;
@@ -194,9 +334,7 @@ namespace nrhi {
 			const auto& blend_rt = options.blend_desc.render_targets[i];
 			d3d12_blend_rt.BlendEnable = blend_rt.enable_blend;
 
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 			d3d12_blend_rt.LogicOpEnable = blend_rt.enable_logic_operation;
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 			d3d12_blend_rt.SrcBlend = D3D12_BLEND(blend_rt.src_blend_factor);
 			d3d12_blend_rt.DestBlend = D3D12_BLEND(blend_rt.dst_blend_factor);
@@ -206,9 +344,9 @@ namespace nrhi {
 			d3d12_blend_rt.DestBlendAlpha = D3D12_BLEND(blend_rt.dst_alpha_blend_factor);
 			d3d12_blend_rt.BlendOpAlpha = D3D12_BLEND_OP(blend_rt.alpha_blend_operation);
 
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 			d3d12_blend_rt.LogicOp = D3D12_LOGIC_OP(blend_rt.logic_operation);
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+
+			d3d12_blend_rt.RenderTargetWriteMask = u8(blend_rt.write_mode);
 		}
 
 		const auto& shader_binaries = options.shader_binaries;
@@ -235,7 +373,7 @@ namespace nrhi {
 			options.color_formats.size() * sizeof(DXGI_FORMAT)
 		);
 
-		d3d12_pipeline_state_desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE(options.primitive_topology);
+		d3d12_pipeline_state_desc.PrimitiveTopologyType = directx12_primitive_topology_type_table[u32(options.primitive_topology)];
 
 		d3d12_pipeline_state_desc.SampleMask = UINT_MAX;
 		d3d12_pipeline_state_desc.SampleDesc.Count = 1;

@@ -334,6 +334,7 @@ namespace nrhi {
 			f32 depth,
 			u8 stencil
 		);
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 		void async_clear_rtv_with_descriptor(
 			F_descriptor_cpu_address rtv_cpu_address,
 			PA_vector4_f32 color
@@ -343,8 +344,11 @@ namespace nrhi {
 			ED_clear_flag flag,
 			f32 depth,
 			u8 stencil
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 		);
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 	public:
 		void bind_descriptor_heaps(
 			const TG_span<TK_valid<A_descriptor_heap>>& descriptor_heap_p_span
@@ -451,7 +455,42 @@ namespace nrhi {
 			u32 root_param_index,
 			F_resource_gpu_virtual_address gpu_virtual_address
 		);
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+	public:
+		void ZIA_bind_index_buffer_with_gpu_virtual_address(
+			F_resource_gpu_virtual_address gpu_virtual_address,
+			u32 size,
+			ED_format format
+		);
+		void ZIA_bind_vertex_buffers_with_gpu_virtual_address(
+			TG_span<F_resource_gpu_virtual_address> gpu_virtual_addresses,
+			TG_span<u32> sizes,
+			TG_span<u32> strides,
+			u32 base_slot_index
+		);
+		void ZIA_bind_vertex_buffer_with_gpu_virtual_address(
+			F_resource_gpu_virtual_address gpu_virtual_address,
+			u32 size,
+			u32 stride,
+			u32 slot_index
+		);
+		void ZIA_bind_instance_buffers_with_gpu_virtual_address(
+			TG_span<F_resource_gpu_virtual_address> gpu_virtual_addresses,
+			TG_span<u32> sizes,
+			TG_span<u32> strides,
+			u32 base_slot_index
+		);
+		void ZIA_bind_instance_buffer_with_gpu_virtual_address(
+			F_resource_gpu_virtual_address gpu_virtual_address,
+			u32 size,
+			u32 stride,
+			u32 slot_index
+		);
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 	public:
 		void async_copy_resource(
 			TKPA_valid<A_resource> dst_resource_p,
@@ -463,6 +502,51 @@ namespace nrhi {
 			u64 dst_offset,
 			u64 src_offset,
 			u64 size
+		);
+
+	public:
+		void async_draw(
+			u32 vertex_count,
+			u32 base_vertex_location
+		);
+		void async_draw_instanced(
+			u32 vertex_count_per_instance,
+			u32 instance_count,
+			u32 base_vertex_location,
+			u32 base_instance_location
+		);
+		void async_draw_indexed(
+			u32 index_count,
+			u32 base_index_location,
+			u32 base_vertex_location
+		);
+		void async_draw_indexed_instanced(
+			u32 index_count_per_instance,
+			u32 instance_count,
+			u32 base_index_location,
+			u32 base_vertex_location,
+			u32 base_instance_location
+		);
+
+	public:
+		void async_dispatch(
+			PA_vector3_u32 thread_group_count_3d
+		);
+
+	public:
+		void async_draw_instanced_indirect(
+			KPA_indirect_buffer_handle indirect_buffer_p,
+			u32 indirect_buffer_offset
+		);
+		void async_draw_indexed_instanced_indirect(
+			KPA_indirect_buffer_handle indirect_buffer_p,
+			u32 indirect_buffer_offset
+		);
+
+	public:
+		void async_dispatch_indirect(
+			KPA_indirect_buffer_handle indirect_buffer_p,
+			u32 indirect_buffer_offset
 		);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 

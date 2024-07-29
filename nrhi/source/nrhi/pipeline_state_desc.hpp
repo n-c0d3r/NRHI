@@ -119,7 +119,7 @@ namespace nrhi {
 
 		b8 enable_depth_test = false;
 		ED_format format = ED_format::D32_FLOAT;
-		ED_depth_comparison_func depth_comparison_func = ED_depth_comparison_func::LESS;
+		ED_depth_comparison_func depth_comparison_func = ED_depth_comparison_func::ALWAYS;
 		b8 depth_buffer_write = true;
 
 		NCPP_FORCE_INLINE b8 operator == (const F_depth_stencil_desc& b) const noexcept {
@@ -156,7 +156,7 @@ namespace nrhi {
 		ED_logic_operation logic_operation;
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
-		ED_color_write_mode write_mode;
+		ED_color_write_mode write_mode = ED_color_write_mode::ALL;
 
 		NCPP_FORCE_INLINE b8 operator == (const F_blend_render_target_desc& b) const noexcept {
 
