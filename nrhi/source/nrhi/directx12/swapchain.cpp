@@ -278,6 +278,10 @@ namespace nrhi {
 			auto& current_rtv_desc = (F_resource_view_desc&)(current_rtv_p->desc());
 			auto& back_rtv_desc = (F_resource_view_desc&)(back_rtv_p->desc());
 			back_rtv_desc = back_rtv_desc;
+
+			back_rtv_p->set_generation_unsafe(
+				current_rtv_p->generation()
+			);
 		}
 
 		// update buffer
@@ -292,6 +296,10 @@ namespace nrhi {
 			auto& current_buffer_desc = (F_resource_desc&)(current_buffer_p->desc());
 			auto& back_buffer_desc = (F_resource_desc&)(back_buffer_p->desc());
 			back_buffer_desc = current_buffer_desc;
+
+			back_buffer_p->set_generation_unsafe(
+				current_buffer_p->generation()
+			);
 		}
 	}
 	K_valid_rtv_handle HD_directx12_swapchain::back_rtv_p(TKPA_valid<A_swapchain> swapchain_p) {

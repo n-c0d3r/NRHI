@@ -561,6 +561,10 @@ int main() {
 					F_vector4_f32 { 0, 0.84f, 0.96f, 1.0f }
 				);
 
+				command_list_p->ZOM_async_bind_frame_buffer(
+					NCPP_FOH_VALID(frame_buffer_p)
+				);
+
 				command_list_p->async_resource_barrier(
 					H_resource_barrier::transition({
 						.resource_p = swapchain_p->back_buffer_p().no_requirements(),

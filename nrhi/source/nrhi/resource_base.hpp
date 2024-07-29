@@ -72,6 +72,7 @@ namespace nrhi {
         NCPP_FORCE_INLINE const F_initial_resource_data& initial_data() const noexcept { return initial_data_; }
 
 		NCPP_FORCE_INLINE u64 generation() const noexcept { return generation_; }
+		NCPP_FORCE_INLINE void set_generation_unsafe(u64 value) noexcept { generation_ = value; }
 
 
 
