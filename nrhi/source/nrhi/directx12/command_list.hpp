@@ -61,7 +61,6 @@ namespace nrhi {
 		u32 vertex_buffer_count = 0;
 		u32 instance_buffer_count = 0;
 
-		D3D12_VERTEX_BUFFER_VIEW d3d12_vertex_buffer_views[NRHI_MAX_VERTEX_BUFFER_COUNT_PER_DRAWCALL];
 		D3D12_VERTEX_BUFFER_VIEW d3d12_instance_buffer_views[NRHI_MAX_INSTANCE_BUFFER_COUNT_PER_DRAWCALL];
 		NCPP_ENABLE_IF_ASSERTION_ENABLED(
 			std::array<b8, NRHI_MAX_VERTEX_BUFFER_COUNT_PER_DRAWCALL> is_vertex_buffer_binded_array;
