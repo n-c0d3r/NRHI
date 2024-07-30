@@ -37,6 +37,13 @@ namespace nrhi {
             d3d11_device_p_->Release();
     }
 
+	ID3D11DeviceContext* F_directx11_device::d3d11_immediate_ctx_p_unsafe(){
+
+		ID3D11DeviceContext* result = 0;
+		d3d11_device_p_->GetImmediateContext(&result);
+
+		return result;
+	}
     ID3D11DeviceContext* F_directx11_device::pop_d3d11_immediate_ctx(){
 
         NCPP_ASSERT(!is_d3d11_immediate_ctx_obtained_) << "d3d11 immediate ctx was already obtained";

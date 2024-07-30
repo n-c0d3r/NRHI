@@ -62,6 +62,7 @@ namespace nrhi {
         ~F_directx11_device();
 
     public:
+        ID3D11DeviceContext* d3d11_immediate_ctx_p_unsafe();
         ID3D11DeviceContext* pop_d3d11_immediate_ctx();
         void push_d3d11_immediate_ctx();
 

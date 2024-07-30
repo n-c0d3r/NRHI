@@ -192,7 +192,7 @@ namespace nrhi {
 
 		NCPP_ASSERT(
 			input_attribute_group_count
-			<= NRHI_MAX_VERTEX_BUFFER_COUNT_PER_DRAWCALL
+			<= NRHI_MAX_INPUT_BUFFER_COUNT_PER_DRAWCALL
 		) << "the number of input attribute groups exceeds the limit";
 
 		u32 element_count = 0;

@@ -210,7 +210,7 @@ int main() {
 
 	// input assembler desc
 	F_input_assembler_desc input_assembler_desc = {
-		.vertex_attribute_groups = {
+		.attribute_groups = {
 			{
 				{
 					{
@@ -218,14 +218,13 @@ int main() {
 						.format = ED_format::R32G32B32A32_FLOAT
 					}
 				}
-			}
-		},
-		.instance_attribute_groups = {
+			},
 			{
 				{
 					{
 						.name = "INSTANCE_POSITION",
-						.format = ED_format::R32G32B32A32_FLOAT
+						.format = ED_format::R32G32B32A32_FLOAT,
+						.classification = ED_input_classification::PER_INSTANCE_DATA
 					}
 				}
 			}
@@ -310,7 +309,7 @@ int main() {
 			// update uniform data
 			{
 				static f64 t = 0.0;
-				t += delta_time;
+				t += delta_time * 0.2f;
 
 				output_color = lerp(
 					F_vector4 { 0.2f, 0.2f, 0.2f, 1.0f },
@@ -336,14 +335,15 @@ int main() {
 					NCPP_FHANDLE_VALID(ibuffer_p),
 					0
 				);
-				command_list_p->ZIA_bind_input_buffer(
-					NCPP_FHANDLE_VALID(vbuffer_p),
-					0,
-					0
-				);
-				command_list_p->ZIA_bind_instance_buffer(
-					NCPP_FHANDLE_VALID(instance_buffer_p),
-					0,
+				command_list_p->ZIA_bind_input_buffers(
+					NCPP_INIL_SPAN(
+						NCPP_FOH_VALID(vbuffer_p),
+						NCPP_FOH_VALID(instance_buffer_p)
+					),
+					NCPP_INIL_SPAN(
+						u32(0),
+						u32(0)
+					),
 					0
 				);
 

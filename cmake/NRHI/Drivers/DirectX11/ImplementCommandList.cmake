@@ -69,18 +69,6 @@ NRHI_FunctionHelper_CreateFunctionClass(
             u32 offset,
             u32 slot_index
         )"
-        "ZIA_bind_instance_buffers" "void(
-            TKPA_valid<A_command_list> command_list_p,
-            const TG_span<K_valid_buffer_handle>& instance_buffer_p_span,
-            const TG_span<u32>& offset_span,
-			u32 base_slot_index
-        )"
-        "ZIA_bind_instance_buffer" "void(
-            TKPA_valid<A_command_list> command_list_p,
-            KPA_valid_buffer_handle instance_buffer_p,
-            u32 offset,
-            u32 slot_index
-        )"
         "ZVS_bind_constant_buffers" "void(
             TKPA_valid<A_command_list> command_list_p,
             const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,

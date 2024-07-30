@@ -56,39 +56,6 @@ namespace nrhi {
 
 
 
-	struct F_directx11_temp_command_list_state {
-
-		NCPP_ENABLE_IF_ASSERTION_ENABLED(
-			TK<A_pipeline_state> pipeline_state_p;
-			b8 is_pipeline_state_binded = false;
-		);
-
-		u32 input_buffer_count = 0;
-		u32 instance_buffer_count = 0;
-
-		ID3D11Buffer* d3d11_input_buffers[NRHI_MAX_VERTEX_BUFFER_COUNT_PER_DRAWCALL];
-		ID3D11Buffer* d3d11_instance_buffers[NRHI_MAX_INSTANCE_BUFFER_COUNT_PER_DRAWCALL];
-		u32 d3d11_input_buffer_offsets[NRHI_MAX_VERTEX_BUFFER_COUNT_PER_DRAWCALL];
-		u32 d3d11_instance_buffer_offsets[NRHI_MAX_INSTANCE_BUFFER_COUNT_PER_DRAWCALL];
-		u32 d3d11_input_buffer_strides[NRHI_MAX_VERTEX_BUFFER_COUNT_PER_DRAWCALL];
-		u32 d3d11_instance_buffer_strides[NRHI_MAX_INSTANCE_BUFFER_COUNT_PER_DRAWCALL];
-		NCPP_ENABLE_IF_ASSERTION_ENABLED(
-			std::array<K_buffer_handle, NRHI_MAX_VERTEX_BUFFER_COUNT_PER_DRAWCALL> input_buffer_orefs;
-			std::array<K_buffer_handle, NRHI_MAX_INSTANCE_BUFFER_COUNT_PER_DRAWCALL> instance_buffer_orefs;
-		);
-
-		NCPP_ENABLE_IF_ASSERTION_ENABLED(
-			K_buffer_handle index_buffer_p;
-		);
-
-		NCPP_ENABLE_IF_ASSERTION_ENABLED(
-			std::array<K_buffer_handle, NRHI_MAX_CONSTANT_BUFFER_COUNT_PER_DRAWCALL> constant_buffer_orefs;
-		);
-
-	};
-
-
-
     class NRHI_API F_directx11_command_list : public A_command_list {
 
 	public:
@@ -98,8 +65,6 @@ namespace nrhi {
 
     private:
         ID3D11DeviceContext* d3d11_device_context_p_ = 0;
-
-		F_directx11_temp_command_list_state temp_state_;
 
     public:
         NCPP_FORCE_INLINE ID3D11DeviceContext* d3d11_device_context_p() noexcept { return d3d11_device_context_p_; }
@@ -166,18 +131,6 @@ namespace nrhi {
 		static void ZIA_bind_input_buffer(
 			TKPA_valid<A_command_list> command_list_p,
 			KPA_valid_buffer_handle input_buffer_p,
-			u32 offset,
-			u32 slot_index
-		);
-		static void ZIA_bind_instance_buffers(
-			TKPA_valid<A_command_list> command_list_p,
-			const TG_span<K_valid_buffer_handle>& instance_buffer_p_span,
-			const TG_span<u32>& offset_span,
-			u32 base_slot_index
-		);
-		static void ZIA_bind_instance_buffer(
-			TKPA_valid<A_command_list> command_list_p,
-			KPA_valid_buffer_handle instance_buffer_p,
 			u32 offset,
 			u32 slot_index
 		);
@@ -361,18 +314,6 @@ namespace nrhi {
 		static void generate_mips(
 			TKPA_valid<A_command_list> command_list_p,
 			KPA_valid_srv_handle srv_p
-		);
-
-
-
-	private:
-		static void temp_state_apply_input_buffers(
-			const F_directx11_temp_command_list_state& temp_state,
-			ID3D11DeviceContext* d3d11_device_context_p
-		);
-		static void temp_state_apply_input_buffers_instance_buffers(
-			const F_directx11_temp_command_list_state& temp_state,
-			ID3D11DeviceContext* d3d11_device_context_p
 		);
 
     };

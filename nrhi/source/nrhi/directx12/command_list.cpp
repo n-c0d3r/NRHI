@@ -666,7 +666,7 @@ namespace nrhi {
 
 		u32 buffer_count = input_buffer_p_span.size();
 
-		D3D12_VERTEX_BUFFER_VIEW d3d12_buffer_views[NRHI_MAX_VERTEX_BUFFER_COUNT_PER_DRAWCALL];
+		D3D12_VERTEX_BUFFER_VIEW d3d12_buffer_views[NRHI_MAX_INPUT_BUFFER_COUNT_PER_DRAWCALL];
 		for(u32 i = 0; i < buffer_count; ++i)
 		{
 			const auto& input_buffer_p = input_buffer_p_span[i];
@@ -754,7 +754,7 @@ namespace nrhi {
 
 		u32 buffer_count = gpu_virtual_addresses.size();
 
-		D3D12_VERTEX_BUFFER_VIEW d3d12_buffer_views[NRHI_MAX_VERTEX_BUFFER_COUNT_PER_DRAWCALL];
+		D3D12_VERTEX_BUFFER_VIEW d3d12_buffer_views[NRHI_MAX_INPUT_BUFFER_COUNT_PER_DRAWCALL];
 		for(u32 i = 0; i < buffer_count; ++i)
 		{
 			auto& d3d12_buffer_view = d3d12_buffer_views[i];
