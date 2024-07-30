@@ -214,27 +214,15 @@ NRHI_FunctionHelper_CreateFunctionClass(
 			KPA_valid_buffer_handle index_buffer_p,
 			u32 offset
 		)"
-		"ZIA_bind_vertex_buffers" "void(
+		"ZIA_bind_input_buffers" "void(
 			TKPA_valid<A_command_list> command_list_p,
-			const TG_span<K_valid_buffer_handle>& vertex_buffer_p_span,
+			const TG_span<K_valid_buffer_handle>& input_buffer_p_span,
 			const TG_span<u32>& offset_span,
 			u32 base_slot_index
 		)"
-		"ZIA_bind_vertex_buffer" "void(
+		"ZIA_bind_input_buffer" "void(
 			TKPA_valid<A_command_list> command_list_p,
-			KPA_valid_buffer_handle vertex_buffer_p,
-			u32 offset,
-			u32 slot_index
-		)"
-		"ZIA_bind_instance_buffers" "void(
-			TKPA_valid<A_command_list> command_list_p,
-			const TG_span<K_valid_buffer_handle>& instance_buffer_p_span,
-			const TG_span<u32>& offset_span,
-			u32 base_slot_index
-		)"
-		"ZIA_bind_instance_buffer" "void(
-			TKPA_valid<A_command_list> command_list_p,
-			KPA_valid_buffer_handle instance_buffer_p,
+			KPA_valid_buffer_handle input_buffer_p,
 			u32 offset,
 			u32 slot_index
 		)"
@@ -244,28 +232,14 @@ NRHI_FunctionHelper_CreateFunctionClass(
 			u32 size,
 			ED_format format
 		)"
-		"ZIA_bind_vertex_buffers_with_gpu_virtual_address" "void(
+		"ZIA_bind_input_buffers_with_gpu_virtual_address" "void(
 			TKPA_valid<A_command_list> command_list_p,
 			TG_span<F_resource_gpu_virtual_address> gpu_virtual_addresses,
 			TG_span<u32> sizes,
 			TG_span<u32> strides,
 			u32 base_slot_index
 		)"
-		"ZIA_bind_vertex_buffer_with_gpu_virtual_address" "void(
-			TKPA_valid<A_command_list> command_list_p,
-			F_resource_gpu_virtual_address gpu_virtual_address,
-			u32 size,
-			u32 stride,
-			u32 slot_index
-		)"
-		"ZIA_bind_instance_buffers_with_gpu_virtual_address" "void(
-			TKPA_valid<A_command_list> command_list_p,
-			TG_span<F_resource_gpu_virtual_address> gpu_virtual_addresses,
-			TG_span<u32> sizes,
-			TG_span<u32> strides,
-			u32 base_slot_index
-		)"
-		"ZIA_bind_instance_buffer_with_gpu_virtual_address" "void(
+		"ZIA_bind_input_buffer_with_gpu_virtual_address" "void(
 			TKPA_valid<A_command_list> command_list_p,
 			F_resource_gpu_virtual_address gpu_virtual_address,
 			u32 size,

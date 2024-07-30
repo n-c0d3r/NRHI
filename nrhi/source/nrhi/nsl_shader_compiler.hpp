@@ -172,13 +172,6 @@ namespace nrhi {
 
 	};
 
-	enum class E_nsl_semantic_input_class {
-
-		PER_VERTEX,
-		PER_INSTANCE
-
-	};
-
 	class NRHI_API F_nsl_info_tree_reader {
 
 	private:
@@ -191,7 +184,7 @@ namespace nrhi {
 		static b8 is_maps_setup_;
 		static TG_map<G_string, b8> b8_str_to_value_map_;
 		static TG_map<G_string, E_nsl_element_format> element_format_str_to_value_map_;
-		static TG_map<G_string, E_nsl_semantic_input_class> semantic_input_class_str_to_value_map_;
+		static TG_map<G_string, ED_input_classification> input_classification_str_to_value_map_;
 		static TG_map<G_string, ED_filter> filter_str_to_value_map_;
 		static TG_map<G_string, ED_texcoord_address_mode> texcoord_address_mode_str_to_value_map_;
 		static TG_map<G_string, ED_cull_mode> cull_mode_str_to_value_map_;
@@ -247,7 +240,7 @@ namespace nrhi {
 		b8 guarantee_flag(const G_string& name, b8 is_required = true) const;
 		eastl::optional<F_nsl_info_tree_reader> read_sub(const G_string& name, b8 is_required = true) const;
 		eastl::optional<E_nsl_element_format> read_element_format(u32 index, b8 is_required = true) const;
-		eastl::optional<E_nsl_semantic_input_class> read_semantic_input_class(u32 index, b8 is_required = true) const;
+		eastl::optional<ED_input_classification> read_input_classification(u32 index, b8 is_required = true) const;
 		eastl::optional<ED_filter> read_filter(u32 index, b8 is_required = true) const;
 		eastl::optional<ED_texcoord_address_mode> read_texcoord_address_mode(u32 index, b8 is_required = true) const;
 		eastl::optional<ED_cull_mode> read_cull_mode(u32 index, b8 is_required = true) const;
@@ -444,6 +437,7 @@ namespace nrhi {
 		G_string semantic;
 		u32 buffer = 0;
 		u32 offset = NCPP_U32_MAX;
+		ED_input_classification classification = ED_input_classification::PER_VERTEX_DATA;
 
 	};
 	using F_nsl_input_attribute_config_map = TG_unordered_map<G_string, F_nsl_info_tree_reader>;
@@ -626,7 +620,6 @@ namespace nrhi {
 		G_string target_binding;
 		E_nsl_element_format element_format;
 		u32 element_count = 1;
-		E_nsl_semantic_input_class input_class = E_nsl_semantic_input_class::PER_VERTEX;
 
 	};
 	using F_nsl_semantic = eastl::pair<G_string, F_nsl_semantic_info>;

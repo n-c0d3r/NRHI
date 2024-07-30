@@ -432,7 +432,6 @@ int main() {
 "\n"
 "semantic VERTEX_POSITION(float4)\n"
 "\n"
-"@input_class(PER_INSTANCE)\n"
 "semantic INSTANCE_POSITION(float4)\n"
 "\n"
 "vertex_shader vs_main\n"
@@ -461,6 +460,8 @@ int main() {
 "@input_assembler\n"
 "(\n"
 "	VERTEX_POSITION\n"
+"	@buffer(1)\n"
+"	@classification(PER_INSTANCE_DATA)\n"
 "	INSTANCE_POSITION\n"
 ")\n"
 "@primitive_topology(TRIANGLE_LIST)\n"
@@ -579,14 +580,15 @@ int main() {
 					NCPP_FOH_VALID(ibuffer_p),
 					0
 				);
-				command_list_p->ZIA_bind_vertex_buffer(
-					NCPP_FOH_VALID(vbuffer_p),
-					0,
-					0
-				);
-				command_list_p->ZIA_bind_instance_buffer(
-					NCPP_FOH_VALID(instance_buffer_p),
-					0,
+				command_list_p->ZIA_bind_input_buffers(
+					NCPP_INIL_SPAN(
+						NCPP_FOH_VALID(vbuffer_p),
+						NCPP_FOH_VALID(instance_buffer_p)
+					),
+					NCPP_INIL_SPAN(
+						u32(0),
+						u32(0)
+					),
 					0
 				);
 				command_list_p->ZOM_bind_frame_buffer(

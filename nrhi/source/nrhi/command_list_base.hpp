@@ -137,23 +137,13 @@ namespace nrhi {
 			KPA_valid_buffer_handle index_buffer_p,
 			u32 offset
 		);
-		void ZIA_bind_vertex_buffers(
-			const TG_span<K_valid_buffer_handle>& vertex_buffer_p_span,
+		void ZIA_bind_input_buffers(
+			const TG_span<K_valid_buffer_handle>& input_buffer_p_span,
 			const TG_span<u32>& offset_span,
 			u32 base_slot_index
 		);
-		void ZIA_bind_vertex_buffer(
-			KPA_valid_buffer_handle vertex_buffer_p,
-			u32 offset,
-			u32 slot_index
-		);
-		void ZIA_bind_instance_buffers(
-			const TG_span<K_valid_buffer_handle>& instance_buffer_p_span,
-			const TG_span<u32>& offset_span,
-			u32 base_slot_index
-		);
-		void ZIA_bind_instance_buffer(
-			KPA_valid_buffer_handle instance_buffer_p,
+		void ZIA_bind_input_buffer(
+			KPA_valid_buffer_handle input_buffer_p,
 			u32 offset,
 			u32 slot_index
 		);
@@ -464,25 +454,13 @@ namespace nrhi {
 			u32 size,
 			ED_format format
 		);
-		void ZIA_bind_vertex_buffers_with_gpu_virtual_address(
+		void ZIA_bind_input_buffers_with_gpu_virtual_address(
 			TG_span<F_resource_gpu_virtual_address> gpu_virtual_addresses,
 			TG_span<u32> sizes,
 			TG_span<u32> strides,
 			u32 base_slot_index
 		);
-		void ZIA_bind_vertex_buffer_with_gpu_virtual_address(
-			F_resource_gpu_virtual_address gpu_virtual_address,
-			u32 size,
-			u32 stride,
-			u32 slot_index
-		);
-		void ZIA_bind_instance_buffers_with_gpu_virtual_address(
-			TG_span<F_resource_gpu_virtual_address> gpu_virtual_addresses,
-			TG_span<u32> sizes,
-			TG_span<u32> strides,
-			u32 base_slot_index
-		);
-		void ZIA_bind_instance_buffer_with_gpu_virtual_address(
+		void ZIA_bind_input_buffer_with_gpu_virtual_address(
 			F_resource_gpu_virtual_address gpu_virtual_address,
 			u32 size,
 			u32 stride,

@@ -52,29 +52,6 @@ namespace nrhi {
 
 
 
-	struct F_directx12_temp_command_list_state {
-
-		NCPP_ENABLE_IF_ASSERTION_ENABLED(
-			TK<A_pipeline_state> pipeline_state_p;
-		);
-
-		u32 vertex_buffer_count = 0;
-		u32 instance_buffer_count = 0;
-
-		D3D12_VERTEX_BUFFER_VIEW d3d12_instance_buffer_views[NRHI_MAX_INSTANCE_BUFFER_COUNT_PER_DRAWCALL];
-		NCPP_ENABLE_IF_ASSERTION_ENABLED(
-			std::array<b8, NRHI_MAX_VERTEX_BUFFER_COUNT_PER_DRAWCALL> is_vertex_buffer_binded_array;
-			std::array<b8, NRHI_MAX_INSTANCE_BUFFER_COUNT_PER_DRAWCALL> is_instance_buffer_binded_array;
-		);
-
-		NCPP_ENABLE_IF_ASSERTION_ENABLED(
-			b8 is_index_buffer_binded = false;
-		);
-
-	};
-
-
-
     class NRHI_API F_directx12_command_list : public A_command_list {
 
 	public:
@@ -84,8 +61,6 @@ namespace nrhi {
 
 	private:
 		ID3D12GraphicsCommandList* d3d12_command_list_p_ = 0;
-
-		F_directx12_temp_command_list_state temp_state_;
 
 	public:
 		NCPP_FORCE_INLINE ID3D12GraphicsCommandList* d3d12_command_list_p() const noexcept { return d3d12_command_list_p_; }
@@ -314,27 +289,15 @@ namespace nrhi {
 			KPA_valid_buffer_handle index_buffer_p,
 			u32 offset
 		);
-		static void ZIA_bind_vertex_buffers(
+		static void ZIA_bind_input_buffers(
 			TKPA_valid<A_command_list> command_list_p,
-			const TG_span<K_valid_buffer_handle>& vertex_buffer_p_span,
+			const TG_span<K_valid_buffer_handle>& input_buffer_p_span,
 			const TG_span<u32>& offset_span,
 			u32 base_slot_index
 		);
-		static void ZIA_bind_vertex_buffer(
+		static void ZIA_bind_input_buffer(
 			TKPA_valid<A_command_list> command_list_p,
-			KPA_valid_buffer_handle vertex_buffer_p,
-			u32 offset,
-			u32 slot_index
-		);
-		static void ZIA_bind_instance_buffers(
-			TKPA_valid<A_command_list> command_list_p,
-			const TG_span<K_valid_buffer_handle>& instance_buffer_p_span,
-			const TG_span<u32>& offset_span,
-			u32 base_slot_index
-		);
-		static void ZIA_bind_instance_buffer(
-			TKPA_valid<A_command_list> command_list_p,
-			KPA_valid_buffer_handle instance_buffer_p,
+			KPA_valid_buffer_handle input_buffer_p,
 			u32 offset,
 			u32 slot_index
 		);
@@ -346,28 +309,14 @@ namespace nrhi {
 			u32 size,
 			ED_format format
 		);
-		static void ZIA_bind_vertex_buffers_with_gpu_virtual_address(
+		static void ZIA_bind_input_buffers_with_gpu_virtual_address(
 			TKPA_valid<A_command_list> command_list_p,
 			TG_span<F_resource_gpu_virtual_address> gpu_virtual_addresses,
 			TG_span<u32> sizes,
 			TG_span<u32> strides,
 			u32 base_slot_index
 		);
-		static void ZIA_bind_vertex_buffer_with_gpu_virtual_address(
-			TKPA_valid<A_command_list> command_list_p,
-			F_resource_gpu_virtual_address gpu_virtual_address,
-			u32 size,
-			u32 stride,
-			u32 slot_index
-		);
-		static void ZIA_bind_instance_buffers_with_gpu_virtual_address(
-			TKPA_valid<A_command_list> command_list_p,
-			TG_span<F_resource_gpu_virtual_address> gpu_virtual_addresses,
-			TG_span<u32> sizes,
-			TG_span<u32> strides,
-			u32 base_slot_index
-		);
-		static void ZIA_bind_instance_buffer_with_gpu_virtual_address(
+		static void ZIA_bind_input_buffer_with_gpu_virtual_address(
 			TKPA_valid<A_command_list> command_list_p,
 			F_resource_gpu_virtual_address gpu_virtual_address,
 			u32 size,
@@ -441,12 +390,6 @@ namespace nrhi {
 			TKPA_valid<A_command_list> command_list_p,
 			KPA_indirect_buffer_handle indirect_buffer_p,
 			u32 indirect_buffer_offset
-		);
-
-	private:
-		static void temp_state_apply_instance_buffers(
-			const F_directx12_temp_command_list_state& temp_state,
-			ID3D12GraphicsCommandList* d3d12_command_list_p
 		);
 
     };

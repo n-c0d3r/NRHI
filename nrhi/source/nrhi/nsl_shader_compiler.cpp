@@ -1104,7 +1104,7 @@ namespace nrhi {
 	b8 F_nsl_info_tree_reader::is_maps_setup_ = false;
 	TG_map<G_string, b8> F_nsl_info_tree_reader::b8_str_to_value_map_;
 	TG_map<G_string, E_nsl_element_format> F_nsl_info_tree_reader::element_format_str_to_value_map_;
-	TG_map<G_string, E_nsl_semantic_input_class> F_nsl_info_tree_reader::semantic_input_class_str_to_value_map_;
+	TG_map<G_string, ED_input_classification> F_nsl_info_tree_reader::input_classification_str_to_value_map_;
 	TG_map<G_string, ED_filter> F_nsl_info_tree_reader::filter_str_to_value_map_;
 	TG_map<G_string, ED_texcoord_address_mode> F_nsl_info_tree_reader::texcoord_address_mode_str_to_value_map_;
 	TG_map<G_string, ED_cull_mode> F_nsl_info_tree_reader::cull_mode_str_to_value_map_;
@@ -1163,9 +1163,9 @@ namespace nrhi {
 			element_format_str_to_value_map_["TYPELESS_16"] = E_nsl_element_format::TYPELESS_16;
 			element_format_str_to_value_map_["TYPELESS_8"] = E_nsl_element_format::TYPELESS_8;
 
-			// setup semantic_input_class_str_to_value_map_
-			semantic_input_class_str_to_value_map_["PER_VERTEX"] = E_nsl_semantic_input_class::PER_VERTEX;
-			semantic_input_class_str_to_value_map_["PER_INSTANCE"] = E_nsl_semantic_input_class::PER_INSTANCE;
+			// setup input_classification_str_to_value_map_
+			input_classification_str_to_value_map_["PER_VERTEX_DATA"] = ED_input_classification::PER_VERTEX_DATA;
+			input_classification_str_to_value_map_["PER_INSTANCE_DATA"] = ED_input_classification::PER_INSTANCE_DATA;
 
 			// setup filter_str_to_value_map_
 			filter_str_to_value_map_["MIN_MAG_MIP_POINT"] = ED_filter::MIN_MAG_MIP_POINT;
@@ -1850,7 +1850,7 @@ namespace nrhi {
 
 		return it->second;
 	}
-	eastl::optional<E_nsl_semantic_input_class> F_nsl_info_tree_reader::read_semantic_input_class(u32 index, b8 is_required) const {
+	eastl::optional<ED_input_classification> F_nsl_info_tree_reader::read_input_classification(u32 index, b8 is_required) const {
 
 		if(!guarantee_index(index, is_required)) {
 
@@ -1859,9 +1859,9 @@ namespace nrhi {
 
 		G_string value_str = parse_value_str(info_trees_[index].name);
 
-		auto it = semantic_input_class_str_to_value_map_.find(value_str);
+		auto it = input_classification_str_to_value_map_.find(value_str);
 
-		if (it == semantic_input_class_str_to_value_map_.end()) {
+		if (it == input_classification_str_to_value_map_.end()) {
 
 			if(is_required)
 				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
@@ -3248,19 +3248,6 @@ namespace nrhi {
 		}
 
 		// apply object config
-		E_nsl_semantic_input_class input_class = E_nsl_semantic_input_class::PER_VERTEX;
-		{
-			auto it = context.current_object_config.find("input_class");
-			if(it != context.current_object_config.end()) {
-
-				auto value_opt = it->second.read_semantic_input_class(0);
-
-				if(!value_opt)
-					return eastl::nullopt;
-
-				input_class = value_opt.value();
-			}
-		}
 		E_nsl_element_format element_format = data_type_manager_p->element_format(target_type);
 		{
 			auto it = context.current_object_config.find("element_format");
@@ -3297,8 +3284,7 @@ namespace nrhi {
 				.target_type = target_type,
 				.target_binding = target_binding,
 				.element_format = element_format,
-				.element_count = element_count,
-				.input_class = input_class
+				.element_count = element_count
 			}
 		);
 
@@ -4811,6 +4797,20 @@ namespace nrhi {
 						}
 					}
 
+					// @classification annotation
+					{
+						auto it = attribute_config_map.find("classification");
+						if(it != attribute_config_map.end()) {
+
+							auto value_opt = it->second.read_input_classification(0);
+
+							if(!value_opt)
+								return eastl::nullopt;
+
+							attribute.classification = value_opt.value();
+						}
+					}
+
 					input_assembler_info.attributes.push_back(attribute);
 
 					attribute_config_map = {};
@@ -5288,45 +5288,24 @@ namespace nrhi {
 					break;
 				}
 
-				switch (semantic_info.input_class)
-				{
-				case E_nsl_semantic_input_class::PER_VERTEX:
-					desc.vertex_attribute_groups.resize(
-						eastl::max<u32>(
-							desc.vertex_attribute_groups.size(),
-							attribute.buffer + 1
-						)
-					);
-					desc.vertex_attribute_groups[attribute.buffer].push_back(
-						F_vertex_attribute {
+				// push back attribute
+				desc.attribute_groups.resize(
+					eastl::max<u32>(
+						desc.attribute_groups.size(),
+						attribute.buffer + 1
+					)
+				);
+				desc.attribute_groups[attribute.buffer].push_back(
+					F_input_attribute {
 
-							.name = attribute.semantic,
-							.format = format,
-							.duplicate_count = duplicate_count,
-							.offset = attribute.offset
+						.name = attribute.semantic,
+						.format = format,
+						.duplicate_count = duplicate_count,
+						.offset = attribute.offset,
+						.classification = attribute.classification
 
-						}
-					);
-					break;
-				case E_nsl_semantic_input_class::PER_INSTANCE:
-					desc.instance_attribute_groups.resize(
-						eastl::max<u32>(
-							desc.instance_attribute_groups.size(),
-							attribute.buffer + 1
-						)
-					);
-					desc.instance_attribute_groups[attribute.buffer].push_back(
-						F_instance_attribute {
-
-							.name = attribute.semantic,
-							.format = format,
-							.duplicate_count = duplicate_count,
-							.offset = attribute.offset
-
-						}
-					);
-					break;
-				}
+					}
+				);
 
 			}
 		}

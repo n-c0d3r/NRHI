@@ -57,15 +57,15 @@ NRHI_FunctionHelper_CreateFunctionClass(
             KPA_valid_buffer_handle index_buffer_p,
             u32 offset
         )"
-        "ZIA_bind_vertex_buffers" "void(
+        "ZIA_bind_input_buffers" "void(
             TKPA_valid<A_command_list> command_list_p,
-            const TG_span<K_valid_buffer_handle>& vertex_buffer_p_span,
+            const TG_span<K_valid_buffer_handle>& input_buffer_p_span,
             const TG_span<u32>& offset_span,
 			u32 base_slot_index
         )"
-        "ZIA_bind_vertex_buffer" "void(
+        "ZIA_bind_input_buffer" "void(
             TKPA_valid<A_command_list> command_list_p,
-            KPA_valid_buffer_handle vertex_buffer_p,
+            KPA_valid_buffer_handle input_buffer_p,
             u32 offset,
             u32 slot_index
         )"

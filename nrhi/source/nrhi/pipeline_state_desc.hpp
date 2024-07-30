@@ -43,6 +43,7 @@
 #include <nrhi/blend_factor.hpp>
 #include <nrhi/blend_operation.hpp>
 #include <nrhi/color_write_mode.hpp>
+#include <nrhi/input_classification.hpp>
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 #include <nrhi/logic_operation.hpp>
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
@@ -69,27 +70,19 @@ namespace nrhi {
 
 
 
-	struct F_vertex_attribute {
+	struct F_input_attribute {
 
 		G_string name;
 		ED_format format;
 		u32 duplicate_count = 1;
 		u32 offset = NCPP_U32_MAX;
-
-	};
-	struct F_instance_attribute {
-
-		G_string name;
-		ED_format format;
-		u32 duplicate_count = 1;
-		u32 offset = NCPP_U32_MAX;
+		ED_input_classification classification = ED_input_classification::PER_VERTEX_DATA;
 
 	};
 
 	struct F_input_assembler_desc {
 
-		TG_vector<TG_vector<F_vertex_attribute>> vertex_attribute_groups;
-		TG_vector<TG_vector<F_instance_attribute>> instance_attribute_groups;
+		TG_vector<TG_vector<F_input_attribute>> attribute_groups;
 
 	};
 

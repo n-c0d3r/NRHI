@@ -95,50 +95,26 @@ namespace nrhi {
 			offset
 		);
 	}
-	NCPP_FORCE_INLINE void A_command_list::ZIA_bind_vertex_buffers(
-		const TG_span<K_valid_buffer_handle>& vertex_buffer_p_span,
+	NCPP_FORCE_INLINE void A_command_list::ZIA_bind_input_buffers(
+		const TG_span<K_valid_buffer_handle>& input_buffer_p_span,
 		const TG_span<u32>& offset_span,
 		u32 base_slot_index
 	) {
-		H_command_list::ZIA_bind_vertex_buffers(
+		H_command_list::ZIA_bind_input_buffers(
 			NCPP_KTHIS(),
-			vertex_buffer_p_span,
+			input_buffer_p_span,
 			offset_span,
 			base_slot_index
 		);
 	}
-	NCPP_FORCE_INLINE void A_command_list::ZIA_bind_vertex_buffer(
-		KPA_valid_buffer_handle vertex_buffer_p,
+	NCPP_FORCE_INLINE void A_command_list::ZIA_bind_input_buffer(
+		KPA_valid_buffer_handle input_buffer_p,
 		u32 offset,
 		u32 slot_index
 	) {
-		H_command_list::ZIA_bind_vertex_buffer(
+		H_command_list::ZIA_bind_input_buffer(
 			NCPP_KTHIS(),
-			vertex_buffer_p,
-			offset,
-			slot_index
-		);
-	}
-	NCPP_FORCE_INLINE void A_command_list::ZIA_bind_instance_buffers(
-		const TG_span<K_valid_buffer_handle>& instance_buffer_p_span,
-		const TG_span<u32>& offset_span,
-		u32 base_slot_index
-	) {
-		H_command_list::ZIA_bind_instance_buffers(
-			NCPP_KTHIS(),
-			instance_buffer_p_span,
-			offset_span,
-			base_slot_index
-		);
-	}
-	NCPP_FORCE_INLINE void A_command_list::ZIA_bind_instance_buffer(
-		KPA_valid_buffer_handle instance_buffer_p,
-		u32 offset,
-		u32 slot_index
-	) {
-		H_command_list::ZIA_bind_instance_buffer(
-			NCPP_KTHIS(),
-			instance_buffer_p,
+			input_buffer_p,
 			offset,
 			slot_index
 		);
@@ -927,14 +903,14 @@ namespace nrhi {
 			);
 		);
 	}
-	NCPP_FORCE_INLINE void A_command_list::ZIA_bind_vertex_buffers_with_gpu_virtual_address(
+	NCPP_FORCE_INLINE void A_command_list::ZIA_bind_input_buffers_with_gpu_virtual_address(
 		TG_span<F_resource_gpu_virtual_address> gpu_virtual_addresses,
 		TG_span<u32> sizes,
 		TG_span<u32> strides,
 		u32 base_slot_index
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT(
-			H_command_list::ZIA_bind_vertex_buffers_with_gpu_virtual_address(
+			H_command_list::ZIA_bind_input_buffers_with_gpu_virtual_address(
 				NCPP_KTHIS(),
 				gpu_virtual_addresses,
 				sizes,
@@ -943,46 +919,14 @@ namespace nrhi {
 			);
 		);
 	}
-	NCPP_FORCE_INLINE void A_command_list::ZIA_bind_vertex_buffer_with_gpu_virtual_address(
+	NCPP_FORCE_INLINE void A_command_list::ZIA_bind_input_buffer_with_gpu_virtual_address(
 		F_resource_gpu_virtual_address gpu_virtual_address,
 		u32 size,
 		u32 stride,
 		u32 slot_index
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT(
-			H_command_list::ZIA_bind_vertex_buffer_with_gpu_virtual_address(
-				NCPP_KTHIS(),
-				gpu_virtual_address,
-				size,
-				stride,
-				slot_index
-			);
-		);
-	}
-	NCPP_FORCE_INLINE void A_command_list::ZIA_bind_instance_buffers_with_gpu_virtual_address(
-		TG_span<F_resource_gpu_virtual_address> gpu_virtual_addresses,
-		TG_span<u32> sizes,
-		TG_span<u32> strides,
-		u32 base_slot_index
-	) {
-		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT(
-			H_command_list::ZIA_bind_instance_buffers_with_gpu_virtual_address(
-				NCPP_KTHIS(),
-				gpu_virtual_addresses,
-				sizes,
-				strides,
-				base_slot_index
-			);
-		);
-	}
-	NCPP_FORCE_INLINE void A_command_list::ZIA_bind_instance_buffer_with_gpu_virtual_address(
-		F_resource_gpu_virtual_address gpu_virtual_address,
-		u32 size,
-		u32 stride,
-		u32 slot_index
-	) {
-		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT(
-			H_command_list::ZIA_bind_instance_buffer_with_gpu_virtual_address(
+			H_command_list::ZIA_bind_input_buffer_with_gpu_virtual_address(
 				NCPP_KTHIS(),
 				gpu_virtual_address,
 				size,

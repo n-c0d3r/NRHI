@@ -336,7 +336,7 @@ int main() {
 					NCPP_FHANDLE_VALID(ibuffer_p),
 					0
 				);
-				command_list_p->ZIA_bind_vertex_buffer(
+				command_list_p->ZIA_bind_input_buffer(
 					NCPP_FHANDLE_VALID(vbuffer_p),
 					0,
 					0
