@@ -1132,6 +1132,7 @@ namespace nrhi {
 
 				NCPP_ASSERT(temp_state.is_vertex_buffer_binded_array[i]) << "invalid vertex buffer " << i;
 			}
+			NCPP_ASSERT(temp_state.is_index_buffer_binded) << "index buffer is not binded";
 		);
 
 		ID3D12GraphicsCommandList* d3d12_command_list_p = dx12_command_list_p->d3d12_command_list_p();
@@ -1160,6 +1161,7 @@ namespace nrhi {
 
 		NCPP_ENABLE_IF_ASSERTION_ENABLED(
 			NCPP_ASSERT(temp_state.pipeline_state_p->type() == ED_pipeline_state_type::GRAPHICS) << "invalid pipeline state type";
+			NCPP_ASSERT(temp_state.is_index_buffer_binded) << "index buffer is not binded";
 		);
 
 		ID3D12GraphicsCommandList* d3d12_command_list_p = dx12_command_list_p->d3d12_command_list_p();

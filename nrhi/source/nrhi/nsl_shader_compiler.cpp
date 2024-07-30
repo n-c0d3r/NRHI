@@ -3889,6 +3889,22 @@ namespace nrhi {
 			}
 		}
 
+		// check for sort_uniforms annotation
+		{
+			auto it = context.current_object_config.find("sort_uniforms");
+			if(it != context.current_object_config.end()) {
+
+				const auto& info_tree_reader = it->second;
+
+				auto value_opt = info_tree_reader.read_b8(0);
+
+				if(!value_opt)
+					return eastl::nullopt;
+
+				resource_info.sort_uniforms = value_opt.value();
+			}
+		}
+
 		// check for shaders annotation
 		{
 			auto it = context.current_object_config.find("shaders");
@@ -6784,6 +6800,7 @@ namespace nrhi {
 				}
 
 				// sort uniform_iterator_vector by size
+				if(resource.second.sort_uniforms)
 				{
 					auto sort_func = [&](const F_uniform_iterator& a, const F_uniform_iterator& b) -> b8 {
 
@@ -8764,6 +8781,7 @@ namespace nrhi {
 					.is_array = resource_info.is_array,
 					.actual_slots = resource_info.actual_slots,
 					.data_arguments = std::move(data_arguments),
+					.sort_uniforms = resource_info.sort_uniforms,
 					.constant_size = resource_info.constant_size
 
 				};
