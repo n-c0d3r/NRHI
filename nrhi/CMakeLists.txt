@@ -24,7 +24,7 @@ option(NRHI_DRIVER_OPENGL "If checked, NRHI will use OpenGL driver" OFF)
 set(NRHI_DRIVER_DEFAULT DIRECTX_11 CACHE STRING "Default driver")
 
 # NRHI platform limit options
-set(NRHI_MAX_RTV_COUNT_PER_DRAWCALL 8 CACHE STRING "Max render target view count per drawcall")
+set(NRHI_MAX_RENDER_TARGET_COUNT_PER_DRAWCALL 8 CACHE STRING "Max render target view count per drawcall")
 set(NRHI_MAX_VERTEX_BUFFER_COUNT_PER_DRAWCALL 16 CACHE STRING "Max vertex buffer count per drawcall")
 set(NRHI_MAX_INSTANCE_BUFFER_COUNT_PER_DRAWCALL 16 CACHE STRING "Max instance buffer count per drawcall")
 set(NRHI_MAX_VERTEX_INSTANCE_BUFFER_COUNT_PER_DRAWCALL 16 CACHE STRING "On some platforms, there is a limit of the combination count of vertex buffers and instance buffers")

@@ -346,9 +346,9 @@ namespace nrhi {
 	};
 	enum class E_nsl_resource_type_class {
 		NONE,
-		SRV,
-		UAV,
-		CBV
+		SHADER_RESOURCE,
+		UNORDERED_ACCESS,
+		CONSTANT_BUFFER
 	};
 	using F_nsl_resource_config_map = TG_unordered_map<G_string, F_nsl_info_tree_reader>;
 	struct F_nsl_resource_info {

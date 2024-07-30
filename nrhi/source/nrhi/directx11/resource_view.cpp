@@ -46,19 +46,19 @@ namespace nrhi {
 		NRHI_ENUM_SWITCH(
 			desc.type,
 			NRHI_ENUM_CASE(
-				ED_resource_view_type::SRV,
+				ED_resource_view_type::SHADER_RESOURCE,
 				return { TU<F_directx11_shader_resource_view>()(device_p, desc) };
             )
 			NRHI_ENUM_CASE(
-				ED_resource_view_type::UAV,
+				ED_resource_view_type::UNORDERED_ACCESS,
 				return { TU<F_directx11_unordered_access_view>()(device_p, desc) };
             )
 			NRHI_ENUM_CASE(
-				ED_resource_view_type::RTV,
+				ED_resource_view_type::RENDER_TARGET,
 				return { TU<F_directx11_render_target_view>()(device_p, desc) };
             )
 			NRHI_ENUM_CASE(
-				ED_resource_view_type::DSV,
+				ED_resource_view_type::DEPTH_STENCIL,
 				return { TU<F_directx11_depth_stencil_view>()(device_p, desc) };
             )
 		);

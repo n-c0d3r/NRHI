@@ -50,7 +50,7 @@ namespace nrhi {
             desc.format,
             1,
             desc.sample_desc,
-            ED_resource_bind_flag::RTV,
+            ED_resource_bind_flag::RENDER_TARGET,
             ED_resource_heap_type::GREAD_GWRITE
         );
 		buffer_desc.can_create_view = false;
@@ -73,7 +73,7 @@ namespace nrhi {
 			TU<F_directx11_render_target_view>()(
 				device_p,
 				back_rtv_desc,
-				ED_resource_view_type::RTV,
+				ED_resource_view_type::RENDER_TARGET,
 				(ID3D11RenderTargetView*)0
 			)
 		};

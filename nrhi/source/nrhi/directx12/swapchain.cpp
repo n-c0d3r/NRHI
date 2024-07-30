@@ -24,7 +24,7 @@ namespace nrhi {
 		)
 	{
 		auto device_p = command_queue_p->device_p();
-		auto rtv_descriptor_increment_size = HD_directx12_device::descriptor_increment_size(device_p, ED_descriptor_heap_type::RTV);
+		auto rtv_descriptor_increment_size = HD_directx12_device::descriptor_increment_size(device_p, ED_descriptor_heap_type::RENDER_TARGET);
 
 		if(desc.refresh_rate == 0) {
 
@@ -66,7 +66,7 @@ namespace nrhi {
 			desc.format,
 			1,
 			desc.sample_desc,
-			ED_resource_bind_flag::RTV,
+			ED_resource_bind_flag::RENDER_TARGET,
 			ED_resource_heap_type::GREAD_GWRITE
 		);
 		buffer_desc.can_create_view = false;
@@ -95,7 +95,7 @@ namespace nrhi {
 		rtv_descriptor_heap_p_ = H_descriptor_heap::create(
 			device_p,
 			{
-				.type = ED_descriptor_heap_type::RTV,
+				.type = ED_descriptor_heap_type::RENDER_TARGET,
 				.descriptor_count = desc.rtv_count
 			}
 		);
@@ -119,7 +119,7 @@ namespace nrhi {
 						},
 						.heap_p = rtv_descriptor_heap_p_
 					},
-					ED_resource_view_type::RTV
+					ED_resource_view_type::RENDER_TARGET
 				)
 			});
 		}
@@ -137,7 +137,7 @@ namespace nrhi {
 					},
 					.heap_p = rtv_descriptor_heap_p_
 				},
-				ED_resource_view_type::RTV
+				ED_resource_view_type::RENDER_TARGET
 			)
 		};
 

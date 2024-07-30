@@ -49,7 +49,7 @@ namespace nrhi {
 
 		NCPP_ASSERT(
 			u32(resource_desc.bind_flags)
-				& u32(ED_resource_bind_flag::UAV)
+				& u32(ED_resource_bind_flag::UNORDERED_ACCESS)
 		) << "resource bind flag is not conpatible";
 
 		ID3D11Device* d3d11_device_p = device_p.T_cast<F_directx11_device>()->d3d11_device_p();

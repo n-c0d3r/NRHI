@@ -18,14 +18,14 @@ int main() {
 	NCPP_ASSERT(adapter_p_vector.size());
 
 	auto device_p = H_device::create(adapter_p_vector[0]);
-	u64 descriptor_increment_size = device_p->descriptor_increment_size(ED_descriptor_heap_type::CBV_SRV_UAV);
+	u64 descriptor_increment_size = device_p->descriptor_increment_size(ED_descriptor_heap_type::CONSTANT_BUFFER_SHADER_RESOURCE_UNORDERED_ACCESS);
 
 
 	// create descriptor heap 1
 	auto descriptor_heap_1_p = H_descriptor_heap::create(
 		NCPP_FOH_VALID(device_p),
 		{
-			.type = ED_descriptor_heap_type::CBV_SRV_UAV,
+			.type = ED_descriptor_heap_type::CONSTANT_BUFFER_SHADER_RESOURCE_UNORDERED_ACCESS,
 			.descriptor_count = 1
 		}
 	);
@@ -36,7 +36,7 @@ int main() {
 		NCPP_FOH_VALID(device_p),
 		128,
 		ED_format::R32G32B32A32_FLOAT,
-		ED_resource_bind_flag::SRV
+		ED_resource_bind_flag::SHADER_RESOURCE
 	);
 
 	// create descriptor

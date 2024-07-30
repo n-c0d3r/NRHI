@@ -85,7 +85,6 @@ namespace nrhi {
 		H_command_list::ZOM_bind_frame_buffer(NCPP_KTHIS(), frame_buffer_p);
 	}
 
-#ifdef NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_BINDING
 	NCPP_FORCE_INLINE void A_command_list::ZIA_bind_index_buffer(
 		KPA_valid_buffer_handle index_buffer_p,
 		u32 offset
@@ -145,6 +144,7 @@ namespace nrhi {
 		);
 	}
 
+#ifdef NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_BINDING
 	NCPP_FORCE_INLINE void A_command_list::ZVS_bind_constant_buffers(
 		const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
 		u32 base_slot_index

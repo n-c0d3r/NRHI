@@ -92,7 +92,7 @@ namespace nrhi {
 				d3d12_resource_barrier.Aliasing.pResourceAfter = resource_aliasing_barrier.resource_after_p.T_cast<F_directx12_resource>()->d3d12_resource_p();
 			)
 			NRHI_ENUM_CASE(
-				ED_resource_barrier_type::UAV,
+				ED_resource_barrier_type::UNORDERED_ACCESS,
 				const auto& resource_uav_barrier = resource_barrier.uav;
 				d3d12_resource_barrier.UAV.pResource = resource_uav_barrier.resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p();
 			)
@@ -139,7 +139,7 @@ namespace nrhi {
 					d3d12_resource_barrier.Aliasing.pResourceAfter = resource_aliasing_barrier.resource_after_p.T_cast<F_directx12_resource>()->d3d12_resource_p();
 				)
 				NRHI_ENUM_CASE(
-					ED_resource_barrier_type::UAV,
+					ED_resource_barrier_type::UNORDERED_ACCESS,
 					const auto& resource_uav_barrier = resource_barrier.uav;
 					d3d12_resource_barrier.UAV.pResource = resource_uav_barrier.resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p();
 				)
@@ -619,7 +619,7 @@ namespace nrhi {
 			&(frame_buffer_p.T_cast<F_directx12_frame_buffer>()->d3d12_scissor_rect())
 		);
 
-		F_descriptor_cpu_address d3d12_rtv_addresses[NRHI_MAX_RTV_COUNT_PER_DRAWCALL];
+		F_descriptor_cpu_address d3d12_rtv_addresses[NRHI_MAX_RENDER_TARGET_COUNT_PER_DRAWCALL];
 		for(u32 i = 0; i < color_attachment_count; ++i) {
 
 			NCPP_ASSERT(color_attachments[i]->is_valid_generation()) << "color attachment's generation is not valid";
@@ -669,7 +669,7 @@ namespace nrhi {
 			u32(
 				flag_combine(
 					index_buffer_p->desc().bind_flags,
-					ED_resource_bind_flag::IBV
+					ED_resource_bind_flag::INDEX_BUFFER
 				)
 			)
 		) << "invalid resource bind flag";

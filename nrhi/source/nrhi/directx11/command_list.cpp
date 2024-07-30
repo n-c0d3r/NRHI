@@ -241,7 +241,7 @@ namespace nrhi {
 			u32(
 				flag_combine(
 					index_buffer_p->desc().bind_flags,
-					ED_resource_bind_flag::IBV
+					ED_resource_bind_flag::INDEX_BUFFER
 				)
 			)
 		) << "invalid resource bind flag";
@@ -278,7 +278,7 @@ namespace nrhi {
 				u32(
 					flag_combine(
 						vertex_buffer_p->desc().bind_flags,
-						ED_resource_bind_flag::VBV
+						ED_resource_bind_flag::INPUT_BUFFER
 					)
 				)
 			) << "invalid resource bind flag";
@@ -312,7 +312,7 @@ namespace nrhi {
 			u32(
 				flag_combine(
 					vertex_buffer_p->desc().bind_flags,
-					ED_resource_bind_flag::VBV
+					ED_resource_bind_flag::INPUT_BUFFER
 				)
 			)
 		) << "invalid resource bind flag";
@@ -353,7 +353,7 @@ namespace nrhi {
 				u32(
 					flag_combine(
 						instance_buffer_p->desc().bind_flags,
-						ED_resource_bind_flag::INSTBV
+						ED_resource_bind_flag::INPUT_BUFFER
 					)
 				)
 			) << "invalid resource bind flag";
@@ -387,7 +387,7 @@ namespace nrhi {
 			u32(
 				flag_combine(
 					instance_buffer_p->desc().bind_flags,
-					ED_resource_bind_flag::INSTBV
+					ED_resource_bind_flag::INPUT_BUFFER
 				)
 			)
 		) << "invalid resource bind flag";
@@ -427,7 +427,7 @@ namespace nrhi {
 				u32(
 					flag_combine(
 						constant_buffer_p->desc().bind_flags,
-						ED_resource_bind_flag::CBV
+						ED_resource_bind_flag::CONSTANT_BUFFER
 					)
 				)
 			) << "invalid resource bind flag";
@@ -457,7 +457,7 @@ namespace nrhi {
 			u32(
 				flag_combine(
 					constant_buffer_p->desc().bind_flags,
-					ED_resource_bind_flag::CBV
+					ED_resource_bind_flag::CONSTANT_BUFFER
 				)
 			)
 		) << "invalid resource bind flag";
@@ -596,7 +596,7 @@ namespace nrhi {
 				u32(
 					flag_combine(
 						constant_buffer_p->desc().bind_flags,
-						ED_resource_bind_flag::CBV
+						ED_resource_bind_flag::CONSTANT_BUFFER
 					)
 				)
 			) << "invalid resource bind flag";
@@ -626,7 +626,7 @@ namespace nrhi {
 			u32(
 				flag_combine(
 					constant_buffer_p->desc().bind_flags,
-					ED_resource_bind_flag::CBV
+					ED_resource_bind_flag::CONSTANT_BUFFER
 				)
 			)
 		) << "invalid resource bind flag";
@@ -761,7 +761,7 @@ namespace nrhi {
 			&(frame_buffer_p.T_cast<F_directx11_frame_buffer>()->d3d11_viewport())
 		);
 
-		ID3D11RenderTargetView* d3d11_rtv_array[NRHI_MAX_RTV_COUNT_PER_DRAWCALL];
+		ID3D11RenderTargetView* d3d11_rtv_array[NRHI_MAX_RENDER_TARGET_COUNT_PER_DRAWCALL];
 		for(u32 i = 0; i < color_attachment_count; ++i) {
 
 			NCPP_ASSERT(color_attachments[i]->is_valid_generation()) << "color attachment's generation is not valid";
@@ -817,7 +817,7 @@ namespace nrhi {
 				u32(
 					flag_combine(
 						constant_buffer_p->desc().bind_flags,
-						ED_resource_bind_flag::CBV
+						ED_resource_bind_flag::CONSTANT_BUFFER
 					)
 				)
 			) << "invalid resource bind flag";
@@ -846,7 +846,7 @@ namespace nrhi {
 			u32(
 				flag_combine(
 					constant_buffer_p->desc().bind_flags,
-					ED_resource_bind_flag::CBV
+					ED_resource_bind_flag::CONSTANT_BUFFER
 				)
 			)
 		) << "invalid resource bind flag";

@@ -178,7 +178,7 @@ int main() {
 					"demo_texture_2d_2"
 				})
 			},
-			E_nsl_resource_type_class::SRV
+			E_nsl_resource_type_class::SHADER_RESOURCE
 		);
 
 		NCPP_INFO() << compiled_result.build(0);

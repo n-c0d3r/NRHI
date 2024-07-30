@@ -30,7 +30,7 @@ namespace nrhi {
 		ED_resource_barrier_flag flags
 	) {
 		F_resource_barrier result;
-		result.type = ED_resource_barrier_type::UAV;
+		result.type = ED_resource_barrier_type::UNORDERED_ACCESS;
 		result.flags = flags;
 		result.uav = uav_barrier;
 

@@ -304,7 +304,7 @@ int main() {
 		vertices,
 		NCPP_FOH_VALID(copy_command_list_p),
 		intermediate_resource_p_vector,
-        ED_resource_bind_flag::VBV
+        ED_resource_bind_flag::INPUT_BUFFER
     );
 
 	TG_vector<F_vector4> instances = {
@@ -363,7 +363,7 @@ int main() {
 		instances,
 		NCPP_FOH_VALID(copy_command_list_p),
 		intermediate_resource_p_vector,
-		ED_resource_bind_flag::INSTBV
+		ED_resource_bind_flag::INPUT_BUFFER
 	);
 
     TG_vector<u32> indices = {
@@ -380,7 +380,7 @@ int main() {
         ED_format::R32_UINT,
 		NCPP_FOH_VALID(copy_command_list_p),
 		intermediate_resource_p_vector,
-        ED_resource_bind_flag::IBV
+        ED_resource_bind_flag::INDEX_BUFFER
     );
 
     F_vector4 output_color = { 0.2f, 0.2f, 0.2f, 1.0f };
@@ -389,7 +389,7 @@ int main() {
         NCPP_INIL_SPAN(output_color),
 		NCPP_FOH_VALID(copy_command_list_p),
 		intermediate_resource_p_vector,
-        ED_resource_bind_flag::CBV
+        ED_resource_bind_flag::CONSTANT_BUFFER
     );
 
 
@@ -478,7 +478,7 @@ int main() {
 	const auto& nsl_shader_compiled_result = nsl_shader_compiled_result_opt.value();
 
 	F_root_param_desc cbv_root_param_desc(
-		ED_root_param_type::CBV,
+		ED_root_param_type::CONSTANT_BUFFER,
 		F_root_descriptor_desc {
 			0,
 			0

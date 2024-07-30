@@ -15,7 +15,7 @@ namespace nrhi {
 		NRHI_ENUM_SWITCH(
 			desc.type,
 			NRHI_ENUM_CASE(
-				ED_resource_view_type::SRV,
+				ED_resource_view_type::SHADER_RESOURCE,
 				initialize_srv(
 					heap_p,
 					cpu_address,
@@ -23,7 +23,7 @@ namespace nrhi {
 				);
 			)
 			NRHI_ENUM_CASE(
-				ED_resource_view_type::UAV,
+				ED_resource_view_type::UNORDERED_ACCESS,
 				initialize_uav(
 					heap_p,
 					cpu_address,
@@ -31,7 +31,7 @@ namespace nrhi {
 				);
 			)
 			NRHI_ENUM_CASE(
-				ED_resource_view_type::RTV,
+				ED_resource_view_type::RENDER_TARGET,
 				initialize_rtv(
 					heap_p,
 					cpu_address,
@@ -39,7 +39,7 @@ namespace nrhi {
 				);
 			)
 			NRHI_ENUM_CASE(
-				ED_resource_view_type::DSV,
+				ED_resource_view_type::DEPTH_STENCIL,
 				initialize_dsv(
 					heap_p,
 					cpu_address,
@@ -65,7 +65,7 @@ namespace nrhi {
 
 		NCPP_ASSERT(
 			u32(resource_desc.bind_flags)
-			& u32(ED_resource_bind_flag::SRV)
+			& u32(ED_resource_bind_flag::SHADER_RESOURCE)
 		) << "resource bind flag is not conpatible";
 
 		ID3D12Resource* d3d12_resource_p = resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p();
@@ -165,7 +165,7 @@ namespace nrhi {
 
 		NCPP_ASSERT(
 			u32(resource_desc.bind_flags)
-				& u32(ED_resource_bind_flag::UAV)
+				& u32(ED_resource_bind_flag::UNORDERED_ACCESS)
 		) << "resource bind flag is not conpatible";
 
 		ID3D12Resource* d3d12_resource_p = resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p();
@@ -254,7 +254,7 @@ namespace nrhi {
 
 		NCPP_ASSERT(
 			u32(resource_desc.bind_flags)
-				& u32(ED_resource_bind_flag::RTV)
+				& u32(ED_resource_bind_flag::RENDER_TARGET)
 		) << "resource bind flag is not conpatible";
 
 		ID3D12Resource* d3d12_resource_p = resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p();
@@ -316,7 +316,7 @@ namespace nrhi {
 
 		NCPP_ASSERT(
 			u32(resource_desc.bind_flags)
-				& u32(ED_resource_bind_flag::DSV)
+				& u32(ED_resource_bind_flag::DEPTH_STENCIL)
 		) << "resource bind flag is not conpatible";
 
 		ID3D12Resource* d3d12_resource_p = resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p();

@@ -86,7 +86,7 @@ int main() {
     U_buffer_handle vbuffer_p = H_buffer::T_create<F_vector4>(
         NCPP_FOREF_VALID(device_p),
         vertices,
-        ED_resource_bind_flag::VBV
+        ED_resource_bind_flag::INPUT_BUFFER
     );
 
 	TG_vector<F_vector4> instances = {
@@ -143,7 +143,7 @@ int main() {
 	U_buffer_handle instance_buffer_p = H_buffer::T_create<F_vector4>(
 		NCPP_FOREF_VALID(device_p),
 		instances,
-		ED_resource_bind_flag::INSTBV
+		ED_resource_bind_flag::INPUT_BUFFER
 	);
 
     TG_vector<u32> indices = {
@@ -158,14 +158,14 @@ int main() {
         NCPP_FOREF_VALID(device_p),
         indices,
         ED_format::R32_UINT,
-        ED_resource_bind_flag::IBV
+        ED_resource_bind_flag::INDEX_BUFFER
     );
 
     TG_vector<F_matrix4x4> buffer2_data(128);
     U_structured_buffer_handle buffer2_p = H_buffer::T_create_structured<F_matrix4x4>(
         NCPP_FOREF_VALID(device_p),
         buffer2_data,
-        ED_resource_bind_flag::SRV
+        ED_resource_bind_flag::SHADER_RESOURCE
     );
     U_srv_handle buffer2_srv_p = H_resource_view::create_srv(
         NCPP_FOREF_VALID(device_p),
@@ -178,7 +178,7 @@ int main() {
     U_buffer_handle cbuffer_p = H_buffer::T_create<F_vector4>(
         NCPP_FOREF_VALID(device_p),
         NCPP_INIL_SPAN(output_color),
-        ED_resource_bind_flag::CBV,
+        ED_resource_bind_flag::CONSTANT_BUFFER,
         ED_resource_heap_type::GREAD_CWRITE
     );
 
@@ -191,8 +191,8 @@ int main() {
         1,
         {},
         flag_combine(
-            ED_resource_bind_flag::SRV,
-            ED_resource_bind_flag::RTV
+            ED_resource_bind_flag::SHADER_RESOURCE,
+            ED_resource_bind_flag::RENDER_TARGET
         )
     );
     U_srv_handle texture_2d_srv_p = H_resource_view::create_srv(

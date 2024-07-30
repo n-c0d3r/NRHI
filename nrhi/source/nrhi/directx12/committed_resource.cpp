@@ -97,7 +97,7 @@ namespace nrhi {
 
 		if(
 			(d3d12_resource_desc.Flags & D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL)
-			& !flag_is_has(desc.bind_flags, ED_resource_bind_flag::SRV)
+			& !flag_is_has(desc.bind_flags, ED_resource_bind_flag::SHADER_RESOURCE)
 		)
 			d3d12_resource_desc.Flags &= D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE;
 

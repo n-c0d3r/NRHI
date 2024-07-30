@@ -20,6 +20,7 @@ include(NRHI/Drivers/DirectX11/ImplementTexCoordAddressMode)
 include(NRHI/Drivers/DirectX11/ImplementBlendFactor)
 include(NRHI/Drivers/DirectX11/ImplementBlendOperation)
 include(NRHI/Drivers/DirectX11/ImplementColorWriteMode)
+include(NRHI/Drivers/DirectX11/ImplementInputClassification)
 
 
 

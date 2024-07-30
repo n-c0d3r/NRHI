@@ -6398,7 +6398,7 @@ namespace nrhi {
 
 		for(auto& resource : name_to_resource_info_map) {
 
-			if(resource.second.type_class != E_nsl_resource_type_class::SRV)
+			if(resource.second.type_class != E_nsl_resource_type_class::SHADER_RESOURCE)
 				continue;
 
 			resource.second.actual_slots.resize(shader_count);
@@ -6418,7 +6418,7 @@ namespace nrhi {
 
 			auto& resource = *it;
 
-			if(resource.second.type_class != E_nsl_resource_type_class::SRV)
+			if(resource.second.type_class != E_nsl_resource_type_class::SHADER_RESOURCE)
 				continue;
 
 			b8 is_all_shader = (resource.second.shader_filters.find("*") != resource.second.shader_filters.end());
@@ -6518,7 +6518,7 @@ namespace nrhi {
 
 		for(auto& resource : name_to_resource_info_map) {
 
-			if(resource.second.type_class != E_nsl_resource_type_class::UAV)
+			if(resource.second.type_class != E_nsl_resource_type_class::UNORDERED_ACCESS)
 				continue;
 
 			resource.second.actual_slots.resize(shader_count);
@@ -6538,7 +6538,7 @@ namespace nrhi {
 
 			auto& resource = *it;
 
-			if(resource.second.type_class != E_nsl_resource_type_class::UAV)
+			if(resource.second.type_class != E_nsl_resource_type_class::UNORDERED_ACCESS)
 				continue;
 
 			b8 is_all_shader = (resource.second.shader_filters.find("*") != resource.second.shader_filters.end());
@@ -6638,7 +6638,7 @@ namespace nrhi {
 
 		for(auto& resource : name_to_resource_info_map) {
 
-			if(resource.second.type_class != E_nsl_resource_type_class::CBV)
+			if(resource.second.type_class != E_nsl_resource_type_class::CONSTANT_BUFFER)
 				continue;
 
 			resource.second.actual_slots.resize(shader_count);
@@ -6658,7 +6658,7 @@ namespace nrhi {
 
 			auto& resource = *it;
 
-			if(resource.second.type_class != E_nsl_resource_type_class::CBV)
+			if(resource.second.type_class != E_nsl_resource_type_class::CONSTANT_BUFFER)
 				continue;
 
 			b8 is_all_shader = (resource.second.shader_filters.find("*") != resource.second.shader_filters.end());
@@ -8138,13 +8138,13 @@ namespace nrhi {
 		char register_type;
 		switch (resource.second.type_class)
 		{
-		case E_nsl_resource_type_class::SRV:
+		case E_nsl_resource_type_class::SHADER_RESOURCE:
 			register_type = 't';
 			break;
-		case E_nsl_resource_type_class::UAV:
+		case E_nsl_resource_type_class::UNORDERED_ACCESS:
 			register_type = 'u';
 			break;
-		case E_nsl_resource_type_class::CBV:
+		case E_nsl_resource_type_class::CONSTANT_BUFFER:
 			register_type = 'b';
 			break;
 		case E_nsl_resource_type_class::NONE:
@@ -8354,25 +8354,25 @@ namespace nrhi {
 		shader_compiler_p_(shader_compiler_p)
 	{
 		// setup name_to_resource_type_class_map_
-		name_to_resource_type_class_map_["ConstantBuffer"] = E_nsl_resource_type_class::CBV;
-		name_to_resource_type_class_map_["Buffer"] = E_nsl_resource_type_class::SRV;
-		name_to_resource_type_class_map_["ByteAddressBuffer"] = E_nsl_resource_type_class::SRV;
-		name_to_resource_type_class_map_["StructuredBuffer"] = E_nsl_resource_type_class::SRV;
-		name_to_resource_type_class_map_["Texture1D"] = E_nsl_resource_type_class::SRV;
-		name_to_resource_type_class_map_["Texture1DArray"] = E_nsl_resource_type_class::SRV;
-		name_to_resource_type_class_map_["Texture2D"] = E_nsl_resource_type_class::SRV;
-		name_to_resource_type_class_map_["Texture2DArray"] = E_nsl_resource_type_class::SRV;
-		name_to_resource_type_class_map_["Texture3D"] = E_nsl_resource_type_class::SRV;
-		name_to_resource_type_class_map_["TextureCube"] = E_nsl_resource_type_class::SRV;
-		name_to_resource_type_class_map_["TextureCubeArray"] = E_nsl_resource_type_class::SRV;
-		name_to_resource_type_class_map_["RWBuffer"] = E_nsl_resource_type_class::UAV;
-		name_to_resource_type_class_map_["RWByteAddressBuffer"] = E_nsl_resource_type_class::UAV;
-		name_to_resource_type_class_map_["RWStructuredBuffer"] = E_nsl_resource_type_class::UAV;
-		name_to_resource_type_class_map_["RWTexture1D"] = E_nsl_resource_type_class::UAV;
-		name_to_resource_type_class_map_["RWTexture1DArray"] = E_nsl_resource_type_class::UAV;
-		name_to_resource_type_class_map_["RWTexture2D"] = E_nsl_resource_type_class::UAV;
-		name_to_resource_type_class_map_["RWTexture2DArray"] = E_nsl_resource_type_class::UAV;
-		name_to_resource_type_class_map_["RWTexture3D"] = E_nsl_resource_type_class::UAV;
+		name_to_resource_type_class_map_["ConstantBuffer"] = E_nsl_resource_type_class::CONSTANT_BUFFER;
+		name_to_resource_type_class_map_["Buffer"] = E_nsl_resource_type_class::SHADER_RESOURCE;
+		name_to_resource_type_class_map_["ByteAddressBuffer"] = E_nsl_resource_type_class::SHADER_RESOURCE;
+		name_to_resource_type_class_map_["StructuredBuffer"] = E_nsl_resource_type_class::SHADER_RESOURCE;
+		name_to_resource_type_class_map_["Texture1D"] = E_nsl_resource_type_class::SHADER_RESOURCE;
+		name_to_resource_type_class_map_["Texture1DArray"] = E_nsl_resource_type_class::SHADER_RESOURCE;
+		name_to_resource_type_class_map_["Texture2D"] = E_nsl_resource_type_class::SHADER_RESOURCE;
+		name_to_resource_type_class_map_["Texture2DArray"] = E_nsl_resource_type_class::SHADER_RESOURCE;
+		name_to_resource_type_class_map_["Texture3D"] = E_nsl_resource_type_class::SHADER_RESOURCE;
+		name_to_resource_type_class_map_["TextureCube"] = E_nsl_resource_type_class::SHADER_RESOURCE;
+		name_to_resource_type_class_map_["TextureCubeArray"] = E_nsl_resource_type_class::SHADER_RESOURCE;
+		name_to_resource_type_class_map_["RWBuffer"] = E_nsl_resource_type_class::UNORDERED_ACCESS;
+		name_to_resource_type_class_map_["RWByteAddressBuffer"] = E_nsl_resource_type_class::UNORDERED_ACCESS;
+		name_to_resource_type_class_map_["RWStructuredBuffer"] = E_nsl_resource_type_class::UNORDERED_ACCESS;
+		name_to_resource_type_class_map_["RWTexture1D"] = E_nsl_resource_type_class::UNORDERED_ACCESS;
+		name_to_resource_type_class_map_["RWTexture1DArray"] = E_nsl_resource_type_class::UNORDERED_ACCESS;
+		name_to_resource_type_class_map_["RWTexture2D"] = E_nsl_resource_type_class::UNORDERED_ACCESS;
+		name_to_resource_type_class_map_["RWTexture2DArray"] = E_nsl_resource_type_class::UNORDERED_ACCESS;
+		name_to_resource_type_class_map_["RWTexture3D"] = E_nsl_resource_type_class::UNORDERED_ACCESS;
 
 		// setup name_to_resource_type_map_
 		name_to_resource_type_map_["ConstantBuffer"] = E_nsl_resource_type::ConstantBuffer;
