@@ -445,11 +445,7 @@ namespace nrhi {
 		);
 
 	private:
-		static void temp_state_apply_vertex_buffers(
-			const F_directx12_temp_command_list_state& temp_state,
-			ID3D12GraphicsCommandList* d3d12_command_list_p
-		);
-		static void temp_state_apply_vertex_buffers_instance_buffers(
+		static void temp_state_apply_instance_buffers(
 			const F_directx12_temp_command_list_state& temp_state,
 			ID3D12GraphicsCommandList* d3d12_command_list_p
 		);

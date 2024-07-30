@@ -725,10 +725,16 @@ namespace nrhi {
 			d3d12_buffer_view.StrideInBytes = desc.stride;
 		}
 
-		memcpy(
-			temp_state.d3d12_vertex_buffer_views + base_slot_index,
-			d3d12_buffer_views,
-			buffer_count * sizeof(D3D12_VERTEX_BUFFER_VIEW)
+//		memcpy(
+//			temp_state.d3d12_vertex_buffer_views + base_slot_index,
+//			d3d12_buffer_views,
+//			buffer_count * sizeof(D3D12_VERTEX_BUFFER_VIEW)
+//		);
+
+		d3d12_command_list_p->IASetVertexBuffers(
+			base_slot_index,
+			buffer_count,
+			d3d12_buffer_views
 		);
 	}
 	void HD_directx12_command_list::ZIA_bind_vertex_buffer(
@@ -760,7 +766,13 @@ namespace nrhi {
 		d3d12_buffer_view.SizeInBytes = desc.size - offset_in_bytes;
 		d3d12_buffer_view.StrideInBytes = desc.stride;
 
-		temp_state.d3d12_vertex_buffer_views[slot_index] = d3d12_buffer_view;
+//		temp_state.d3d12_vertex_buffer_views[slot_index] = d3d12_buffer_view;
+
+		d3d12_command_list_p->IASetVertexBuffers(
+			slot_index,
+			1,
+			&d3d12_buffer_view
+		);
 	}
 	void HD_directx12_command_list::ZIA_bind_instance_buffers(
 		TKPA_valid<A_command_list> command_list_p,
@@ -892,10 +904,16 @@ namespace nrhi {
 			d3d12_buffer_view.StrideInBytes = strides[i];
 		}
 
-		memcpy(
-			temp_state.d3d12_vertex_buffer_views + base_slot_index,
-			d3d12_buffer_views,
-			buffer_count * sizeof(D3D12_VERTEX_BUFFER_VIEW)
+//		memcpy(
+//			temp_state.d3d12_vertex_buffer_views + base_slot_index,
+//			d3d12_buffer_views,
+//			buffer_count * sizeof(D3D12_VERTEX_BUFFER_VIEW)
+//		);
+
+		d3d12_command_list_p->IASetVertexBuffers(
+			base_slot_index,
+			buffer_count,
+			d3d12_buffer_views
 		);
 	}
 	void HD_directx12_command_list::ZIA_bind_vertex_buffer_with_gpu_virtual_address(
@@ -922,7 +940,13 @@ namespace nrhi {
 		d3d12_buffer_view.SizeInBytes = size;
 		d3d12_buffer_view.StrideInBytes = stride;
 
-		temp_state.d3d12_vertex_buffer_views[slot_index] = d3d12_buffer_view;
+//		temp_state.d3d12_vertex_buffer_views[slot_index] = d3d12_buffer_view;
+
+		d3d12_command_list_p->IASetVertexBuffers(
+			slot_index,
+			1,
+			&d3d12_buffer_view
+		);
 	}
 	void HD_directx12_command_list::ZIA_bind_instance_buffers_with_gpu_virtual_address(
 		TKPA_valid<A_command_list> command_list_p,
@@ -1040,14 +1064,13 @@ namespace nrhi {
 
 		NCPP_ENABLE_IF_ASSERTION_ENABLED(
 			NCPP_ASSERT(temp_state.pipeline_state_p->type() == ED_pipeline_state_type::GRAPHICS) << "invalid pipeline state type";
+			for(u32 i = 0; i < temp_state.vertex_buffer_count; ++i) {
+
+				NCPP_ASSERT(temp_state.is_vertex_buffer_binded_array[i]) << "invalid vertex buffer " << i;
+			}
 		);
 
 		ID3D12GraphicsCommandList* d3d12_command_list_p = dx12_command_list_p->d3d12_command_list_p();
-
-		temp_state_apply_vertex_buffers(
-			temp_state,
-			d3d12_command_list_p
-		);
 
 		d3d12_command_list_p->DrawInstanced(
 			vertex_count,
@@ -1071,11 +1094,15 @@ namespace nrhi {
 
 		NCPP_ENABLE_IF_ASSERTION_ENABLED(
 			NCPP_ASSERT(temp_state.pipeline_state_p->type() == ED_pipeline_state_type::GRAPHICS) << "invalid pipeline state type";
+			for(u32 i = 0; i < temp_state.vertex_buffer_count; ++i) {
+
+				NCPP_ASSERT(temp_state.is_vertex_buffer_binded_array[i]) << "invalid vertex buffer " << i;
+			}
 		);
 
 		ID3D12GraphicsCommandList* d3d12_command_list_p = dx12_command_list_p->d3d12_command_list_p();
 
-		temp_state_apply_vertex_buffers_instance_buffers(
+		temp_state_apply_instance_buffers(
 			temp_state,
 			d3d12_command_list_p
 		);
@@ -1101,14 +1128,13 @@ namespace nrhi {
 
 		NCPP_ENABLE_IF_ASSERTION_ENABLED(
 			NCPP_ASSERT(temp_state.pipeline_state_p->type() == ED_pipeline_state_type::GRAPHICS) << "invalid pipeline state type";
+			for(u32 i = 0; i < temp_state.vertex_buffer_count; ++i) {
+
+				NCPP_ASSERT(temp_state.is_vertex_buffer_binded_array[i]) << "invalid vertex buffer " << i;
+			}
 		);
 
 		ID3D12GraphicsCommandList* d3d12_command_list_p = dx12_command_list_p->d3d12_command_list_p();
-
-		temp_state_apply_vertex_buffers(
-			temp_state,
-			d3d12_command_list_p
-		);
 
 		d3d12_command_list_p->DrawIndexedInstanced(
 			index_count,
@@ -1138,7 +1164,7 @@ namespace nrhi {
 
 		ID3D12GraphicsCommandList* d3d12_command_list_p = dx12_command_list_p->d3d12_command_list_p();
 
-		temp_state_apply_vertex_buffers_instance_buffers(
+		temp_state_apply_instance_buffers(
 			temp_state,
 			d3d12_command_list_p
 		);
@@ -1178,41 +1204,21 @@ namespace nrhi {
 	) {
 	}
 
-	void HD_directx12_command_list::temp_state_apply_vertex_buffers(
+	void HD_directx12_command_list::temp_state_apply_instance_buffers(
 		const F_directx12_temp_command_list_state& temp_state,
 		ID3D12GraphicsCommandList* d3d12_command_list_p
 	) {
 #ifdef NCPP_ENABLE_ASSERT
-		for(u32 i = 0; i < temp_state.vertex_buffer_count; ++i) {
-
-			NCPP_ASSERT(temp_state.is_vertex_buffer_binded_array[i]) << "invalid vertex buffer " << i;
-		}
-#endif
-		d3d12_command_list_p->IASetVertexBuffers(
-			0,
-			temp_state.vertex_buffer_count,
-			temp_state.d3d12_vertex_buffer_views
-		);
-	}
-	void HD_directx12_command_list::temp_state_apply_vertex_buffers_instance_buffers(
-		const F_directx12_temp_command_list_state& temp_state,
-		ID3D12GraphicsCommandList* d3d12_command_list_p
-	) {
-#ifdef NCPP_ENABLE_ASSERT
-		for(u32 i = 0; i < temp_state.vertex_buffer_count; ++i) {
-
-			NCPP_ASSERT(temp_state.is_vertex_buffer_binded_array[i]) << "invalid vertex buffer " << i;
-		}
 		for(u32 i = 0; i < temp_state.instance_buffer_count; ++i) {
 
 			NCPP_ASSERT(temp_state.is_instance_buffer_binded_array[i]) << "invalid instance buffer " << i;
 		}
 #endif
-		d3d12_command_list_p->IASetVertexBuffers(
-			0,
-			temp_state.vertex_buffer_count,
-			temp_state.d3d12_vertex_buffer_views
-		);
+//		d3d12_command_list_p->IASetVertexBuffers(
+//			0,
+//			temp_state.vertex_buffer_count,
+//			temp_state.d3d12_vertex_buffer_views
+//		);
 		d3d12_command_list_p->IASetVertexBuffers(
 			temp_state.vertex_buffer_count,
 			temp_state.instance_buffer_count,
