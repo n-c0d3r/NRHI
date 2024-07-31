@@ -136,22 +136,7 @@ function(NRHI_EnumHelper_CreateEnum)
 
                         ${PARGS_TYPE} value___nrhi_internal___ = 0;
 
-                        NCPP_FORCE_INLINE operator ${PARGS_TYPE} () const noexcept {
-
-                            return value___nrhi_internal___;
-                        }
                         template<typename F__>
-                        requires requires(${PARGS_TYPE} a) {
-                            F__ b = a;
-                        }
-                        NCPP_FORCE_INLINE operator F__ () const noexcept {
-
-                            return value___nrhi_internal___;
-                        }
-                        template<typename F__>
-                        requires requires(${PARGS_TYPE} a) {
-                            F__ b = (F__)a;
-                        }
                         explicit NCPP_FORCE_INLINE operator F__ () const noexcept {
 
                             using F_equivalent = ncpp::utilities::TF_nth_template_targ<
