@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/pipeline_state_base.hpp
+/** @file nrhi/command_signature_base.hpp
 *
-*   Implement pipeline_state base class.
+*   Implement command signature base.
 */
 
 
@@ -33,54 +33,52 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/device_child.hpp>
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_INDIRECT_COMMANDS
 #include <nrhi/root_signature_child.hpp>
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-#include <nrhi/pipeline_state_desc.hpp>
-#include <nrhi/pipeline_state_type.hpp>
+#include <nrhi/command_signature_desc.hpp>
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_INDIRECT_COMMANDS
 
 #pragma endregion
 
 
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_INDIRECT_COMMANDS
 namespace nrhi {
 
-	class NRHI_API A_pipeline_state :
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		public A_root_signature_child
-#else
-		public A_device_child
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-	{
+	class NRHI_API A_command_signature : public A_root_signature_child {
 
 	private:
-		ED_pipeline_state_type type_;
+		F_command_signature_desc desc_;
 
 	public:
-		NCPP_FORCE_INLINE ED_pipeline_state_type type() const noexcept { return type_; }
+		NCPP_FORCE_INLINE const F_command_signature_desc& desc() const noexcept { return desc_; }
 
 
 
 	protected:
-		A_pipeline_state(
+		A_command_signature(
 			TKPA_valid<A_device> device_p,
-			ED_pipeline_state_type type
+			const F_command_signature_desc& desc,
+			TKPA_valid<A_root_signature> root_signature_p
 		);
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		A_pipeline_state(
-			TKPA_valid<A_device> device_p,
-			TKPA_valid<A_root_signature> root_signature_p,
-			ED_pipeline_state_type type
-		);
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 	public:
-		virtual ~A_pipeline_state();
+		virtual ~A_command_signature();
 
 	public:
-		NCPP_OBJECT(A_pipeline_state);
+		NCPP_OBJECT(A_command_signature);
+
+	public:
+		virtual void rebuild(
+			const F_command_signature_desc& desc
+		);
+
+	protected:
+		void finalize_rebuild(
+			const F_command_signature_desc& desc
+		);
 
 	};
 
 }
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_INDIRECT_COMMANDS

@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/pipeline_state_base.hpp
+/** @file nrhi/directx12/command_signature.hpp
 *
-*   Implement pipeline_state base class.
+*   Implement directx12 command signature.
 */
 
 
@@ -33,12 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/device_child.hpp>
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-#include <nrhi/root_signature_child.hpp>
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-#include <nrhi/pipeline_state_desc.hpp>
-#include <nrhi/pipeline_state_type.hpp>
+#include <nrhi/command_signature_base.hpp>
 
 #pragma endregion
 
@@ -46,40 +41,58 @@
 
 namespace nrhi {
 
-	class NRHI_API A_pipeline_state :
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		public A_root_signature_child
-#else
-		public A_device_child
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-	{
+	class NRHI_API F_directx12_command_signature : public A_command_signature {
 
 	private:
-		ED_pipeline_state_type type_;
+		ID3D12CommandSignature* d3d12_command_signature_p_ = 0;
 
 	public:
-		NCPP_FORCE_INLINE ED_pipeline_state_type type() const noexcept { return type_; }
+		NCPP_FORCE_INLINE ID3D12CommandSignature* d3d12_command_signature_p() const noexcept { return d3d12_command_signature_p_; }
+		NCPP_FORCE_INLINE void set_d3d12_command_signature_p_unsafe(ID3D12CommandSignature* value) noexcept { d3d12_command_signature_p_ = value; }
 
 
 
-	protected:
-		A_pipeline_state(
+	public:
+		F_directx12_command_signature(
 			TKPA_valid<A_device> device_p,
-			ED_pipeline_state_type type
+			const F_command_signature_desc& desc,
+			TKPA_valid<A_root_signature> root_signature_p
 		);
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		A_pipeline_state(
+		F_directx12_command_signature(
 			TKPA_valid<A_device> device_p,
+			const F_command_signature_desc& desc,
 			TKPA_valid<A_root_signature> root_signature_p,
-			ED_pipeline_state_type type
+			ID3D12CommandSignature* d3d12_command_signature_p
 		);
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		virtual ~F_directx12_command_signature();
 
 	public:
-		virtual ~A_pipeline_state();
+		NCPP_OBJECT(F_directx12_command_signature);
+
+	private:
+		static ID3D12CommandSignature* create_d3d12_command_signature(
+			TKPA_valid<A_device> device_p,
+			const F_command_signature_desc& desc,
+			TKPA_valid<A_root_signature> root_signature_p
+		);
 
 	public:
-		NCPP_OBJECT(A_pipeline_state);
+		virtual void rebuild(
+			const F_command_signature_desc& desc
+		) override;
+
+	};
+
+
+
+	class NRHI_API HD_directx12_command_signature {
+
+	public:
+		static TU<A_command_signature> create(
+			TKPA_valid<A_device> device_p,
+			const F_command_signature_desc& desc,
+			TKPA_valid<A_root_signature> root_signature_p
+		);
 
 	};
 

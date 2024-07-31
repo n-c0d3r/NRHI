@@ -34,6 +34,7 @@ include(NRHI/Drivers/DirectX12/ImplementColorWriteMode)
 include(NRHI/Drivers/DirectX12/ImplementLogicOperation)
 include(NRHI/Drivers/DirectX12/ImplementTextureCubeFace)
 include(NRHI/Drivers/DirectX12/ImplementInputClassification)
+include(NRHI/Drivers/DirectX12/ImplementIndirectArgumentType)
 
 
 

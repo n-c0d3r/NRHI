@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/pipeline_state_base.hpp
+/** @file nrhi/command_signature_desc.hpp
 *
-*   Implement pipeline_state base class.
+*   Implement command signature desc.
 */
 
 
@@ -33,54 +33,24 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/device_child.hpp>
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-#include <nrhi/root_signature_child.hpp>
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-#include <nrhi/pipeline_state_desc.hpp>
-#include <nrhi/pipeline_state_type.hpp>
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_INDIRECT_COMMANDS
+#include <nrhi/indirect_argument_desc.hpp>
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_INDIRECT_COMMANDS
 
 #pragma endregion
 
 
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_INDIRECT_COMMANDS
 namespace nrhi {
 
-	class NRHI_API A_pipeline_state :
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		public A_root_signature_child
-#else
-		public A_device_child
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-	{
+	struct F_command_signature_desc {
 
-	private:
-		ED_pipeline_state_type type_;
+		u32 stride = 0;
 
-	public:
-		NCPP_FORCE_INLINE ED_pipeline_state_type type() const noexcept { return type_; }
-
-
-
-	protected:
-		A_pipeline_state(
-			TKPA_valid<A_device> device_p,
-			ED_pipeline_state_type type
-		);
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		A_pipeline_state(
-			TKPA_valid<A_device> device_p,
-			TKPA_valid<A_root_signature> root_signature_p,
-			ED_pipeline_state_type type
-		);
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-
-	public:
-		virtual ~A_pipeline_state();
-
-	public:
-		NCPP_OBJECT(A_pipeline_state);
+		TG_vector<F_indirect_argument_desc> indirect_argument_descs;
 
 	};
 
 }
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_INDIRECT_COMMANDS

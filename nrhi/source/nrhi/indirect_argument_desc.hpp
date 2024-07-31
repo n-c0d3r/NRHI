@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/pipeline_state_base.hpp
+/** @file nrhi/indirect_argument_desc.hpp
 *
-*   Implement pipeline_state base class.
+*   Implement indirect argument desc.
 */
 
 
@@ -33,54 +33,49 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/device_child.hpp>
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-#include <nrhi/root_signature_child.hpp>
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-#include <nrhi/pipeline_state_desc.hpp>
-#include <nrhi/pipeline_state_type.hpp>
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_INDIRECT_COMMANDS
+#include <nrhi/indirect_argument_type.hpp>
+#include <nrhi/resource_gpu_virtual_address.hpp>
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_INDIRECT_COMMANDS
 
 #pragma endregion
 
 
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_INDIRECT_COMMANDS
 namespace nrhi {
 
-	class NRHI_API A_pipeline_state :
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		public A_root_signature_child
-#else
-		public A_device_child
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-	{
+	struct F_indirect_argument_desc {
 
-	private:
-		ED_pipeline_state_type type_;
+		ED_indirect_argument_type type;
 
-	public:
-		NCPP_FORCE_INLINE ED_pipeline_state_type type() const noexcept { return type_; }
+		union {
 
+			struct {
+				u32 slot_index;
+			} input_buffer;
 
+			struct {
+				u32 root_param_index;
+				u32 offset_in_constants;
+				u32 constant_count;
+			} constants;
 
-	protected:
-		A_pipeline_state(
-			TKPA_valid<A_device> device_p,
-			ED_pipeline_state_type type
-		);
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		A_pipeline_state(
-			TKPA_valid<A_device> device_p,
-			TKPA_valid<A_root_signature> root_signature_p,
-			ED_pipeline_state_type type
-		);
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+			struct {
+				u32 root_param_index;
+			} constant_buffer;
 
-	public:
-		virtual ~A_pipeline_state();
+			struct {
+				u32 root_param_index;
+			} shader_resource;
 
-	public:
-		NCPP_OBJECT(A_pipeline_state);
+			struct {
+				u32 root_param_index;
+			} unordered_access;
+
+		};
 
 	};
 
 }
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_INDIRECT_COMMANDS

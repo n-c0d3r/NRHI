@@ -69,7 +69,13 @@ namespace nrhi { }
 
 #include <nrhi/resource_gpu_virtual_address.hpp>
 
+#include <nrhi/indirect_argument_desc.hpp>
+#include <nrhi/command_signature_desc.hpp>
+
 #include <nrhi/nsl_factory.hpp>
+
+#include <nrhi/device_child.hpp>
+#include <nrhi/root_signature_child.hpp>
 
 #ifdef NRHI_DRIVER_DIRECTX_11
 #include <nrhi/directx11/buffer.hpp>
