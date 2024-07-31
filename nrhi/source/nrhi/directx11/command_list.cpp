@@ -214,11 +214,9 @@ namespace nrhi {
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
 
 		NCPP_ASSERT(
-			u32(
-				flag_combine(
-					index_buffer_p->desc().bind_flags,
-					ED_resource_bind_flag::INDEX_BUFFER
-				)
+			flag_is_has(
+				index_buffer_p->desc().bind_flags,
+				ED_resource_bind_flag::INDEX_BUFFER
 			)
 		) << "invalid resource bind flag";
 
@@ -253,11 +251,9 @@ namespace nrhi {
 			const auto& input_buffer_p = input_buffer_p_span[i];
 
 			NCPP_ASSERT(
-				u32(
-					flag_combine(
-						input_buffer_p->desc().bind_flags,
-						ED_resource_bind_flag::INPUT_BUFFER
-					)
+				flag_is_has(
+					input_buffer_p->desc().bind_flags,
+					ED_resource_bind_flag::INPUT_BUFFER
 				)
 			) << "invalid resource bind flag";
 
@@ -290,11 +286,9 @@ namespace nrhi {
 		u32 stride = input_buffer_p->desc().stride;
 
 		NCPP_ASSERT(
-			u32(
-				flag_combine(
-					input_buffer_p->desc().bind_flags,
-					ED_resource_bind_flag::INPUT_BUFFER
-				)
+			flag_is_has(
+				input_buffer_p->desc().bind_flags,
+				ED_resource_bind_flag::INPUT_BUFFER
 			)
 		) << "invalid resource bind flag";
 
@@ -328,11 +322,9 @@ namespace nrhi {
 			const auto& constant_buffer_p = constant_buffer_p_span[i];
 
 			NCPP_ASSERT(
-				u32(
-					flag_combine(
-						constant_buffer_p->desc().bind_flags,
-						ED_resource_bind_flag::CONSTANT_BUFFER
-					)
+				flag_is_has(
+					constant_buffer_p->desc().bind_flags,
+					ED_resource_bind_flag::CONSTANT_BUFFER
 				)
 			) << "invalid resource bind flag";
 
@@ -358,11 +350,9 @@ namespace nrhi {
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
 
 		NCPP_ASSERT(
-			u32(
-				flag_combine(
-					constant_buffer_p->desc().bind_flags,
-					ED_resource_bind_flag::CONSTANT_BUFFER
-				)
+			flag_is_has(
+				constant_buffer_p->desc().bind_flags,
+				ED_resource_bind_flag::CONSTANT_BUFFER
 			)
 		) << "invalid resource bind flag";
 
@@ -527,11 +517,9 @@ namespace nrhi {
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
 
 		NCPP_ASSERT(
-			u32(
-				flag_combine(
-					constant_buffer_p->desc().bind_flags,
-					ED_resource_bind_flag::CONSTANT_BUFFER
-				)
+			flag_is_has(
+				constant_buffer_p->desc().bind_flags,
+				ED_resource_bind_flag::CONSTANT_BUFFER
 			)
 		) << "invalid resource bind flag";
 

@@ -2,6 +2,7 @@
 
 
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_INDIRECT_COMMANDS
 namespace nrhi {
 
 	A_command_signature::A_command_signature(
@@ -29,3 +30,4 @@ namespace nrhi {
 	}
 
 }
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_INDIRECT_COMMANDS

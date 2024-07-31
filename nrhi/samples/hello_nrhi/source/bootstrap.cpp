@@ -165,7 +165,10 @@ int main() {
     U_structured_buffer_handle buffer2_p = H_buffer::T_create_structured<F_matrix4x4>(
         NCPP_FOREF_VALID(device_p),
         buffer2_data,
-        ED_resource_bind_flag::SHADER_RESOURCE
+        flag_combine(
+			ED_resource_bind_flag::SHADER_RESOURCE,
+			ED_resource_bind_flag::STRUCTURED
+		)
     );
     U_srv_handle buffer2_srv_p = H_resource_view::create_srv(
         NCPP_FOREF_VALID(device_p),
@@ -243,6 +246,7 @@ int main() {
 	auto vshader_binary = H_shader_compiler::compile_hlsl_from_src_content(
 		"DemoShaderClass",
 		"vmain",
+		"vmain",
 		demo_shader_src,
 		"",
 		5,
@@ -253,6 +257,7 @@ int main() {
 	// create pixel shader
 	auto pshader_binary = H_shader_compiler::compile_hlsl_from_src_content(
 		"DemoShaderClass",
+		"pmain",
 		"pmain",
 		demo_shader_src,
 		"",

@@ -16,11 +16,17 @@ namespace nrhi {
         };
         UINT num_feature_levels = ARRAYSIZE(feature_levels);
 
+		UINT creation_flags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+
+#if defined(DEBUG) || defined(_DEBUG)
+		creation_flags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif
+
 		hr = D3D11CreateDevice(
 			adapter_p.T_cast<F_directx11_adapter>()->dxgi_adapter_p(),
 			D3D_DRIVER_TYPE_UNKNOWN,
 			NULL,
-			NULL,
+			creation_flags,
 			feature_levels,
 			num_feature_levels,
 			D3D11_SDK_VERSION,

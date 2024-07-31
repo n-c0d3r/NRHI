@@ -48,8 +48,10 @@ namespace nrhi {
         NCPP_ASSERT(resource_desc.can_create_view) << "resource can't be used to create view";
 
         NCPP_ASSERT(
-            u32(resource_desc.bind_flags)
-            & u32(ED_resource_bind_flag::RENDER_TARGET)
+			flag_is_has(
+				resource_desc.bind_flags,
+				ED_resource_bind_flag::RENDER_TARGET
+			)
         ) << "resource bind flag is not conpatible";
 
         ID3D11Device* d3d11_device_p = device_p.T_cast<F_directx11_device>()->d3d11_device_p();

@@ -1,6 +1,8 @@
 #include <nrhi/nsl_factory.hpp>
 #include <nrhi/driver.hpp>
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 #include <nrhi/root_signature.hpp>
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 #include <nrhi/pipeline_state.hpp>
 #include <nrhi/graphics_pipeline_state.hpp>
 #include <nrhi/compute_pipeline_state.hpp>

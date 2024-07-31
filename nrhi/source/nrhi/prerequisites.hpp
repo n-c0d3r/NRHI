@@ -238,6 +238,36 @@ namespace nrhi {}
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+#define NRHI_DRIVER_DIRECTX_11_BIND_FLAG_MASK___RESOURCE_FLAG 0xFFFFFFFF00000000
+#define NRHI_DRIVER_DIRECTX_11_BIND_FLAG_OFFSET___RESOURCE_FLAG (4 * 8)
+#define NRHI_DRIVER_DIRECTX_11_REMOVE_BIND_FLAG___RESOURCE_FLAG(...) (\
+                (~NRHI_DRIVER_DIRECTX_11_BIND_FLAG_MASK___RESOURCE_FLAG) \
+                & (ncpp::u64(__VA_ARGS__))\
+            )
+#define NRHI_DRIVER_DIRECTX_11_REMOVE_MISC_FLAG___RESOURCE_FLAG(...) (\
+                NRHI_DRIVER_DIRECTX_11_BIND_FLAG_MASK___RESOURCE_FLAG \
+                & (ncpp::u64(__VA_ARGS__))\
+            )
+#define NRHI_DRIVER_DIRECTX_11_GENERATE___RESOURCE_FLAG(BIND_FLAG, MISC_FLAG) (\
+                NRHI_DRIVER_DIRECTX_11_REMOVE_BIND_FLAG___RESOURCE_FLAG(ncpp::u64(MISC_FLAG))\
+                | (ncpp::u64(BIND_FLAG) << NRHI_DRIVER_DIRECTX_11_BIND_FLAG_OFFSET___RESOURCE_FLAG)\
+            )
+
+#define NRHI_DRIVER_DIRECTX_11_MAP___RESOURCE_FLAG___TO___RESOURCE_BIND_FLAG(...) (\
+                (D3D11_BIND_FLAG)(\
+                    NRHI_DRIVER_DIRECTX_11_REMOVE_MISC_FLAG___RESOURCE_FLAG(ncpp::u64(__VA_ARGS__)) >> ncpp::u64(NRHI_DRIVER_DIRECTX_11_BIND_FLAG_OFFSET___RESOURCE_FLAG)\
+                )\
+            )
+#define NRHI_DRIVER_DIRECTX_11_MAP___RESOURCE_FLAG___TO___RESOURCE_MISC_FLAG(...) (\
+                (D3D11_RESOURCE_MISC_FLAG)(\
+                    NRHI_DRIVER_DIRECTX_11_REMOVE_BIND_FLAG___RESOURCE_FLAG(ncpp::u64(__VA_ARGS__))\
+                )\
+            )
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
 #define NRHI_DRIVER_DIRECTX_12_ID_MASK___RESOURCE_TYPE 0xFF000000
 #define NRHI_DRIVER_DIRECTX_12_ID_OFFSET___RESOURCE_TYPE (6 * 4)
 #define NRHI_DRIVER_DIRECTX_12_REMOVE_ID___RESOURCE_TYPE(...) (\
