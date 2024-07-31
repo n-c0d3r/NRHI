@@ -215,8 +215,8 @@ namespace nrhi {
 
 		NCPP_ASSERT(
 			flag_is_has(
-				index_buffer_p->desc().bind_flags,
-				ED_resource_bind_flag::INDEX_BUFFER
+				index_buffer_p->desc().flags,
+				ED_resource_flag::INDEX_BUFFER
 			)
 		) << "invalid resource bind flag";
 
@@ -252,8 +252,8 @@ namespace nrhi {
 
 			NCPP_ASSERT(
 				flag_is_has(
-					input_buffer_p->desc().bind_flags,
-					ED_resource_bind_flag::INPUT_BUFFER
+					input_buffer_p->desc().flags,
+					ED_resource_flag::INPUT_BUFFER
 				)
 			) << "invalid resource bind flag";
 
@@ -287,8 +287,8 @@ namespace nrhi {
 
 		NCPP_ASSERT(
 			flag_is_has(
-				input_buffer_p->desc().bind_flags,
-				ED_resource_bind_flag::INPUT_BUFFER
+				input_buffer_p->desc().flags,
+				ED_resource_flag::INPUT_BUFFER
 			)
 		) << "invalid resource bind flag";
 
@@ -323,8 +323,8 @@ namespace nrhi {
 
 			NCPP_ASSERT(
 				flag_is_has(
-					constant_buffer_p->desc().bind_flags,
-					ED_resource_bind_flag::CONSTANT_BUFFER
+					constant_buffer_p->desc().flags,
+					ED_resource_flag::CONSTANT_BUFFER
 				)
 			) << "invalid resource bind flag";
 
@@ -351,8 +351,8 @@ namespace nrhi {
 
 		NCPP_ASSERT(
 			flag_is_has(
-				constant_buffer_p->desc().bind_flags,
-				ED_resource_bind_flag::CONSTANT_BUFFER
+				constant_buffer_p->desc().flags,
+				ED_resource_flag::CONSTANT_BUFFER
 			)
 		) << "invalid resource bind flag";
 
@@ -489,8 +489,8 @@ namespace nrhi {
 			NCPP_ASSERT(
 				u32(
 					flag_combine(
-						constant_buffer_p->desc().bind_flags,
-						ED_resource_bind_flag::CONSTANT_BUFFER
+						constant_buffer_p->desc().flags,
+						ED_resource_flag::CONSTANT_BUFFER
 					)
 				)
 			) << "invalid resource bind flag";
@@ -518,8 +518,8 @@ namespace nrhi {
 
 		NCPP_ASSERT(
 			flag_is_has(
-				constant_buffer_p->desc().bind_flags,
-				ED_resource_bind_flag::CONSTANT_BUFFER
+				constant_buffer_p->desc().flags,
+				ED_resource_flag::CONSTANT_BUFFER
 			)
 		) << "invalid resource bind flag";
 
@@ -708,8 +708,8 @@ namespace nrhi {
 			NCPP_ASSERT(
 				u32(
 					flag_combine(
-						constant_buffer_p->desc().bind_flags,
-						ED_resource_bind_flag::CONSTANT_BUFFER
+						constant_buffer_p->desc().flags,
+						ED_resource_flag::CONSTANT_BUFFER
 					)
 				)
 			) << "invalid resource bind flag";
@@ -737,8 +737,8 @@ namespace nrhi {
 		NCPP_ASSERT(
 			u32(
 				flag_combine(
-					constant_buffer_p->desc().bind_flags,
-					ED_resource_bind_flag::CONSTANT_BUFFER
+					constant_buffer_p->desc().flags,
+					ED_resource_flag::CONSTANT_BUFFER
 				)
 			)
 		) << "invalid resource bind flag";
@@ -1107,8 +1107,8 @@ namespace nrhi {
 
 		NCPP_ASSERT(
 			flag_is_has(
-				directx11_srv_p->desc().resource_p->desc().bind_flags,
-				ED_resource_bind_flag::MIPS_GENERATABLE
+				directx11_srv_p->desc().resource_p->desc().flags,
+				ED_resource_flag::MIPS_GENERATABLE
 			)
 		) << "this resource is not mips generatable";
 

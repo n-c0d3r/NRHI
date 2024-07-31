@@ -11,20 +11,20 @@ auto T_create_buffer(
 	const TG_span<F_element__>& elements,
 	TKPA_valid<A_command_list> copy_command_list_p,
 	TG_vector<TU<A_resource>>& intermediate_resource_p_vector,
-	ED_resource_bind_flag bind_flag = ED_resource_bind_flag::NONE,
+	ED_resource_flag flag = ED_resource_flag::NONE,
 	ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 ) {
 	// create buffers
 	auto result_p = H_buffer::T_create_committed<F_element__>(
 		NCPP_FOH_VALID(device_p),
 		elements.size(),
-		bind_flag,
+		flag,
 		heap_type
 	);
 	auto intermediate_p = H_buffer::T_create_committed<F_element__>(
 		NCPP_FOH_VALID(device_p),
 		elements.size(),
-		ED_resource_bind_flag::NONE,
+		ED_resource_flag::NONE,
 		ED_resource_heap_type::GREAD_CWRITE,
 		ED_resource_state::_GENERIC_READ
 	);
@@ -60,7 +60,7 @@ auto T_create_buffer(
 	ED_format format,
 	TKPA_valid<A_command_list> copy_command_list_p,
 	TG_vector<TU<A_resource>>& intermediate_resource_p_vector,
-	ED_resource_bind_flag bind_flag = ED_resource_bind_flag::NONE,
+	ED_resource_flag flag = ED_resource_flag::NONE,
 	ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 ) {
 	// create buffers
@@ -68,14 +68,14 @@ auto T_create_buffer(
 		NCPP_FOH_VALID(device_p),
 		elements.size(),
 		format,
-		bind_flag,
+		flag,
 		heap_type
 	);
 	auto intermediate_p = H_buffer::T_create_committed<F_element__>(
 		NCPP_FOH_VALID(device_p),
 		elements.size(),
 		format,
-		ED_resource_bind_flag::NONE,
+		ED_resource_flag::NONE,
 		ED_resource_heap_type::GREAD_CWRITE,
 		ED_resource_state::_GENERIC_READ
 	);
@@ -110,20 +110,20 @@ auto T_create_structured_buffer(
 	const TG_span<F_element__>& elements,
 	TKPA_valid<A_command_list> copy_command_list_p,
 	TG_vector<TU<A_resource>>& intermediate_resource_p_vector,
-	ED_resource_bind_flag bind_flag = ED_resource_bind_flag::NONE,
+	ED_resource_flag flag = ED_resource_flag::NONE,
 	ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 ) {
 	// create buffers
 	auto result_p = H_buffer::T_create_committed_structured<F_element__>(
 		NCPP_FOH_VALID(device_p),
 		elements.size(),
-		bind_flag,
+		flag,
 		heap_type
 	);
 	auto intermediate_p = H_buffer::T_create_committed_structured<F_element__>(
 		NCPP_FOH_VALID(device_p),
 		elements.size(),
-		ED_resource_bind_flag::NONE,
+		ED_resource_flag::NONE,
 		ED_resource_heap_type::GREAD_CWRITE,
 		ED_resource_state::_GENERIC_READ
 	);
@@ -304,7 +304,7 @@ int main() {
 		vertices,
 		NCPP_FOH_VALID(copy_command_list_p),
 		intermediate_resource_p_vector,
-        ED_resource_bind_flag::INPUT_BUFFER
+        ED_resource_flag::INPUT_BUFFER
     );
 
 	TG_vector<F_vector4> instances = {
@@ -363,7 +363,7 @@ int main() {
 		instances,
 		NCPP_FOH_VALID(copy_command_list_p),
 		intermediate_resource_p_vector,
-		ED_resource_bind_flag::INPUT_BUFFER
+		ED_resource_flag::INPUT_BUFFER
 	);
 
     TG_vector<u32> indices = {
@@ -380,7 +380,7 @@ int main() {
         ED_format::R32_UINT,
 		NCPP_FOH_VALID(copy_command_list_p),
 		intermediate_resource_p_vector,
-        ED_resource_bind_flag::INDEX_BUFFER
+        ED_resource_flag::INDEX_BUFFER
     );
 
     F_vector4 output_color = { 0.2f, 0.2f, 0.2f, 1.0f };
@@ -389,7 +389,7 @@ int main() {
         NCPP_INIL_SPAN(output_color),
 		NCPP_FOH_VALID(copy_command_list_p),
 		intermediate_resource_p_vector,
-        ED_resource_bind_flag::CONSTANT_BUFFER
+        ED_resource_flag::CONSTANT_BUFFER
     );
 
 

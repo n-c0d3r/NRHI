@@ -49,8 +49,8 @@ namespace nrhi {
 
         NCPP_ASSERT(
 			flag_is_has(
-				resource_desc.bind_flags,
-				ED_resource_bind_flag::RENDER_TARGET
+				resource_desc.flags,
+				ED_resource_flag::RENDER_TARGET
 			)
         ) << "resource bind flag is not conpatible";
 
@@ -62,9 +62,9 @@ namespace nrhi {
 		if(target_resource_type == ED_resource_type::NONE)
 			target_resource_type = resource_desc.type;
 
-		ED_resource_bind_flag target_resource_bind_flags = desc.overrided_resource_bind_flags;
-		if(target_resource_bind_flags == ED_resource_bind_flag::NONE)
-			target_resource_bind_flags = resource_desc.bind_flags;
+		ED_resource_flag target_resource_flags = desc.overrided_resource_flags;
+		if(target_resource_flags == ED_resource_flag::NONE)
+			target_resource_flags = resource_desc.flags;
 
 		u32 target_array_size = desc.overrided_array_size;
 		if(!target_array_size)

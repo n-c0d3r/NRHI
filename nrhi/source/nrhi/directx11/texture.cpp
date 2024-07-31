@@ -53,7 +53,7 @@ namespace nrhi {
         d3d11_texture_1d_desc.Width = desc_.width;
         d3d11_texture_1d_desc.MipLevels = desc_.mip_level_count;
         d3d11_texture_1d_desc.ArraySize = 1;
-        d3d11_texture_1d_desc.BindFlags = NRHI_DRIVER_DIRECTX_11_MAP___RESOURCE_FLAG___TO___RESOURCE_BIND_FLAG(desc_.bind_flags);
+        d3d11_texture_1d_desc.BindFlags = NRHI_DRIVER_DIRECTX_11_MAP___RESOURCE_FLAG___TO___RESOURCE_FLAG(desc_.flags);
         d3d11_texture_1d_desc.Format = DXGI_FORMAT(desc_.format);
         NRHI_ENUM_SWITCH(
 			desc_.heap_type,
@@ -76,7 +76,7 @@ namespace nrhi {
                 NRHI_ENUM_BREAK;
             )
 		);
-        d3d11_texture_1d_desc.MiscFlags = NRHI_DRIVER_DIRECTX_11_MAP___RESOURCE_FLAG___TO___RESOURCE_MISC_FLAG(desc_.bind_flags);
+        d3d11_texture_1d_desc.MiscFlags = NRHI_DRIVER_DIRECTX_11_MAP___RESOURCE_FLAG___TO___RESOURCE_MISC_FLAG(desc_.flags);
 
 		if((desc_.mip_level_count > 1) && (d3d11_texture_1d_desc.MiscFlags & D3D11_RESOURCE_MISC_GENERATE_MIPS))
 		{
@@ -174,7 +174,7 @@ namespace nrhi {
         d3d11_texture_2d_desc.Height = desc_.height;
         d3d11_texture_2d_desc.MipLevels = desc_.mip_level_count;
         d3d11_texture_2d_desc.ArraySize = 1;
-        d3d11_texture_2d_desc.BindFlags = NRHI_DRIVER_DIRECTX_11_MAP___RESOURCE_FLAG___TO___RESOURCE_BIND_FLAG(desc_.bind_flags);
+        d3d11_texture_2d_desc.BindFlags = NRHI_DRIVER_DIRECTX_11_MAP___RESOURCE_FLAG___TO___RESOURCE_FLAG(desc_.flags);
         d3d11_texture_2d_desc.Format = DXGI_FORMAT(desc_.format);
         d3d11_texture_2d_desc.SampleDesc.Count = desc_.sample_desc.count;
         d3d11_texture_2d_desc.SampleDesc.Quality = desc_.sample_desc.quality;
@@ -199,7 +199,7 @@ namespace nrhi {
                 NRHI_ENUM_BREAK;
             )
 		);
-        d3d11_texture_2d_desc.MiscFlags = NRHI_DRIVER_DIRECTX_11_MAP___RESOURCE_FLAG___TO___RESOURCE_MISC_FLAG(desc_.bind_flags);
+        d3d11_texture_2d_desc.MiscFlags = NRHI_DRIVER_DIRECTX_11_MAP___RESOURCE_FLAG___TO___RESOURCE_MISC_FLAG(desc_.flags);
 
 		if((desc_.mip_level_count > 1) && (d3d11_texture_2d_desc.MiscFlags & D3D11_RESOURCE_MISC_GENERATE_MIPS))
 		{
@@ -297,7 +297,7 @@ namespace nrhi {
         d3d11_texture_3d_desc.Height = desc_.height;
         d3d11_texture_3d_desc.Depth = desc_.depth;
         d3d11_texture_3d_desc.MipLevels = desc_.mip_level_count;
-        d3d11_texture_3d_desc.BindFlags = NRHI_DRIVER_DIRECTX_11_MAP___RESOURCE_FLAG___TO___RESOURCE_BIND_FLAG(desc_.bind_flags);
+        d3d11_texture_3d_desc.BindFlags = NRHI_DRIVER_DIRECTX_11_MAP___RESOURCE_FLAG___TO___RESOURCE_FLAG(desc_.flags);
         d3d11_texture_3d_desc.Format = DXGI_FORMAT(desc_.format);
         NRHI_ENUM_SWITCH(
 			desc_.heap_type,
@@ -320,7 +320,7 @@ namespace nrhi {
                 NRHI_ENUM_BREAK;
             )
 		);
-        d3d11_texture_3d_desc.MiscFlags = NRHI_DRIVER_DIRECTX_11_MAP___RESOURCE_FLAG___TO___RESOURCE_MISC_FLAG(desc_.bind_flags);
+        d3d11_texture_3d_desc.MiscFlags = NRHI_DRIVER_DIRECTX_11_MAP___RESOURCE_FLAG___TO___RESOURCE_MISC_FLAG(desc_.flags);
 
 		if((desc_.mip_level_count > 1) && (d3d11_texture_3d_desc.MiscFlags & D3D11_RESOURCE_MISC_GENERATE_MIPS))
 		{
@@ -417,7 +417,7 @@ namespace nrhi {
 		d3d11_texture_2d_array_desc.Height = desc_.height;
 		d3d11_texture_2d_array_desc.MipLevels = desc_.mip_level_count;
 		d3d11_texture_2d_array_desc.ArraySize = desc_.array_size;
-		d3d11_texture_2d_array_desc.BindFlags = NRHI_DRIVER_DIRECTX_11_MAP___RESOURCE_FLAG___TO___RESOURCE_BIND_FLAG(desc_.bind_flags);
+		d3d11_texture_2d_array_desc.BindFlags = NRHI_DRIVER_DIRECTX_11_MAP___RESOURCE_FLAG___TO___RESOURCE_FLAG(desc_.flags);
 		d3d11_texture_2d_array_desc.Format = DXGI_FORMAT(desc_.format);
 		d3d11_texture_2d_array_desc.SampleDesc.Count = desc_.sample_desc.count;
 		d3d11_texture_2d_array_desc.SampleDesc.Quality = desc_.sample_desc.quality;
@@ -442,7 +442,7 @@ namespace nrhi {
 				NRHI_ENUM_BREAK;
             )
 		);
-		d3d11_texture_2d_array_desc.MiscFlags = NRHI_DRIVER_DIRECTX_11_MAP___RESOURCE_FLAG___TO___RESOURCE_MISC_FLAG(desc_.bind_flags);
+		d3d11_texture_2d_array_desc.MiscFlags = NRHI_DRIVER_DIRECTX_11_MAP___RESOURCE_FLAG___TO___RESOURCE_MISC_FLAG(desc_.flags);
 
 		if((desc_.mip_level_count > 1) && (d3d11_texture_2d_array_desc.MiscFlags & D3D11_RESOURCE_MISC_GENERATE_MIPS))
 		{

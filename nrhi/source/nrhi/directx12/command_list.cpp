@@ -631,8 +631,8 @@ namespace nrhi {
 		NCPP_ASSERT(
 			u32(
 				flag_combine(
-					index_buffer_p->desc().bind_flags,
-					ED_resource_bind_flag::INDEX_BUFFER
+					index_buffer_p->desc().flags,
+					ED_resource_flag::INDEX_BUFFER
 				)
 			)
 		) << "invalid resource bind flag";

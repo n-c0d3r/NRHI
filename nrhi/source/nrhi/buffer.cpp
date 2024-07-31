@@ -11,7 +11,7 @@ namespace nrhi {
         const F_initial_resource_data& initial_data,
         u32 count,
         u32 stride,
-        ED_resource_bind_flag bind_flags,
+        ED_resource_flag flags,
         ED_resource_heap_type heap_type
     ) {
         return H_resource::create_buffer(
@@ -20,7 +20,7 @@ namespace nrhi {
             H_resource_desc::create_buffer_desc(
                 count,
                 stride,
-                bind_flags,
+                flags,
                 heap_type
             )
         );
@@ -31,7 +31,7 @@ namespace nrhi {
         const F_initial_resource_data& initial_data,
         u32 count,
         ED_format format,
-        ED_resource_bind_flag bind_flags,
+        ED_resource_flag flags,
         ED_resource_heap_type heap_type
     ) {
         return H_resource::create_buffer(
@@ -40,7 +40,7 @@ namespace nrhi {
             H_resource_desc::create_buffer_desc(
                 count,
                 format,
-                bind_flags,
+                flags,
                 heap_type
             )
         );
@@ -53,7 +53,7 @@ namespace nrhi {
 		const F_initial_resource_data& initial_data,
 		u32 count,
 		u32 stride,
-		ED_resource_bind_flag bind_flags,
+		ED_resource_flag flags,
 		ED_resource_heap_type heap_type
 	) {
 		buffer_p->rebuild(
@@ -61,7 +61,7 @@ namespace nrhi {
 			H_resource_desc::create_buffer_desc(
 				count,
 				stride,
-				bind_flags,
+				flags,
 				heap_type
 			)
 		);
@@ -72,7 +72,7 @@ namespace nrhi {
 		const F_initial_resource_data& initial_data,
 		u32 count,
 		ED_format format,
-		ED_resource_bind_flag bind_flags,
+		ED_resource_flag flags,
 		ED_resource_heap_type heap_type
 	) {
 		buffer_p->rebuild(
@@ -80,7 +80,7 @@ namespace nrhi {
 			H_resource_desc::create_buffer_desc(
 				count,
 				format,
-				bind_flags,
+				flags,
 				heap_type
 			)
 		);
@@ -94,7 +94,7 @@ namespace nrhi {
 		TKPA_valid<A_device> device_p,
 		u32 count,
 		u32 stride,
-		ED_resource_bind_flag bind_flags,
+		ED_resource_flag flags,
 		ED_resource_heap_type heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -110,7 +110,7 @@ namespace nrhi {
 			H_resource_desc::create_buffer_desc(
 				count,
 				stride,
-				bind_flags,
+				flags,
 				heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -127,7 +127,7 @@ namespace nrhi {
 		TKPA_valid<A_device> device_p,
 		u32 count,
 		ED_format format,
-		ED_resource_bind_flag bind_flags,
+		ED_resource_flag flags,
 		ED_resource_heap_type heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -143,7 +143,7 @@ namespace nrhi {
 			H_resource_desc::create_buffer_desc(
 				count,
 				format,
-				bind_flags,
+				flags,
 				heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -163,7 +163,7 @@ namespace nrhi {
 		KPA_valid_buffer_handle buffer_p,
 		u32 count,
 		u32 stride,
-		ED_resource_bind_flag bind_flags,
+		ED_resource_flag flags,
 		ED_resource_heap_type heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -179,7 +179,7 @@ namespace nrhi {
 			H_resource_desc::create_buffer_desc(
 				count,
 				stride,
-				bind_flags,
+				flags,
 				heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -196,7 +196,7 @@ namespace nrhi {
 		KPA_valid_buffer_handle buffer_p,
 		u32 count,
 		ED_format format,
-		ED_resource_bind_flag bind_flags,
+		ED_resource_flag flags,
 		ED_resource_heap_type heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -212,7 +212,7 @@ namespace nrhi {
 			H_resource_desc::create_buffer_desc(
 				count,
 				format,
-				bind_flags,
+				flags,
 				heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION

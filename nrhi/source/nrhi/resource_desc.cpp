@@ -8,7 +8,7 @@ namespace nrhi {
     F_resource_desc H_resource_desc::create_buffer_desc(
         u32 count,
         u32 stride,
-        ED_resource_bind_flag bind_flags,
+        ED_resource_flag flags,
         ED_resource_heap_type heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -28,7 +28,7 @@ namespace nrhi {
 
             .stride = stride,
 
-            .bind_flags = bind_flags,
+            .flags = flags,
             .heap_type = heap_type,
 
             .type = ED_resource_type::BUFFER
@@ -47,7 +47,7 @@ namespace nrhi {
     F_resource_desc H_resource_desc::create_buffer_desc(
         u32 count,
         ED_format format,
-        ED_resource_bind_flag bind_flags,
+        ED_resource_flag flags,
         ED_resource_heap_type heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -70,7 +70,7 @@ namespace nrhi {
             .format = format,
             .stride = stride,
 
-            .bind_flags = bind_flags,
+            .flags = flags,
             .heap_type = heap_type,
 
             .type = ED_resource_type::BUFFER
@@ -90,7 +90,7 @@ namespace nrhi {
         u32 width,
         ED_format format,
         u32 mip_level_count,
-        ED_resource_bind_flag bind_flags,
+        ED_resource_flag flags,
         ED_resource_heap_type heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -118,7 +118,7 @@ namespace nrhi {
 
             .mip_level_count = mip_level_count,
 
-            .bind_flags = bind_flags,
+            .flags = flags,
             .heap_type = heap_type,
 
             .type = ED_resource_type::TEXTURE_1D
@@ -140,7 +140,7 @@ namespace nrhi {
         ED_format format,
         u32 mip_level_count,
         F_sample_desc sample_desc,
-        ED_resource_bind_flag bind_flags,
+        ED_resource_flag flags,
         ED_resource_heap_type heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -169,7 +169,7 @@ namespace nrhi {
             .mip_level_count = mip_level_count,
             .sample_desc = sample_desc,
 
-            .bind_flags = bind_flags,
+            .flags = flags,
             .heap_type = heap_type,
 
             .type = ED_resource_type::TEXTURE_2D
@@ -191,7 +191,7 @@ namespace nrhi {
         u32 depth,
         ED_format format,
         u32 mip_level_count,
-        ED_resource_bind_flag bind_flags,
+        ED_resource_flag flags,
         ED_resource_heap_type heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -219,7 +219,7 @@ namespace nrhi {
 
             .mip_level_count = mip_level_count,
 
-            .bind_flags = bind_flags,
+            .flags = flags,
             .heap_type = heap_type,
 
             .type = ED_resource_type::TEXTURE_3D
@@ -242,7 +242,7 @@ namespace nrhi {
 		ED_format format,
 		u32 mip_level_count,
 		F_sample_desc sample_desc,
-		ED_resource_bind_flag bind_flags,
+		ED_resource_flag flags,
 		ED_resource_heap_type heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -271,7 +271,7 @@ namespace nrhi {
 			.mip_level_count = mip_level_count,
 			.sample_desc = sample_desc,
 
-			.bind_flags = bind_flags,
+			.flags = flags,
 			.heap_type = heap_type,
 
 			.type = ED_resource_type::TEXTURE_2D_ARRAY

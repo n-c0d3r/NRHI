@@ -64,8 +64,8 @@ namespace nrhi {
 		NCPP_ASSERT(resource_desc.can_create_view) << "resource can't be used to create view";
 
 		NCPP_ASSERT(
-			u32(resource_desc.bind_flags)
-			& u32(ED_resource_bind_flag::SHADER_RESOURCE)
+			u32(resource_desc.flags)
+			& u32(ED_resource_flag::SHADER_RESOURCE)
 		) << "resource bind flag is not conpatible";
 
 		ID3D12Resource* d3d12_resource_p = resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p();
@@ -74,9 +74,9 @@ namespace nrhi {
 		if(target_resource_type == ED_resource_type::NONE)
 			target_resource_type = resource_desc.type;
 
-		ED_resource_bind_flag target_resource_bind_flags = desc.overrided_resource_bind_flags;
-		if(target_resource_bind_flags == ED_resource_bind_flag::NONE)
-			target_resource_bind_flags = resource_desc.bind_flags;
+		ED_resource_flag target_resource_flags = desc.overrided_resource_flags;
+		if(target_resource_flags == ED_resource_flag::NONE)
+			target_resource_flags = resource_desc.flags;
 
 		u32 target_array_size = desc.overrided_array_size;
 		if(!target_array_size)
@@ -123,8 +123,8 @@ namespace nrhi {
 				ED_resource_type::TEXTURE_2D_ARRAY,
 				if(
 					flag_is_has(
-						target_resource_bind_flags,
-						ED_resource_bind_flag::TEXTURE_CUBE
+						target_resource_flags,
+						ED_resource_flag::TEXTURE_CUBE
 					)
 				) {
 					d3d12_srv_desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
@@ -170,8 +170,8 @@ namespace nrhi {
 		NCPP_ASSERT(resource_desc.can_create_view) << "resource can't be used to create view";
 
 		NCPP_ASSERT(
-			u32(resource_desc.bind_flags)
-				& u32(ED_resource_bind_flag::UNORDERED_ACCESS)
+			u32(resource_desc.flags)
+				& u32(ED_resource_flag::UNORDERED_ACCESS)
 		) << "resource bind flag is not conpatible";
 
 		ID3D12Resource* d3d12_resource_p = resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p();
@@ -180,9 +180,9 @@ namespace nrhi {
 		if(target_resource_type == ED_resource_type::NONE)
 			target_resource_type = resource_desc.type;
 
-		ED_resource_bind_flag target_resource_bind_flags = desc.overrided_resource_bind_flags;
-		if(target_resource_bind_flags == ED_resource_bind_flag::NONE)
-			target_resource_bind_flags = resource_desc.bind_flags;
+		ED_resource_flag target_resource_flags = desc.overrided_resource_flags;
+		if(target_resource_flags == ED_resource_flag::NONE)
+			target_resource_flags = resource_desc.flags;
 
 		u32 target_array_size = desc.overrided_array_size;
 		if(!target_array_size)
@@ -260,8 +260,8 @@ namespace nrhi {
 		NCPP_ASSERT(resource_desc.can_create_view) << "resource can't be used to create view";
 
 		NCPP_ASSERT(
-			u32(resource_desc.bind_flags)
-				& u32(ED_resource_bind_flag::RENDER_TARGET)
+			u32(resource_desc.flags)
+				& u32(ED_resource_flag::RENDER_TARGET)
 		) << "resource bind flag is not conpatible";
 
 		ID3D12Resource* d3d12_resource_p = resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p();
@@ -270,9 +270,9 @@ namespace nrhi {
 		if(target_resource_type == ED_resource_type::NONE)
 			target_resource_type = resource_desc.type;
 
-		ED_resource_bind_flag target_resource_bind_flags = desc.overrided_resource_bind_flags;
-		if(target_resource_bind_flags == ED_resource_bind_flag::NONE)
-			target_resource_bind_flags = resource_desc.bind_flags;
+		ED_resource_flag target_resource_flags = desc.overrided_resource_flags;
+		if(target_resource_flags == ED_resource_flag::NONE)
+			target_resource_flags = resource_desc.flags;
 
 		u32 target_array_size = desc.overrided_array_size;
 		if(!target_array_size)
@@ -330,8 +330,8 @@ namespace nrhi {
 		NCPP_ASSERT(resource_desc.can_create_view) << "resource can't be used to create view";
 
 		NCPP_ASSERT(
-			u32(resource_desc.bind_flags)
-				& u32(ED_resource_bind_flag::DEPTH_STENCIL)
+			u32(resource_desc.flags)
+				& u32(ED_resource_flag::DEPTH_STENCIL)
 		) << "resource bind flag is not conpatible";
 
 		ID3D12Resource* d3d12_resource_p = resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p();
@@ -340,9 +340,9 @@ namespace nrhi {
 		if(target_resource_type == ED_resource_type::NONE)
 			target_resource_type = resource_desc.type;
 
-		ED_resource_bind_flag target_resource_bind_flags = desc.overrided_resource_bind_flags;
-		if(target_resource_bind_flags == ED_resource_bind_flag::NONE)
-			target_resource_bind_flags = resource_desc.bind_flags;
+		ED_resource_flag target_resource_flags = desc.overrided_resource_flags;
+		if(target_resource_flags == ED_resource_flag::NONE)
+			target_resource_flags = resource_desc.flags;
 
 		u32 target_array_size = desc.overrided_array_size;
 		if(!target_array_size)

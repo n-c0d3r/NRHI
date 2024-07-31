@@ -12,7 +12,7 @@ namespace nrhi {
         u32 width,
         ED_format format,
         u32 mip_level_count,
-        ED_resource_bind_flag bind_flags,
+        ED_resource_flag flags,
         ED_resource_heap_type heap_type
     ) {
 
@@ -23,7 +23,7 @@ namespace nrhi {
                 width,
                 format,
                 mip_level_count,
-                bind_flags,
+                flags,
                 heap_type
             )
         );
@@ -37,7 +37,7 @@ namespace nrhi {
         ED_format format,
         u32 mip_level_count,
         F_sample_desc sample_desc,
-        ED_resource_bind_flag bind_flags,
+        ED_resource_flag flags,
         ED_resource_heap_type heap_type
     ) {
 
@@ -50,7 +50,7 @@ namespace nrhi {
                 format,
                 mip_level_count,
                 sample_desc,
-                bind_flags,
+                flags,
                 heap_type
             )
         );
@@ -64,7 +64,7 @@ namespace nrhi {
         u32 depth,
         ED_format format,
         u32 mip_level_count,
-        ED_resource_bind_flag bind_flags,
+        ED_resource_flag flags,
         ED_resource_heap_type heap_type
     ) {
 
@@ -77,7 +77,7 @@ namespace nrhi {
                 depth,
                 format,
                 mip_level_count,
-                bind_flags,
+                flags,
                 heap_type
             )
         );
@@ -92,7 +92,7 @@ namespace nrhi {
 		ED_format format,
 		u32 mip_level_count,
 		F_sample_desc sample_desc,
-		ED_resource_bind_flag bind_flags,
+		ED_resource_flag flags,
 		ED_resource_heap_type heap_type
 	) {
 
@@ -106,7 +106,7 @@ namespace nrhi {
 				format,
 				mip_level_count,
 				sample_desc,
-				bind_flags,
+				flags,
 				heap_type
 			)
 		);
@@ -120,7 +120,7 @@ namespace nrhi {
 		u32 width,
 		ED_format format,
 		u32 mip_level_count,
-		ED_resource_bind_flag bind_flags,
+		ED_resource_flag flags,
 		ED_resource_heap_type heap_type
 	) {
 
@@ -130,7 +130,7 @@ namespace nrhi {
 				width,
 				format,
 				mip_level_count,
-				bind_flags,
+				flags,
 				heap_type
 			)
 		);
@@ -144,7 +144,7 @@ namespace nrhi {
 		ED_format format,
 		u32 mip_level_count,
 		F_sample_desc sample_desc,
-		ED_resource_bind_flag bind_flags,
+		ED_resource_flag flags,
 		ED_resource_heap_type heap_type
 	) {
 
@@ -156,7 +156,7 @@ namespace nrhi {
 				format,
 				mip_level_count,
 				sample_desc,
-				bind_flags,
+				flags,
 				heap_type
 			)
 		);
@@ -170,7 +170,7 @@ namespace nrhi {
 		u32 depth,
 		ED_format format,
 		u32 mip_level_count,
-		ED_resource_bind_flag bind_flags,
+		ED_resource_flag flags,
 		ED_resource_heap_type heap_type
 	) {
 
@@ -182,7 +182,7 @@ namespace nrhi {
 				depth,
 				format,
 				mip_level_count,
-				bind_flags,
+				flags,
 				heap_type
 			)
 		);
@@ -197,7 +197,7 @@ namespace nrhi {
 		ED_format format,
 		u32 mip_level_count,
 		F_sample_desc sample_desc,
-		ED_resource_bind_flag bind_flags,
+		ED_resource_flag flags,
 		ED_resource_heap_type heap_type
 	) {
 
@@ -210,7 +210,7 @@ namespace nrhi {
 				format,
 				mip_level_count,
 				sample_desc,
-				bind_flags,
+				flags,
 				heap_type
 			)
 		);
@@ -225,7 +225,7 @@ namespace nrhi {
 		u32 width,
 		ED_format format,
 		u32 mip_level_count,
-		ED_resource_bind_flag bind_flags,
+		ED_resource_flag flags,
 		ED_resource_heap_type heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -242,7 +242,7 @@ namespace nrhi {
 				width,
 				format,
 				mip_level_count,
-				bind_flags,
+				flags,
 				heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -263,7 +263,7 @@ namespace nrhi {
 		ED_format format,
 		u32 mip_level_count,
 		F_sample_desc sample_desc,
-		ED_resource_bind_flag bind_flags,
+		ED_resource_flag flags,
 		ED_resource_heap_type heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -282,7 +282,7 @@ namespace nrhi {
 				format,
 				mip_level_count,
 				sample_desc,
-				bind_flags,
+				flags,
 				heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -303,7 +303,7 @@ namespace nrhi {
 		u32 depth,
 		ED_format format,
 		u32 mip_level_count,
-		ED_resource_bind_flag bind_flags,
+		ED_resource_flag flags,
 		ED_resource_heap_type heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -322,7 +322,7 @@ namespace nrhi {
 				depth,
 				format,
 				mip_level_count,
-				bind_flags,
+				flags,
 				heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -344,7 +344,7 @@ namespace nrhi {
 		ED_format format,
 		u32 mip_level_count,
 		F_sample_desc sample_desc,
-		ED_resource_bind_flag bind_flags,
+		ED_resource_flag flags,
 		ED_resource_heap_type heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -364,7 +364,7 @@ namespace nrhi {
 				format,
 				mip_level_count,
 				sample_desc,
-				bind_flags,
+				flags,
 				heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -385,7 +385,7 @@ namespace nrhi {
 		u32 width,
 		ED_format format,
 		u32 mip_level_count,
-		ED_resource_bind_flag bind_flags,
+		ED_resource_flag flags,
 		ED_resource_heap_type heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -402,7 +402,7 @@ namespace nrhi {
 				width,
 				format,
 				mip_level_count,
-				bind_flags,
+				flags,
 				heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -423,7 +423,7 @@ namespace nrhi {
 		ED_format format,
 		u32 mip_level_count,
 		F_sample_desc sample_desc,
-		ED_resource_bind_flag bind_flags,
+		ED_resource_flag flags,
 		ED_resource_heap_type heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -442,7 +442,7 @@ namespace nrhi {
 				format,
 				mip_level_count,
 				sample_desc,
-				bind_flags,
+				flags,
 				heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -463,7 +463,7 @@ namespace nrhi {
 		u32 depth,
 		ED_format format,
 		u32 mip_level_count,
-		ED_resource_bind_flag bind_flags,
+		ED_resource_flag flags,
 		ED_resource_heap_type heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -482,7 +482,7 @@ namespace nrhi {
 				depth,
 				format,
 				mip_level_count,
-				bind_flags,
+				flags,
 				heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -504,7 +504,7 @@ namespace nrhi {
 		ED_format format,
 		u32 mip_level_count,
 		F_sample_desc sample_desc,
-		ED_resource_bind_flag bind_flags,
+		ED_resource_flag flags,
 		ED_resource_heap_type heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -524,7 +524,7 @@ namespace nrhi {
 				format,
 				mip_level_count,
 				sample_desc,
-				bind_flags,
+				flags,
 				heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION

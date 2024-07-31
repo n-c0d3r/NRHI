@@ -71,7 +71,7 @@ namespace nrhi {
 		d3d12_resource_desc.SampleDesc.Count = desc.sample_desc.count;
 		d3d12_resource_desc.SampleDesc.Quality = desc.sample_desc.quality;
 		d3d12_resource_desc.Layout = D3D12_TEXTURE_LAYOUT(desc.layout);
-		d3d12_resource_desc.Flags = NRHI_DRIVER_DIRECTX_12_MAP___RESOURCE_BIND_FLAG___TO___RESOURCE_FLAG(desc.bind_flags);
+		d3d12_resource_desc.Flags = NRHI_DRIVER_DIRECTX_12_MAP___RESOURCE_FLAG___TO___RESOURCE_FLAG(desc.flags);
 
 		if(desc.type == ED_resource_type::BUFFER) {
 
@@ -83,7 +83,7 @@ namespace nrhi {
 
 		if(
 			(d3d12_resource_desc.Flags & D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL)
-			& !flag_is_has(desc.bind_flags, ED_resource_bind_flag::SHADER_RESOURCE)
+			& !flag_is_has(desc.flags, ED_resource_flag::SHADER_RESOURCE)
 		)
 			d3d12_resource_desc.Flags &= D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE;
 

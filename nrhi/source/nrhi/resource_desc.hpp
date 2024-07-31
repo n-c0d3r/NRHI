@@ -35,7 +35,7 @@
 
 #include <nrhi/format.hpp>
 #include <nrhi/resource_heap_type.hpp>
-#include <nrhi/resource_bind_flag.hpp>
+#include <nrhi/resource_flag.hpp>
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 #include <nrhi/resource_state.hpp>
@@ -89,7 +89,7 @@ namespace nrhi {
 
         F_sample_desc sample_desc;
 
-        ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE;
+        ED_resource_flag flags = ED_resource_flag::NONE;
 
         ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE;
 
@@ -113,7 +113,7 @@ namespace nrhi {
         static F_resource_desc create_buffer_desc(
             u32 count,
             u32 stride,
-            ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+            ED_resource_flag flags = ED_resource_flag::NONE,
             ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -129,7 +129,7 @@ namespace nrhi {
         static F_resource_desc create_buffer_desc(
             u32 count,
             ED_format format,
-            ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+            ED_resource_flag flags = ED_resource_flag::NONE,
             ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -145,7 +145,7 @@ namespace nrhi {
         template<typename F_element__>
         static F_resource_desc T_create_buffer_desc(
             u32 count,
-            ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+            ED_resource_flag flags = ED_resource_flag::NONE,
             ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -159,7 +159,7 @@ namespace nrhi {
             return create_buffer_desc(
                 count,
                 sizeof(F_element__),
-                bind_flags,
+                flags,
                 heap_type
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 				, initial_state
@@ -176,7 +176,7 @@ namespace nrhi {
             u32 width,
             ED_format format = ED_format::R8G8B8A8_UNORM,
             u32 mip_level_count = 1,
-            ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+            ED_resource_flag flags = ED_resource_flag::NONE,
             ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -195,7 +195,7 @@ namespace nrhi {
             ED_format format = ED_format::R8G8B8A8_UNORM,
             u32 mip_level_count = 1,
 			F_sample_desc sample_desc = F_sample_desc{},
-            ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+            ED_resource_flag flags = ED_resource_flag::NONE,
             ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -214,7 +214,7 @@ namespace nrhi {
             u32 depth,
             ED_format format = ED_format::R8G8B8A8_UNORM,
             u32 mip_level_count = 1,
-            ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+            ED_resource_flag flags = ED_resource_flag::NONE,
             ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -234,7 +234,7 @@ namespace nrhi {
 			ED_format format = ED_format::R8G8B8A8_UNORM,
 			u32 mip_level_count = 1,
 			F_sample_desc sample_desc = F_sample_desc{},
-			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+			ED_resource_flag flags = ED_resource_flag::NONE,
 			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION

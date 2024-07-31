@@ -78,7 +78,7 @@ int main() {
 		NCPP_FOH_VALID(device_p),
 		128,
 		1,
-		ED_resource_bind_flag::NONE,
+		ED_resource_flag::NONE,
 		ED_resource_heap_type::GREAD_CWRITE,
 		ED_resource_state::_GENERIC_READ
 	);

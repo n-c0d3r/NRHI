@@ -36,7 +36,7 @@ int main() {
 		NCPP_FOH_VALID(device_p),
 		128,
 		ED_format::R32G32B32A32_FLOAT,
-		ED_resource_bind_flag::SHADER_RESOURCE
+		ED_resource_flag::SHADER_RESOURCE
 	);
 
 	// create descriptor

@@ -35,7 +35,7 @@
 
 #include <nrhi/format.hpp>
 #include <nrhi/resource_heap_type.hpp>
-#include <nrhi/resource_bind_flag.hpp>
+#include <nrhi/resource_flag.hpp>
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 #include <nrhi/resource_state.hpp>
