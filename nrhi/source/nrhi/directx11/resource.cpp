@@ -64,10 +64,6 @@ namespace nrhi {
 				ED_resource_type::TEXTURE_2D_ARRAY,
 				return TU<F_directx11_texture_2d_array>()(device_p, initial_resource_data, desc);
 			)
-			NRHI_ENUM_CASE(
-				ED_resource_type::TEXTURE_CUBE,
-				return TU<F_directx11_texture_cube>()(device_p, initial_resource_data, desc);
-			)
 		);
         return null;
     }
@@ -107,13 +103,6 @@ namespace nrhi {
 		const F_resource_desc& desc
 	)  {
 		return { TU<F_directx11_texture_2d_array>()(device_p, initial_resource_data, desc) };
-	}
-	U_texture_cube_handle HD_directx11_resource::create_texture_cube(
-		TKPA_valid<A_device> device_p,
-		const F_initial_resource_data& initial_resource_data,
-		const F_resource_desc& desc
-	) {
-		return { TU<F_directx11_texture_cube>()(device_p, initial_resource_data, desc) };
 	}
 
 	F_mapped_subresource HD_directx11_resource::map(

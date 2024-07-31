@@ -91,8 +91,7 @@ namespace nrhi {
         ED_format format,
         u32 mip_level_count,
         ED_resource_bind_flag bind_flags,
-        ED_resource_heap_type heap_type,
-		b8 is_mip_map_generatable
+        ED_resource_heap_type heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 		, ED_resource_state initial_state
@@ -122,8 +121,6 @@ namespace nrhi {
             .bind_flags = bind_flags,
             .heap_type = heap_type,
 
-			.is_mip_map_generatable = is_mip_map_generatable,
-
             .type = ED_resource_type::TEXTURE_1D
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -144,8 +141,7 @@ namespace nrhi {
         u32 mip_level_count,
         F_sample_desc sample_desc,
         ED_resource_bind_flag bind_flags,
-        ED_resource_heap_type heap_type,
-		b8 is_mip_map_generatable
+        ED_resource_heap_type heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 		, ED_resource_state initial_state
@@ -176,8 +172,6 @@ namespace nrhi {
             .bind_flags = bind_flags,
             .heap_type = heap_type,
 
-			.is_mip_map_generatable = is_mip_map_generatable,
-
             .type = ED_resource_type::TEXTURE_2D
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -198,8 +192,7 @@ namespace nrhi {
         ED_format format,
         u32 mip_level_count,
         ED_resource_bind_flag bind_flags,
-        ED_resource_heap_type heap_type,
-		b8 is_mip_map_generatable
+        ED_resource_heap_type heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 		, ED_resource_state initial_state
@@ -229,8 +222,6 @@ namespace nrhi {
             .bind_flags = bind_flags,
             .heap_type = heap_type,
 
-			.is_mip_map_generatable = is_mip_map_generatable,
-
             .type = ED_resource_type::TEXTURE_3D
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -247,13 +238,12 @@ namespace nrhi {
 	F_resource_desc H_resource_desc::create_texture_2d_array_desc(
 		u32 width,
 		u32 height,
-		u32 count,
+		u32 array_size,
 		ED_format format,
 		u32 mip_level_count,
 		F_sample_desc sample_desc,
 		ED_resource_bind_flag bind_flags,
-		ED_resource_heap_type heap_type,
-		b8 is_mip_map_generatable
+		ED_resource_heap_type heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 		, ED_resource_state initial_state
@@ -265,13 +255,13 @@ namespace nrhi {
 	) {
 
 		u32 stride = H_format::stride(format);
-		u32 size = width * height * count * stride;
+		u32 size = width * height * array_size * stride;
 
 		return {
 
 			.width = width,
 			.height = height,
-			.array_size = count,
+			.array_size = array_size,
 
 			.size = size,
 
@@ -284,62 +274,7 @@ namespace nrhi {
 			.bind_flags = bind_flags,
 			.heap_type = heap_type,
 
-			.is_mip_map_generatable = is_mip_map_generatable,
-
-			.type = ED_resource_type::TEXTURE_2D
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-			, .initial_state = initial_state
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, .layout = layout
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-
-		};
-	}
-
-	F_resource_desc H_resource_desc::create_texture_cube_desc(
-		u32 width,
-		ED_format format,
-		u32 mip_level_count,
-		F_sample_desc sample_desc,
-		ED_resource_bind_flag bind_flags,
-		ED_resource_heap_type heap_type,
-		b8 is_mip_map_generatable
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-		, ED_resource_state initial_state
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-		, ED_resource_layout layout
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-	) {
-
-		u32 stride = H_format::stride(format);
-		u32 size = width * width * 6 * stride;
-
-		return {
-
-			.width = width,
-			.height = width,
-			.array_size = 6,
-
-			.size = size,
-
-			.format = format,
-			.stride = stride,
-
-			.mip_level_count = mip_level_count,
-			.sample_desc = sample_desc,
-
-			.bind_flags = bind_flags,
-			.heap_type = heap_type,
-
-			.is_mip_map_generatable = is_mip_map_generatable,
-
-			.type = ED_resource_type::TEXTURE_CUBE
+			.type = ED_resource_type::TEXTURE_2D_ARRAY
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 			, .initial_state = initial_state

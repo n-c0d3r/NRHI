@@ -24,7 +24,6 @@ NRHI_EnumHelper_CreateEnum(
         TEXTURE_2D 4
         TEXTURE_2D_ARRAY 5
         TEXTURE_3D 6
-        TEXTURE_CUBE 7
 )
 
 message(STATUS "<NRHI::Drivers::DirectX11> Implement resource type done")

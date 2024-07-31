@@ -62,6 +62,14 @@ namespace nrhi {
 		if(target_resource_type == ED_resource_type::NONE)
 			target_resource_type = resource_desc.type;
 
+		ED_resource_bind_flag target_resource_bind_flags = desc.overrided_resource_bind_flags;
+		if(target_resource_bind_flags == ED_resource_bind_flag::NONE)
+			target_resource_bind_flags = resource_desc.bind_flags;
+
+		u32 target_array_size = desc.overrided_array_size;
+		if(!target_array_size)
+			target_array_size = resource_desc.array_size;
+
 		ED_format target_format = desc.overrided_format;
 		if(target_format == ED_format::NONE)
 			target_format = resource_desc.format;
@@ -101,19 +109,24 @@ namespace nrhi {
             )
 			NRHI_ENUM_CASE(
 				ED_resource_type::TEXTURE_2D_ARRAY,
-				d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
-				d3d11_srv_desc.Texture2DArray.MipLevels = resource_desc.mip_level_count;
-				d3d11_srv_desc.Texture2DArray.FirstArraySlice = desc.index;
-				d3d11_srv_desc.Texture2DArray.ArraySize = desc.count;
-				d3d11_srv_desc.Texture2DArray.MostDetailedMip = desc.base_mip_level;
-				NCPP_ASSERT(desc.count) << "texture 2d array size can't be zero";
-				NRHI_ENUM_BREAK;
-            )
-			NRHI_ENUM_CASE(
-				ED_resource_type::TEXTURE_CUBE,
-				d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
-				d3d11_srv_desc.TextureCube.MipLevels = resource_desc.mip_level_count;
-				d3d11_srv_desc.TextureCube.MostDetailedMip = desc.base_mip_level;
+				if(
+					flag_is_has(
+						target_resource_bind_flags,
+						ED_resource_bind_flag::TEXTURE_CUBE
+					)
+				) {
+					d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
+					d3d11_srv_desc.TextureCube.MipLevels = resource_desc.mip_level_count;
+					d3d11_srv_desc.TextureCube.MostDetailedMip = desc.base_mip_level;
+				}
+				else {
+					d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+					d3d11_srv_desc.Texture2DArray.MipLevels = resource_desc.mip_level_count;
+					d3d11_srv_desc.Texture2DArray.FirstArraySlice = desc.index;
+					d3d11_srv_desc.Texture2DArray.ArraySize = target_array_size;
+					d3d11_srv_desc.Texture2DArray.MostDetailedMip = desc.base_mip_level;
+					NCPP_ASSERT(target_array_size) << "texture 2d array size can't be zero";
+				}
 				NRHI_ENUM_BREAK;
             )
 			NRHI_ENUM_DEFAULT(

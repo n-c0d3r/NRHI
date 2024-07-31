@@ -1105,7 +1105,12 @@ namespace nrhi {
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
 		ID3D11ShaderResourceView* d3d11_srv_p = (ID3D11ShaderResourceView*)(directx11_srv_p->d3d11_view_p());
 
-		NCPP_ASSERT(directx11_srv_p->desc().resource_p->desc().is_mip_map_generatable) << "this resource is not mip map generatable";
+		NCPP_ASSERT(
+			flag_is_has(
+				directx11_srv_p->desc().resource_p->desc().bind_flags,
+				ED_resource_bind_flag::MIPS_GENERATABLE
+			)
+		) << "this resource is not mips generatable";
 
 		d3d11_device_context_p->GenerateMips(d3d11_srv_p);
 	}

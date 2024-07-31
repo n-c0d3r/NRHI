@@ -183,39 +183,4 @@ namespace nrhi {
 
 	};
 
-
-
-	class NRHI_API F_directx11_texture_cube : public F_directx11_texture_2d_array {
-
-	public:
-		F_directx11_texture_cube(
-			TKPA_valid<A_device> device_p,
-			const F_initial_resource_data& initial_data,
-			const F_resource_desc& desc,
-			ED_resource_type overrided_type = ED_resource_type::TEXTURE_CUBE
-		);
-		F_directx11_texture_cube(
-			TKPA_valid<A_device> device_p,
-			const F_initial_resource_data& initial_data,
-			const F_resource_desc& desc,
-			ED_resource_type overrided_type,
-			ID3D11Texture2D* d3d11_texture_cube_p
-		);
-		virtual ~F_directx11_texture_cube();
-
-	private:
-		static ID3D11Texture2D* create_d3d11_texture_cube(
-			TKPA_valid<A_device> device_p,
-			const F_initial_resource_data& initial_data,
-			const F_resource_desc& desc
-		);
-
-	public:
-		virtual void rebuild(
-			const F_initial_resource_data& initial_data,
-			const F_resource_desc& desc
-		) override;
-
-	};
-
 }
