@@ -264,17 +264,17 @@ namespace nrhi {
 
 	public:
 		void draw_instanced_indirect(
-			KPA_indirect_buffer_handle indirect_buffer_p,
+			KPA_buffer_handle indirect_buffer_p,
 			u32 indirect_buffer_offset
 		);
 		void draw_indexed_instanced_indirect(
-			KPA_indirect_buffer_handle indirect_buffer_p,
+			KPA_buffer_handle indirect_buffer_p,
 			u32 indirect_buffer_offset
 		);
 
 	public:
 		void dispatch_indirect(
-			KPA_indirect_buffer_handle indirect_buffer_p,
+			KPA_buffer_handle indirect_buffer_p,
 			u32 indirect_buffer_offset
 		);
 
@@ -513,17 +513,17 @@ namespace nrhi {
 
 	public:
 		void async_draw_instanced_indirect(
-			KPA_indirect_buffer_handle indirect_buffer_p,
+			KPA_buffer_handle indirect_buffer_p,
 			u32 indirect_buffer_offset
 		);
 		void async_draw_indexed_instanced_indirect(
-			KPA_indirect_buffer_handle indirect_buffer_p,
+			KPA_buffer_handle indirect_buffer_p,
 			u32 indirect_buffer_offset
 		);
 
 	public:
 		void async_dispatch_indirect(
-			KPA_indirect_buffer_handle indirect_buffer_p,
+			KPA_buffer_handle indirect_buffer_p,
 			u32 indirect_buffer_offset
 		);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION

@@ -49,14 +49,6 @@ namespace nrhi {
 				return TU<F_directx11_buffer>()(device_p, initial_resource_data, desc);
             )
 			NRHI_ENUM_CASE(
-                ED_resource_type::STRUCTURED_BUFFER,
-				return TU<F_directx11_structured_buffer>()(device_p, initial_resource_data, desc);
-            )
-			NRHI_ENUM_CASE(
-                ED_resource_type::INDIRECT_BUFFER,
-				return TU<F_directx11_indirect_buffer>()(device_p, initial_resource_data, desc);
-            )
-			NRHI_ENUM_CASE(
 				ED_resource_type::TEXTURE_1D,
 				return TU<F_directx11_texture_1d>()(device_p, initial_resource_data, desc);
 			)
@@ -87,20 +79,6 @@ namespace nrhi {
     )  {
         return { TU<F_directx11_buffer>()(device_p, initial_resource_data, desc) };
     }
-    U_structured_buffer_handle HD_directx11_resource::create_structured_buffer(
-        TKPA_valid<A_device> device_p,
-        const F_initial_resource_data& initial_resource_data,
-        const F_resource_desc& desc
-    ) {
-        return { TU<F_directx11_structured_buffer>()(device_p, initial_resource_data, desc) };
-    }
-	U_indirect_buffer_handle HD_directx11_resource::create_indirect_buffer(
-		TKPA_valid<A_device> device_p,
-		const F_initial_resource_data& initial_resource_data,
-		const F_resource_desc& desc
-	) {
-		return { TU<F_directx11_indirect_buffer>()(device_p, initial_resource_data, desc) };
-	}
 
     U_texture_1d_handle HD_directx11_resource::create_texture_1d(
         TKPA_valid<A_device> device_p,

@@ -284,19 +284,19 @@ namespace nrhi {
 	public:
 		static void draw_instanced_indirect(
 			TKPA_valid<A_command_list> command_list_p,
-			KPA_indirect_buffer_handle indirect_buffer_p,
+			KPA_buffer_handle indirect_buffer_p,
 			u32 indirect_buffer_offset
 		);
 		static void draw_indexed_instanced_indirect(
 			TKPA_valid<A_command_list> command_list_p,
-			KPA_indirect_buffer_handle indirect_buffer_p,
+			KPA_buffer_handle indirect_buffer_p,
 			u32 indirect_buffer_offset
 		);
 
 	public:
 		static void dispatch_indirect(
 			TKPA_valid<A_command_list> command_list_p,
-			KPA_indirect_buffer_handle indirect_buffer_p,
+			KPA_buffer_handle indirect_buffer_p,
 			u32 indirect_buffer_offset
 		);
 

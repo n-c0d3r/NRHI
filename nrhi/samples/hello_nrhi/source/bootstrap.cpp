@@ -162,7 +162,7 @@ int main() {
     );
 
     TG_vector<F_matrix4x4> buffer2_data(128);
-    U_structured_buffer_handle buffer2_p = H_buffer::T_create_structured<F_matrix4x4>(
+    U_buffer_handle buffer2_p = H_buffer::T_create<F_matrix4x4>(
         NCPP_FOREF_VALID(device_p),
         buffer2_data,
         ED_resource_bind_flag::SHADER_RESOURCE
@@ -171,7 +171,7 @@ int main() {
     U_srv_handle buffer2_srv_p = H_resource_view::create_srv(
         NCPP_FOREF_VALID(device_p),
         {
-            .resource_p = NCPP_FHANDLE_VALID_AS_OREF(buffer2_p)
+            .resource_p = NCPP_AOH_VALID(buffer2_p)
         }
     );
 

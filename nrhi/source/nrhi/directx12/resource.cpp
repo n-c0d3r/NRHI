@@ -46,13 +46,13 @@ namespace nrhi {
 	)  {
 		return { TU<F_directx12_committed_resource>()(device_p, desc) };
 	}
-	U_structured_buffer_handle HD_directx12_resource::create_committed_structured_buffer(
+	U_buffer_handle HD_directx12_resource::create_committed_structured_buffer(
 		TKPA_valid<A_device> device_p,
 		const F_resource_desc& desc
 	)  {
 		return { TU<F_directx12_committed_resource>()(device_p, desc) };
 	}
-	U_indirect_buffer_handle HD_directx12_resource::create_committed_indirect_buffer(
+	U_buffer_handle HD_directx12_resource::create_committed_indirect_buffer(
 		TKPA_valid<A_device> device_p,
 		const F_resource_desc& desc
 	)  {

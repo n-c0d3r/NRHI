@@ -79,13 +79,6 @@ namespace nrhi {
 				NRHI_ENUM_BREAK;
             )
 			NRHI_ENUM_CASE(
-				ED_resource_type::STRUCTURED_BUFFER,
-				d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
-				d3d11_srv_desc.Buffer.FirstElement = desc.mem_offset / resource_desc.stride;
-				d3d11_srv_desc.Buffer.NumElements = resource_desc.size / resource_desc.stride;
-				NRHI_ENUM_BREAK;
-            )
-			NRHI_ENUM_CASE(
 				ED_resource_type::TEXTURE_1D,
 				d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE1D;
 				d3d11_srv_desc.Texture1D.MipLevels = resource_desc.mip_level_count;

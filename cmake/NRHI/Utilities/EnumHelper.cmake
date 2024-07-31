@@ -221,10 +221,6 @@ function(NRHI_EnumHelper_CreateEnum)
 
                             return (F__)((F_equivalent)value___nrhi_internal___);
                         }
-                        NCPP_FORCE_INLINE operator bool () const noexcept {
-
-                            return (value___nrhi_internal___ != 0);
-                        }
                         NCPP_FORCE_INLINE bool operator == (${PARGS_NAME} x) const noexcept {
 
                             return (value___nrhi_internal___ == x.value___nrhi_internal___);
@@ -449,9 +445,14 @@ function(NRHI_EnumHelper_CreateEnum)
         set(
             hppFileContent
             "${hppFileContent}
-                    };
+                };
+            "
+        )
 
-                    ${Operators}
+        set(
+            hppFileContent
+            "${hppFileContent}
+            ${Operators}
             "
         )
 

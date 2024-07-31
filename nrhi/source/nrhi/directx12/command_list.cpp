@@ -923,20 +923,20 @@ namespace nrhi {
 
 	void HD_directx12_command_list::async_draw_instanced_indirect(
 		TKPA_valid<A_command_list> command_list_p,
-		KPA_indirect_buffer_handle indirect_buffer_p,
+		KPA_buffer_handle indirect_buffer_p,
 		u32 indirect_buffer_offset
 	) {
 	}
 	void HD_directx12_command_list::async_draw_indexed_instanced_indirect(
 		TKPA_valid<A_command_list> command_list_p,
-		KPA_indirect_buffer_handle indirect_buffer_p,
+		KPA_buffer_handle indirect_buffer_p,
 		u32 indirect_buffer_offset
 	) {
 	}
 
 	void HD_directx12_command_list::async_dispatch_indirect(
 		TKPA_valid<A_command_list> command_list_p,
-		KPA_indirect_buffer_handle indirect_buffer_p,
+		KPA_buffer_handle indirect_buffer_p,
 		u32 indirect_buffer_offset
 	) {
 	}

@@ -388,7 +388,7 @@ namespace nrhi {
 	}
 
 	NCPP_FORCE_INLINE void A_command_list::draw_instanced_indirect(
-		KPA_indirect_buffer_handle indirect_buffer_p,
+		KPA_buffer_handle indirect_buffer_p,
 		u32 indirect_buffer_offset
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_SIMPLE_WORK_SUBMISSION(
@@ -400,7 +400,7 @@ namespace nrhi {
 		);
 	}
 	NCPP_FORCE_INLINE void A_command_list::draw_indexed_instanced_indirect(
-		KPA_indirect_buffer_handle indirect_buffer_p,
+		KPA_buffer_handle indirect_buffer_p,
 		u32 indirect_buffer_offset
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_SIMPLE_WORK_SUBMISSION(
@@ -413,7 +413,7 @@ namespace nrhi {
 	}
 
 	NCPP_FORCE_INLINE void A_command_list::dispatch_indirect(
-		KPA_indirect_buffer_handle indirect_buffer_p,
+		KPA_buffer_handle indirect_buffer_p,
 		u32 indirect_buffer_offset
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_SIMPLE_WORK_SUBMISSION(
@@ -1042,7 +1042,7 @@ namespace nrhi {
 	}
 
 	NCPP_FORCE_INLINE void A_command_list::async_draw_instanced_indirect(
-		KPA_indirect_buffer_handle indirect_buffer_p,
+		KPA_buffer_handle indirect_buffer_p,
 		u32 indirect_buffer_offset
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
@@ -1054,7 +1054,7 @@ namespace nrhi {
 		);
 	}
 	NCPP_FORCE_INLINE void A_command_list::async_draw_indexed_instanced_indirect(
-		KPA_indirect_buffer_handle indirect_buffer_p,
+		KPA_buffer_handle indirect_buffer_p,
 		u32 indirect_buffer_offset
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
@@ -1067,7 +1067,7 @@ namespace nrhi {
 	}
 
 	NCPP_FORCE_INLINE void A_command_list::async_dispatch_indirect(
-		KPA_indirect_buffer_handle indirect_buffer_p,
+		KPA_buffer_handle indirect_buffer_p,
 		u32 indirect_buffer_offset
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(

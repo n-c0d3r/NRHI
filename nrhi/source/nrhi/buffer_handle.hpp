@@ -45,22 +45,4 @@ namespace nrhi {
 
 	};
 
-	NCPP_FHANDLE_TEMPLATE(structured_buffer_handle, A_resource) {
-
-		NCPP_FHANDLE_GENERATED_BODY(structured_buffer_handle, A_resource);
-
-	};
-
-	NCPP_FHANDLE_TEMPLATE(single_elemented_buffer_handle, A_resource) {
-
-		NCPP_FHANDLE_GENERATED_BODY(single_elemented_buffer_handle, A_resource);
-
-	};
-
-	NCPP_FHANDLE_TEMPLATE(indirect_buffer_handle, A_resource) {
-
-		NCPP_FHANDLE_GENERATED_BODY(indirect_buffer_handle, A_resource);
-
-	};
-
 }

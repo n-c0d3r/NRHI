@@ -89,11 +89,11 @@ namespace nrhi {
 			TKPA_valid<A_device> device_p,
 			const F_resource_desc& desc
 		);
-		static U_structured_buffer_handle create_committed_structured_buffer(
+		static U_buffer_handle create_committed_structured_buffer(
 			TKPA_valid<A_device> device_p,
 			const F_resource_desc& desc
 		);
-		static U_indirect_buffer_handle create_committed_indirect_buffer(
+		static U_buffer_handle create_committed_indirect_buffer(
 			TKPA_valid<A_device> device_p,
 			const F_resource_desc& desc
 		);
