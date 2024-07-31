@@ -297,28 +297,28 @@ namespace nrhi {}
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#define NRHI_DRIVER_DIRECTX_12_ID_MASK___RESOURCE_BIND_FLAG 0xFFFF0000
+#define NRHI_DRIVER_DIRECTX_12_ID_MASK___RESOURCE_BIND_FLAG 0xFFFFFFFFFFFF0000
 #define NRHI_DRIVER_DIRECTX_12_ID_OFFSET___RESOURCE_BIND_FLAG (4 * 4)
 #define NRHI_DRIVER_DIRECTX_12_REMOVE_ID___RESOURCE_BIND_FLAG(...) (\
                 (~NRHI_DRIVER_DIRECTX_12_ID_MASK___RESOURCE_BIND_FLAG) \
-                & (ncpp::u32(__VA_ARGS__))\
+                & (ncpp::u64(__VA_ARGS__))\
             )
 #define NRHI_DRIVER_DIRECTX_12_REMOVE_PAYLOAD___RESOURCE_BIND_FLAG(...) (\
                 NRHI_DRIVER_DIRECTX_12_ID_MASK___RESOURCE_BIND_FLAG \
-                & (ncpp::u32(__VA_ARGS__))\
+                & (ncpp::u64(__VA_ARGS__))\
             )
 #define NRHI_DRIVER_DIRECTX_12_GET_ID___RESOURCE_BIND_FLAG(...) (\
-                NRHI_DRIVER_DIRECTX_12_REMOVE_PAYLOAD___RESOURCE_BIND_FLAG(ncpp::u32(__VA_ARGS__))\
+                NRHI_DRIVER_DIRECTX_12_REMOVE_PAYLOAD___RESOURCE_BIND_FLAG(ncpp::u64(__VA_ARGS__))\
                 >> NRHI_DRIVER_DIRECTX_12_ID_OFFSET___RESOURCE_BIND_FLAG\
             )
 #define NRHI_DRIVER_DIRECTX_12_GENERATE___RESOURCE_BIND_FLAG(ID, ...) (\
-                NRHI_DRIVER_DIRECTX_12_REMOVE_ID___RESOURCE_BIND_FLAG(ncpp::u32(__VA_ARGS__))\
-                | NRHI_DRIVER_DIRECTX_12_REMOVE_PAYLOAD___RESOURCE_BIND_FLAG(ncpp::u32(ID) << NRHI_DRIVER_DIRECTX_12_ID_OFFSET___RESOURCE_BIND_FLAG)\
+                NRHI_DRIVER_DIRECTX_12_REMOVE_ID___RESOURCE_BIND_FLAG(ncpp::u64(__VA_ARGS__))\
+                | NRHI_DRIVER_DIRECTX_12_REMOVE_PAYLOAD___RESOURCE_BIND_FLAG(ncpp::u64(ID) << NRHI_DRIVER_DIRECTX_12_ID_OFFSET___RESOURCE_BIND_FLAG)\
             )
 
 #define NRHI_DRIVER_DIRECTX_12_MAP___RESOURCE_BIND_FLAG___TO___RESOURCE_FLAG(...) (\
                 (D3D12_RESOURCE_FLAGS)(\
-                    NRHI_DRIVER_DIRECTX_12_REMOVE_ID___RESOURCE_BIND_FLAG(ncpp::u32(__VA_ARGS__))\
+                    NRHI_DRIVER_DIRECTX_12_REMOVE_ID___RESOURCE_BIND_FLAG(ncpp::u64(__VA_ARGS__))\
                 )\
             )
 

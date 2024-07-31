@@ -46,18 +46,6 @@ namespace nrhi {
 	)  {
 		return { TU<F_directx12_committed_resource>()(device_p, desc) };
 	}
-	U_buffer_handle HD_directx12_resource::create_committed_structured_buffer(
-		TKPA_valid<A_device> device_p,
-		const F_resource_desc& desc
-	)  {
-		return { TU<F_directx12_committed_resource>()(device_p, desc) };
-	}
-	U_buffer_handle HD_directx12_resource::create_committed_indirect_buffer(
-		TKPA_valid<A_device> device_p,
-		const F_resource_desc& desc
-	)  {
-		return { TU<F_directx12_committed_resource>()(device_p, desc) };
-	}
 
 	U_texture_1d_handle HD_directx12_resource::create_committed_texture_1d(
 		TKPA_valid<A_device> device_p,
@@ -78,12 +66,6 @@ namespace nrhi {
 		return { TU<F_directx12_committed_resource>()(device_p, desc) };
 	}
 	U_texture_2d_array_handle HD_directx12_resource::create_committed_texture_2d_array(
-		TKPA_valid<A_device> device_p,
-		const F_resource_desc& desc
-	) {
-		return { TU<F_directx12_committed_resource>()(device_p, desc) };
-	}
-	U_texture_cube_handle HD_directx12_resource::create_committed_texture_cube(
 		TKPA_valid<A_device> device_p,
 		const F_resource_desc& desc
 	) {

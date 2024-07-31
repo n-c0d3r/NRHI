@@ -89,14 +89,6 @@ namespace nrhi {
 			TKPA_valid<A_device> device_p,
 			const F_resource_desc& desc
 		);
-		static U_buffer_handle create_committed_structured_buffer(
-			TKPA_valid<A_device> device_p,
-			const F_resource_desc& desc
-		);
-		static U_buffer_handle create_committed_indirect_buffer(
-			TKPA_valid<A_device> device_p,
-			const F_resource_desc& desc
-		);
 
 	public:
 		static U_texture_1d_handle create_committed_texture_1d(
@@ -112,10 +104,6 @@ namespace nrhi {
 			const F_resource_desc& desc
 		);
 		static U_texture_2d_array_handle create_committed_texture_2d_array(
-			TKPA_valid<A_device> device_p,
-			const F_resource_desc& desc
-		);
-		static U_texture_cube_handle create_committed_texture_cube(
 			TKPA_valid<A_device> device_p,
 			const F_resource_desc& desc
 		);

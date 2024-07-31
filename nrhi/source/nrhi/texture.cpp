@@ -243,8 +243,7 @@ namespace nrhi {
 				format,
 				mip_level_count,
 				bind_flags,
-				heap_type,
-				false
+				heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 				, initial_state
@@ -284,8 +283,7 @@ namespace nrhi {
 				mip_level_count,
 				sample_desc,
 				bind_flags,
-				heap_type,
-				false
+				heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 				, initial_state
@@ -325,8 +323,7 @@ namespace nrhi {
 				format,
 				mip_level_count,
 				bind_flags,
-				heap_type,
-				false
+				heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 				, initial_state
@@ -368,8 +365,7 @@ namespace nrhi {
 				mip_level_count,
 				sample_desc,
 				bind_flags,
-				heap_type,
-				false
+				heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 				, initial_state
@@ -407,8 +403,7 @@ namespace nrhi {
 				format,
 				mip_level_count,
 				bind_flags,
-				heap_type,
-				false
+				heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 				, initial_state
@@ -448,8 +443,7 @@ namespace nrhi {
 				mip_level_count,
 				sample_desc,
 				bind_flags,
-				heap_type,
-				false
+				heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 				, initial_state
@@ -489,8 +483,7 @@ namespace nrhi {
 				format,
 				mip_level_count,
 				bind_flags,
-				heap_type,
-				false
+				heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 				, initial_state
@@ -532,8 +525,7 @@ namespace nrhi {
 				mip_level_count,
 				sample_desc,
 				bind_flags,
-				heap_type,
-				false
+				heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 				, initial_state

@@ -30,14 +30,6 @@ NRHI_FunctionHelper_CreateFunctionClass(
             TKPA_valid<A_device> device_p,
             const F_resource_desc& desc
         )"
-        "create_committed_indirect_buffer" "U_indirect_buffer_handle(
-            TKPA_valid<A_device> device_p,
-            const F_resource_desc& desc
-        )"
-        "create_committed_structured_buffer" "U_structured_buffer_handle(
-            TKPA_valid<A_device> device_p,
-            const F_resource_desc& desc
-        )"
         "create_committed_texture_1d" "U_texture_1d_handle(
             TKPA_valid<A_device> device_p,
             const F_resource_desc& desc
@@ -51,10 +43,6 @@ NRHI_FunctionHelper_CreateFunctionClass(
             const F_resource_desc& desc
         )"
         "create_committed_texture_2d_array" "U_texture_2d_array_handle(
-            TKPA_valid<A_device> device_p,
-            const F_resource_desc& desc
-        )"
-        "create_committed_texture_cube" "U_texture_cube_handle(
             TKPA_valid<A_device> device_p,
             const F_resource_desc& desc
         )"
