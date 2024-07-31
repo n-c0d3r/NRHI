@@ -6,7 +6,7 @@ function(NRHI_EnumHelper_CreateEnum)
 
     cmake_parse_arguments(
         PARGS
-        ""
+        "FLAG_OPERATORS"
         "NAMESPACE;NAME;DRIVER_UPPER_CASE_NAME;TARGET_HPP_FILE_PATH;TARGET_CPP_FILE_PATH;TYPE"
         "VALUES;INCLUDES;ADDITIONAL_CODE"
         ${ARGN}
@@ -127,6 +127,73 @@ function(NRHI_EnumHelper_CreateEnum)
                 namespace ${PARGS_NAMESPACE} {
             "
         )
+
+        set(Operators "")
+
+        if(PARGS_FLAG_OPERATORS)
+            set(Operators "${Operators}
+        NCPP_FORCE_INLINE constexpr ${PARGS_NAME} operator | (${PARGS_NAME} a, ${PARGS_NAME} b) noexcept {
+
+            using F_equivalent = ncpp::utilities::TF_nth_template_targ<
+                sizeof(${PARGS_TYPE}),
+                void,
+                ncpp::u8,
+                ncpp::u16,
+                void,
+                ncpp::u32,
+                void,
+                void,
+                void,
+                ncpp::u64
+            >;
+
+            return (${PARGS_NAME})(
+                ((${PARGS_TYPE})a)
+                | ((${PARGS_TYPE})b)
+            );
+        }
+        NCPP_FORCE_INLINE constexpr ${PARGS_NAME} operator & (${PARGS_NAME} a, ${PARGS_NAME} b) noexcept {
+
+            using F_equivalent = ncpp::utilities::TF_nth_template_targ<
+                sizeof(${PARGS_TYPE}),
+                void,
+                ncpp::u8,
+                ncpp::u16,
+                void,
+                ncpp::u32,
+                void,
+                void,
+                void,
+                ncpp::u64
+            >;
+
+            return (${PARGS_NAME})(
+                ((${PARGS_TYPE})a)
+                & ((${PARGS_TYPE})b)
+            );
+        }
+        NCPP_FORCE_INLINE constexpr ${PARGS_NAME} operator ~ (${PARGS_NAME} b) noexcept {
+
+            using F_equivalent = ncpp::utilities::TF_nth_template_targ<
+                sizeof(${PARGS_TYPE}),
+                void,
+                ncpp::u8,
+                ncpp::u16,
+                void,
+                ncpp::u32,
+                void,
+                void,
+                void,
+                ncpp::u64
+            >;
+
+            return (${PARGS_NAME})(
+                ~((${PARGS_TYPE})b)
+            );
+        }
+"
+            )
+        endif()
 
         if(${NRHI_DRIVER_MULTIPLE})
             set(
@@ -383,6 +450,8 @@ function(NRHI_EnumHelper_CreateEnum)
             hppFileContent
             "${hppFileContent}
                     };
+
+                    ${Operators}
             "
         )
 
