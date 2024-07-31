@@ -398,6 +398,7 @@ namespace nrhi {
 	struct F_nsl_sampler_state_info {
 
 		F_sampler_state_desc desc;
+		b8 is_static = false;
 
 		u32 slot = NCPP_U32_MAX;
 		TG_vector<u32> actual_slots;
@@ -421,6 +422,8 @@ namespace nrhi {
 		ED_pipeline_state_type type = ED_pipeline_state_type::NONE;
 
 		F_general_pipeline_state_options options;
+
+		u32 root_signature = 0;
 
 		F_nsl_pipeline_state_config_map config_map;
 
@@ -730,6 +733,8 @@ namespace nrhi {
 
 		F_general_pipeline_state_options options;
 
+		u32 root_signature = 0;
+
 		TG_vector<u32> shader_indices;
 
 	};
@@ -738,6 +743,7 @@ namespace nrhi {
 		G_string name;
 
 		F_sampler_state_desc desc;
+		b8 is_static = false;
 
 		TG_vector<u32> actual_slots;
 
@@ -1009,15 +1015,26 @@ namespace nrhi {
 
 	struct NRHI_API F_nsl_compiled_result {
 
+		G_string class_name;
+
 		G_string src_content;
 		E_nsl_output_language output_language_enum = E_nsl_output_language::NONE;
 
+		F_nsl_reflection reflection;
+
 		u32 shader_count = 0;
 
-		F_nsl_reflection reflection;
+		TG_vector<F_shader_binary> shader_binaries;
 
 	public:
 		G_string build(u32 shader_index) const;
+
+		NCPP_FORCE_INLINE b8 is_finalized() const noexcept {
+
+			return (shader_binaries.size() != 0);
+		}
+		void finalize();
+		void finalize_and_release_src_content();
 
 	};
 
@@ -3735,6 +3752,7 @@ namespace nrhi {
 	public:
 		eastl::optional<F_nsl_compiled_result> compile(
 			const G_string& raw_src_content,
+			const G_string& class_name = "",
 			E_nsl_output_language output_language_enum = E_nsl_output_language::NONE,
 			const G_string& abs_path = ""
 		);

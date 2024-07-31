@@ -1,4 +1,5 @@
 #include <nrhi/nsl_shader_compiler.hpp>
+#include <nrhi/shader_compiler.hpp>
 
 
 
@@ -107,6 +108,27 @@ namespace nrhi {
 		result += src_content;
 
 		return result;
+	}
+	void F_nsl_compiled_result::finalize() {
+
+		const auto& shader_reflections = reflection.shaders;
+		u32 shader_count = shader_reflections.size();
+
+		shader_binaries.resize(shader_count);
+
+		for(u32 i = 0; i < shader_count; ++i) {
+
+			shader_binaries[i] = H_shader_compiler::compile_nsl(
+				*this,
+				i
+			);
+		}
+	}
+	void F_nsl_compiled_result::finalize_and_release_src_content() {
+
+		finalize();
+
+		src_content.clear();
 	}
 
 
@@ -4384,6 +4406,22 @@ namespace nrhi {
 			}
 		}
 
+		// check for is_static annotation
+		{
+			auto it = context.current_object_config.find("is_static");
+			if(it != context.current_object_config.end()) {
+
+				const auto& info_tree_reader = it->second;
+
+				auto value_opt = info_tree_reader.read_b8(0);
+
+				if(!value_opt)
+					return eastl::nullopt;
+
+				sampler_state_info.is_static = value_opt.value();
+			}
+		}
+
 		// register sampler_state
 		name_manager_p->template T_register_name<FE_nsl_name_types::SAMPLER_STATE>(tree.object_implementation.name);
 		sampler_state_manager_p->register_sampler_state(
@@ -4541,6 +4579,22 @@ namespace nrhi {
 			};
 		}
 
+		// check for root_signature annotation
+		{
+			auto it = context.current_object_config.find("root_signature");
+			if(it != context.current_object_config.end()) {
+
+				const auto& info_tree_reader = it->second;
+
+				auto value_opt = info_tree_reader.read_u32(0);
+
+				if(!value_opt)
+					return eastl::nullopt;
+
+				pipeline_state_info.root_signature = value_opt.value();
+			}
+		}
+
 		// check for color_formats annotation
 		{
 			auto it = context.current_object_config.find("color_formats");
@@ -4587,7 +4641,7 @@ namespace nrhi {
 					}
 				}
 
-				// fill_mode attribute
+				// format attribute
 				{
 					auto sub_info_tree_reader_opt = info_tree_reader.read_sub("format", false);
 
@@ -8666,6 +8720,7 @@ namespace nrhi {
 					.name = it->first,
 					.type = pipeline_state_info.type,
 					.options = pipeline_state_info.options,
+					.root_signature = pipeline_state_info.root_signature,
 					.shader_indices = shader_indices
 
 				};
@@ -8690,6 +8745,7 @@ namespace nrhi {
 
 					.name = it->first,
 					.desc = sampler_state_info.desc,
+					.is_static = sampler_state_info.is_static,
 					.actual_slots = sampler_state_info.actual_slots
 
 				};
@@ -8818,6 +8874,7 @@ namespace nrhi {
 
 	eastl::optional<F_nsl_compiled_result> F_nsl_shader_compiler::compile(
 		const G_string& raw_src_content,
+		const G_string& class_name,
 		E_nsl_output_language output_language_enum,
 		const G_string& abs_path
 	) {
@@ -8865,6 +8922,8 @@ namespace nrhi {
 		}
 
 		auto compile_result_opt = translation_unit_compiler_p_->compile();
+
+		compile_result_opt.value().class_name = class_name;
 
 		is_compiled_ = true;
 		is_compile_success_ = static_cast<b8>(compile_result_opt);

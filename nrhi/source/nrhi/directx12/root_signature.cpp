@@ -88,15 +88,15 @@ namespace nrhi {
 				d3d12_root_param.Constants.Num32BitValues = root_constants_desc.constant_count;
 				break;
 			case D3D12_ROOT_PARAMETER_TYPE_CBV:
-				d3d12_root_param.Descriptor.ShaderRegister = root_descriptor_desc.base_register;
+				d3d12_root_param.Descriptor.ShaderRegister = root_descriptor_desc.shader_register;
 				d3d12_root_param.Descriptor.RegisterSpace = root_descriptor_desc.register_space;
 				break;
 			case D3D12_ROOT_PARAMETER_TYPE_SRV:
-				d3d12_root_param.Descriptor.ShaderRegister = root_descriptor_desc.base_register;
+				d3d12_root_param.Descriptor.ShaderRegister = root_descriptor_desc.shader_register;
 				d3d12_root_param.Descriptor.RegisterSpace = root_descriptor_desc.register_space;
 				break;
 			case D3D12_ROOT_PARAMETER_TYPE_UAV:
-				d3d12_root_param.Descriptor.ShaderRegister = root_descriptor_desc.base_register;
+				d3d12_root_param.Descriptor.ShaderRegister = root_descriptor_desc.shader_register;
 				d3d12_root_param.Descriptor.RegisterSpace = root_descriptor_desc.register_space;
 				break;
 			}
@@ -113,7 +113,7 @@ namespace nrhi {
 			const auto& sampler_state_desc = static_sampler_state_desc.sampler_state_desc;
 			auto& d3d12_static_sampler_state_desc = d3d12_static_sampler_state_descs[i];
 
-			d3d12_static_sampler_state_desc.ShaderRegister = static_sampler_state_desc.base_register;
+			d3d12_static_sampler_state_desc.ShaderRegister = static_sampler_state_desc.shader_register;
 			d3d12_static_sampler_state_desc.RegisterSpace = static_sampler_state_desc.register_space;
 			d3d12_static_sampler_state_desc.ShaderVisibility = D3D12_SHADER_VISIBILITY(static_sampler_state_desc.shader_visibility);
 

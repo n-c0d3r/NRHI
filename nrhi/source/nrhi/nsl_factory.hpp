@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/pipeline_state_compiler.hpp
+/** @file nrhi/nsl_factory.hpp
 *
-*   Implement pipeline_state compiler.
+*   Implement nsl factory desc.
 */
 
 
@@ -33,7 +33,6 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/pipeline_state_desc.hpp>
 #include <nrhi/nsl_shader_compiler.hpp>
 
 #pragma endregion
@@ -42,19 +41,30 @@
 
 namespace nrhi {
 
-	struct NRHI_API H_pipeline_state_compiler {
+	class A_device;
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+	class A_root_signature;
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+	class A_pipeline_state;
+
+
+
+	class NRHI_API H_nsl_factory {
 
 	public:
-		static F_graphics_pipeline_state_options compile_graphics_nsl(
-			const F_nsl_compiled_result& nsl_compiled_result,
-			F_graphics_pipeline_state_shader_binaries& shader_binaries,
-			u32 pipeline_state_index
+#ifdef NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_BINDING
+		static TG_vector<TU<A_pipeline_state>> create_pipeline_states(
+			TKPA_valid<A_device> device_p,
+			const F_nsl_compiled_result& compiled_result
 		);
-		static F_compute_pipeline_state_options compile_compute_nsl(
-			const F_nsl_compiled_result& nsl_compiled_result,
-			F_compute_pipeline_state_shader_binaries& shader_binaries,
-			u32 pipeline_state_index
+#endif // NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_BINDING
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		static TG_vector<TU<A_pipeline_state>> create_pipeline_states_with_root_signature(
+			TKPA_valid<A_device> device_p,
+			const F_nsl_compiled_result& compiled_result,
+			const TG_span<TK_valid<A_root_signature>>& root_signature_p_vector = {}
 		);
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 	};
 

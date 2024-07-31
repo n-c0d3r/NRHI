@@ -52,6 +52,7 @@ namespace nrhi {
 	public:
 		static F_shader_binary compile_hlsl_from_src_content(
 			const G_string& shader_class_name,
+			const G_string& shader_name,
 			const G_string& entry_point_name,
 			const G_string& src_content,
 			const G_string& abs_path,
@@ -61,6 +62,7 @@ namespace nrhi {
 		);
 		static F_shader_binary compile_hlsl(
 			const G_string& shader_class_name,
+			const G_string& shader_name,
 			const G_string& entry_point_name,
 			const G_string& abs_path,
 			u32 model_major,
@@ -68,7 +70,6 @@ namespace nrhi {
 			ED_shader_type type
 		);
 		static F_shader_binary compile_nsl(
-			const G_string& shader_class_name,
 			const F_nsl_compiled_result& compiled_result,
 			u32 shader_index
 		);

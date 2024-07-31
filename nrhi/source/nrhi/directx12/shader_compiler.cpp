@@ -8,6 +8,7 @@ namespace nrhi {
 
 	F_shader_binary HD_directx12_shader_compiler::compile_hlsl_from_src_content(
 		const G_string& class_name,
+		const G_string& shader_name,
 		const G_string& entry_point_name,
 		const G_string& src_content,
 		const G_string& abs_path,
@@ -20,7 +21,7 @@ namespace nrhi {
 
 		HRESULT hr;
 
-		G_string src_name = class_name + entry_point_name;
+		G_string src_name = class_name + "::" + shader_name;
 
 		G_string model = G_to_string(model_major) + "_" + G_to_string(model_minor);
 
@@ -117,6 +118,7 @@ namespace nrhi {
 	}
 	F_shader_binary HD_directx12_shader_compiler::compile_hlsl(
 		const G_string& class_name,
+		const G_string& shader_name,
 		const G_string& entry_point_name,
 		const G_string& abs_path,
 		u32 model_major,
@@ -128,7 +130,7 @@ namespace nrhi {
 
 		HRESULT hr;
 
-		G_string src_name = class_name + entry_point_name;
+		G_string src_name = class_name + "::" + shader_name;
 
 		G_wstring abs_wpath = G_to_wstring(abs_path);
 
@@ -220,7 +222,6 @@ namespace nrhi {
 		return std::move(result);
 	}
 	F_shader_binary HD_directx12_shader_compiler::compile_nsl(
-		const G_string& shader_class_name,
 		const F_nsl_compiled_result& compiled_result,
 		u32 shader_index
 	) {
@@ -242,7 +243,8 @@ namespace nrhi {
 		}
 
 		return compile_hlsl_from_src_content(
-			shader_class_name,
+			compiled_result.class_name,
+			compiled_result.reflection.shaders[shader_index].name,
 			"main",
 			compiled_result.build(shader_index),
 			"",

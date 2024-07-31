@@ -70,7 +70,7 @@ namespace nrhi {
 
 	struct F_root_descriptor_desc {
 
-		u32 base_register = 0;
+		u32 shader_register = 0;
 		u32 register_space = 0;
 
 	};
@@ -135,7 +135,7 @@ namespace nrhi {
 			const F_root_constants_desc& constants_desc,
 			ED_shader_visibility shader_visibility = ED_shader_visibility::ALL
 		) noexcept :
-			type(ED_root_param_type::CONSTANT_32BITS),
+			type(ED_root_param_type::CONSTANTS),
 			shader_visibility(shader_visibility),
 			constants_desc(constants_desc)
 		{
@@ -177,7 +177,7 @@ namespace nrhi {
 
 	struct F_static_sampler_state_desc {
 
-		u32 base_register = 0;
+		u32 shader_register = 0;
 		u32 register_space = 0;
 		F_sampler_state_desc sampler_state_desc;
 		ED_shader_visibility shader_visibility = ED_shader_visibility::ALL;

@@ -156,6 +156,7 @@ int main() {
 "	ps_main\n"
 ")\n"
 "\n",
+		"",
 		E_nsl_output_language::HLSL_4
 	);
 
