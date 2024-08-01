@@ -944,6 +944,13 @@ namespace nrhi {
 	) {
 		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
 
+		NCPP_ASSERT(
+			flag_is_has(
+				argument_buffer_p->desc().flags,
+				ED_resource_flag::INDIRECT_ARGUMENT_BUFFER
+			)
+		) << "invalid argument buffer's flags";
+
 		ID3D12GraphicsCommandList* d3d12_command_list_p = dx12_command_list_p->d3d12_command_list_p();
 
 		d3d12_command_list_p->ExecuteIndirect(
