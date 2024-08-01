@@ -120,12 +120,32 @@ namespace nrhi {
 			const F_initial_resource_data& initial_data,
 			const F_resource_desc& desc
 		);
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		virtual void rebuild_committed(
+			const F_resource_desc& desc
+		);
+		virtual void rebuild_placed(
+			const F_resource_desc& desc,
+			TKPA_valid<A_resource_heap> heap_p,
+			u64 heap_offset
+		);
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
 	protected:
 		void finalize_rebuild(
 			const F_initial_resource_data& initial_data,
 			const F_resource_desc& desc
 		);
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		void finalize_rebuild_committed(
+			const F_resource_desc& desc
+		);
+		void finalize_rebuild_placed(
+			const F_resource_desc& desc,
+			TKPA_valid<A_resource_heap> heap_p,
+			u64 heap_offset
+		);
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
 	public:
 		F_mapped_subresource map(u32 subresource_index);

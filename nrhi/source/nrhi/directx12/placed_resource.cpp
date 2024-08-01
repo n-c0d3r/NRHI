@@ -131,4 +131,24 @@ namespace nrhi {
 		return d3d12_resource_p;
 	}
 
+	void F_directx12_placed_resource::rebuild_placed(
+		const F_resource_desc& desc,
+		TKPA_valid<A_resource_heap> heap_p,
+		u64 heap_offset
+	) {
+		if(d3d12_resource_p_)
+			d3d12_resource_p_->Release();
+		d3d12_resource_p_ = create_d3d12_placed_resource(
+			device_p(),
+			desc,
+			heap_p,
+			heap_offset
+		);
+		finalize_rebuild_placed(
+			desc,
+			heap_p,
+			heap_offset
+		);
+	}
+
 }

@@ -109,8 +109,7 @@ namespace nrhi {
 		return d3d12_resource_p;
 	}
 
-	void F_directx12_committed_resource::rebuild(
-		const F_initial_resource_data& initial_data,
+	void F_directx12_committed_resource::rebuild_committed(
 		const F_resource_desc& desc
 	) {
 		if(d3d12_resource_p_)
@@ -119,8 +118,7 @@ namespace nrhi {
 			device_p(),
 			desc
 		);
-		finalize_rebuild(
-			initial_data,
+		finalize_rebuild_committed(
 			desc
 		);
 	}

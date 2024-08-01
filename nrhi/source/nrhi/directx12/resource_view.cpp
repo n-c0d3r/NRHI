@@ -51,7 +51,7 @@ namespace nrhi {
 			desc
 		);
 	}
-	void F_directx12_resource_view::rebuild(
+	void F_directx12_resource_view::rebuild_with_descriptor(
 		const F_resource_view_desc& desc,
 		const F_descriptor& descriptor
 	) {
@@ -61,7 +61,7 @@ namespace nrhi {
 			desc
 		);
 
-		finalize_rebuild(
+		finalize_rebuild_with_descriptor(
 			desc,
 			descriptor
 		);

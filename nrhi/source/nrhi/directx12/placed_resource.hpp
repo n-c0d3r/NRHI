@@ -75,6 +75,13 @@ namespace nrhi {
 			u64 heap_offset
 		);
 
+	public:
+		virtual void rebuild_placed(
+			const F_resource_desc& desc,
+			TKPA_valid<A_resource_heap> heap_p,
+			u64 heap_offset
+		) override;
+
 	};
 
 }

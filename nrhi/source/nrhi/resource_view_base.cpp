@@ -52,14 +52,14 @@ namespace nrhi {
 	void A_resource_view::rebuild(
 		const F_resource_view_desc& desc
 	) {
-		finalize_rebuild();
+		finalize_rebuild(desc);
 	}
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-	void A_resource_view::rebuild(
+	void A_resource_view::rebuild_with_descriptor(
 		const F_resource_view_desc& desc,
 		const F_descriptor& descriptor
 	) {
-		finalize_rebuild();
+		finalize_rebuild_with_descriptor(desc, descriptor);
 	}
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 	void A_resource_view::guarantee_generation() {
@@ -78,7 +78,7 @@ namespace nrhi {
 		finalize_rebuild();
 	}
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-	void A_resource_view::finalize_rebuild(
+	void A_resource_view::finalize_rebuild_with_descriptor(
 		const F_resource_view_desc& desc,
 		const F_descriptor& descriptor
 	) {
