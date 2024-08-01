@@ -43,10 +43,6 @@
 
 namespace nrhi {
 
-	class A_device;
-
-
-
 	class NRHI_API F_directx12_resource : public A_resource {
 
 	protected:
@@ -106,6 +102,48 @@ namespace nrhi {
 		static U_texture_2d_array_handle create_committed_texture_2d_array(
 			TKPA_valid<A_device> device_p,
 			const F_resource_desc& desc
+		);
+
+	public:
+		static TU<A_resource> create_placed(
+			TKPA_valid<A_device> device_p,
+			const F_resource_desc& desc,
+			TKPA_valid<A_resource_heap> heap_p,
+			u64 heap_offset
+		);
+
+	public:
+		static U_buffer_handle create_placed_buffer(
+			TKPA_valid<A_device> device_p,
+			const F_resource_desc& desc,
+			TKPA_valid<A_resource_heap> heap_p,
+			u64 heap_offset
+		);
+
+	public:
+		static U_texture_1d_handle create_placed_texture_1d(
+			TKPA_valid<A_device> device_p,
+			const F_resource_desc& desc,
+			TKPA_valid<A_resource_heap> heap_p,
+			u64 heap_offset
+		);
+		static U_texture_2d_handle create_placed_texture_2d(
+			TKPA_valid<A_device> device_p,
+			const F_resource_desc& desc,
+			TKPA_valid<A_resource_heap> heap_p,
+			u64 heap_offset
+		);
+		static U_texture_3d_handle create_placed_texture_3d(
+			TKPA_valid<A_device> device_p,
+			const F_resource_desc& desc,
+			TKPA_valid<A_resource_heap> heap_p,
+			u64 heap_offset
+		);
+		static U_texture_2d_array_handle create_placed_texture_2d_array(
+			TKPA_valid<A_device> device_p,
+			const F_resource_desc& desc,
+			TKPA_valid<A_resource_heap> heap_p,
+			u64 heap_offset
 		);
 
 	public:

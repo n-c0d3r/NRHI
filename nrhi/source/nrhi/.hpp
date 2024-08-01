@@ -54,6 +54,7 @@ namespace nrhi { }
 
 #include <nrhi/resource_desc.hpp>
 #include <nrhi/resource_view_desc.hpp>
+#include <nrhi/resource_heap_desc.hpp>
 #include <nrhi/pipeline_state_desc.hpp>
 #include <nrhi/frame_buffer_desc.hpp>
 #include <nrhi/root_signature_desc.hpp>

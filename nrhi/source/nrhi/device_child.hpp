@@ -17,6 +17,7 @@ namespace nrhi {
 
 	public:
 		NCPP_FORCE_INLINE TKPA_valid<A_device> device_p() const noexcept { return device_p_; }
+		NCPP_FORCE_INLINE void set_device_p_unsafe(TKPA_valid<A_device> value) noexcept { device_p_ = value; }
 
 
 

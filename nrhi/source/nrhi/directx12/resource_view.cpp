@@ -1,5 +1,6 @@
 #include <nrhi/directx12/resource_view.hpp>
 #include <nrhi/directx12/device.hpp>
+#include <nrhi/directx12/descriptor.hpp>
 
 
 
@@ -27,11 +28,25 @@ namespace nrhi {
 
 	void F_directx12_resource_view::rebuild() {
 
+		HD_directx12_descriptor::initialize_resource_view(
+			NCPP_FOH_VALID(descriptor_.heap_p),
+			descriptor_.handle.cpu_address,
+			desc()
+		);
+
 		finalize_rebuild();
 	}
 	void F_directx12_resource_view::rebuild(
 		const F_resource_view_desc& desc
 	) {
+		NCPP_ASSERT(descriptor_) << "invalid descriptor";
+
+		HD_directx12_descriptor::initialize_resource_view(
+			NCPP_FOH_VALID(descriptor_.heap_p),
+			descriptor_.handle.cpu_address,
+			desc
+		);
+
 		finalize_rebuild(
 			desc
 		);
@@ -40,6 +55,12 @@ namespace nrhi {
 		const F_resource_view_desc& desc,
 		const F_descriptor& descriptor
 	) {
+		HD_directx12_descriptor::initialize_resource_view(
+			NCPP_FOH_VALID(descriptor.heap_p),
+			descriptor.handle.cpu_address,
+			desc
+		);
+
 		finalize_rebuild(
 			desc,
 			descriptor

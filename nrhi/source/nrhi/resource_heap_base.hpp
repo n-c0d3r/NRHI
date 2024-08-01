@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/directx12/committed_resource.hpp
+/** @file nrhi/resource_heap_base.hpp
 *
-*   Implement directx12 committed resource.
+*   Implement resource_heap base class.
 */
 
 
@@ -33,46 +33,53 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/directx12/resource.hpp>
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+#include <nrhi/device_child.hpp>
+#include <nrhi/resource_heap_desc.hpp>
+#include <nrhi/resource_heap_type.hpp>
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
 #pragma endregion
 
 
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 namespace nrhi {
 
-	class NRHI_API F_directx12_committed_resource : public F_directx12_resource {
 
-	public:
-		F_directx12_committed_resource(
-			TKPA_valid<A_device> device_p,
-			const F_resource_desc& desc
-		);
-		F_directx12_committed_resource(
-			TKPA_valid<A_device> device_p,
-			const F_resource_desc& desc,
-			ED_resource_type overrided_type
-		);
-		F_directx12_committed_resource(
-			TKPA_valid<A_device> device_p,
-			const F_resource_desc& desc,
-			ED_resource_type overrided_type,
-			ID3D12Resource* d3d12_resource_p
-		);
-		virtual ~F_directx12_committed_resource();
+	class NRHI_API A_resource_heap : public A_device_child {
 
 	private:
-		static ID3D12Resource* create_d3d12_committed_resource(
+		F_resource_heap_desc desc_;
+
+	public:
+		NCPP_FORCE_INLINE const F_resource_heap_desc& desc() const noexcept { return desc_; }
+
+
+
+	protected:
+		A_resource_heap(
 			TKPA_valid<A_device> device_p,
-			const F_resource_desc& desc
+			const F_resource_heap_desc& desc
 		);
+
+	public:
+		virtual ~A_resource_heap();
+
+	public:
+		NCPP_OBJECT(A_resource_heap);
 
 	public:
 		virtual void rebuild(
-			const F_initial_resource_data& initial_data,
-			const F_resource_desc& desc
-		) override;
+			const F_resource_heap_desc& desc
+		);
+
+	protected:
+		void finalize_rebuild(
+			const F_resource_heap_desc& desc
+		);
 
 	};
 
 }
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT

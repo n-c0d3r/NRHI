@@ -48,6 +48,10 @@ namespace nrhi {
     class A_device;
     class A_resource;
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+	class A_resource_heap;
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+
 
 
 	u64& inject_resource_generation(TKPA_valid<A_resource> resource_p) noexcept;
@@ -68,12 +72,32 @@ namespace nrhi {
 	protected:
 		u64 generation_ = 0;
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		u64 heap_offset_;
+		TK<A_object> memory_p_;
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+
     public:
         NCPP_FORCE_INLINE const F_resource_desc& desc() const noexcept { return desc_; }
         NCPP_FORCE_INLINE const F_initial_resource_data& initial_data() const noexcept { return initial_data_; }
 
 		NCPP_FORCE_INLINE u64 generation() const noexcept { return generation_; }
 		NCPP_FORCE_INLINE void set_generation_unsafe(u64 value) noexcept { generation_ = value; }
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		NCPP_FORCE_INLINE u64 heap_offset() const noexcept {
+
+			NCPP_ASSERT(management_type() == E_resource_management_type::PLACED);
+			return heap_offset_;
+		}
+		NCPP_FORCE_INLINE void set_heap_offset_unsafe(u64 value) noexcept {
+
+			NCPP_ASSERT(management_type() == E_resource_management_type::PLACED);
+			heap_offset_ = value;
+		}
+		NCPP_FORCE_INLINE TKPA<A_object> memory_p() const noexcept { return memory_p_; }
+		NCPP_FORCE_INLINE void set_memory_p_unsafe(TKPA<A_object> value) noexcept { memory_p_ = value; }
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
 
 
@@ -109,6 +133,10 @@ namespace nrhi {
 
 	public:
 		F_resource_gpu_virtual_address gpu_virtual_address();
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		virtual E_resource_management_type management_type() const;
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
     };
 

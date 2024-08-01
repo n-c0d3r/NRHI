@@ -1,5 +1,6 @@
-#include <nrhi/directx12/committed_resource.hpp>
+#include <nrhi/directx12/placed_resource.hpp>
 #include <nrhi/directx12/resource.hpp>
+#include <nrhi/directx12/resource_heap.hpp>
 #include <nrhi/directx12/device.hpp>
 #include <nrhi/format_helper.hpp>
 
@@ -7,54 +8,75 @@
 
 namespace nrhi {
 
-	F_directx12_committed_resource::F_directx12_committed_resource(
+	F_directx12_placed_resource::F_directx12_placed_resource(
 		TKPA_valid<A_device> device_p,
-		const F_resource_desc& desc
+		const F_resource_desc& desc,
+		TKPA_valid<A_resource_heap> heap_p,
+		u64 heap_offset
 	) :
-		F_directx12_resource(
+		F_directx12_placed_resource(
 			device_p,
 			desc,
-			desc.type,
-			create_d3d12_committed_resource(
-				device_p,
-				desc
-			)
+			heap_p,
+			heap_offset,
+			desc.type
 		)
 	{
 	}
-	F_directx12_committed_resource::F_directx12_committed_resource(
+	F_directx12_placed_resource::F_directx12_placed_resource(
 		TKPA_valid<A_device> device_p,
 		const F_resource_desc& desc,
+		TKPA_valid<A_resource_heap> heap_p,
+		u64 heap_offset,
 		ED_resource_type overrided_type
 	) :
 		F_directx12_resource(
 			device_p,
 			desc,
 			overrided_type,
-			create_d3d12_committed_resource(
+			create_d3d12_placed_resource(
 				device_p,
-				desc
+				desc,
+				heap_p,
+				heap_offset
 			)
 		)
 	{
+		set_memory_p_unsafe(
+			heap_p.no_requirements()
+		);
+		set_heap_offset_unsafe(
+			heap_offset
+		);
 	}
-	F_directx12_committed_resource::F_directx12_committed_resource(
+	F_directx12_placed_resource::F_directx12_placed_resource(
 		TKPA_valid<A_device> device_p,
 		const F_resource_desc& desc,
+		TKPA_valid<A_resource_heap> heap_p,
+		u64 heap_offset,
 		ED_resource_type overrided_type,
 		ID3D12Resource* d3d12_resource_p
 	) :
 		F_directx12_resource(device_p, desc, overrided_type, d3d12_resource_p)
 	{
+		set_memory_p_unsafe(
+			heap_p.no_requirements()
+		);
+		set_heap_offset_unsafe(
+			heap_offset
+		);
 	}
-	F_directx12_committed_resource::~F_directx12_committed_resource() {
+	F_directx12_placed_resource::~F_directx12_placed_resource() {
 	}
 
-	ID3D12Resource* F_directx12_committed_resource::create_d3d12_committed_resource(
+	ID3D12Resource* F_directx12_placed_resource::create_d3d12_placed_resource(
 		TKPA_valid<A_device> device_p,
-		const F_resource_desc& desc
+		const F_resource_desc& desc,
+		TKPA_valid<A_resource_heap> heap_p,
+		u64 heap_offset
 	) {
 		ID3D12Device* d3d12_device_p = device_p.T_cast<F_directx12_device>()->d3d12_device_p();
+		ID3D12Heap* d3d12_resource_heap_p = heap_p.T_cast<F_directx12_resource_heap>()->d3d12_resource_heap_p();
 
 		ID3D12Resource* d3d12_resource_p = 0;
 
@@ -95,34 +117,18 @@ namespace nrhi {
 			)
 		) << "GENERIC_READ initial state is required for GREAD-CWRITE resource";
 
-		HRESULT hr = d3d12_device_p->CreateCommittedResource(
-			&d3d12_heap_properties,
-			D3D12_HEAP_FLAG_NONE,
+		HRESULT hr = d3d12_device_p->CreatePlacedResource(
+			d3d12_resource_heap_p,
+			heap_offset,
 			&d3d12_resource_desc,
 			d3d12_resource_states,
 			nullptr,
 			IID_PPV_ARGS(&d3d12_resource_p)
 		);
 
-		NCPP_ASSERT(d3d12_resource_p) << "can't create d3d12 committed resource";
+		NCPP_ASSERT(d3d12_resource_p) << "can't create d3d12 placed resource";
 
 		return d3d12_resource_p;
-	}
-
-	void F_directx12_committed_resource::rebuild(
-		const F_initial_resource_data& initial_data,
-		const F_resource_desc& desc
-	) {
-		if(d3d12_resource_p_)
-			d3d12_resource_p_->Release();
-		d3d12_resource_p_ = create_d3d12_committed_resource(
-			device_p(),
-			desc
-		);
-		finalize_rebuild(
-			initial_data,
-			desc
-		);
 	}
 
 }

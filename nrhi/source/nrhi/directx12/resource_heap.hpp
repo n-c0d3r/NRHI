@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/directx12/committed_resource.hpp
+/** @file nrhi/directx12/resource_heap.hpp
 *
-*   Implement directx12 committed resource.
+*   Implement directx12 resource_heap.
 */
 
 
@@ -33,7 +33,9 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/directx12/resource.hpp>
+#include <nrhi/resource_heap_base.hpp>
+#include <nrhi/buffer.hpp>
+#include <nrhi/texture.hpp>
 
 #pragma endregion
 
@@ -41,37 +43,55 @@
 
 namespace nrhi {
 
-	class NRHI_API F_directx12_committed_resource : public F_directx12_resource {
+	class A_device;
+
+
+
+	class NRHI_API F_directx12_resource_heap : public A_resource_heap {
+
+	protected:
+		ID3D12Heap* d3d12_resource_heap_p_ = 0;
 
 	public:
-		F_directx12_committed_resource(
+		NCPP_FORCE_INLINE ID3D12Heap* d3d12_resource_heap_p() noexcept { return d3d12_resource_heap_p_; }
+		NCPP_FORCE_INLINE void set_d3d12_resource_heap_p_unsafe(ID3D12Heap* value) noexcept {
+			d3d12_resource_heap_p_ = value;
+		}
+
+	public:
+		F_directx12_resource_heap(
 			TKPA_valid<A_device> device_p,
-			const F_resource_desc& desc
+			const F_resource_heap_desc& desc
 		);
-		F_directx12_committed_resource(
+		F_directx12_resource_heap(
 			TKPA_valid<A_device> device_p,
-			const F_resource_desc& desc,
-			ED_resource_type overrided_type
+			const F_resource_heap_desc& desc,
+			ID3D12Heap* d3d12_resource_heap_p
 		);
-		F_directx12_committed_resource(
-			TKPA_valid<A_device> device_p,
-			const F_resource_desc& desc,
-			ED_resource_type overrided_type,
-			ID3D12Resource* d3d12_resource_p
-		);
-		virtual ~F_directx12_committed_resource();
+		virtual ~F_directx12_resource_heap();
 
 	private:
-		static ID3D12Resource* create_d3d12_committed_resource(
+		static ID3D12Heap* create_d3d12_resource_heap(
 			TKPA_valid<A_device> device_p,
-			const F_resource_desc& desc
+			const F_resource_heap_desc& desc
 		);
 
 	public:
 		virtual void rebuild(
-			const F_initial_resource_data& initial_data,
-			const F_resource_desc& desc
+			const F_resource_heap_desc& desc
 		) override;
+
+	};
+
+
+
+	class NRHI_API HD_directx12_resource_heap {
+
+	public:
+		static TU<A_resource_heap> create(
+			TKPA_valid<A_device> device_p,
+			const F_resource_heap_desc& desc
+		);
 
 	};
 

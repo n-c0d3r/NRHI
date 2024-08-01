@@ -1,4 +1,5 @@
 #include <nrhi/resource_base.hpp>
+#include <nrhi/driver.hpp>
 
 
 
@@ -38,5 +39,14 @@ namespace nrhi {
 		desc_ = desc;
 		++generation_;
 	}
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+	E_resource_management_type A_resource::management_type() const {
+
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT(
+			return E_resource_management_type::NONE;
+		);
+	}
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
 }

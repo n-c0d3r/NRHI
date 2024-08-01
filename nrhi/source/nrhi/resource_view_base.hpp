@@ -95,6 +95,10 @@ namespace nrhi {
 
 			return descriptor_;
 		}
+		NCPP_FORCE_INLINE void set_descriptor_unsafe(const F_descriptor& value) noexcept {
+
+			descriptor_ = value;
+		}
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 
