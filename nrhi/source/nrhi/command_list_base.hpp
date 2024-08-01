@@ -67,6 +67,10 @@ namespace nrhi {
     class A_command_allocator;
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_INDIRECT_COMMANDS
+	class A_command_signature;
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_INDIRECT_COMMANDS
+
 
 
     struct F_command_list_desc {
@@ -510,23 +514,19 @@ namespace nrhi {
 		void async_dispatch(
 			PA_vector3_u32 thread_group_count_3d
 		);
-
-	public:
-		void async_draw_instanced_indirect(
-			KPA_buffer_handle indirect_buffer_p,
-			u32 indirect_buffer_offset
-		);
-		void async_draw_indexed_instanced_indirect(
-			KPA_buffer_handle indirect_buffer_p,
-			u32 indirect_buffer_offset
-		);
-
-	public:
-		void async_dispatch_indirect(
-			KPA_buffer_handle indirect_buffer_p,
-			u32 indirect_buffer_offset
-		);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_INDIRECT_COMMANDS
+	public:
+		void async_execute_indirect(
+			TKPA_valid<A_command_signature> command_signature_p,
+			u32 max_command_count,
+			KPA_buffer_handle argument_buffer_p,
+			u64 argument_buffer_offset_in_bytes,
+			KPA_buffer_handle count_buffer_p,
+			u64 count_buffer_offset_in_bytes
+		);
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_INDIRECT_COMMANDS
 
     };
 

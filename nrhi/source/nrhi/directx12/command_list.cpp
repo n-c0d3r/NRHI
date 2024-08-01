@@ -6,6 +6,7 @@
 #include <nrhi/directx12/descriptor_heap.hpp>
 #include <nrhi/directx12/root_signature.hpp>
 #include <nrhi/directx12/pipeline_state.hpp>
+#include <nrhi/directx12/command_signature.hpp>
 #include <nrhi/command_allocator.hpp>
 
 
@@ -919,26 +920,40 @@ namespace nrhi {
 		TKPA_valid<A_command_list> command_list_p,
 		PA_vector3_u32 thread_group_count_3d
 	) {
+		NCPP_ASSERT(command_list_p->supports_compute()) << "command list does not support compute";
+
+		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
+
+		ID3D12GraphicsCommandList* d3d12_command_list_p = dx12_command_list_p->d3d12_command_list_p();
+
+		d3d12_command_list_p->Dispatch(
+			thread_group_count_3d.x,
+			thread_group_count_3d.y,
+			thread_group_count_3d.z
+		);
 	}
 
-	void HD_directx12_command_list::async_draw_instanced_indirect(
+	void HD_directx12_command_list::async_execute_indirect(
 		TKPA_valid<A_command_list> command_list_p,
-		KPA_buffer_handle indirect_buffer_p,
-		u32 indirect_buffer_offset
+		TKPA_valid<A_command_signature> command_signature_p,
+		u32 max_command_count,
+		KPA_buffer_handle argument_buffer_p,
+		u64 argument_buffer_offset_in_bytes,
+		KPA_buffer_handle count_buffer_p,
+		u64 count_buffer_offset_in_bytes
 	) {
-	}
-	void HD_directx12_command_list::async_draw_indexed_instanced_indirect(
-		TKPA_valid<A_command_list> command_list_p,
-		KPA_buffer_handle indirect_buffer_p,
-		u32 indirect_buffer_offset
-	) {
-	}
+		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
 
-	void HD_directx12_command_list::async_dispatch_indirect(
-		TKPA_valid<A_command_list> command_list_p,
-		KPA_buffer_handle indirect_buffer_p,
-		u32 indirect_buffer_offset
-	) {
+		ID3D12GraphicsCommandList* d3d12_command_list_p = dx12_command_list_p->d3d12_command_list_p();
+
+		d3d12_command_list_p->ExecuteIndirect(
+			command_signature_p.T_cast<F_directx12_command_signature>()->d3d12_command_signature_p(),
+			max_command_count,
+			argument_buffer_p.T_cast<F_directx12_resource>()->d3d12_resource_p(),
+			argument_buffer_offset_in_bytes,
+			count_buffer_p.T_cast<F_directx12_resource>()->d3d12_resource_p(),
+			count_buffer_offset_in_bytes
+		);
 	}
 
 }

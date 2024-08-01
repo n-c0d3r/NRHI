@@ -289,21 +289,15 @@ NRHI_FunctionHelper_CreateFunctionClass(
             TKPA_valid<A_command_list> command_list_p,
             PA_vector3_u32 thread_group_count_3d
         )"
-		"async_draw_instanced_indirect" "void(
-            TKPA_valid<A_command_list> command_list_p,
-            KPA_indirect_buffer_handle indirect_buffer_p,
-            u32 indirect_buffer_offset
-        )"
-		"async_draw_indexed_instanced_indirect" "void(
-            TKPA_valid<A_command_list> command_list_p,
-            KPA_indirect_buffer_handle indirect_buffer_p,
-            u32 indirect_buffer_offset
-        )"
-		"async_dispatch_indirect" "void(
-            TKPA_valid<A_command_list> command_list_p,
-            KPA_indirect_buffer_handle indirect_buffer_p,
-            u32 indirect_buffer_offset
-        )"
+		"async_execute_indirect" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			TKPA_valid<A_command_signature> command_signature_p,
+			u32 max_command_count,
+			KPA_buffer_handle argument_buffer_p,
+			u64 argument_buffer_offset_in_bytes,
+			KPA_buffer_handle count_buffer_p,
+			u64 count_buffer_offset_in_bytes
+		)"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement command list done")

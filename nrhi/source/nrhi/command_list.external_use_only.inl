@@ -1040,44 +1040,29 @@ namespace nrhi {
 			);
 		);
 	}
-
-	NCPP_FORCE_INLINE void A_command_list::async_draw_instanced_indirect(
-		KPA_buffer_handle indirect_buffer_p,
-		u32 indirect_buffer_offset
-	) {
-		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
-			H_command_list::async_draw_instanced_indirect(
-				NCPP_KTHIS(),
-				indirect_buffer_p,
-				indirect_buffer_offset
-			);
-		);
-	}
-	NCPP_FORCE_INLINE void A_command_list::async_draw_indexed_instanced_indirect(
-		KPA_buffer_handle indirect_buffer_p,
-		u32 indirect_buffer_offset
-	) {
-		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
-			H_command_list::async_draw_indexed_instanced_indirect(
-				NCPP_KTHIS(),
-				indirect_buffer_p,
-				indirect_buffer_offset
-			);
-		);
-	}
-
-	NCPP_FORCE_INLINE void A_command_list::async_dispatch_indirect(
-		KPA_buffer_handle indirect_buffer_p,
-		u32 indirect_buffer_offset
-	) {
-		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
-			H_command_list::async_dispatch_indirect(
-				NCPP_KTHIS(),
-				indirect_buffer_p,
-				indirect_buffer_offset
-			);
-		);
-	}
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_INDIRECT_COMMANDS
+	NCPP_FORCE_INLINE void A_command_list::async_execute_indirect(
+		TKPA_valid<A_command_signature> command_signature_p,
+		u32 max_command_count,
+		KPA_buffer_handle argument_buffer_p,
+		u64 argument_buffer_offset_in_bytes,
+		KPA_buffer_handle count_buffer_p,
+		u64 count_buffer_offset_in_bytes
+	) {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_INDIRECT_COMMANDS(
+			H_command_list::async_execute_indirect(
+				NCPP_KTHIS(),
+				command_signature_p,
+				max_command_count,
+				argument_buffer_p,
+				argument_buffer_offset_in_bytes,
+				count_buffer_p,
+				count_buffer_offset_in_bytes
+			);
+		);
+	}
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_INDIRECT_COMMANDS
 
 }

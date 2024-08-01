@@ -374,22 +374,14 @@ namespace nrhi {
 		);
 
 	public:
-		static void async_draw_instanced_indirect(
+		static void async_execute_indirect(
 			TKPA_valid<A_command_list> command_list_p,
-			KPA_buffer_handle indirect_buffer_p,
-			u32 indirect_buffer_offset
-		);
-		static void async_draw_indexed_instanced_indirect(
-			TKPA_valid<A_command_list> command_list_p,
-			KPA_buffer_handle indirect_buffer_p,
-			u32 indirect_buffer_offset
-		);
-
-	public:
-		static void async_dispatch_indirect(
-			TKPA_valid<A_command_list> command_list_p,
-			KPA_buffer_handle indirect_buffer_p,
-			u32 indirect_buffer_offset
+			TKPA_valid<A_command_signature> command_signature_p,
+			u32 max_command_count,
+			KPA_buffer_handle argument_buffer_p,
+			u64 argument_buffer_offset_in_bytes,
+			KPA_buffer_handle count_buffer_p,
+			u64 count_buffer_offset_in_bytes
 		);
 
     };
