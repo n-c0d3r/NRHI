@@ -50,10 +50,14 @@ namespace nrhi {
 
 
 
+	static constexpr u32 resource_barrier_all_subresources = NCPP_U32_MAX;
+
+
+
 	struct F_resource_transition_barrier {
 
 		TK<A_resource> resource_p;
-		u32 subresource_index;
+		u32 subresource_index = resource_barrier_all_subresources;
 		ED_resource_state state_before;
 		ED_resource_state state_after;
 

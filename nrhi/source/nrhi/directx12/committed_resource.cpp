@@ -62,7 +62,7 @@ namespace nrhi {
 
 		D3D12_RESOURCE_DESC d3d12_resource_desc;
 		d3d12_resource_desc.Dimension = NRHI_DRIVER_DIRECTX_12_MAP___RESOURCE_TYPE___TO___RESOURCE_DIMENSION(desc.type);
-		d3d12_resource_desc.Alignment = 0;
+		d3d12_resource_desc.Alignment = desc.alignment;
 		d3d12_resource_desc.Width = eastl::max<u32>(1, desc.width);
 		d3d12_resource_desc.Height = eastl::max<u32>(1, desc.height);
 		d3d12_resource_desc.DepthOrArraySize = eastl::max<u32>(1, desc.depth);

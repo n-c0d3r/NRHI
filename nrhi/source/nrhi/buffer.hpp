@@ -224,7 +224,8 @@ namespace nrhi {
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
+			u64 alignment = 0
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		);
 		static U_buffer_handle create_committed(
@@ -239,7 +240,8 @@ namespace nrhi {
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
+			u64 alignment = 0
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		);
 
@@ -256,7 +258,8 @@ namespace nrhi {
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
+			u64 alignment = 0
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		) {
 			return create_committed(
@@ -287,7 +290,8 @@ namespace nrhi {
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
+			u64 alignment = 0
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		) {
 			return create_committed(
@@ -321,7 +325,8 @@ namespace nrhi {
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
+			u64 alignment = 0
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		);
 		static void rebuild_committed(
@@ -336,7 +341,8 @@ namespace nrhi {
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
+			u64 alignment = 0
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		);
 
@@ -353,7 +359,8 @@ namespace nrhi {
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
+			u64 alignment = 0
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		) {
 			rebuild_committed(

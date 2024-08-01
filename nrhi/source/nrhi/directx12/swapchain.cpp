@@ -69,7 +69,10 @@ namespace nrhi {
 			ED_resource_flag::RENDER_TARGET,
 			ED_resource_heap_type::GREAD_GWRITE
 		);
-		buffer_desc.can_create_view = false;
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
+			buffer_desc.can_create_view = false;
+		);
+
 		for(u32 i = 0; i < desc.rtv_count; ++i) {
 
 			buffer_p_vector_.push_back({

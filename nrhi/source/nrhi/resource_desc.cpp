@@ -16,29 +16,30 @@ namespace nrhi {
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-		, ED_resource_layout layout
+		, ED_resource_layout layout,
+		u64 alignment
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
     ) {
 
         return {
 
             .element_count = count,
-
 			.size = count * stride,
 
             .stride = stride,
+			.type = ED_resource_type::BUFFER,
 
             .flags = flags,
-            .heap_type = heap_type,
 
-            .type = ED_resource_type::BUFFER
+            .heap_type = heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 			, .initial_state = initial_state
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, .layout = layout
+			, .layout = layout,
+			.alignment = alignment
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
         };
@@ -55,7 +56,8 @@ namespace nrhi {
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-		, ED_resource_layout layout
+		, ED_resource_layout layout,
+		u64 alignment
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
     ) {
 
@@ -64,23 +66,23 @@ namespace nrhi {
         return {
 
             .element_count = count,
-
 			.size = count * stride,
 
             .format = format,
             .stride = stride,
+			.type = ED_resource_type::BUFFER,
 
             .flags = flags,
-            .heap_type = heap_type,
 
-            .type = ED_resource_type::BUFFER
+            .heap_type = heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 			, .initial_state = initial_state
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, .layout = layout
+			, .layout = layout,
+			.alignment = alignment
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
         };
@@ -98,7 +100,8 @@ namespace nrhi {
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-		, ED_resource_layout layout
+		, ED_resource_layout layout,
+		u64 alignment
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
     ) {
 
@@ -110,25 +113,24 @@ namespace nrhi {
             .width = width,
             .height = 1,
             .depth = 1,
-
             .size = size,
 
             .format = format,
             .stride = stride,
-
             .mip_level_count = mip_level_count,
+			.type = ED_resource_type::TEXTURE_1D,
 
             .flags = flags,
-            .heap_type = heap_type,
 
-            .type = ED_resource_type::TEXTURE_1D
+            .heap_type = heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 			, .initial_state = initial_state
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, .layout = layout
+			, .layout = layout,
+			.alignment = alignment
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
         };
@@ -148,7 +150,8 @@ namespace nrhi {
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-		, ED_resource_layout layout
+		, ED_resource_layout layout,
+		u64 alignment
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
     ) {
 
@@ -160,26 +163,25 @@ namespace nrhi {
             .width = width,
             .height = height,
             .depth = 1,
-
             .size = size,
 
             .format = format,
             .stride = stride,
-
             .mip_level_count = mip_level_count,
+			.type = ED_resource_type::TEXTURE_2D,
+
             .sample_desc = sample_desc,
-
             .flags = flags,
-            .heap_type = heap_type,
 
-            .type = ED_resource_type::TEXTURE_2D
+            .heap_type = heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 			, .initial_state = initial_state
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, .layout = layout
+			, .layout = layout,
+			.alignment = alignment
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
         };
@@ -199,7 +201,8 @@ namespace nrhi {
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-		, ED_resource_layout layout
+		, ED_resource_layout layout,
+		u64 alignment
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
     ) {
 
@@ -211,25 +214,24 @@ namespace nrhi {
             .width = width,
             .height = height,
             .depth = depth,
-
             .size = size,
 
             .format = format,
             .stride = stride,
-
             .mip_level_count = mip_level_count,
+			.type = ED_resource_type::TEXTURE_3D,
 
             .flags = flags,
-            .heap_type = heap_type,
 
-            .type = ED_resource_type::TEXTURE_3D
+            .heap_type = heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 			, .initial_state = initial_state
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, .layout = layout
+			, .layout = layout,
+			.alignment = alignment
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
         };
@@ -250,7 +252,8 @@ namespace nrhi {
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-		, ED_resource_layout layout
+		, ED_resource_layout layout,
+		u64 alignment
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 
@@ -262,26 +265,25 @@ namespace nrhi {
 			.width = width,
 			.height = height,
 			.array_size = array_size,
-
 			.size = size,
 
 			.format = format,
 			.stride = stride,
-
 			.mip_level_count = mip_level_count,
+			.type = ED_resource_type::TEXTURE_2D_ARRAY,
+
 			.sample_desc = sample_desc,
-
 			.flags = flags,
-			.heap_type = heap_type,
 
-			.type = ED_resource_type::TEXTURE_2D_ARRAY
+			.heap_type = heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 			, .initial_state = initial_state
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, .layout = layout
+			, .layout = layout,
+			.alignment = alignment
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
 		};

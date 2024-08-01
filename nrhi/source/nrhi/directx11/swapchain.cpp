@@ -53,7 +53,9 @@ namespace nrhi {
             ED_resource_flag::RENDER_TARGET,
             ED_resource_heap_type::GREAD_GWRITE
         );
-		buffer_desc.can_create_view = false;
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
+			buffer_desc.can_create_view = false;
+		);
 
 		buffer_p_ = {
 			TU<F_directx11_texture_2d>()(
