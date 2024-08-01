@@ -31,8 +31,11 @@ namespace nrhi {
 
 	protected:
 		A_root_signature_child(
+			TKPA_valid<A_device> device_p
+		);
+		A_root_signature_child(
 			TKPA_valid<A_device> device_p,
-			TKPA<A_root_signature> root_signature_p
+			TKPA_valid<A_root_signature> root_signature_p
 		);
 		~A_root_signature_child();
 
