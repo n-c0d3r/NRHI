@@ -16,11 +16,17 @@ namespace nrhi {
         };
         UINT num_feature_levels = ARRAYSIZE(feature_levels);
 
+		UINT creation_flags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+
+#if defined(DEBUG) || defined(_DEBUG)
+		creation_flags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif
+
 		hr = D3D11CreateDevice(
 			adapter_p.T_cast<F_directx11_adapter>()->dxgi_adapter_p(),
 			D3D_DRIVER_TYPE_UNKNOWN,
 			NULL,
-			NULL,
+			creation_flags,
 			feature_levels,
 			num_feature_levels,
 			D3D11_SDK_VERSION,
@@ -37,6 +43,13 @@ namespace nrhi {
             d3d11_device_p_->Release();
     }
 
+	ID3D11DeviceContext* F_directx11_device::d3d11_immediate_ctx_p_unsafe(){
+
+		ID3D11DeviceContext* result = 0;
+		d3d11_device_p_->GetImmediateContext(&result);
+
+		return result;
+	}
     ID3D11DeviceContext* F_directx11_device::pop_d3d11_immediate_ctx(){
 
         NCPP_ASSERT(!is_d3d11_immediate_ctx_obtained_) << "d3d11 immediate ctx was already obtained";

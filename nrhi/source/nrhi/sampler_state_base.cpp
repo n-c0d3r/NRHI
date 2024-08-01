@@ -12,6 +12,18 @@ namespace nrhi {
 		desc_(desc)
 	{
 	}
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+	A_sampler_state::A_sampler_state(
+		TKPA_valid<A_device> device_p,
+		const F_sampler_state_desc& desc,
+		const F_descriptor& descriptor
+	) :
+		A_device_child(device_p),
+		desc_(desc),
+		descriptor_(descriptor)
+	{
+	}
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 	A_sampler_state::~A_sampler_state() {
 	}
 

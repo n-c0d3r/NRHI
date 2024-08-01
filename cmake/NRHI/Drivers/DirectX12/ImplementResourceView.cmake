@@ -22,6 +22,31 @@ NRHI_FunctionHelper_CreateFunctionClass(
     ADDITIONAL_CODE
         ""
     VALUES
+        "create_with_descriptor" "TU<A_resource_view>(
+            TKPA_valid<A_device> device_p,
+            const F_resource_view_desc& desc,
+            const F_descriptor& descriptor
+        )"
+        "create_srv_with_descriptor" "U_srv_handle(
+            TKPA_valid<A_device> device_p,
+            const F_resource_view_desc& desc,
+            const F_descriptor& descriptor
+        )"
+        "create_uav_with_descriptor" "U_uav_handle(
+            TKPA_valid<A_device> device_p,
+            const F_resource_view_desc& desc,
+            const F_descriptor& descriptor
+        )"
+        "create_rtv_with_descriptor" "U_rtv_handle(
+            TKPA_valid<A_device> device_p,
+            const F_resource_view_desc& desc,
+            const F_descriptor& descriptor
+        )"
+        "create_dsv_with_descriptor" "U_dsv_handle(
+            TKPA_valid<A_device> device_p,
+            const F_resource_view_desc& desc,
+            const F_descriptor& descriptor
+        )"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement resource view done")

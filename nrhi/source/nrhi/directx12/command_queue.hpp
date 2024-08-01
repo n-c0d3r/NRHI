@@ -71,6 +71,7 @@ namespace nrhi {
 	public:
 		static TU<A_command_queue> create(TKPA_valid<A_device> device_p, const F_command_queue_desc& desc);
 
+	public:
 		static void async_signal(
 			TKPA_valid<A_command_queue> command_queue_p,
 			TKPA_valid<A_fence> fence_p,
@@ -80,6 +81,16 @@ namespace nrhi {
 			TKPA_valid<A_command_queue> command_queue_p,
 			TKPA_valid<A_fence> fence_p,
 			u64 value
+		);
+
+	public:
+		static void async_execute_command_lists(
+			TKPA_valid<A_command_queue> command_queue_p,
+			TG_span<TK_valid<A_command_list>> command_list_p_span
+		);
+		static void async_execute_command_list(
+			TKPA_valid<A_command_queue> command_queue_p,
+			TKPA_valid<A_command_list> command_list_p
 		);
 
 	};

@@ -48,8 +48,6 @@ namespace nrhi {
 	) {
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
-		directx11_command_list_p->temp_state_ = F_directx11_temp_command_list_state {};
-
 		ID3D11DeviceContext* d3d11_device_context_p = command_list_p.T_cast<F_directx11_command_list>()->d3d11_device_context_p();
 
 		d3d11_device_context_p->ClearState();
@@ -57,30 +55,17 @@ namespace nrhi {
 	void HD_directx11_command_list::clear_rtv(
 		TKPA_valid<A_command_list> command_list_p,
 		KPA_valid_rtv_handle rtv_p,
-		PA_vector4 color
+		PA_vector4_f32 color
 	) {
 		NCPP_ASSERT(rtv_p->is_valid_generation()) << "render target view's generation is not valid";
 		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
 		ID3D11DeviceContext* d3d11_device_context_p = command_list_p.T_cast<F_directx11_command_list>()->d3d11_device_context_p();
 
-		if constexpr (std::is_same_v<F_vector4, F_vector4_f32>)
-			d3d11_device_context_p->ClearRenderTargetView(
-				(ID3D11RenderTargetView*)(rtv_p.T_cast<F_directx11_render_target_view>()->d3d11_view_p()),
-				(const f32*)&color
-			);
-		else {
-			f32 color_f32[4] = {
-				color.x,
-				color.y,
-				color.z,
-				color.w
-			};
-			d3d11_device_context_p->ClearRenderTargetView(
-				(ID3D11RenderTargetView*)(rtv_p.T_cast<F_directx11_render_target_view>()->d3d11_view_p()),
-				color_f32
-			);
-		}
+		d3d11_device_context_p->ClearRenderTargetView(
+			(ID3D11RenderTargetView*)(rtv_p.T_cast<F_directx11_render_target_view>()->d3d11_view_p()),
+			(const f32*)&color
+		);
 	}
 	void HD_directx11_command_list::clear_dsv(
 		TKPA_valid<A_command_list> command_list_p,
@@ -101,15 +86,15 @@ namespace nrhi {
 		);
 	}
 
-	void HD_directx11_command_list::set_pipeline_state(
+	void HD_directx11_command_list::bind_pipeline_state(
 		TKPA_valid<A_command_list> command_list_p,
 		TKPA_valid<A_pipeline_state> pipeline_state_p
 	) {
 		NRHI_ENUM_SWITCH(
-			pipeline_state_p->desc().type,
+			pipeline_state_p->type(),
 			NRHI_ENUM_CASE(
 				ED_pipeline_state_type::GRAPHICS,
-				set_graphics_pipeline_state(
+				ZG_bind_pipeline_state(
 					command_list_p,
 					{
 						pipeline_state_p
@@ -119,7 +104,7 @@ namespace nrhi {
             )
 			NRHI_ENUM_CASE(
 				ED_pipeline_state_type::COMPUTE,
-				set_compute_pipeline_state(
+				ZC_bind_pipeline_state(
 					command_list_p,
 					{
 						pipeline_state_p
@@ -129,25 +114,15 @@ namespace nrhi {
             )
 		);
 	}
-	void HD_directx11_command_list::set_graphics_pipeline_state(
+	void HD_directx11_command_list::ZG_bind_pipeline_state(
 		TKPA_valid<A_command_list> command_list_p,
 		KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p
 	) {
 		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
-		const auto desc = graphics_pipeline_state_p->desc();
+		const auto& options = HD_directx11_pipeline_state::graphics_options(graphics_pipeline_state_p);
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
-
-		auto& temp_state = directx11_command_list_p->temp_state_;
-
-		temp_state.vertex_buffer_count = graphics_pipeline_state_p->vertex_buffer_count();
-		temp_state.instance_buffer_count = graphics_pipeline_state_p->instance_buffer_count();
-
-		NCPP_ENABLE_IF_ASSERTION_ENABLED(
-			temp_state.is_pipeline_state_binded = true;
-			temp_state.pipeline_state_p = graphics_pipeline_state_p.oref.no_requirements();
-		);
 
 		TK_valid<F_directx11_graphics_pipeline_state> directx11_graphics_pipeline_state_p = NCPP_FHANDLE_VALID_AS_OREF(
 			graphics_pipeline_state_p
@@ -168,7 +143,7 @@ namespace nrhi {
 
 		// bind topology
 		d3d11_device_context_p->IASetPrimitiveTopology(
-			D3D11_PRIMITIVE_TOPOLOGY(desc.primitive_topology)
+			D3D11_PRIMITIVE_TOPOLOGY(options.primitive_topology)
 		);
 
 		// bind shaders and input layout
@@ -203,22 +178,15 @@ namespace nrhi {
 			}
 		}
 	}
-	void HD_directx11_command_list::set_compute_pipeline_state(
+	void HD_directx11_command_list::ZC_bind_pipeline_state(
 		TKPA_valid<A_command_list> command_list_p,
 		KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p
 	) {
 		NCPP_ASSERT(command_list_p->supports_compute()) << "command list does not support compute";
 
-		const auto desc = compute_pipeline_state_p->desc();
+		const auto& options = HD_directx11_pipeline_state::compute_options(compute_pipeline_state_p);
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
-
-		auto& temp_state = directx11_command_list_p->temp_state_;
-
-		NCPP_ENABLE_IF_ASSERTION_ENABLED(
-			temp_state.is_pipeline_state_binded = true;
-			temp_state.pipeline_state_p = compute_pipeline_state_p.oref.no_requirements();
-		);
 
 		TK_valid<F_directx11_compute_pipeline_state> directx11_compute_pipeline_state_p = NCPP_FHANDLE_VALID_AS_OREF(
 			compute_pipeline_state_p
@@ -243,19 +211,12 @@ namespace nrhi {
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
-		NCPP_ENABLE_IF_ASSERTION_ENABLED(
-			auto& temp_state = directx11_command_list_p->temp_state_;
-			temp_state.index_buffer_p = index_buffer_p.no_requirements();
-		);
-
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
 
 		NCPP_ASSERT(
-			u32(
-				flag_combine(
-					index_buffer_p->desc().bind_flags,
-					ED_resource_bind_flag::IBV
-				)
+			flag_is_has(
+				index_buffer_p->desc().flags,
+				ED_resource_flag::INDEX_BUFFER
 			)
 		) << "invalid resource bind flag";
 
@@ -265,9 +226,9 @@ namespace nrhi {
 			offset
 		);
 	}
-	void HD_directx11_command_list::ZIA_bind_vertex_buffers(
+	void HD_directx11_command_list::ZIA_bind_input_buffers(
 		TKPA_valid<A_command_list> command_list_p,
-		const TG_span<K_valid_buffer_handle>& vertex_buffer_p_span,
+		const TG_span<K_valid_buffer_handle>& input_buffer_p_span,
 		const TG_span<u32>& offset_span,
 		u32 base_slot_index
 	) {
@@ -275,41 +236,43 @@ namespace nrhi {
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
-		auto& temp_state = directx11_command_list_p->temp_state_;
-
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
 
-		u32 vertex_buffer_count = (u32)(vertex_buffer_p_span.size());
+		u32 input_buffer_count = (u32)(input_buffer_p_span.size());
 
-		for(u32 i = 0; i < vertex_buffer_count; ++i) {
+		ID3D11Buffer* d3d11_buffer_p_array[NRHI_MAX_INPUT_BUFFER_COUNT_PER_DRAWCALL];
+		u32 offset_array[NRHI_MAX_INPUT_BUFFER_COUNT_PER_DRAWCALL];
+		u32 stride_array[NRHI_MAX_INPUT_BUFFER_COUNT_PER_DRAWCALL];
+
+		for(u32 i = 0; i < input_buffer_count; ++i) {
 
 			u32 slot_index = base_slot_index + i;
 
-			const auto& vertex_buffer_p = vertex_buffer_p_span[i];
+			const auto& input_buffer_p = input_buffer_p_span[i];
 
 			NCPP_ASSERT(
-				u32(
-					flag_combine(
-						vertex_buffer_p->desc().bind_flags,
-						ED_resource_bind_flag::VBV
-					)
+				flag_is_has(
+					input_buffer_p->desc().flags,
+					ED_resource_flag::INPUT_BUFFER
 				)
 			) << "invalid resource bind flag";
 
-			temp_state.d3d11_vertex_buffers[slot_index] = (ID3D11Buffer*)(
-				vertex_buffer_p.T_cast<F_directx11_buffer>()->d3d11_resource_p()
-			);
-			temp_state.d3d11_vertex_buffer_offsets[slot_index] = offset_span[i];
-			temp_state.d3d11_vertex_buffer_strides[slot_index] = vertex_buffer_p->desc().stride;
-
-			NCPP_ENABLE_IF_ASSERTION_ENABLED(
-				temp_state.vertex_buffer_orefs[slot_index] = vertex_buffer_p.no_requirements();
-			);
+			d3d11_buffer_p_array[i] = (ID3D11Buffer*)(input_buffer_p.T_cast<F_directx11_buffer>()->d3d11_resource_p());
+			offset_array[i] = offset_span[i];
+			stride_array[i] = input_buffer_p->desc().stride;;
 		}
+
+		d3d11_device_context_p->IASetVertexBuffers(
+			base_slot_index,
+			input_buffer_count,
+			d3d11_buffer_p_array,
+			stride_array,
+			offset_array
+		);
 	}
-	void HD_directx11_command_list::ZIA_bind_vertex_buffer(
+	void HD_directx11_command_list::ZIA_bind_input_buffer(
 		TKPA_valid<A_command_list> command_list_p,
-		KPA_valid_buffer_handle& vertex_buffer_p,
+		KPA_valid_buffer_handle& input_buffer_p,
 		u32 offset,
 		u32 slot_index
 	) {
@@ -317,102 +280,24 @@ namespace nrhi {
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
-		auto& temp_state = directx11_command_list_p->temp_state_;
-
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
 
+		ID3D11Buffer* d3d11_buffer_p = (ID3D11Buffer*)(input_buffer_p.T_cast<F_directx11_buffer>()->d3d11_resource_p());
+		u32 stride = input_buffer_p->desc().stride;
+
 		NCPP_ASSERT(
-			u32(
-				flag_combine(
-					vertex_buffer_p->desc().bind_flags,
-					ED_resource_bind_flag::VBV
-				)
+			flag_is_has(
+				input_buffer_p->desc().flags,
+				ED_resource_flag::INPUT_BUFFER
 			)
 		) << "invalid resource bind flag";
 
-		temp_state.d3d11_vertex_buffers[slot_index] = (ID3D11Buffer*)(
-			vertex_buffer_p.T_cast<F_directx11_buffer>()->d3d11_resource_p()
-		);
-		temp_state.d3d11_vertex_buffer_offsets[slot_index] = offset;
-		temp_state.d3d11_vertex_buffer_strides[slot_index] = vertex_buffer_p->desc().stride;
-
-		NCPP_ENABLE_IF_ASSERTION_ENABLED(
-			temp_state.vertex_buffer_orefs[slot_index] = vertex_buffer_p.no_requirements();
-		);
-	}
-	void HD_directx11_command_list::ZIA_bind_instance_buffers(
-		TKPA_valid<A_command_list> command_list_p,
-		const TG_span<K_valid_buffer_handle>& instance_buffer_p_span,
-		const TG_span<u32>& offset_span,
-		u32 base_slot_index
-	) {
-		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
-
-		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
-
-		auto& temp_state = directx11_command_list_p->temp_state_;
-
-		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
-
-		u32 instance_buffer_count = (u32)(instance_buffer_p_span.size());
-
-		for(u32 i = 0; i < instance_buffer_count; ++i) {
-
-			u32 slot_index = base_slot_index + i;
-
-			const auto& instance_buffer_p = instance_buffer_p_span[i];
-
-			NCPP_ASSERT(
-				u32(
-					flag_combine(
-						instance_buffer_p->desc().bind_flags,
-						ED_resource_bind_flag::INSTBV
-					)
-				)
-			) << "invalid resource bind flag";
-
-			temp_state.d3d11_instance_buffers[slot_index] = (ID3D11Buffer*)(
-				instance_buffer_p.T_cast<F_directx11_buffer>()->d3d11_resource_p()
-			);
-			temp_state.d3d11_instance_buffer_offsets[slot_index] = offset_span[i];
-			temp_state.d3d11_instance_buffer_strides[slot_index] = instance_buffer_p->desc().stride;
-
-			NCPP_ENABLE_IF_ASSERTION_ENABLED(
-				temp_state.instance_buffer_orefs[slot_index] = instance_buffer_p.no_requirements();
-			);
-		}
-	}
-	void HD_directx11_command_list::ZIA_bind_instance_buffer(
-		TKPA_valid<A_command_list> command_list_p,
-		KPA_valid_buffer_handle& instance_buffer_p,
-		u32 offset,
-		u32 slot_index
-	) {
-		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
-
-		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
-
-		auto& temp_state = directx11_command_list_p->temp_state_;
-
-		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
-
-		NCPP_ASSERT(
-			u32(
-				flag_combine(
-					instance_buffer_p->desc().bind_flags,
-					ED_resource_bind_flag::INSTBV
-				)
-			)
-		) << "invalid resource bind flag";
-
-		temp_state.d3d11_instance_buffers[slot_index] = (ID3D11Buffer*)(
-			instance_buffer_p.T_cast<F_directx11_buffer>()->d3d11_resource_p()
-		);
-		temp_state.d3d11_instance_buffer_offsets[slot_index] = offset;
-		temp_state.d3d11_instance_buffer_strides[slot_index] = instance_buffer_p->desc().stride;
-
-		NCPP_ENABLE_IF_ASSERTION_ENABLED(
-			temp_state.instance_buffer_orefs[slot_index] = instance_buffer_p.no_requirements();
+		d3d11_device_context_p->IASetVertexBuffers(
+			slot_index,
+			1,
+			&d3d11_buffer_p,
+			&stride,
+			&offset
 		);
 	}
 
@@ -437,11 +322,9 @@ namespace nrhi {
 			const auto& constant_buffer_p = constant_buffer_p_span[i];
 
 			NCPP_ASSERT(
-				u32(
-					flag_combine(
-						constant_buffer_p->desc().bind_flags,
-						ED_resource_bind_flag::CBV
-					)
+				flag_is_has(
+					constant_buffer_p->desc().flags,
+					ED_resource_flag::CONSTANT_BUFFER
 				)
 			) << "invalid resource bind flag";
 
@@ -467,11 +350,9 @@ namespace nrhi {
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
 
 		NCPP_ASSERT(
-			u32(
-				flag_combine(
-					constant_buffer_p->desc().bind_flags,
-					ED_resource_bind_flag::CBV
-				)
+			flag_is_has(
+				constant_buffer_p->desc().flags,
+				ED_resource_flag::CONSTANT_BUFFER
 			)
 		) << "invalid resource bind flag";
 
@@ -608,8 +489,8 @@ namespace nrhi {
 			NCPP_ASSERT(
 				u32(
 					flag_combine(
-						constant_buffer_p->desc().bind_flags,
-						ED_resource_bind_flag::CBV
+						constant_buffer_p->desc().flags,
+						ED_resource_flag::CONSTANT_BUFFER
 					)
 				)
 			) << "invalid resource bind flag";
@@ -636,11 +517,9 @@ namespace nrhi {
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
 
 		NCPP_ASSERT(
-			u32(
-				flag_combine(
-					constant_buffer_p->desc().bind_flags,
-					ED_resource_bind_flag::CBV
-				)
+			flag_is_has(
+				constant_buffer_p->desc().flags,
+				ED_resource_flag::CONSTANT_BUFFER
 			)
 		) << "invalid resource bind flag";
 
@@ -774,7 +653,7 @@ namespace nrhi {
 			&(frame_buffer_p.T_cast<F_directx11_frame_buffer>()->d3d11_viewport())
 		);
 
-		ID3D11RenderTargetView* d3d11_rtv_array[NRHI_MAX_RTV_COUNT_PER_DRAWCALL];
+		ID3D11RenderTargetView* d3d11_rtv_array[NRHI_MAX_RENDER_TARGET_COUNT_PER_DRAWCALL];
 		for(u32 i = 0; i < color_attachment_count; ++i) {
 
 			NCPP_ASSERT(color_attachments[i]->is_valid_generation()) << "color attachment's generation is not valid";
@@ -829,8 +708,8 @@ namespace nrhi {
 			NCPP_ASSERT(
 				u32(
 					flag_combine(
-						constant_buffer_p->desc().bind_flags,
-						ED_resource_bind_flag::CBV
+						constant_buffer_p->desc().flags,
+						ED_resource_flag::CONSTANT_BUFFER
 					)
 				)
 			) << "invalid resource bind flag";
@@ -858,8 +737,8 @@ namespace nrhi {
 		NCPP_ASSERT(
 			u32(
 				flag_combine(
-					constant_buffer_p->desc().bind_flags,
-					ED_resource_bind_flag::CBV
+					constant_buffer_p->desc().flags,
+					ED_resource_flag::CONSTANT_BUFFER
 				)
 			)
 		) << "invalid resource bind flag";
@@ -1039,19 +918,7 @@ namespace nrhi {
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
-		auto& temp_state = directx11_command_list_p->temp_state_;
-
-		NCPP_ENABLE_IF_ASSERTION_ENABLED(
-			NCPP_ASSERT(temp_state.is_pipeline_state_binded) << "no pipeline state binded";
-			NCPP_ASSERT(temp_state.pipeline_state_p->desc().type == ED_pipeline_state_type::GRAPHICS) << "invalid pipeline state type";
-		);
-
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
-
-		temp_state_apply_vertex_buffers(
-			temp_state,
-			d3d11_device_context_p
-		);
 
 		d3d11_device_context_p->Draw(
 			vertex_count,
@@ -1070,19 +937,7 @@ namespace nrhi {
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
-		auto& temp_state = directx11_command_list_p->temp_state_;
-
-		NCPP_ENABLE_IF_ASSERTION_ENABLED(
-			NCPP_ASSERT(temp_state.is_pipeline_state_binded) << "no pipeline state binded";
-			NCPP_ASSERT(temp_state.pipeline_state_p->desc().type == ED_pipeline_state_type::GRAPHICS) << "invalid pipeline state type";
-		);
-
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
-
-		temp_state_apply_vertex_buffers_instance_buffers(
-			temp_state,
-			d3d11_device_context_p
-		);
 
 		d3d11_device_context_p->DrawInstanced(
 			vertex_count_per_instance,
@@ -1102,20 +957,7 @@ namespace nrhi {
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
-		auto& temp_state = directx11_command_list_p->temp_state_;
-
-		NCPP_ENABLE_IF_ASSERTION_ENABLED(
-			NCPP_ASSERT(temp_state.is_pipeline_state_binded) << "no pipeline state binded";
-			NCPP_ASSERT(temp_state.pipeline_state_p->desc().type == ED_pipeline_state_type::GRAPHICS) << "invalid pipeline state type";
-			NCPP_ASSERT(temp_state.index_buffer_p.is_valid()) << "index buffer is required";
-		);
-
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
-
-		temp_state_apply_vertex_buffers(
-			temp_state,
-			d3d11_device_context_p
-		);
 
 		d3d11_device_context_p->DrawIndexed(
 			index_count,
@@ -1136,20 +978,7 @@ namespace nrhi {
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
-		auto& temp_state = directx11_command_list_p->temp_state_;
-
-		NCPP_ENABLE_IF_ASSERTION_ENABLED(
-			NCPP_ASSERT(temp_state.is_pipeline_state_binded) << "no pipeline state binded";
-			NCPP_ASSERT(temp_state.pipeline_state_p->desc().type == ED_pipeline_state_type::GRAPHICS) << "invalid pipeline state type";
-			NCPP_ASSERT(temp_state.index_buffer_p.is_valid()) << "index buffer is required";
-		);
-
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
-
-		temp_state_apply_vertex_buffers_instance_buffers(
-			temp_state,
-			d3d11_device_context_p
-		);
 
 		d3d11_device_context_p->DrawIndexedInstanced(
 			index_count_per_instance,
@@ -1169,13 +998,6 @@ namespace nrhi {
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
-		auto& temp_state = directx11_command_list_p->temp_state_;
-
-		NCPP_ENABLE_IF_ASSERTION_ENABLED(
-			NCPP_ASSERT(temp_state.is_pipeline_state_binded) << "no pipeline state binded";
-			NCPP_ASSERT(temp_state.pipeline_state_p->desc().type == ED_pipeline_state_type::COMPUTE) << "invalid pipeline state type";
-		);
-
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
 
 		d3d11_device_context_p->Dispatch(
@@ -1187,82 +1009,50 @@ namespace nrhi {
 
 	void HD_directx11_command_list::draw_instanced_indirect(
 		TKPA_valid<A_command_list> command_list_p,
-		KPA_indirect_buffer_handle indirect_buffer_p,
+		KPA_buffer_handle indirect_buffer_p,
 		u32 indirect_buffer_offset
 	) {
 		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
-		auto& temp_state = directx11_command_list_p->temp_state_;
-
-		NCPP_ENABLE_IF_ASSERTION_ENABLED(
-			NCPP_ASSERT(temp_state.is_pipeline_state_binded) << "no pipeline state binded";
-			NCPP_ASSERT(temp_state.pipeline_state_p->desc().type == ED_pipeline_state_type::GRAPHICS) << "invalid pipeline state type";
-		);
-
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
 
-		temp_state_apply_vertex_buffers_instance_buffers(
-			temp_state,
-			d3d11_device_context_p
-		);
-
 		d3d11_device_context_p->DrawInstancedIndirect(
-			(ID3D11Buffer*)(indirect_buffer_p.T_cast<F_directx11_indirect_buffer>()->d3d11_resource_p()),
+			(ID3D11Buffer*)(indirect_buffer_p.T_cast<F_directx11_buffer>()->d3d11_resource_p()),
 			indirect_buffer_offset
 		);
 	}
 	void HD_directx11_command_list::draw_indexed_instanced_indirect(
 		TKPA_valid<A_command_list> command_list_p,
-		KPA_indirect_buffer_handle indirect_buffer_p,
+		KPA_buffer_handle indirect_buffer_p,
 		u32 indirect_buffer_offset
 	) {
 		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
-		auto& temp_state = directx11_command_list_p->temp_state_;
-
-		NCPP_ENABLE_IF_ASSERTION_ENABLED(
-			NCPP_ASSERT(temp_state.is_pipeline_state_binded) << "no pipeline state binded";
-			NCPP_ASSERT(temp_state.pipeline_state_p->desc().type == ED_pipeline_state_type::GRAPHICS) << "invalid pipeline state type";
-			NCPP_ASSERT(temp_state.index_buffer_p.is_valid()) << "index buffer is required";
-		);
-
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
 
-		temp_state_apply_vertex_buffers_instance_buffers(
-			temp_state,
-			d3d11_device_context_p
-		);
-
 		d3d11_device_context_p->DrawIndexedInstancedIndirect(
-			(ID3D11Buffer*)(indirect_buffer_p.T_cast<F_directx11_indirect_buffer>()->d3d11_resource_p()),
+			(ID3D11Buffer*)(indirect_buffer_p.T_cast<F_directx11_buffer>()->d3d11_resource_p()),
 			indirect_buffer_offset
 		);
 	}
 
 	void HD_directx11_command_list::dispatch_indirect(
 		TKPA_valid<A_command_list> command_list_p,
-		KPA_indirect_buffer_handle indirect_buffer_p,
+		KPA_buffer_handle indirect_buffer_p,
 		u32 indirect_buffer_offset
 	) {
 		NCPP_ASSERT(command_list_p->supports_compute()) << "command list does not support compute";
 
 		const auto& directx11_command_list_p = command_list_p.T_cast<F_directx11_command_list>();
 
-		auto& temp_state = directx11_command_list_p->temp_state_;
-
-		NCPP_ENABLE_IF_ASSERTION_ENABLED(
-			NCPP_ASSERT(temp_state.is_pipeline_state_binded) << "no pipeline state binded";
-			NCPP_ASSERT(temp_state.pipeline_state_p->desc().type == ED_pipeline_state_type::COMPUTE) << "invalid pipeline state type";
-		);
-
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
 
 		d3d11_device_context_p->DispatchIndirect(
-			(ID3D11Buffer*)(indirect_buffer_p.T_cast<F_directx11_indirect_buffer>()->d3d11_resource_p()),
+			(ID3D11Buffer*)(indirect_buffer_p.T_cast<F_directx11_buffer>()->d3d11_resource_p()),
 			indirect_buffer_offset
 		);
 	}
@@ -1315,72 +1105,14 @@ namespace nrhi {
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
 		ID3D11ShaderResourceView* d3d11_srv_p = (ID3D11ShaderResourceView*)(directx11_srv_p->d3d11_view_p());
 
-		NCPP_ASSERT(directx11_srv_p->desc().resource_p->desc().is_mip_map_generatable) << "this resource is not mip map generatable";
+		NCPP_ASSERT(
+			flag_is_has(
+				directx11_srv_p->desc().resource_p->desc().flags,
+				ED_resource_flag::MIPS_GENERATABLE
+			)
+		) << "this resource is not mips generatable";
 
 		d3d11_device_context_p->GenerateMips(d3d11_srv_p);
-	}
-
-
-
-	void HD_directx11_command_list::temp_state_apply_vertex_buffers(
-		const F_directx11_temp_command_list_state& temp_state,
-		ID3D11DeviceContext* d3d11_device_context_p
-	) {
-
-#ifdef NCPP_ENABLE_ASSERT
-		for(u32 i = 0; i < temp_state.vertex_buffer_count; ++i) {
-
-			const auto& vertex_buffer_p = temp_state.vertex_buffer_orefs[i];
-
-			NCPP_ASSERT(vertex_buffer_p.is_valid()) << "invalid vertex buffer";
-		}
-#endif
-		d3d11_device_context_p->IASetVertexBuffers(
-			0,
-			temp_state.vertex_buffer_count,
-			temp_state.d3d11_vertex_buffers,
-			temp_state.d3d11_vertex_buffer_strides,
-			temp_state.d3d11_vertex_buffer_offsets
-		);
-
-	}
-	void HD_directx11_command_list::temp_state_apply_vertex_buffers_instance_buffers(
-		const F_directx11_temp_command_list_state& temp_state,
-		ID3D11DeviceContext* d3d11_device_context_p
-	) {
-
-#ifdef NCPP_ENABLE_ASSERT
-		for(u32 i = 0; i < temp_state.vertex_buffer_count; ++i) {
-
-			const auto& vertex_buffer_p = temp_state.vertex_buffer_orefs[i];
-
-			NCPP_ASSERT(vertex_buffer_p.is_valid()) << "invalid vertex buffer";
-		}
-#endif
-		d3d11_device_context_p->IASetVertexBuffers(
-			0,
-			temp_state.vertex_buffer_count,
-			temp_state.d3d11_vertex_buffers,
-			temp_state.d3d11_vertex_buffer_strides,
-			temp_state.d3d11_vertex_buffer_offsets
-		);
-
-#ifdef NCPP_ENABLE_ASSERT
-		for(u32 i = 0; i < temp_state.instance_buffer_count; ++i) {
-
-			const auto& instance_buffer_p = temp_state.instance_buffer_orefs[i];
-
-			NCPP_ASSERT(instance_buffer_p.is_valid()) << "invalid instance buffer";
-		}
-#endif
-		d3d11_device_context_p->IASetVertexBuffers(
-			temp_state.vertex_buffer_count,
-			temp_state.instance_buffer_count,
-			temp_state.d3d11_instance_buffers,
-			temp_state.d3d11_instance_buffer_strides,
-			temp_state.d3d11_instance_buffer_offsets
-		);
-
 	}
 
 }

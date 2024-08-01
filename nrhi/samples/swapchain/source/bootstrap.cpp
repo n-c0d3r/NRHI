@@ -31,11 +31,15 @@ int main() {
 
 
 
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 	// create fence
-	auto fence_p = H_fence::create(
-		NCPP_FOREF_VALID(device_p),
-		F_fence_desc {}
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+	TU<A_fence> fence_p;
+
+	NRHI_DRIVER_ENABLE_IF_SUPPORT_ADVANCED_WORK_SUBMISSION(
+		fence_p = H_fence::create(
+			NCPP_FOREF_VALID(device_p),
+			F_fence_desc {}
+		);
 	);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
@@ -93,6 +97,8 @@ int main() {
 				target_fence_value
 			);
 			fence_p->wait(target_fence_value);
+
+			swapchain_p->update_back_rtv();
 
 			++frame_counter;
 		);

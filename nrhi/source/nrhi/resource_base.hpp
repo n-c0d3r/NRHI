@@ -36,6 +36,8 @@
 #include <nrhi/device_child.hpp>
 #include <nrhi/resource_desc.hpp>
 #include <nrhi/resource_type.hpp>
+#include <nrhi/mapped_subresource.hpp>
+#include <nrhi/resource_gpu_virtual_address.hpp>
 
 #pragma endregion
 
@@ -71,6 +73,7 @@ namespace nrhi {
         NCPP_FORCE_INLINE const F_initial_resource_data& initial_data() const noexcept { return initial_data_; }
 
 		NCPP_FORCE_INLINE u64 generation() const noexcept { return generation_; }
+		NCPP_FORCE_INLINE void set_generation_unsafe(u64 value) noexcept { generation_ = value; }
 
 
 
@@ -99,6 +102,13 @@ namespace nrhi {
 			const F_initial_resource_data& initial_data,
 			const F_resource_desc& desc
 		);
+
+	public:
+		F_mapped_subresource map(u32 subresource_index);
+		void unmap(u32 subresource_index);
+
+	public:
+		F_resource_gpu_virtual_address gpu_virtual_address();
 
     };
 

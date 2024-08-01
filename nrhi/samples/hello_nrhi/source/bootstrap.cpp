@@ -86,7 +86,7 @@ int main() {
     U_buffer_handle vbuffer_p = H_buffer::T_create<F_vector4>(
         NCPP_FOREF_VALID(device_p),
         vertices,
-        ED_resource_bind_flag::VBV
+        ED_resource_flag::INPUT_BUFFER
     );
 
 	TG_vector<F_vector4> instances = {
@@ -143,7 +143,7 @@ int main() {
 	U_buffer_handle instance_buffer_p = H_buffer::T_create<F_vector4>(
 		NCPP_FOREF_VALID(device_p),
 		instances,
-		ED_resource_bind_flag::INSTBV
+		ED_resource_flag::INPUT_BUFFER
 	);
 
     TG_vector<u32> indices = {
@@ -158,27 +158,14 @@ int main() {
         NCPP_FOREF_VALID(device_p),
         indices,
         ED_format::R32_UINT,
-        ED_resource_bind_flag::IBV
-    );
-
-    TG_vector<F_matrix4x4> buffer2_data(128);
-    U_structured_buffer_handle buffer2_p = H_buffer::T_create_structured<F_matrix4x4>(
-        NCPP_FOREF_VALID(device_p),
-        buffer2_data,
-        ED_resource_bind_flag::SRV
-    );
-    U_srv_handle buffer2_srv_p = H_resource_view::create_srv(
-        NCPP_FOREF_VALID(device_p),
-        {
-            .resource_p = NCPP_FHANDLE_VALID_AS_OREF(buffer2_p)
-        }
+        ED_resource_flag::INDEX_BUFFER
     );
 
     F_vector4 output_color = { 0.5f, 0.5f, 0.5f, 1.0f };
     U_buffer_handle cbuffer_p = H_buffer::T_create<F_vector4>(
         NCPP_FOREF_VALID(device_p),
         NCPP_INIL_SPAN(output_color),
-        ED_resource_bind_flag::CBV,
+        ED_resource_flag::CONSTANT_BUFFER,
         ED_resource_heap_type::GREAD_CWRITE
     );
 
@@ -191,8 +178,8 @@ int main() {
         1,
         {},
         flag_combine(
-            ED_resource_bind_flag::SRV,
-            ED_resource_bind_flag::RTV
+            ED_resource_flag::SHADER_RESOURCE,
+            ED_resource_flag::RENDER_TARGET
         )
     );
     U_srv_handle texture_2d_srv_p = H_resource_view::create_srv(
@@ -210,7 +197,7 @@ int main() {
 
 	// input assembler desc
 	F_input_assembler_desc input_assembler_desc = {
-		.vertex_attribute_groups = {
+		.attribute_groups = {
 			{
 				{
 					{
@@ -218,14 +205,13 @@ int main() {
 						.format = ED_format::R32G32B32A32_FLOAT
 					}
 				}
-			}
-		},
-		.instance_attribute_groups = {
+			},
 			{
 				{
 					{
 						.name = "INSTANCE_POSITION",
-						.format = ED_format::R32G32B32A32_FLOAT
+						.format = ED_format::R32G32B32A32_FLOAT,
+						.classification = ED_input_classification::PER_INSTANCE_DATA
 					}
 				}
 			}
@@ -244,39 +230,24 @@ int main() {
 	auto vshader_binary = H_shader_compiler::compile_hlsl_from_src_content(
 		"DemoShaderClass",
 		"vmain",
+		"vmain",
 		demo_shader_src,
 		"",
 		5,
 		0,
 		ED_shader_type::VERTEX
 	);
-	auto vshader_p = H_vertex_shader::create(
-		NCPP_FOREF_VALID(device_p),
-		{
-			.name = "DemoShaderClass::vmain",
-			.binary = vshader_binary,
-			.type = ED_shader_type::VERTEX,
-			.input_assembler_desc = input_assembler_desc
-		}
-	);
 
 	// create pixel shader
 	auto pshader_binary = H_shader_compiler::compile_hlsl_from_src_content(
 		"DemoShaderClass",
+		"pmain",
 		"pmain",
 		demo_shader_src,
 		"",
 		5,
 		0,
 		ED_shader_type::PIXEL
-	);
-	auto pshader_p = H_pixel_shader::create(
-		NCPP_FOREF_VALID(device_p),
-		{
-			.name = "DemoShaderClass::pmain",
-			.binary = pshader_binary,
-			.type = ED_shader_type::PIXEL
-		}
 	);
 
 	// create frame buffer
@@ -299,19 +270,19 @@ int main() {
 	auto graphics_pipeline_state_p = H_graphics_pipeline_state::create(
 		NCPP_FOREF_VALID(device_p),
 		{
-			.shader_p_vector = {
-				NCPP_FHANDLE_VALID_AS_OREF(vshader_p),
-				NCPP_FHANDLE_VALID_AS_OREF(pshader_p)
+			.input_assembler_desc = input_assembler_desc,
+			.shader_binaries = {
+				.vertex = vshader_binary,
+				.pixel = eastl::optional<F_shader_binary_temp>(pshader_binary)
 			}
 		}
 	);
 
 	f32 delta_time = 0.0f;
+	auto start_time = std::chrono::high_resolution_clock::now();
 
     // run app
     surface_manager.T_run([&](F_surface_manager& surface_manager){
-
-		auto start_time = std::chrono::high_resolution_clock::now();
 
 		if(swapchain_p.is_valid()) {
 
@@ -327,7 +298,7 @@ int main() {
 			// update uniform data
 			{
 				static f64 t = 0.0;
-				t += delta_time;
+				t += delta_time * 0.2f;
 
 				output_color = lerp(
 					F_vector4 { 0.2f, 0.2f, 0.2f, 1.0f },
@@ -345,7 +316,7 @@ int main() {
 			{
 				command_list_p->clear_state();
 
-				command_list_p->set_graphics_pipeline_state(
+				command_list_p->ZG_bind_pipeline_state(
 					NCPP_FHANDLE_VALID(graphics_pipeline_state_p)
 				);
 
@@ -353,14 +324,15 @@ int main() {
 					NCPP_FHANDLE_VALID(ibuffer_p),
 					0
 				);
-				command_list_p->ZIA_bind_vertex_buffer(
-					NCPP_FHANDLE_VALID(vbuffer_p),
-					0,
-					0
-				);
-				command_list_p->ZIA_bind_instance_buffer(
-					NCPP_FHANDLE_VALID(instance_buffer_p),
-					0,
+				command_list_p->ZIA_bind_input_buffers(
+					NCPP_INIL_SPAN(
+						NCPP_FOH_VALID(vbuffer_p),
+						NCPP_FOH_VALID(instance_buffer_p)
+					),
+					NCPP_INIL_SPAN(
+						u32(0),
+						u32(0)
+					),
 					0
 				);
 
@@ -395,6 +367,8 @@ int main() {
 
 		u64 nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(end_time - start_time).count();
 		delta_time = (((f32)nanoseconds) * 0.000000001f);
+
+		start_time = end_time;
 
 		f32 fps = 1.0f / delta_time;
 

@@ -25,6 +25,7 @@ NRHI_FunctionHelper_CreateFunctionClass(
     VALUES
         "compile_hlsl_from_src_content" "TG_vector<u8>(
 			const G_string& class_name,
+			const G_string& shader_name,
 			const G_string& entry_point_name,
             const G_string& src_content,
             const G_string& abs_path,
@@ -34,6 +35,7 @@ NRHI_FunctionHelper_CreateFunctionClass(
         )"
         "compile_hlsl" "TG_vector<u8>(
 			const G_string& class_name,
+			const G_string& shader_name,
 			const G_string& entry_point_name,
             const G_string& abs_path,
 			u32 model_major,
@@ -41,7 +43,6 @@ NRHI_FunctionHelper_CreateFunctionClass(
 			ED_shader_type type
         )"
         "compile_nsl" "TG_vector<u8>(
-			const G_string& shader_class_name,
 			const F_nsl_compiled_result& compiled_result,
 			u32 shader_index
 		)"

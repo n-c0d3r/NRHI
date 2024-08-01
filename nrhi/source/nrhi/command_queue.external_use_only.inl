@@ -74,5 +74,18 @@ namespace nrhi {
 			H_command_queue::async_wait(NCPP_KTHIS(), fence_p, value);
 		);
 	}
+
+	NCPP_FORCE_INLINE void A_command_queue::async_execute_command_lists(TG_span<TK_valid<A_command_list>> command_list_p_span) {
+
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			H_command_queue::async_execute_command_lists(NCPP_KTHIS(), command_list_p_span);
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_queue::async_execute_command_list(TKPA_valid<A_command_list> command_list_p) {
+
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			H_command_queue::async_execute_command_list(NCPP_KTHIS(), command_list_p);
+		);
+	}
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 }

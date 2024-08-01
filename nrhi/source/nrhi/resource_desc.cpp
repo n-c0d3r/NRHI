@@ -8,7 +8,7 @@ namespace nrhi {
     F_resource_desc H_resource_desc::create_buffer_desc(
         u32 count,
         u32 stride,
-        ED_resource_bind_flag bind_flags,
+        ED_resource_flag flags,
         ED_resource_heap_type heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -16,29 +16,30 @@ namespace nrhi {
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-		, ED_resource_layout layout
+		, ED_resource_layout layout,
+		u64 alignment
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
     ) {
 
         return {
 
             .element_count = count,
-
 			.size = count * stride,
 
             .stride = stride,
+			.type = ED_resource_type::BUFFER,
 
-            .bind_flags = bind_flags,
-            .heap_type = heap_type,
+            .flags = flags,
 
-            .type = ED_resource_type::BUFFER
+            .heap_type = heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 			, .initial_state = initial_state
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, .layout = layout
+			, .layout = layout,
+			.alignment = alignment
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
         };
@@ -47,7 +48,7 @@ namespace nrhi {
     F_resource_desc H_resource_desc::create_buffer_desc(
         u32 count,
         ED_format format,
-        ED_resource_bind_flag bind_flags,
+        ED_resource_flag flags,
         ED_resource_heap_type heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -55,7 +56,8 @@ namespace nrhi {
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-		, ED_resource_layout layout
+		, ED_resource_layout layout,
+		u64 alignment
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
     ) {
 
@@ -64,62 +66,23 @@ namespace nrhi {
         return {
 
             .element_count = count,
-
 			.size = count * stride,
 
             .format = format,
             .stride = stride,
+			.type = ED_resource_type::BUFFER,
 
-            .bind_flags = bind_flags,
-            .heap_type = heap_type,
+            .flags = flags,
 
-            .type = ED_resource_type::BUFFER
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-			, .initial_state = initial_state
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, .layout = layout
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-
-        };
-    }
-
-    F_resource_desc H_resource_desc::create_structured_buffer_desc(
-        u32 count,
-        u32 stride,
-        ED_resource_bind_flag bind_flags,
-        ED_resource_heap_type heap_type
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-		, ED_resource_state initial_state
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-		, ED_resource_layout layout
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-    ) {
-
-        return {
-
-            .element_count = count,
-
-            .size = count * stride,
-
-            .stride = stride,
-
-            .bind_flags = bind_flags,
-            .heap_type = heap_type,
-
-            .type = ED_resource_type::STRUCTURED_BUFFER
+            .heap_type = heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 			, .initial_state = initial_state
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, .layout = layout
+			, .layout = layout,
+			.alignment = alignment
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
         };
@@ -129,16 +92,16 @@ namespace nrhi {
         u32 width,
         ED_format format,
         u32 mip_level_count,
-        ED_resource_bind_flag bind_flags,
-        ED_resource_heap_type heap_type,
-		b8 is_mip_map_generatable
+        ED_resource_flag flags,
+        ED_resource_heap_type heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 		, ED_resource_state initial_state
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-		, ED_resource_layout layout
+		, ED_resource_layout layout,
+		u64 alignment
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
     ) {
 
@@ -150,27 +113,24 @@ namespace nrhi {
             .width = width,
             .height = 1,
             .depth = 1,
-
             .size = size,
 
             .format = format,
             .stride = stride,
-
             .mip_level_count = mip_level_count,
+			.type = ED_resource_type::TEXTURE_1D,
 
-            .bind_flags = bind_flags,
-            .heap_type = heap_type,
+            .flags = flags,
 
-			.is_mip_map_generatable = is_mip_map_generatable,
-
-            .type = ED_resource_type::TEXTURE_1D
+            .heap_type = heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 			, .initial_state = initial_state
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, .layout = layout
+			, .layout = layout,
+			.alignment = alignment
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
         };
@@ -182,16 +142,16 @@ namespace nrhi {
         ED_format format,
         u32 mip_level_count,
         F_sample_desc sample_desc,
-        ED_resource_bind_flag bind_flags,
-        ED_resource_heap_type heap_type,
-		b8 is_mip_map_generatable
+        ED_resource_flag flags,
+        ED_resource_heap_type heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 		, ED_resource_state initial_state
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-		, ED_resource_layout layout
+		, ED_resource_layout layout,
+		u64 alignment
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
     ) {
 
@@ -203,28 +163,25 @@ namespace nrhi {
             .width = width,
             .height = height,
             .depth = 1,
-
             .size = size,
 
             .format = format,
             .stride = stride,
-
             .mip_level_count = mip_level_count,
+			.type = ED_resource_type::TEXTURE_2D,
+
             .sample_desc = sample_desc,
+            .flags = flags,
 
-            .bind_flags = bind_flags,
-            .heap_type = heap_type,
-
-			.is_mip_map_generatable = is_mip_map_generatable,
-
-            .type = ED_resource_type::TEXTURE_2D
+            .heap_type = heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 			, .initial_state = initial_state
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, .layout = layout
+			, .layout = layout,
+			.alignment = alignment
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
         };
@@ -236,16 +193,16 @@ namespace nrhi {
         u32 depth,
         ED_format format,
         u32 mip_level_count,
-        ED_resource_bind_flag bind_flags,
-        ED_resource_heap_type heap_type,
-		b8 is_mip_map_generatable
+        ED_resource_flag flags,
+        ED_resource_heap_type heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 		, ED_resource_state initial_state
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-		, ED_resource_layout layout
+		, ED_resource_layout layout,
+		u64 alignment
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
     ) {
 
@@ -257,27 +214,24 @@ namespace nrhi {
             .width = width,
             .height = height,
             .depth = depth,
-
             .size = size,
 
             .format = format,
             .stride = stride,
-
             .mip_level_count = mip_level_count,
+			.type = ED_resource_type::TEXTURE_3D,
 
-            .bind_flags = bind_flags,
-            .heap_type = heap_type,
+            .flags = flags,
 
-			.is_mip_map_generatable = is_mip_map_generatable,
-
-            .type = ED_resource_type::TEXTURE_3D
+            .heap_type = heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 			, .initial_state = initial_state
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, .layout = layout
+			, .layout = layout,
+			.alignment = alignment
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
         };
@@ -286,114 +240,11 @@ namespace nrhi {
 	F_resource_desc H_resource_desc::create_texture_2d_array_desc(
 		u32 width,
 		u32 height,
-		u32 count,
+		u32 array_size,
 		ED_format format,
 		u32 mip_level_count,
 		F_sample_desc sample_desc,
-		ED_resource_bind_flag bind_flags,
-		ED_resource_heap_type heap_type,
-		b8 is_mip_map_generatable
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-		, ED_resource_state initial_state
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-		, ED_resource_layout layout
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-	) {
-
-		u32 stride = H_format::stride(format);
-		u32 size = width * height * count * stride;
-
-		return {
-
-			.width = width,
-			.height = height,
-			.array_size = count,
-
-			.size = size,
-
-			.format = format,
-			.stride = stride,
-
-			.mip_level_count = mip_level_count,
-			.sample_desc = sample_desc,
-
-			.bind_flags = bind_flags,
-			.heap_type = heap_type,
-
-			.is_mip_map_generatable = is_mip_map_generatable,
-
-			.type = ED_resource_type::TEXTURE_2D
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-			, .initial_state = initial_state
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, .layout = layout
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-
-		};
-	}
-
-	F_resource_desc H_resource_desc::create_texture_cube_desc(
-		u32 width,
-		ED_format format,
-		u32 mip_level_count,
-		F_sample_desc sample_desc,
-		ED_resource_bind_flag bind_flags,
-		ED_resource_heap_type heap_type,
-		b8 is_mip_map_generatable
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-		, ED_resource_state initial_state
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-		, ED_resource_layout layout
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-	) {
-
-		u32 stride = H_format::stride(format);
-		u32 size = width * width * 6 * stride;
-
-		return {
-
-			.width = width,
-			.height = width,
-			.array_size = 6,
-
-			.size = size,
-
-			.format = format,
-			.stride = stride,
-
-			.mip_level_count = mip_level_count,
-			.sample_desc = sample_desc,
-
-			.bind_flags = bind_flags,
-			.heap_type = heap_type,
-
-			.is_mip_map_generatable = is_mip_map_generatable,
-
-			.type = ED_resource_type::TEXTURE_CUBE
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-			, .initial_state = initial_state
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, .layout = layout
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-
-		};
-	}
-
-	F_resource_desc H_resource_desc::create_indirect_buffer_desc(
-		u32 count,
-		ED_resource_bind_flag bind_flags,
+		ED_resource_flag flags,
 		ED_resource_heap_type heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -401,32 +252,38 @@ namespace nrhi {
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-		, ED_resource_layout layout
+		, ED_resource_layout layout,
+		u64 alignment
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 
+		u32 stride = H_format::stride(format);
+		u32 size = width * height * array_size * stride;
+
 		return {
 
-			.element_count = count,
+			.width = width,
+			.height = height,
+			.array_size = array_size,
+			.size = size,
 
-			.size = count * u32(sizeof(u32)),
+			.format = format,
+			.stride = stride,
+			.mip_level_count = mip_level_count,
+			.type = ED_resource_type::TEXTURE_2D_ARRAY,
 
-			.format = ED_format::R32_UINT,
-			.stride = sizeof(u32),
+			.sample_desc = sample_desc,
+			.flags = flags,
 
-			.mip_level_count = 1,
-
-			.bind_flags = bind_flags,
-			.heap_type = heap_type,
-
-			.type = ED_resource_type::INDIRECT_BUFFER
+			.heap_type = heap_type
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 			, .initial_state = initial_state
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, .layout = layout
+			, .layout = layout,
+			.alignment = alignment
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
 		};

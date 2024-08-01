@@ -50,9 +50,15 @@ namespace nrhi {
 
 
     struct F_swapchain_desc {
+
         ED_format format = ED_format::R8G8B8A8_UNORM;
         F_sample_desc sample_desc;
-		u32 back_rtv_count = 1;
+		u32 refresh_rate = 0;
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+		u32 rtv_count = 2;
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
     };
 
 
@@ -64,25 +70,10 @@ namespace nrhi {
         TK_valid<F_surface> surface_p_;
         F_swapchain_desc desc_;
 
-    protected:
-		TG_vector<U_rtv_handle> back_rtv_p_vector_;
-
     public:
         NCPP_FORCE_INLINE TK_valid<A_command_queue> command_queue_p() noexcept { return command_queue_p_; }
         NCPP_FORCE_INLINE TK_valid<F_surface> surface_p() noexcept { return surface_p_; }
         NCPP_FORCE_INLINE const F_swapchain_desc& desc() const noexcept { return desc_; }
-
-        NCPP_FORCE_INLINE const auto& back_rtv_p_vector() const noexcept { return back_rtv_p_vector_; }
-
-        u8 current_back_rtv_index() const noexcept;
-
-        NCPP_FORCE_INLINE K_valid_rtv_handle back_rtv_p(u8 index = 0xFF) const noexcept {
-
-			if(index == 0xFF)
-				index = current_back_rtv_index();
-
-            return NCPP_FOH_VALID(back_rtv_p_vector_[index]);
-        }
 
 
 
@@ -102,12 +93,16 @@ namespace nrhi {
 
 
 	public:
+		K_valid_rtv_handle back_rtv_p();
+		K_valid_texture_2d_handle back_buffer_p();
+
 #ifdef NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
 		void present();
 #endif
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 		void async_present();
+		void update_back_rtv();
 #endif
 
     };

@@ -91,6 +91,8 @@ namespace nrhi {
 		ID3D11RasterizerState* d3d11_rasterizer_state_p_ = 0;
 		ID3D11DepthStencilState* d3d11_depth_stencil_state_p_ = 0;
 
+		F_graphics_pipeline_state_options options_;
+
 	public:
 		NCPP_FORCE_INLINE ID3D11VertexShader* d3d11_vertex_shader_p() noexcept { return d3d11_vertex_shader_p_; }
 		NCPP_FORCE_INLINE void set_d3d11_vertex_shader_p_unsafe_unsafe(ID3D11VertexShader* value) noexcept { d3d11_vertex_shader_p_ = value; }
@@ -105,13 +107,14 @@ namespace nrhi {
 		NCPP_FORCE_INLINE ID3D11DepthStencilState* d3d11_depth_stencil_state_p() noexcept { return d3d11_depth_stencil_state_p_; }
 		NCPP_FORCE_INLINE void set_d3d11_depth_stencil_state_p_unsafe(ID3D11DepthStencilState* value) noexcept { d3d11_depth_stencil_state_p_ = value; }
 
+		NCPP_FORCE_INLINE const auto& options() const noexcept { return options_; }
+
 
 
 	public:
 		F_directx11_graphics_pipeline_state(
 			TKPA_valid<A_device> device_p,
-			const F_pipeline_state_desc& desc,
-			ED_pipeline_state_type overrided_type = ED_pipeline_state_type::GRAPHICS
+			const F_graphics_pipeline_state_options& options
 		);
 		virtual ~F_directx11_graphics_pipeline_state();
 

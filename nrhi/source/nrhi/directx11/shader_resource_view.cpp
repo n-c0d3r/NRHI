@@ -48,8 +48,10 @@ namespace nrhi {
         NCPP_ASSERT(resource_desc.can_create_view) << "resource can't be used to create view";
 
         NCPP_ASSERT(
-            u32(resource_desc.bind_flags)
-            & u32(ED_resource_bind_flag::SRV)
+			flag_is_has(
+				resource_desc.flags,
+				ED_resource_flag::SHADER_RESOURCE
+			)
         ) << "resource bind flag is not conpatible";
 
         ID3D11Device* d3d11_device_p = device_p.T_cast<F_directx11_device>()->d3d11_device_p();
@@ -59,6 +61,14 @@ namespace nrhi {
 		ED_resource_type target_resource_type = desc.overrided_resource_type;
 		if(target_resource_type == ED_resource_type::NONE)
 			target_resource_type = resource_desc.type;
+
+		ED_resource_flag target_resource_flags = desc.overrided_resource_flags;
+		if(target_resource_flags == ED_resource_flag::NONE)
+			target_resource_flags = resource_desc.flags;
+
+		u32 target_array_size = desc.overrided_array_size;
+		if(!target_array_size)
+			target_array_size = resource_desc.array_size;
 
 		ED_format target_format = desc.overrided_format;
 		if(target_format == ED_format::NONE)
@@ -71,13 +81,6 @@ namespace nrhi {
 			target_resource_type,
 			NRHI_ENUM_CASE(
 				ED_resource_type::BUFFER,
-				d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
-				d3d11_srv_desc.Buffer.FirstElement = desc.mem_offset / resource_desc.stride;
-				d3d11_srv_desc.Buffer.NumElements = resource_desc.size / resource_desc.stride;
-				NRHI_ENUM_BREAK;
-            )
-			NRHI_ENUM_CASE(
-				ED_resource_type::STRUCTURED_BUFFER,
 				d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
 				d3d11_srv_desc.Buffer.FirstElement = desc.mem_offset / resource_desc.stride;
 				d3d11_srv_desc.Buffer.NumElements = resource_desc.size / resource_desc.stride;
@@ -106,19 +109,24 @@ namespace nrhi {
             )
 			NRHI_ENUM_CASE(
 				ED_resource_type::TEXTURE_2D_ARRAY,
-				d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
-				d3d11_srv_desc.Texture2DArray.MipLevels = resource_desc.mip_level_count;
-				d3d11_srv_desc.Texture2DArray.FirstArraySlice = desc.index;
-				d3d11_srv_desc.Texture2DArray.ArraySize = desc.count;
-				d3d11_srv_desc.Texture2DArray.MostDetailedMip = desc.base_mip_level;
-				NCPP_ASSERT(desc.count) << "texture 2d array size can't be zero";
-				NRHI_ENUM_BREAK;
-            )
-			NRHI_ENUM_CASE(
-				ED_resource_type::TEXTURE_CUBE,
-				d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
-				d3d11_srv_desc.TextureCube.MipLevels = resource_desc.mip_level_count;
-				d3d11_srv_desc.TextureCube.MostDetailedMip = desc.base_mip_level;
+				if(
+					flag_is_has(
+						target_resource_flags,
+						ED_resource_flag::TEXTURE_CUBE
+					)
+				) {
+					d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
+					d3d11_srv_desc.TextureCube.MipLevels = resource_desc.mip_level_count;
+					d3d11_srv_desc.TextureCube.MostDetailedMip = desc.base_mip_level;
+				}
+				else {
+					d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+					d3d11_srv_desc.Texture2DArray.MipLevels = resource_desc.mip_level_count;
+					d3d11_srv_desc.Texture2DArray.FirstArraySlice = desc.index;
+					d3d11_srv_desc.Texture2DArray.ArraySize = target_array_size;
+					d3d11_srv_desc.Texture2DArray.MostDetailedMip = desc.base_mip_level;
+					NCPP_ASSERT(target_array_size) << "texture 2d array size can't be zero";
+				}
 				NRHI_ENUM_BREAK;
             )
 			NRHI_ENUM_DEFAULT(

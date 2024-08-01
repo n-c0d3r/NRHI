@@ -64,7 +64,10 @@ namespace nrhi {
 
 		TG_vector<U_texture_2d_handle> buffer_p_vector_;
 
-		TU<A_descriptor_heap> back_rtv_descriptor_heap_p_;
+		TU<A_descriptor_heap> rtv_descriptor_heap_p_;
+		TG_vector<U_rtv_handle> rtv_p_vector_;
+		U_rtv_handle back_rtv_p_;
+		U_texture_2d_handle back_buffer_p_;
 
 	public:
 		NCPP_FORCE_INLINE IDXGISwapChain3* dxgi_swapchain_p() noexcept { return dxgi_swapchain_p_; }
@@ -97,7 +100,11 @@ namespace nrhi {
 		);
 
 	public:
-		static u8 current_back_rtv_index(TKPA_valid<A_swapchain>);
+		static u8 current_rtv_index(TKPA_valid<A_swapchain>);
+		static K_valid_rtv_handle rtv_p(TKPA_valid<A_swapchain>, u8 index);
+		static void update_back_rtv(TKPA_valid<A_swapchain>);
+		static K_valid_rtv_handle back_rtv_p(TKPA_valid<A_swapchain>);
+		static K_valid_texture_2d_handle back_buffer_p(TKPA_valid<A_swapchain>);
 
 	public:
 		static void async_present(TKPA_valid<A_swapchain>);

@@ -57,7 +57,7 @@ namespace nrhi {
 		b8 is_has_dsv_;
 
 	protected:
-		TG_vector<u64> color_attachment_generations_;
+		TG_fixed_vector<u64, 8, false> color_attachment_generations_;
 		u64 depth_stencil_attachment_generation_ = 0xFFFFFFFFFFFFFFFF;
 
 	public:
@@ -65,8 +65,10 @@ namespace nrhi {
 
 		NCPP_FORCE_INLINE b8 is_has_dsv() const noexcept { return is_has_dsv_; }
 
-		NCPP_FORCE_INLINE const TG_vector<u64>& color_attachment_generations() const noexcept { return color_attachment_generations_; }
+		NCPP_FORCE_INLINE const TG_fixed_vector<u64, 8, false>& color_attachment_generations() const noexcept { return color_attachment_generations_; }
+		NCPP_FORCE_INLINE void set_color_attachment_generations_unsafe(const TG_fixed_vector<u64, 8, false>& value) noexcept { color_attachment_generations_ = value; }
 		NCPP_FORCE_INLINE u32 depth_stencil_attachment_generation() const noexcept { return depth_stencil_attachment_generation_; }
+		NCPP_FORCE_INLINE void set_depth_stencil_attachment_generation_unsafe(u64 value) noexcept { depth_stencil_attachment_generation_ = value; }
 		NCPP_FORCE_INLINE b8 is_valid_generation() const noexcept {
 
 			u32 color_attachment_count = desc_.color_attachments.size();

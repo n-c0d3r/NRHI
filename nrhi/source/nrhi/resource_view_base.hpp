@@ -84,6 +84,7 @@ namespace nrhi {
         NCPP_FORCE_INLINE ED_resource_type resource_type() const noexcept { return resource_type_; }
 
 		NCPP_FORCE_INLINE u64 generation() const noexcept { return generation_; }
+		NCPP_FORCE_INLINE void set_generation_unsafe(u64 value) noexcept { generation_ = value; }
 		NCPP_FORCE_INLINE b8 is_valid_generation() const noexcept {
 
 			return (generation_ == desc_.resource_p->generation());

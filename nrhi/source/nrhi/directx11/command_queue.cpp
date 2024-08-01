@@ -38,7 +38,7 @@ namespace nrhi {
     ) {
         sz command_list_count = command_list_p_span.size();
 
-        TG_vector<ID3D11CommandList*> d3d11_command_list_p_vector(command_list_count);
+        TG_array<ID3D11CommandList*, NRHI_MAX_COMMAND_LIST_COUNT_PER_BATCH> d3d11_command_list_p_array;
 
         for(u32 i = 0; i < command_list_count; ++i) {
 
@@ -48,24 +48,23 @@ namespace nrhi {
 
             ID3D11DeviceContext* d3d11_deferred_ctx_p = command_list_p.T_cast<F_directx11_command_list>()->d3d11_device_context_p();
 
-            d3d11_deferred_ctx_p->FinishCommandList(false, &(d3d11_command_list_p_vector[i]));
+            d3d11_deferred_ctx_p->FinishCommandList(false, &(d3d11_command_list_p_array[i]));
         }
-
 
         for(u32 i = 0; i < command_list_count; ++i) {
 
             command_queue_p
-            .T_cast<F_directx11_command_queue>()
-            ->d3d11_device_context_p()
-            ->ExecuteCommandList(
-                d3d11_command_list_p_vector[i],
-                false
-            );
+				.T_cast<F_directx11_command_queue>()
+				->d3d11_device_context_p()
+				->ExecuteCommandList(
+					d3d11_command_list_p_array[i],
+					false
+				);
         }
 
         for(u32 i = 0; i < command_list_count; ++i) {
 
-            d3d11_command_list_p_vector[i]->Release();
+            d3d11_command_list_p_array[i]->Release();
         }
     }
 	void HD_directx11_command_queue::execute_command_list(

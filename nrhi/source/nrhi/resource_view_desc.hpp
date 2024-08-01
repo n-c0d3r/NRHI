@@ -35,6 +35,7 @@
 
 #include <nrhi/resource_view_type.hpp>
 #include <nrhi/resource_type.hpp>
+#include <nrhi/resource_flag.hpp>
 #include <nrhi/format.hpp>
 
 #pragma endregion
@@ -54,6 +55,7 @@ namespace nrhi {
         ED_resource_view_type type = ED_resource_view_type::NONE;
 
 		ED_resource_type overrided_resource_type = ED_resource_type::NONE;
+		ED_resource_flag overrided_resource_flags = ED_resource_flag::NONE;
 
         TK_valid<A_resource> resource_p;
 
@@ -67,7 +69,7 @@ namespace nrhi {
 			u32 index;
 		};
 
-		u32 count = 0;
+		u32 overrided_array_size = 0;
 		ED_format overrided_format = ED_format::NONE;
 
     };
