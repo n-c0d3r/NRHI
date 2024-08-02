@@ -69,6 +69,19 @@ namespace nrhi {
 
 
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+	enum class E_resource_management_type {
+
+		NONE,
+		COMMITTED,
+		PLACED,
+		RESERVED
+
+	};
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+
+
+
     struct F_resource_desc {
 
 		union {

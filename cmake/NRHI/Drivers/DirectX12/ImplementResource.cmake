@@ -46,6 +46,66 @@ NRHI_FunctionHelper_CreateFunctionClass(
             TKPA_valid<A_device> device_p,
             const F_resource_desc& desc
         )"
+        "create_placed" "TU<A_resource>(
+            TKPA_valid<A_device> device_p,
+            const F_resource_desc& desc,
+            TKPA_valid<A_resource_heap> heap_p,
+            u64 heap_offset
+        )"
+        "create_placed_buffer" "U_buffer_handle(
+            TKPA_valid<A_device> device_p,
+            const F_resource_desc& desc,
+            TKPA_valid<A_resource_heap> heap_p,
+            u64 heap_offset
+        )"
+        "create_placed_texture_1d" "U_texture_1d_handle(
+            TKPA_valid<A_device> device_p,
+            const F_resource_desc& desc,
+            TKPA_valid<A_resource_heap> heap_p,
+            u64 heap_offset
+        )"
+        "create_placed_texture_2d" "U_texture_2d_handle(
+            TKPA_valid<A_device> device_p,
+            const F_resource_desc& desc,
+            TKPA_valid<A_resource_heap> heap_p,
+            u64 heap_offset
+        )"
+        "create_placed_texture_3d" "U_texture_3d_handle(
+            TKPA_valid<A_device> device_p,
+            const F_resource_desc& desc,
+            TKPA_valid<A_resource_heap> heap_p,
+            u64 heap_offset
+        )"
+        "create_placed_texture_2d_array" "U_texture_2d_array_handle(
+            TKPA_valid<A_device> device_p,
+            const F_resource_desc& desc,
+            TKPA_valid<A_resource_heap> heap_p,
+            u64 heap_offset
+        )"
+        "create_reserved" "TU<A_resource>(
+            TKPA_valid<A_device> device_p,
+            const F_resource_desc& desc
+        )"
+        "create_reserved_buffer" "U_buffer_handle(
+            TKPA_valid<A_device> device_p,
+            const F_resource_desc& desc
+        )"
+        "create_reserved_texture_1d" "U_texture_1d_handle(
+            TKPA_valid<A_device> device_p,
+            const F_resource_desc& desc
+        )"
+        "create_reserved_texture_2d" "U_texture_2d_handle(
+            TKPA_valid<A_device> device_p,
+            const F_resource_desc& desc
+        )"
+        "create_reserved_texture_3d" "U_texture_3d_handle(
+            TKPA_valid<A_device> device_p,
+            const F_resource_desc& desc
+        )"
+        "create_reserved_texture_2d_array" "U_texture_2d_array_handle(
+            TKPA_valid<A_device> device_p,
+            const F_resource_desc& desc
+        )"
         "map" "F_mapped_subresource(
             TKPA_valid<A_resource> resource_p,
             u32 subresource_index

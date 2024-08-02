@@ -95,6 +95,10 @@ namespace nrhi {
 
 			return descriptor_;
 		}
+		NCPP_FORCE_INLINE void set_descriptor_unsafe(const F_descriptor& value) noexcept {
+
+			descriptor_ = value;
+		}
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 
@@ -126,7 +130,7 @@ namespace nrhi {
 			const F_resource_view_desc& desc
 		);
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		virtual void rebuild(
+		virtual void rebuild_with_descriptor(
 			const F_resource_view_desc& desc,
 			const F_descriptor& descriptor
 		);
@@ -139,7 +143,7 @@ namespace nrhi {
 			const F_resource_view_desc& desc
 		);
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		void finalize_rebuild(
+		void finalize_rebuild_with_descriptor(
 			const F_resource_view_desc& desc,
 			const F_descriptor& descriptor
 		);

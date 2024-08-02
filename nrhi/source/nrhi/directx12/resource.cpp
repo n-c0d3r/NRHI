@@ -1,5 +1,7 @@
 #include <nrhi/directx12/resource.hpp>
 #include <nrhi/directx12/committed_resource.hpp>
+#include <nrhi/directx12/placed_resource.hpp>
+#include <nrhi/directx12/reserved_resource.hpp>
 #include <nrhi/directx12/device.hpp>
 #include <nrhi/format_helper.hpp>
 
@@ -66,6 +68,96 @@ namespace nrhi {
 		return { TU<F_directx12_committed_resource>()(device_p, desc) };
 	}
 	U_texture_2d_array_handle HD_directx12_resource::create_committed_texture_2d_array(
+		TKPA_valid<A_device> device_p,
+		const F_resource_desc& desc
+	) {
+		return { TU<F_directx12_committed_resource>()(device_p, desc) };
+	}
+
+	TU<A_resource> HD_directx12_resource::create_placed(
+		TKPA_valid<A_device> device_p,
+		const F_resource_desc& desc,
+		TKPA_valid<A_resource_heap> heap_p,
+		u64 heap_offset
+	) {
+		return TU<F_directx12_placed_resource>()(device_p, desc, heap_p, heap_offset);
+	}
+
+	U_buffer_handle HD_directx12_resource::create_placed_buffer(
+		TKPA_valid<A_device> device_p,
+		const F_resource_desc& desc,
+		TKPA_valid<A_resource_heap> heap_p,
+		u64 heap_offset
+	) {
+		return { TU<F_directx12_placed_resource>()(device_p, desc, heap_p, heap_offset) };
+	}
+
+	U_texture_1d_handle HD_directx12_resource::create_placed_texture_1d(
+		TKPA_valid<A_device> device_p,
+		const F_resource_desc& desc,
+		TKPA_valid<A_resource_heap> heap_p,
+		u64 heap_offset
+	) {
+		return { TU<F_directx12_placed_resource>()(device_p, desc, heap_p, heap_offset) };
+	}
+	U_texture_2d_handle HD_directx12_resource::create_placed_texture_2d(
+		TKPA_valid<A_device> device_p,
+		const F_resource_desc& desc,
+		TKPA_valid<A_resource_heap> heap_p,
+		u64 heap_offset
+	) {
+		return { TU<F_directx12_placed_resource>()(device_p, desc, heap_p, heap_offset) };
+	}
+	U_texture_3d_handle HD_directx12_resource::create_placed_texture_3d(
+		TKPA_valid<A_device> device_p,
+		const F_resource_desc& desc,
+		TKPA_valid<A_resource_heap> heap_p,
+		u64 heap_offset
+	) {
+		return { TU<F_directx12_placed_resource>()(device_p, desc, heap_p, heap_offset) };
+	}
+	U_texture_2d_array_handle HD_directx12_resource::create_placed_texture_2d_array(
+		TKPA_valid<A_device> device_p,
+		const F_resource_desc& desc,
+		TKPA_valid<A_resource_heap> heap_p,
+		u64 heap_offset
+	) {
+		return { TU<F_directx12_placed_resource>()(device_p, desc, heap_p, heap_offset) };
+	}
+
+	TU<A_resource> HD_directx12_resource::create_reserved(
+		TKPA_valid<A_device> device_p,
+		const F_resource_desc& desc
+	) {
+		return { TU<F_directx12_committed_resource>()(device_p, desc) };
+	}
+
+	U_buffer_handle HD_directx12_resource::create_reserved_buffer(
+		TKPA_valid<A_device> device_p,
+		const F_resource_desc& desc
+	) {
+		return { TU<F_directx12_committed_resource>()(device_p, desc) };
+	}
+
+	U_texture_1d_handle HD_directx12_resource::create_reserved_texture_1d(
+		TKPA_valid<A_device> device_p,
+		const F_resource_desc& desc
+	) {
+		return { TU<F_directx12_committed_resource>()(device_p, desc) };
+	}
+	U_texture_2d_handle HD_directx12_resource::create_reserved_texture_2d(
+		TKPA_valid<A_device> device_p,
+		const F_resource_desc& desc
+	) {
+		return { TU<F_directx12_committed_resource>()(device_p, desc) };
+	}
+	U_texture_3d_handle HD_directx12_resource::create_reserved_texture_3d(
+		TKPA_valid<A_device> device_p,
+		const F_resource_desc& desc
+	) {
+		return { TU<F_directx12_committed_resource>()(device_p, desc) };
+	}
+	U_texture_2d_array_handle HD_directx12_resource::create_reserved_texture_2d_array(
 		TKPA_valid<A_device> device_p,
 		const F_resource_desc& desc
 	) {

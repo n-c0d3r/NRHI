@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/directx12/committed_resource.hpp
+/** @file nrhi/directx12/placed_resource.hpp
 *
-*   Implement directx12 committed resource.
+*   Implement directx12 placed resource.
 */
 
 
@@ -41,35 +41,45 @@
 
 namespace nrhi {
 
-	class NRHI_API F_directx12_committed_resource : public F_directx12_resource {
+	class NRHI_API F_directx12_placed_resource : public F_directx12_resource {
 
 	public:
-		F_directx12_committed_resource(
-			TKPA_valid<A_device> device_p,
-			const F_resource_desc& desc
-		);
-		F_directx12_committed_resource(
+		F_directx12_placed_resource(
 			TKPA_valid<A_device> device_p,
 			const F_resource_desc& desc,
+			TKPA_valid<A_resource_heap> heap_p,
+			u64 heap_offset
+		);
+		F_directx12_placed_resource(
+			TKPA_valid<A_device> device_p,
+			const F_resource_desc& desc,
+			TKPA_valid<A_resource_heap> heap_p,
+			u64 heap_offset,
 			ED_resource_type overrided_type
 		);
-		F_directx12_committed_resource(
+		F_directx12_placed_resource(
 			TKPA_valid<A_device> device_p,
 			const F_resource_desc& desc,
+			TKPA_valid<A_resource_heap> heap_p,
+			u64 heap_offset,
 			ED_resource_type overrided_type,
 			ID3D12Resource* d3d12_resource_p
 		);
-		virtual ~F_directx12_committed_resource();
+		virtual ~F_directx12_placed_resource();
 
 	private:
-		static ID3D12Resource* create_d3d12_committed_resource(
+		static ID3D12Resource* create_d3d12_placed_resource(
 			TKPA_valid<A_device> device_p,
-			const F_resource_desc& desc
+			const F_resource_desc& desc,
+			TKPA_valid<A_resource_heap> heap_p,
+			u64 heap_offset
 		);
 
 	public:
-		virtual void rebuild_committed(
-			const F_resource_desc& desc
+		virtual void rebuild_placed(
+			const F_resource_desc& desc,
+			TKPA_valid<A_resource_heap> heap_p,
+			u64 heap_offset
 		) override;
 
 	};

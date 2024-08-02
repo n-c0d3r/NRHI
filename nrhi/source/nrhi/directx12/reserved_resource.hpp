@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/directx12/committed_resource.hpp
+/** @file nrhi/directx12/reserved_resource.hpp
 *
-*   Implement directx12 committed resource.
+*   Implement directx12 reserved resource.
 */
 
 
@@ -41,34 +41,34 @@
 
 namespace nrhi {
 
-	class NRHI_API F_directx12_committed_resource : public F_directx12_resource {
+	class NRHI_API F_directx12_reserved_resource : public F_directx12_resource {
 
 	public:
-		F_directx12_committed_resource(
+		F_directx12_reserved_resource(
 			TKPA_valid<A_device> device_p,
 			const F_resource_desc& desc
 		);
-		F_directx12_committed_resource(
+		F_directx12_reserved_resource(
 			TKPA_valid<A_device> device_p,
 			const F_resource_desc& desc,
 			ED_resource_type overrided_type
 		);
-		F_directx12_committed_resource(
+		F_directx12_reserved_resource(
 			TKPA_valid<A_device> device_p,
 			const F_resource_desc& desc,
 			ED_resource_type overrided_type,
 			ID3D12Resource* d3d12_resource_p
 		);
-		virtual ~F_directx12_committed_resource();
+		virtual ~F_directx12_reserved_resource();
 
 	private:
-		static ID3D12Resource* create_d3d12_committed_resource(
+		static ID3D12Resource* create_d3d12_reserved_resource(
 			TKPA_valid<A_device> device_p,
 			const F_resource_desc& desc
 		);
 
 	public:
-		virtual void rebuild_committed(
+		virtual void rebuild_reserved(
 			const F_resource_desc& desc
 		) override;
 

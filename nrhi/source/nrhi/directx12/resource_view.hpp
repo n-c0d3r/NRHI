@@ -71,7 +71,7 @@ namespace nrhi {
 			const F_resource_view_desc& desc
 		) override;
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		virtual void rebuild(
+		virtual void rebuild_with_descriptor(
 			const F_resource_view_desc& desc,
 			const F_descriptor& descriptor
 		) override;

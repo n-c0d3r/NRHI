@@ -26,6 +26,12 @@ namespace nrhi {
 				return (TKPA_valid<A_root_signature>)root_signature_p_;
 			)
 		}
+		NCPP_FORCE_INLINE void set_root_signature_p_unsafe(TKPA_valid<A_root_signature> value) noexcept {
+
+			NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
+				root_signature_p_ = value.no_requirements();
+			)
+		}
 
 
 
