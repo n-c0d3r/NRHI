@@ -254,7 +254,7 @@ namespace nrhi {}
             )
 
 #define NRHI_DRIVER_DIRECTX_11_MAP___RESOURCE_FLAG___TO___RESOURCE_FLAG(...) (\
-                (D3D11_FLAG)(\
+                (D3D11_BIND_FLAG)(\
                     NRHI_DRIVER_DIRECTX_11_REMOVE_MISC_FLAG___RESOURCE_FLAG(ncpp::u64(__VA_ARGS__)) >> ncpp::u64(NRHI_DRIVER_DIRECTX_11_FLAG_OFFSET___RESOURCE_FLAG)\
                 )\
             )
