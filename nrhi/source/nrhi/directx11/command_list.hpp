@@ -56,39 +56,6 @@ namespace nrhi {
 
 
 
-	struct F_directx11_temp_command_list_state {
-
-		NCPP_ENABLE_IF_ASSERTION_ENABLED(
-			TK<A_pipeline_state> pipeline_state_p;
-			b8 is_pipeline_state_binded = false;
-		);
-
-		u32 vertex_buffer_count = 0;
-		u32 instance_buffer_count = 0;
-
-		ID3D11Buffer* d3d11_vertex_buffers[NRHI_MAX_VERTEX_BUFFER_COUNT_PER_DRAWCALL];
-		ID3D11Buffer* d3d11_instance_buffers[NRHI_MAX_INSTANCE_BUFFER_COUNT_PER_DRAWCALL];
-		u32 d3d11_vertex_buffer_offsets[NRHI_MAX_VERTEX_BUFFER_COUNT_PER_DRAWCALL];
-		u32 d3d11_instance_buffer_offsets[NRHI_MAX_INSTANCE_BUFFER_COUNT_PER_DRAWCALL];
-		u32 d3d11_vertex_buffer_strides[NRHI_MAX_VERTEX_BUFFER_COUNT_PER_DRAWCALL];
-		u32 d3d11_instance_buffer_strides[NRHI_MAX_INSTANCE_BUFFER_COUNT_PER_DRAWCALL];
-		NCPP_ENABLE_IF_ASSERTION_ENABLED(
-			std::array<K_buffer_handle, NRHI_MAX_VERTEX_BUFFER_COUNT_PER_DRAWCALL> vertex_buffer_orefs;
-			std::array<K_buffer_handle, NRHI_MAX_INSTANCE_BUFFER_COUNT_PER_DRAWCALL> instance_buffer_orefs;
-		);
-
-		NCPP_ENABLE_IF_ASSERTION_ENABLED(
-			K_buffer_handle index_buffer_p;
-		);
-
-		NCPP_ENABLE_IF_ASSERTION_ENABLED(
-			std::array<K_buffer_handle, NRHI_MAX_CONSTANT_BUFFER_COUNT_PER_DRAWCALL> constant_buffer_orefs;
-		);
-
-	};
-
-
-
     class NRHI_API F_directx11_command_list : public A_command_list {
 
 	public:
@@ -98,8 +65,6 @@ namespace nrhi {
 
     private:
         ID3D11DeviceContext* d3d11_device_context_p_ = 0;
-
-		F_directx11_temp_command_list_state temp_state_;
 
     public:
         NCPP_FORCE_INLINE ID3D11DeviceContext* d3d11_device_context_p() noexcept { return d3d11_device_context_p_; }
@@ -127,7 +92,7 @@ namespace nrhi {
 		static void clear_rtv(
 			TKPA_valid<A_command_list> command_list_p,
 			KPA_valid_rtv_handle rtv_p,
-			PA_vector4 color
+			PA_vector4_f32 color
 		);
 		static void clear_dsv(
 			TKPA_valid<A_command_list> command_list_p,
@@ -138,15 +103,15 @@ namespace nrhi {
 		);
 
 	public:
-		static void set_pipeline_state(
+		static void bind_pipeline_state(
 			TKPA_valid<A_command_list> command_list_p,
 			TKPA_valid<A_pipeline_state> pipeline_state_p
 		);
-		static void set_graphics_pipeline_state(
+		static void ZG_bind_pipeline_state(
 			TKPA_valid<A_command_list> command_list_p,
 			KPA_valid_graphics_pipeline_state_handle graphics_pipeline_state_p
 		);
-		static void set_compute_pipeline_state(
+		static void ZC_bind_pipeline_state(
 			TKPA_valid<A_command_list> command_list_p,
 			KPA_valid_compute_pipeline_state_handle compute_pipeline_state_p
 		);
@@ -157,27 +122,15 @@ namespace nrhi {
 			KPA_valid_buffer_handle index_buffer_p,
 			u32 offset
 		);
-		static void ZIA_bind_vertex_buffers(
+		static void ZIA_bind_input_buffers(
 			TKPA_valid<A_command_list> command_list_p,
-			const TG_span<K_valid_buffer_handle>& vertex_buffer_p_span,
+			const TG_span<K_valid_buffer_handle>& input_buffer_p_span,
 			const TG_span<u32>& offset_span,
 			u32 base_slot_index
 		);
-		static void ZIA_bind_vertex_buffer(
+		static void ZIA_bind_input_buffer(
 			TKPA_valid<A_command_list> command_list_p,
-			KPA_valid_buffer_handle vertex_buffer_p,
-			u32 offset,
-			u32 slot_index
-		);
-		static void ZIA_bind_instance_buffers(
-			TKPA_valid<A_command_list> command_list_p,
-			const TG_span<K_valid_buffer_handle>& instance_buffer_p_span,
-			const TG_span<u32>& offset_span,
-			u32 base_slot_index
-		);
-		static void ZIA_bind_instance_buffer(
-			TKPA_valid<A_command_list> command_list_p,
-			KPA_valid_buffer_handle instance_buffer_p,
+			KPA_valid_buffer_handle input_buffer_p,
 			u32 offset,
 			u32 slot_index
 		);
@@ -331,19 +284,19 @@ namespace nrhi {
 	public:
 		static void draw_instanced_indirect(
 			TKPA_valid<A_command_list> command_list_p,
-			KPA_indirect_buffer_handle indirect_buffer_p,
+			KPA_buffer_handle indirect_buffer_p,
 			u32 indirect_buffer_offset
 		);
 		static void draw_indexed_instanced_indirect(
 			TKPA_valid<A_command_list> command_list_p,
-			KPA_indirect_buffer_handle indirect_buffer_p,
+			KPA_buffer_handle indirect_buffer_p,
 			u32 indirect_buffer_offset
 		);
 
 	public:
 		static void dispatch_indirect(
 			TKPA_valid<A_command_list> command_list_p,
-			KPA_indirect_buffer_handle indirect_buffer_p,
+			KPA_buffer_handle indirect_buffer_p,
 			u32 indirect_buffer_offset
 		);
 
@@ -361,18 +314,6 @@ namespace nrhi {
 		static void generate_mips(
 			TKPA_valid<A_command_list> command_list_p,
 			KPA_valid_srv_handle srv_p
-		);
-
-
-
-	private:
-		static void temp_state_apply_vertex_buffers(
-			const F_directx11_temp_command_list_state& temp_state,
-			ID3D11DeviceContext* d3d11_device_context_p
-		);
-		static void temp_state_apply_vertex_buffers_instance_buffers(
-			const F_directx11_temp_command_list_state& temp_state,
-			ID3D11DeviceContext* d3d11_device_context_p
 		);
 
     };

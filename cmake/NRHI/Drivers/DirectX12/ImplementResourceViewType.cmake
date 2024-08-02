@@ -18,10 +18,10 @@ NRHI_EnumHelper_CreateEnum(
     TARGET_CPP_FILE_PATH "${NRHI_RESOURCE_VIEW_TYPE_ENUM_CPP_FILE_PATH}"
     VALUES
         NONE 0
-        SRV 1
-        UAV 2
-        RTV 3
-        DSV 4
+        SHADER_RESOURCE 1
+        UNORDERED_ACCESS 2
+        RENDER_TARGET 3
+        DEPTH_STENCIL 4
         SAMPLER 5
 )
 

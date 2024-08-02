@@ -48,7 +48,7 @@ namespace nrhi {
 
 	struct F_frame_buffer_desc {
 
-		TG_vector<K_valid_rtv_handle> color_attachments;
+		TG_fixed_vector<K_valid_rtv_handle, 8, false> color_attachments;
 
 		K_dsv_handle depth_stencil_attachment;
 

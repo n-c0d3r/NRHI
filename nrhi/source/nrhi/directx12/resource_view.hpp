@@ -34,6 +34,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/resource_view_base.hpp>
+#include <nrhi/descriptor_base.hpp>
 
 #pragma endregion
 
@@ -70,7 +71,7 @@ namespace nrhi {
 			const F_resource_view_desc& desc
 		) override;
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		virtual void rebuild(
+		virtual void rebuild_with_descriptor(
 			const F_resource_view_desc& desc,
 			const F_descriptor& descriptor
 		) override;
@@ -83,6 +84,33 @@ namespace nrhi {
 	class NRHI_API HD_directx12_resource_view {
 
 	public:
+		static TU<A_resource_view> create_with_descriptor(
+			TKPA_valid<A_device> device_p,
+			const F_resource_view_desc& desc,
+			const F_descriptor& descriptor
+		);
+
+	public:
+		static U_srv_handle create_srv_with_descriptor(
+			TKPA_valid<A_device> device_p,
+			const F_resource_view_desc& desc,
+			const F_descriptor& descriptor
+		);
+		static U_uav_handle create_uav_with_descriptor(
+			TKPA_valid<A_device> device_p,
+			const F_resource_view_desc& desc,
+			const F_descriptor& descriptor
+		);
+		static U_rtv_handle create_rtv_with_descriptor(
+			TKPA_valid<A_device> device_p,
+			const F_resource_view_desc& desc,
+			const F_descriptor& descriptor
+		);
+		static U_dsv_handle create_dsv_with_descriptor(
+			TKPA_valid<A_device> device_p,
+			const F_resource_view_desc& desc,
+			const F_descriptor& descriptor
+		);
 
 	};
 

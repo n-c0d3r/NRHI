@@ -64,22 +64,22 @@ namespace nrhi {
 	};
 	struct F_root_descriptor_table_desc {
 
-		TG_span<F_descriptor_range_desc> range_descs;
+		TG_vector<F_descriptor_range_desc> range_descs;
 
 	};
 
 	struct F_root_descriptor_desc {
 
-		u32 base_register = 0;
+		u32 shader_register = 0;
 		u32 register_space = 0;
 
 	};
 
-	struct F_root_constant_desc {
+	struct F_root_constants_desc {
 
 		u32 base_register = 0;
 		u32 register_space = 0;
-		u32 value = 0;
+		u32 constant_count = 0;
 
 	};
 
@@ -88,19 +88,96 @@ namespace nrhi {
 		ED_root_param_type type;
 		ED_shader_visibility shader_visibility = ED_shader_visibility::ALL;
 
+		// due to use of TG_vector, we can't put descriptor_table_desc into union
+		F_root_descriptor_table_desc descriptor_table_desc;
+
+		// these two structs just have primitive data types, so it's ok to use union
 		union {
-
-			F_root_descriptor_table_desc descriptor_table_desc;
 			F_root_descriptor_desc descriptor_desc;
-			F_root_constant_desc constant_desc;
-
+			F_root_constants_desc constants_desc;
 		};
+
+		NCPP_FORCE_INLINE F_root_param_desc() noexcept :
+			shader_visibility(ED_shader_visibility::ALL),
+			descriptor_table_desc(),
+			constants_desc()
+		{
+		}
+		NCPP_FORCE_INLINE F_root_param_desc(
+			const F_root_descriptor_table_desc& descriptor_table_desc,
+			ED_shader_visibility shader_visibility = ED_shader_visibility::ALL
+		) noexcept :
+			type(ED_root_param_type::DESCRIPTOR_TABLE),
+			shader_visibility(shader_visibility),
+			descriptor_table_desc(descriptor_table_desc)
+		{
+		}
+		NCPP_FORCE_INLINE F_root_param_desc(
+			F_root_descriptor_table_desc&& descriptor_table_desc,
+			ED_shader_visibility shader_visibility = ED_shader_visibility::ALL
+		) noexcept :
+			type(ED_root_param_type::DESCRIPTOR_TABLE),
+			shader_visibility(shader_visibility),
+			descriptor_table_desc(std::move(descriptor_table_desc))
+		{
+		}
+		NCPP_FORCE_INLINE F_root_param_desc(
+			ED_root_param_type type,
+			const F_root_descriptor_desc& descriptor_desc,
+			ED_shader_visibility shader_visibility = ED_shader_visibility::ALL
+		) noexcept :
+			type(type),
+			shader_visibility(shader_visibility),
+			descriptor_desc(descriptor_desc)
+		{
+		}
+		NCPP_FORCE_INLINE F_root_param_desc(
+			const F_root_constants_desc& constants_desc,
+			ED_shader_visibility shader_visibility = ED_shader_visibility::ALL
+		) noexcept :
+			type(ED_root_param_type::CONSTANTS),
+			shader_visibility(shader_visibility),
+			constants_desc(constants_desc)
+		{
+		}
+		NCPP_FORCE_INLINE F_root_param_desc(const F_root_param_desc& x) noexcept :
+			type(x.type),
+			shader_visibility(x.shader_visibility),
+			descriptor_table_desc(x.descriptor_table_desc),
+			constants_desc(x.constants_desc)
+		{
+		}
+		NCPP_FORCE_INLINE F_root_param_desc& operator = (const F_root_param_desc& x) noexcept
+		{
+			type = x.type;
+			shader_visibility = x.shader_visibility;
+			descriptor_table_desc = x.descriptor_table_desc;
+			constants_desc = x.constants_desc;
+
+			return *this;
+		}
+		NCPP_FORCE_INLINE F_root_param_desc(F_root_param_desc&& x) noexcept :
+			type(x.type),
+			shader_visibility(x.shader_visibility),
+			descriptor_table_desc(std::move(x.descriptor_table_desc)),
+			constants_desc(x.constants_desc)
+		{
+		}
+		NCPP_FORCE_INLINE F_root_param_desc& operator = (F_root_param_desc&& x) noexcept
+		{
+			type = x.type;
+			shader_visibility = x.shader_visibility;
+			descriptor_table_desc = std::move(x.descriptor_table_desc);
+			constants_desc = x.constants_desc;
+
+			return *this;
+		}
 
 	};
 
 	struct F_static_sampler_state_desc {
 
-		u32 base_register = 0;
+		u32 shader_register = 0;
 		u32 register_space = 0;
 		F_sampler_state_desc sampler_state_desc;
 		ED_shader_visibility shader_visibility = ED_shader_visibility::ALL;

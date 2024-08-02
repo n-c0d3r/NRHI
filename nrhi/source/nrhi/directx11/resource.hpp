@@ -93,16 +93,6 @@ namespace nrhi {
             const F_initial_resource_data& initial_resource_data,
             const F_resource_desc& desc
         );
-        static U_structured_buffer_handle create_structured_buffer(
-            TKPA_valid<A_device> device_p,
-            const F_initial_resource_data& initial_resource_data,
-            const F_resource_desc& desc
-        );
-		static U_indirect_buffer_handle create_indirect_buffer(
-			TKPA_valid<A_device> device_p,
-			const F_initial_resource_data& initial_resource_data,
-			const F_resource_desc& desc
-		);
 
     public:
         static U_texture_1d_handle create_texture_1d(
@@ -125,10 +115,15 @@ namespace nrhi {
 			const F_initial_resource_data& initial_resource_data,
 			const F_resource_desc& desc
 		);
-		static U_texture_cube_handle create_texture_cube(
-			TKPA_valid<A_device> device_p,
-			const F_initial_resource_data& initial_resource_data,
-			const F_resource_desc& desc
+
+	public:
+		static F_mapped_subresource map(
+			TKPA_valid<A_resource> resource_p,
+			u32 subresource_index
+		);
+		static void unmap(
+			TKPA_valid<A_resource> resource_p,
+			u32 subresource_index
 		);
 
     };

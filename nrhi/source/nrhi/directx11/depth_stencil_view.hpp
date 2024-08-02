@@ -51,7 +51,7 @@ namespace nrhi {
 		F_directx11_depth_stencil_view(
 			TKPA_valid<A_device> device_p,
 			const F_resource_view_desc& desc,
-			ED_resource_view_type overrided_type = ED_resource_view_type::DSV
+			ED_resource_view_type overrided_type = ED_resource_view_type::DEPTH_STENCIL
 		);
 		F_directx11_depth_stencil_view(
 			TKPA_valid<A_device> device_p,

@@ -1,0 +1,27 @@
+
+message(STATUS "<NRHI::Drivers::DirectX11> Start implementing color write_mode")
+
+include(NRHI/Utilities/EnumHelper)
+
+
+
+NCPP_SetGlobal(NRHI_COLOR_WRITE_MODE_ENUM_HPP_FILE_PATH "${NRHI_GENERATED_FILES_DIR}/color_write_mode.hpp")
+NCPP_SetGlobal(NRHI_COLOR_WRITE_MODE_ENUM_CPP_FILE_PATH "${NRHI_GENERATED_FILES_DIR}/color_write_mode.cpp")
+
+
+
+NRHI_EnumHelper_CreateEnum(
+    NAMESPACE "nrhi"
+    NAME "ED_color_write_mode"
+    DRIVER_UPPER_CASE_NAME "DIRECTX_11"
+    TARGET_HPP_FILE_PATH "${NRHI_COLOR_WRITE_MODE_ENUM_HPP_FILE_PATH}"
+    TARGET_CPP_FILE_PATH "${NRHI_COLOR_WRITE_MODE_ENUM_CPP_FILE_PATH}"
+    VALUES
+        RED D3D11_COLOR_WRITE_ENABLE_RED
+        GREEN D3D11_COLOR_WRITE_ENABLE_GREEN
+        BLUE D3D11_COLOR_WRITE_ENABLE_BLUE
+        ALPHA D3D11_COLOR_WRITE_ENABLE_ALPHA
+        ALL D3D11_COLOR_WRITE_ENABLE_ALL
+)
+
+message(STATUS "<NRHI::Drivers::DirectX11> Implement color write_mode done")

@@ -56,7 +56,7 @@ namespace nrhi {
 
 			const auto& root_descriptor_table_desc = root_param_desc.descriptor_table_desc;
 			const auto& root_descriptor_desc = root_param_desc.descriptor_desc;
-			const auto& root_constant_desc = root_param_desc.constant_desc;
+			const auto& root_constants_desc = root_param_desc.constants_desc;
 
 			switch (d3d12_root_param.ParameterType)
 			{
@@ -83,20 +83,20 @@ namespace nrhi {
 				}
 				break;
 			case D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS:
-				d3d12_root_param.Constants.ShaderRegister = root_constant_desc.base_register;
-				d3d12_root_param.Constants.RegisterSpace = root_constant_desc.register_space;
-				d3d12_root_param.Constants.Num32BitValues = root_constant_desc.value;
+				d3d12_root_param.Constants.ShaderRegister = root_constants_desc.base_register;
+				d3d12_root_param.Constants.RegisterSpace = root_constants_desc.register_space;
+				d3d12_root_param.Constants.Num32BitValues = root_constants_desc.constant_count;
 				break;
 			case D3D12_ROOT_PARAMETER_TYPE_CBV:
-				d3d12_root_param.Descriptor.ShaderRegister = root_descriptor_desc.base_register;
+				d3d12_root_param.Descriptor.ShaderRegister = root_descriptor_desc.shader_register;
 				d3d12_root_param.Descriptor.RegisterSpace = root_descriptor_desc.register_space;
 				break;
 			case D3D12_ROOT_PARAMETER_TYPE_SRV:
-				d3d12_root_param.Descriptor.ShaderRegister = root_descriptor_desc.base_register;
+				d3d12_root_param.Descriptor.ShaderRegister = root_descriptor_desc.shader_register;
 				d3d12_root_param.Descriptor.RegisterSpace = root_descriptor_desc.register_space;
 				break;
 			case D3D12_ROOT_PARAMETER_TYPE_UAV:
-				d3d12_root_param.Descriptor.ShaderRegister = root_descriptor_desc.base_register;
+				d3d12_root_param.Descriptor.ShaderRegister = root_descriptor_desc.shader_register;
 				d3d12_root_param.Descriptor.RegisterSpace = root_descriptor_desc.register_space;
 				break;
 			}
@@ -113,9 +113,9 @@ namespace nrhi {
 			const auto& sampler_state_desc = static_sampler_state_desc.sampler_state_desc;
 			auto& d3d12_static_sampler_state_desc = d3d12_static_sampler_state_descs[i];
 
-			d3d12_static_sampler_state_desc.ShaderRegister = static_sampler_state_desc.base_register;
+			d3d12_static_sampler_state_desc.ShaderRegister = static_sampler_state_desc.shader_register;
 			d3d12_static_sampler_state_desc.RegisterSpace = static_sampler_state_desc.register_space;
-			d3d12_static_sampler_state_desc.ShaderVisibility = static_sampler_state_desc.shader_visibility;
+			d3d12_static_sampler_state_desc.ShaderVisibility = D3D12_SHADER_VISIBILITY(static_sampler_state_desc.shader_visibility);
 
 			d3d12_static_sampler_state_desc.Filter = D3D12_FILTER(sampler_state_desc.filter);
 			d3d12_static_sampler_state_desc.AddressU = D3D12_TEXTURE_ADDRESS_MODE(sampler_state_desc.texcoord_address_modes[0]);

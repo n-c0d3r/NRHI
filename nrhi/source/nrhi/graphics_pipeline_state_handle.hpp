@@ -28,6 +28,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/prerequisites.hpp>
+#include <nrhi/pipeline_state_desc.hpp>
 
 #pragma endregion
 
@@ -42,6 +43,9 @@ namespace nrhi {
 	NCPP_FHANDLE_TEMPLATE(graphics_pipeline_state_handle, A_pipeline_state) {
 
 		NCPP_FHANDLE_GENERATED_BODY(graphics_pipeline_state_handle, A_pipeline_state);
+
+	public:
+		NCPP_FORCE_INLINE const F_graphics_pipeline_state_options& options() const noexcept;
 
 	};
 

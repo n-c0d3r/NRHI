@@ -34,7 +34,6 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/shader_compiler_base.hpp>
-#include <nrhi/shader_desc.hpp>
 #include <nrhi/sampler_state_desc.hpp>
 #include <nrhi/cull_mode.hpp>
 #include <nrhi/fill_mode.hpp>
@@ -173,13 +172,6 @@ namespace nrhi {
 
 	};
 
-	enum class E_nsl_semantic_input_class {
-
-		PER_VERTEX,
-		PER_INSTANCE
-
-	};
-
 	class NRHI_API F_nsl_info_tree_reader {
 
 	private:
@@ -192,7 +184,7 @@ namespace nrhi {
 		static b8 is_maps_setup_;
 		static TG_map<G_string, b8> b8_str_to_value_map_;
 		static TG_map<G_string, E_nsl_element_format> element_format_str_to_value_map_;
-		static TG_map<G_string, E_nsl_semantic_input_class> semantic_input_class_str_to_value_map_;
+		static TG_map<G_string, ED_input_classification> input_classification_str_to_value_map_;
 		static TG_map<G_string, ED_filter> filter_str_to_value_map_;
 		static TG_map<G_string, ED_texcoord_address_mode> texcoord_address_mode_str_to_value_map_;
 		static TG_map<G_string, ED_cull_mode> cull_mode_str_to_value_map_;
@@ -248,7 +240,7 @@ namespace nrhi {
 		b8 guarantee_flag(const G_string& name, b8 is_required = true) const;
 		eastl::optional<F_nsl_info_tree_reader> read_sub(const G_string& name, b8 is_required = true) const;
 		eastl::optional<E_nsl_element_format> read_element_format(u32 index, b8 is_required = true) const;
-		eastl::optional<E_nsl_semantic_input_class> read_semantic_input_class(u32 index, b8 is_required = true) const;
+		eastl::optional<ED_input_classification> read_input_classification(u32 index, b8 is_required = true) const;
 		eastl::optional<ED_filter> read_filter(u32 index, b8 is_required = true) const;
 		eastl::optional<ED_texcoord_address_mode> read_texcoord_address_mode(u32 index, b8 is_required = true) const;
 		eastl::optional<ED_cull_mode> read_cull_mode(u32 index, b8 is_required = true) const;
@@ -347,9 +339,9 @@ namespace nrhi {
 	};
 	enum class E_nsl_resource_type_class {
 		NONE,
-		SRV,
-		UAV,
-		CBV
+		SHADER_RESOURCE,
+		UNORDERED_ACCESS,
+		CONSTANT_BUFFER
 	};
 	using F_nsl_resource_config_map = TG_unordered_map<G_string, F_nsl_info_tree_reader>;
 	struct F_nsl_resource_info {
@@ -364,6 +356,7 @@ namespace nrhi {
 		TG_vector<u32> actual_slots;
 
 		TG_vector<G_string> uniforms;
+		u32 sort_uniforms = true;
 		u32 constant_size = NCPP_U32_MAX;
 
 		F_resource_dimension_sizes dimension_sizes = { 1 };
@@ -405,6 +398,7 @@ namespace nrhi {
 	struct F_nsl_sampler_state_info {
 
 		F_sampler_state_desc desc;
+		b8 is_static = false;
 
 		u32 slot = NCPP_U32_MAX;
 		TG_vector<u32> actual_slots;
@@ -427,7 +421,9 @@ namespace nrhi {
 
 		ED_pipeline_state_type type = ED_pipeline_state_type::NONE;
 
-		F_pipeline_state_desc desc;
+		F_general_pipeline_state_options options;
+
+		u32 root_signature = 0;
 
 		F_nsl_pipeline_state_config_map config_map;
 
@@ -444,6 +440,7 @@ namespace nrhi {
 		G_string semantic;
 		u32 buffer = 0;
 		u32 offset = NCPP_U32_MAX;
+		ED_input_classification classification = ED_input_classification::PER_VERTEX_DATA;
 
 	};
 	using F_nsl_input_attribute_config_map = TG_unordered_map<G_string, F_nsl_info_tree_reader>;
@@ -460,7 +457,6 @@ namespace nrhi {
 		TK<F_nsl_translation_unit> translation_unit_p;
 
 	};
-	using F_nsl_input_assembler = eastl::pair<G_string, F_nsl_input_assembler_info>;
 
 	struct NRHI_API F_nsl_str_state {
 
@@ -627,7 +623,6 @@ namespace nrhi {
 		G_string target_binding;
 		E_nsl_element_format element_format;
 		u32 element_count = 1;
-		E_nsl_semantic_input_class input_class = E_nsl_semantic_input_class::PER_VERTEX;
 
 	};
 	using F_nsl_semantic = eastl::pair<G_string, F_nsl_semantic_info>;
@@ -643,7 +638,7 @@ namespace nrhi {
 		TG_stack<F_nsl_object_config> object_config_stack;
 
 		G_string default_constant_buffer;
-		F_pipeline_state_desc default_pipeline_state_desc;
+		F_general_pipeline_state_options default_pipeline_state_options;
 
 	};
 
@@ -729,21 +724,16 @@ namespace nrhi {
 
 		ED_shader_type type;
 
-		u32 input_assembler_index = NCPP_U32_MAX;
-
-	};
-	struct F_nsl_input_assembler_reflection {
-
-		G_string name;
-
-		F_input_assembler_desc desc;
-
 	};
 	struct F_nsl_pipeline_state_reflection {
 
 		G_string name;
 
-		F_pipeline_state_desc desc;
+		ED_pipeline_state_type type = ED_pipeline_state_type::NONE;
+
+		F_general_pipeline_state_options options;
+
+		u32 root_signature = 0;
 
 		TG_vector<u32> shader_indices;
 
@@ -753,6 +743,7 @@ namespace nrhi {
 		G_string name;
 
 		F_sampler_state_desc desc;
+		b8 is_static = false;
 
 		TG_vector<u32> actual_slots;
 
@@ -800,6 +791,7 @@ namespace nrhi {
 		TG_vector<u32> actual_slots;
 
 		TG_vector<F_nsl_data_argument_reflection> data_arguments;
+		u32 sort_uniforms = true;
 
 		sz constant_size = 0;
 
@@ -841,7 +833,6 @@ namespace nrhi {
 	struct NRHI_API F_nsl_reflection
 	{
 		TG_vector<F_nsl_shader_reflection> shaders;
-		TG_vector<F_nsl_input_assembler_reflection> input_assemblers;
 		TG_vector<F_nsl_pipeline_state_reflection> pipeline_states;
 		TG_vector<F_nsl_sampler_state_reflection> sampler_states;
 		TG_vector<F_nsl_resource_reflection> resources;
@@ -878,39 +869,6 @@ namespace nrhi {
 				<< T_cout_value(name);
 
 			return shaders[shader_index];
-		}
-
-	public:
-		NCPP_FORCE_INLINE u32 search_input_assembler_index(const G_string& name) const noexcept {
-
-			u32 input_assembler_count = input_assemblers.size();
-			for(u32 i = 0; i < input_assembler_count; ++i) {
-
-				if(input_assemblers[i].name == name)
-					return i;
-			}
-
-			return -1;
-		}
-		NCPP_FORCE_INLINE F_nsl_input_assembler_reflection& search_input_assembler(const G_string& name) noexcept {
-
-			u32 input_assembler_index = search_input_assembler_index(name);
-
-			NCPP_ASSERT(input_assembler_index != -1)
-				<< "not found input assembler "
-				<< T_cout_value(name);
-
-			return input_assemblers[input_assembler_index];
-		}
-		NCPP_FORCE_INLINE const F_nsl_input_assembler_reflection& search_input_assembler(const G_string& name) const noexcept {
-
-			u32 input_assembler_index = search_input_assembler_index(name);
-
-			NCPP_ASSERT(input_assembler_index != -1)
-				<< "not found input assembler "
-				<< T_cout_value(name);
-
-			return input_assemblers[input_assembler_index];
 		}
 
 	public:
@@ -1057,15 +1015,26 @@ namespace nrhi {
 
 	struct NRHI_API F_nsl_compiled_result {
 
+		G_string class_name;
+
 		G_string src_content;
 		E_nsl_output_language output_language_enum = E_nsl_output_language::NONE;
 
+		F_nsl_reflection reflection;
+
 		u32 shader_count = 0;
 
-		F_nsl_reflection reflection;
+		TG_vector<F_shader_binary> shader_binaries;
 
 	public:
 		G_string build(u32 shader_index) const;
+
+		NCPP_FORCE_INLINE b8 is_finalized() const noexcept {
+
+			return (shader_binaries.size() != 0);
+		}
+		void finalize();
+		void finalize_and_release_src_content();
 
 	};
 
@@ -1944,6 +1913,9 @@ namespace nrhi {
 			F_nsl_error_stack* error_stack_p
 		) override;
 
+	private:
+		F_input_assembler_desc convert_to_input_assembler_desc(const F_nsl_input_assembler_info& input_assembler_info);
+
 	};
 
 
@@ -1970,19 +1942,19 @@ namespace nrhi {
 
 
 
-	class NRHI_API F_nsl_default_pipeline_state_desc_object : public A_nsl_object {
+	class NRHI_API F_nsl_default_pipeline_state_object : public F_nsl_pipeline_state_object {
 
 	public:
-		F_nsl_default_pipeline_state_desc_object(
+		F_nsl_default_pipeline_state_object(
 			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 			TKPA_valid<A_nsl_object_type> type_p,
 			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 			const G_string& name = ""
 		);
-		virtual ~F_nsl_default_pipeline_state_desc_object();
+		virtual ~F_nsl_default_pipeline_state_object();
 
 	public:
-		NCPP_OBJECT(F_nsl_default_pipeline_state_desc_object);
+		NCPP_OBJECT(F_nsl_default_pipeline_state_object);
 
 	public:
 		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
@@ -1997,65 +1969,16 @@ namespace nrhi {
 
 
 
-	class NRHI_API F_nsl_default_pipeline_state_desc_object_type : public A_nsl_object_type {
+	class NRHI_API F_nsl_default_pipeline_state_object_type : public A_nsl_object_type {
 
 	public:
-		F_nsl_default_pipeline_state_desc_object_type(
+		F_nsl_default_pipeline_state_object_type(
 			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
 		);
-		virtual ~F_nsl_default_pipeline_state_desc_object_type();
+		virtual ~F_nsl_default_pipeline_state_object_type();
 
 	public:
-		NCPP_OBJECT(F_nsl_default_pipeline_state_desc_object_type);
-
-	public:
-		virtual TK<A_nsl_object> create_object(
-			F_nsl_ast_tree& tree,
-			F_nsl_context& context,
-			TKPA_valid<F_nsl_translation_unit> translation_unit_p
-		) override;
-
-	};
-
-
-
-	class NRHI_API F_nsl_input_assembler_object : public A_nsl_object {
-
-	public:
-		F_nsl_input_assembler_object(
-			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
-			TKPA_valid<A_nsl_object_type> type_p,
-			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
-			const G_string& name = ""
-		);
-		virtual ~F_nsl_input_assembler_object();
-
-	public:
-		NCPP_OBJECT(F_nsl_input_assembler_object);
-
-	public:
-		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
-			F_nsl_context& context,
-			TK_valid<F_nsl_translation_unit> unit_p,
-			TG_vector<F_nsl_ast_tree>& trees,
-			sz index,
-			F_nsl_error_stack* error_stack_p
-		) override;
-
-	};
-
-
-
-	class NRHI_API F_nsl_input_assembler_object_type : public A_nsl_object_type {
-
-	public:
-		F_nsl_input_assembler_object_type(
-			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
-		);
-		virtual ~F_nsl_input_assembler_object_type();
-
-	public:
-		NCPP_OBJECT(F_nsl_input_assembler_object_type);
+		NCPP_OBJECT(F_nsl_default_pipeline_state_object_type);
 
 	public:
 		virtual TK<A_nsl_object> create_object(
@@ -2139,14 +2062,6 @@ namespace nrhi {
 
 
 	class NRHI_API F_nsl_vertex_shader_object final : public A_nsl_shader_object {
-
-	private:
-		G_string input_assembler_name_;
-
-	public:
-		NCPP_FORCE_INLINE const G_string& input_assembler_name() const noexcept { return input_assembler_name_; }
-
-
 
 	public:
 		F_nsl_vertex_shader_object(
@@ -3684,72 +3599,6 @@ namespace nrhi {
 
 
 
-	class NRHI_API F_nsl_input_assembler_manager {
-
-	private:
-		TK_valid<F_nsl_shader_compiler> shader_compiler_p_;
-
-	protected:
-		TG_unordered_map<G_string, F_nsl_input_assembler_info> name_to_input_assembler_info_map_;
-
-	public:
-		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
-
-		NCPP_FORCE_INLINE const TG_unordered_map<G_string, F_nsl_input_assembler_info>& name_to_input_assembler_info_map() const noexcept { return name_to_input_assembler_info_map_; }
-
-
-
-	public:
-		F_nsl_input_assembler_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p);
-		virtual ~F_nsl_input_assembler_manager();
-
-	public:
-		NCPP_OBJECT(F_nsl_input_assembler_manager);
-
-	public:
-		NCPP_FORCE_INLINE b8 is_name_has_input_assembler_info(const G_string& name) const {
-
-			auto it = name_to_input_assembler_info_map_.find(name);
-
-			return (it != name_to_input_assembler_info_map_.end());
-		}
-		NCPP_FORCE_INLINE F_nsl_input_assembler_info& input_assembler_info(const G_string& name) {
-
-			auto it = name_to_input_assembler_info_map_.find(name);
-
-			NCPP_ASSERT(it != name_to_input_assembler_info_map_.end()) << "can't find " << T_cout_value(name);
-
-			return it->second;
-		}
-		NCPP_FORCE_INLINE const F_nsl_input_assembler_info& input_assembler_info(const G_string& name) const {
-
-			auto it = name_to_input_assembler_info_map_.find(name);
-
-			NCPP_ASSERT(it != name_to_input_assembler_info_map_.end()) << "can't find " << T_cout_value(name);
-
-			return it->second;
-		}
-		NCPP_FORCE_INLINE void register_input_assembler(const G_string& name, const F_nsl_input_assembler_info& input_assembler_info) {
-
-			NCPP_ASSERT(name_to_input_assembler_info_map_.find(name) == name_to_input_assembler_info_map_.end()) << T_cout_value(name) << " already exists";
-
-			name_to_input_assembler_info_map_[name] = process_input_assembler_info(name, input_assembler_info);
-		}
-		NCPP_FORCE_INLINE void deregister_input_assembler(const G_string& name) {
-
-			NCPP_ASSERT(name_to_input_assembler_info_map_.find(name) != name_to_input_assembler_info_map_.end()) << T_cout_value(name) << " is not exists";
-
-			auto it = name_to_input_assembler_info_map_.find(name);
-			name_to_input_assembler_info_map_.erase(it);
-		}
-
-	private:
-		F_nsl_input_assembler_info process_input_assembler_info(const G_string& name, const F_nsl_input_assembler_info& input_assembler_info);
-
-	};
-
-
-
 	class NRHI_API F_nsl_reflector {
 
 	private:
@@ -3838,10 +3687,6 @@ namespace nrhi {
 			pipeline_state_manager_creator
 		);
 		NRHI_NSL_DEFINE_SUBSYSTEM_CREATOR_AS_CUSTOMIZATION_MEMBER(
-			F_nsl_input_assembler_manager,
-			input_assembler_manager_creator
-		);
-		NRHI_NSL_DEFINE_SUBSYSTEM_CREATOR_AS_CUSTOMIZATION_MEMBER(
 			F_nsl_reflector,
 			reflector_creator
 		);
@@ -3863,7 +3708,6 @@ namespace nrhi {
 		TU<F_nsl_uniform_manager> uniform_manager_p_;
 		TU<F_nsl_sampler_state_manager> sampler_state_manager_p_;
 		TU<F_nsl_pipeline_state_manager> pipeline_state_manager_p_;
-		TU<F_nsl_input_assembler_manager> input_assembler_manager_p_;
 		TU<F_nsl_reflector> reflector_p_;
 
 		TU<A_nsl_output_language> output_language_p_;
@@ -3884,7 +3728,6 @@ namespace nrhi {
 		NCPP_FORCE_INLINE TK_valid<F_nsl_uniform_manager> uniform_manager_p() const noexcept { return NCPP_FOH_VALID(uniform_manager_p_); }
 		NCPP_FORCE_INLINE TK_valid<F_nsl_sampler_state_manager> sampler_state_manager_p() const noexcept { return NCPP_FOH_VALID(sampler_state_manager_p_); }
 		NCPP_FORCE_INLINE TK_valid<F_nsl_pipeline_state_manager> pipeline_state_manager_p() const noexcept { return NCPP_FOH_VALID(pipeline_state_manager_p_); }
-		NCPP_FORCE_INLINE TK_valid<F_nsl_input_assembler_manager> input_assembler_manager_p() const noexcept { return NCPP_FOH_VALID(input_assembler_manager_p_); }
 		NCPP_FORCE_INLINE TK_valid<F_nsl_reflector> reflector_p() const noexcept { return NCPP_FOH_VALID(reflector_p_); }
 
 		NCPP_FORCE_INLINE TK<A_nsl_output_language> output_language_p() const noexcept { return output_language_p_; }
@@ -3909,6 +3752,7 @@ namespace nrhi {
 	public:
 		eastl::optional<F_nsl_compiled_result> compile(
 			const G_string& raw_src_content,
+			const G_string& class_name = "",
 			E_nsl_output_language output_language_enum = E_nsl_output_language::NONE,
 			const G_string& abs_path = ""
 		);

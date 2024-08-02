@@ -111,7 +111,6 @@ int main() {
 "	INSTANCE_DATA\n"
 ")\n"
 "\n"
-"@input_assembler(demo_input_assembler)\n"
 "vertex_shader vs_main(\n"
 "	input(F_vs_input)\n"
 "	out output(F_vs_output)\n"
@@ -133,12 +132,22 @@ int main() {
 "}\n"
 "\n"
 "@color_formats(R8G8B8A8_UNORM)\n"
-"default_pipeline_state_desc()\n"
+"default_pipeline_state()\n"
 "\n"
 "@rasterizer\n"
 "(\n"
 "	cull_mode(BACK)\n"
 "	fill_mode(WIREFRAME)\n"
+")\n"
+"@input_assembler\n"
+"(\n"
+"	@buffer(0)\n"
+"	@offset(0)\n"
+"	POSITION\n"
+"	@buffer(1)\n"
+"	@offset(16)\n"
+"	NORMAL\n"
+"	INSTANCE_DATA\n"
 ")\n"
 "@primitive_topology(LINE_LIST)\n"
 "pipeline_state graphics_pso_main\n"
@@ -147,6 +156,7 @@ int main() {
 "	ps_main\n"
 ")\n"
 "\n",
+		"",
 		E_nsl_output_language::HLSL_4
 	);
 
@@ -178,12 +188,10 @@ int main() {
 					"demo_texture_2d_2"
 				})
 			},
-			E_nsl_resource_type_class::SRV
+			E_nsl_resource_type_class::SHADER_RESOURCE
 		);
 
-		NCPP_INFO() << compiled_result.build(
-			0
-		);
+		NCPP_INFO() << compiled_result.build(0);
 	}
 
 	return 0;

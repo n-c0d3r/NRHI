@@ -25,7 +25,7 @@ int main() {
 	auto descriptor_heap_p = H_descriptor_heap::create(
 		NCPP_FOH_VALID(device_p),
 		{
-			.type = ED_descriptor_heap_type::CBV_SRV_UAV,
+			.type = ED_descriptor_heap_type::CONSTANT_BUFFER_SHADER_RESOURCE_UNORDERED_ACCESS,
 			.descriptor_count = 3
 		}
 	);

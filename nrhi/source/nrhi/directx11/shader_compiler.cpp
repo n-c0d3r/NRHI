@@ -1,5 +1,4 @@
 #include <nrhi/directx11/shader_compiler.hpp>
-#include <nrhi/directx11/shader.hpp>
 
 #include <d3dcompiler.h>
 
@@ -7,8 +6,9 @@
 
 namespace nrhi {
 
-	TG_vector<u8> HD_directx11_shader_compiler::compile_hlsl_from_src_content(
+	F_shader_binary HD_directx11_shader_compiler::compile_hlsl_from_src_content(
 		const G_string& class_name,
+		const G_string& shader_name,
 		const G_string& entry_point_name,
 		const G_string& src_content,
 		const G_string& abs_path,
@@ -21,7 +21,7 @@ namespace nrhi {
 
 		HRESULT hr;
 
-		G_string src_name = class_name + entry_point_name;
+		G_string src_name = class_name + "::" + shader_name;
 
 		G_string model = G_to_string(model_major) + "_" + G_to_string(model_minor);
 
@@ -30,84 +30,84 @@ namespace nrhi {
 			NRHI_ENUM_CASE(
 				ED_shader_type::VERTEX,
 				model = "vs_" + model;
-				hr = D3DCompile(
-					src_content.data(),
-					src_content.size() * sizeof(char),
-					src_name.data(),
-					0,
-					0,
-					entry_point_name.data(),
-					model.c_str(),
-					0,
-					0,
-					&d3d11_shader_blob_p,
-					&d3d11_error_blob_p
-				);
-				NCPP_ASSERT(!FAILED(hr))
-					<< "can't compile "
-					<< ncpp::T_cout_field_name("vertex")
-					<< " shader blob "
-					<< ncpp::T_cout_value(entry_point_name)
-					<< std::endl
-					<< ncpp::E_log_color::V_FOREGROUND_BRIGHT_RED
-					<< (char*)d3d11_error_blob_p->GetBufferPointer();
-				NRHI_ENUM_BREAK;
-			)
+			hr = D3DCompile(
+				src_content.data(),
+				src_content.size() * sizeof(char),
+				src_name.data(),
+				0,
+				0,
+				entry_point_name.data(),
+				model.c_str(),
+				0,
+				0,
+				&d3d11_shader_blob_p,
+				&d3d11_error_blob_p
+			);
+			NCPP_ASSERT(!FAILED(hr))
+				<< "can't compile "
+				<< ncpp::T_cout_field_name("vertex")
+				<< " shader blob "
+				<< ncpp::T_cout_value(entry_point_name)
+				<< std::endl
+				<< ncpp::E_log_color::V_FOREGROUND_BRIGHT_RED
+				<< (char*)d3d11_error_blob_p->GetBufferPointer();
+			NRHI_ENUM_BREAK;
+		)
 			NRHI_ENUM_CASE(
-				ED_shader_type::PIXEL,
-				model = "ps_" + model;
-				hr = D3DCompile(
-					src_content.data(),
-					src_content.size() * sizeof(char),
-					src_name.data(),
-					0,
-					0,
-					entry_point_name.data(),
-					model.c_str(),
-					0,
-					0,
-					&d3d11_shader_blob_p,
-					&d3d11_error_blob_p
-				);
-				NCPP_ASSERT(!FAILED(hr))
-					<< "can't compile "
-					<< ncpp::T_cout_field_name("pixel")
-					<< " shader blob "
-					<< ncpp::T_cout_value(entry_point_name)
-					<< std::endl
-					<< ncpp::E_log_color::V_FOREGROUND_BRIGHT_RED
-					<< (char*)d3d11_error_blob_p->GetBufferPointer();
-				NRHI_ENUM_BREAK;
-			)
+			ED_shader_type::PIXEL,
+			model = "ps_" + model;
+			hr = D3DCompile(
+			src_content.data(),
+			src_content.size() * sizeof(char),
+			src_name.data(),
+			0,
+			0,
+			entry_point_name.data(),
+			model.c_str(),
+			0,
+			0,
+			&d3d11_shader_blob_p,
+			&d3d11_error_blob_p
+		);
+			NCPP_ASSERT(!FAILED(hr))
+			<< "can't compile "
+			<< ncpp::T_cout_field_name("pixel")
+			<< " shader blob "
+			<< ncpp::T_cout_value(entry_point_name)
+			<< std::endl
+			<< ncpp::E_log_color::V_FOREGROUND_BRIGHT_RED
+			<< (char*)d3d11_error_blob_p->GetBufferPointer();
+			NRHI_ENUM_BREAK;
+		)
 			NRHI_ENUM_CASE(
-				ED_shader_type::COMPUTE,
-				model = "cs_" + model;
-				hr = D3DCompile(
-					src_content.data(),
-					src_content.size() * sizeof(char),
-					src_name.data(),
-					0,
-					0,
-					entry_point_name.data(),
-					model.c_str(),
-					0,
-					0,
-					&d3d11_shader_blob_p,
-					&d3d11_error_blob_p
-				);
-				NCPP_ASSERT(!FAILED(hr))
-					<< "can't compile "
-					<< ncpp::T_cout_field_name("compute")
-					<< " shader blob "
-					<< ncpp::T_cout_value(entry_point_name)
-					<< std::endl
-					<< ncpp::E_log_color::V_FOREGROUND_BRIGHT_RED
-					<< (char*)d3d11_error_blob_p->GetBufferPointer();
-				NRHI_ENUM_BREAK;
-			)
+			ED_shader_type::COMPUTE,
+			model = "cs_" + model;
+			hr = D3DCompile(
+			src_content.data(),
+			src_content.size() * sizeof(char),
+			src_name.data(),
+			0,
+			0,
+			entry_point_name.data(),
+			model.c_str(),
+			0,
+			0,
+			&d3d11_shader_blob_p,
+			&d3d11_error_blob_p
+		);
+			NCPP_ASSERT(!FAILED(hr))
+			<< "can't compile "
+			<< ncpp::T_cout_field_name("compute")
+			<< " shader blob "
+			<< ncpp::T_cout_value(entry_point_name)
+			<< std::endl
+			<< ncpp::E_log_color::V_FOREGROUND_BRIGHT_RED
+			<< (char*)d3d11_error_blob_p->GetBufferPointer();
+			NRHI_ENUM_BREAK;
+		)
 		);
 
-		TG_vector<u8> result(d3d11_shader_blob_p->GetBufferSize());
+		F_shader_binary result(d3d11_shader_blob_p->GetBufferSize());
 		memcpy(
 			(void*)(result.data()),
 			(void*)(d3d11_shader_blob_p->GetBufferPointer()),
@@ -116,8 +116,9 @@ namespace nrhi {
 
 		return std::move(result);
 	}
-	TG_vector<u8> HD_directx11_shader_compiler::compile_hlsl(
+	F_shader_binary HD_directx11_shader_compiler::compile_hlsl(
 		const G_string& class_name,
+		const G_string& shader_name,
 		const G_string& entry_point_name,
 		const G_string& abs_path,
 		u32 model_major,
@@ -129,7 +130,7 @@ namespace nrhi {
 
 		HRESULT hr;
 
-		G_string src_name = class_name + entry_point_name;
+		G_string src_name = class_name + "::" + shader_name;
 
 		G_wstring abs_wpath = G_to_wstring(abs_path);
 
@@ -140,18 +141,18 @@ namespace nrhi {
 			NRHI_ENUM_CASE(
 				ED_shader_type::VERTEX,
 				model = "vs_" + model;
-				hr = D3DCompileFromFile(
-					abs_wpath.data(),
-					0,
-					D3D_COMPILE_STANDARD_FILE_INCLUDE,
-					entry_point_name.data(),
-					model.c_str(),
-					0,
-					0,
-					&d3d11_shader_blob_p,
-					&d3d11_error_blob_p
-				);
-				NCPP_ASSERT(!FAILED(hr))
+			hr = D3DCompileFromFile(
+				abs_wpath.data(),
+				0,
+				D3D_COMPILE_STANDARD_FILE_INCLUDE,
+				entry_point_name.data(),
+				model.c_str(),
+				0,
+				0,
+				&d3d11_shader_blob_p,
+				&d3d11_error_blob_p
+			);
+			NCPP_ASSERT(!FAILED(hr))
 				<< "can't compile "
 				<< ncpp::T_cout_field_name("vertex")
 				<< " shader blob "
@@ -159,69 +160,68 @@ namespace nrhi {
 				<< std::endl
 				<< ncpp::E_log_color::V_FOREGROUND_BRIGHT_RED
 				<< (char*)d3d11_error_blob_p->GetBufferPointer();
-				NRHI_ENUM_BREAK;
-			)
+			NRHI_ENUM_BREAK;
+		)
 			NRHI_ENUM_CASE(
-				ED_shader_type::PIXEL,
-				model = "ps_" + model;
-				hr = D3DCompileFromFile(
-					abs_wpath.data(),
-					0,
-					D3D_COMPILE_STANDARD_FILE_INCLUDE,
-					entry_point_name.data(),
-					model.c_str(),
-					0,
-					0,
-					&d3d11_shader_blob_p,
-					&d3d11_error_blob_p
-				);
-				NCPP_ASSERT(!FAILED(hr))
-				<< "can't compile "
-				<< ncpp::T_cout_field_name("pixel")
-				<< " shader blob "
-				<< ncpp::T_cout_value(entry_point_name)
-				<< std::endl
-				<< ncpp::E_log_color::V_FOREGROUND_BRIGHT_RED
-				<< (char*)d3d11_error_blob_p->GetBufferPointer();
-				NRHI_ENUM_BREAK;
-			)
+			ED_shader_type::PIXEL,
+			model = "ps_" + model;
+			hr = D3DCompileFromFile(
+			abs_wpath.data(),
+			0,
+			D3D_COMPILE_STANDARD_FILE_INCLUDE,
+			entry_point_name.data(),
+			model.c_str(),
+			0,
+			0,
+			&d3d11_shader_blob_p,
+			&d3d11_error_blob_p
+		);
+			NCPP_ASSERT(!FAILED(hr))
+			<< "can't compile "
+			<< ncpp::T_cout_field_name("pixel")
+			<< " shader blob "
+			<< ncpp::T_cout_value(entry_point_name)
+			<< std::endl
+			<< ncpp::E_log_color::V_FOREGROUND_BRIGHT_RED
+			<< (char*)d3d11_error_blob_p->GetBufferPointer();
+			NRHI_ENUM_BREAK;
+		)
 			NRHI_ENUM_CASE(
-				ED_shader_type::COMPUTE,
-				model = "cs_" + model;
-				hr = D3DCompileFromFile(
-					abs_wpath.data(),
-					0,
-					D3D_COMPILE_STANDARD_FILE_INCLUDE,
-					entry_point_name.data(),
-					model.c_str(),
-					0,
-					0,
-					&d3d11_shader_blob_p,
-					&d3d11_error_blob_p
-				);
-				NCPP_ASSERT(!FAILED(hr))
-				<< "can't compile "
-				<< ncpp::T_cout_field_name("compute")
-				<< " shader blob "
-				<< ncpp::T_cout_value(entry_point_name)
-				<< std::endl
-				<< ncpp::E_log_color::V_FOREGROUND_BRIGHT_RED
-				<< (char*)d3d11_error_blob_p->GetBufferPointer();
-				NRHI_ENUM_BREAK;
-			)
+			ED_shader_type::COMPUTE,
+			model = "cs_" + model;
+			hr = D3DCompileFromFile(
+			abs_wpath.data(),
+			0,
+			D3D_COMPILE_STANDARD_FILE_INCLUDE,
+			entry_point_name.data(),
+			model.c_str(),
+			0,
+			0,
+			&d3d11_shader_blob_p,
+			&d3d11_error_blob_p
+		);
+			NCPP_ASSERT(!FAILED(hr))
+			<< "can't compile "
+			<< ncpp::T_cout_field_name("compute")
+			<< " shader blob "
+			<< ncpp::T_cout_value(entry_point_name)
+			<< std::endl
+			<< ncpp::E_log_color::V_FOREGROUND_BRIGHT_RED
+			<< (char*)d3d11_error_blob_p->GetBufferPointer();
+			NRHI_ENUM_BREAK;
+		)
 		);
 
-		TG_vector<u8> result(d3d11_shader_blob_p->GetBufferSize());
+		F_shader_binary result(d3d11_shader_blob_p->GetBufferSize());
 		memcpy(
 			(void*)(result.data()),
 			(void*)(d3d11_shader_blob_p->GetBufferPointer()),
 			result.size()
 		);
-		
+
 		return std::move(result);
 	}
-	TG_vector<u8> HD_directx11_shader_compiler::compile_nsl(
-		const G_string& shader_class_name,
+	F_shader_binary HD_directx11_shader_compiler::compile_nsl(
 		const F_nsl_compiled_result& compiled_result,
 		u32 shader_index
 	) {
@@ -243,7 +243,8 @@ namespace nrhi {
 		}
 
 		return compile_hlsl_from_src_content(
-			shader_class_name,
+			compiled_result.class_name,
+			compiled_result.reflection.shaders[shader_index].name,
 			"main",
 			compiled_result.build(shader_index),
 			"",

@@ -87,47 +87,4 @@ namespace nrhi {
 		);
 	}
 
-	NCPP_FHANDLE_TEMPLATE_DEFINE_MEMBER(A_resource)
-	NCPP_FORCE_INLINE U_srv_handle TF_texture_cube_handle<F_oref__>::create_face_srv(ED_texture_cube_face face, u32 base_mip_level) const noexcept {
-
-		return H_resource_view::create_srv(
-			oref->device_p(),
-			{
-				.overrided_resource_type = ED_resource_type::TEXTURE_CUBE,
-				.resource_p = NCPP_FOH_VALID(oref),
-				.base_mip_level = base_mip_level,
-				.index = (u32)face,
-				.count = 1
-			}
-		);
-	}
-	NCPP_FHANDLE_TEMPLATE_DEFINE_MEMBER(A_resource)
-	NCPP_FORCE_INLINE U_uav_handle TF_texture_cube_handle<F_oref__>::create_face_uav(ED_texture_cube_face face, u32 base_mip_level) const noexcept {
-
-		return H_resource_view::create_uav(
-			oref->device_p(),
-			{
-				.overrided_resource_type = ED_resource_type::TEXTURE_2D_ARRAY,
-				.resource_p = NCPP_FOH_VALID(oref),
-				.base_mip_level = base_mip_level,
-				.index = (u32)face,
-				.count = 1
-			}
-		);
-	}
-	NCPP_FHANDLE_TEMPLATE_DEFINE_MEMBER(A_resource)
-	NCPP_FORCE_INLINE U_rtv_handle TF_texture_cube_handle<F_oref__>::create_face_rtv(ED_texture_cube_face face, u32 base_mip_level) const noexcept {
-
-		return H_resource_view::create_rtv(
-			oref->device_p(),
-			{
-				.overrided_resource_type = ED_resource_type::TEXTURE_2D_ARRAY,
-				.resource_p = NCPP_FOH_VALID(oref),
-				.base_mip_level = base_mip_level,
-				.index = (u32)face,
-				.count = 1
-			}
-		);
-	}
-
 }

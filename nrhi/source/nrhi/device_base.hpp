@@ -44,6 +44,7 @@
 namespace nrhi {
 
     class A_adapter;
+    class A_resource;
 
 
 

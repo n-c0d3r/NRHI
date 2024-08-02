@@ -50,17 +50,20 @@ namespace nrhi {
 	private:
 		ID3D11ComputeShader* d3d11_compute_shader_p_ = 0;
 
+		F_compute_pipeline_state_options options_;
+
 	public:
 		NCPP_FORCE_INLINE ID3D11ComputeShader* d3d11_compute_shader_p() const noexcept { return d3d11_compute_shader_p_; }
 		NCPP_FORCE_INLINE void set_d3d11_compute_shader_p_unsafe(ID3D11ComputeShader* value) noexcept { d3d11_compute_shader_p_ = value; }
+
+		NCPP_FORCE_INLINE const auto& options() const noexcept { return options_; }
 
 
 
 	public:
 		F_directx11_compute_pipeline_state(
 			TKPA_valid<A_device> device_p,
-			const F_pipeline_state_desc& desc,
-			ED_pipeline_state_type overrided_type = ED_pipeline_state_type::COMPUTE
+			const F_compute_pipeline_state_options& options
 		);
 		virtual ~F_directx11_compute_pipeline_state();
 

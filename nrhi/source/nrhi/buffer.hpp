@@ -45,17 +45,22 @@ namespace nrhi {
     class A_device;
     class A_resource;
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+	class A_resource_heap;
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+
 
 
     class NRHI_API H_buffer {
 
+#ifdef NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_MANAGEMENT
     public:
         static U_buffer_handle create(
             TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_data,
             u32 count,
             u32 stride,
-            ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+            ED_resource_flag flags = ED_resource_flag::NONE,
             ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
         );
 
@@ -65,7 +70,7 @@ namespace nrhi {
             TKPA_valid<A_device> device_p,
             const F_initial_resource_data& initial_data,
             u32 count,
-            ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+            ED_resource_flag flags = ED_resource_flag::NONE,
             ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
         ) {
             return create(
@@ -73,7 +78,7 @@ namespace nrhi {
                 initial_data,
                 count,
                 sizeof(F_element__),
-                bind_flags,
+                flags,
                 heap_type
             );
         }
@@ -83,7 +88,7 @@ namespace nrhi {
         static U_buffer_handle T_create(
             TKPA_valid<A_device> device_p,
             const TG_span<F_element__>& data,
-            ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+            ED_resource_flag flags = ED_resource_flag::NONE,
             ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
         ) {
             return create(
@@ -91,7 +96,7 @@ namespace nrhi {
                 { { .data_p = (void*)data.data() } },
 				(u32)(data.size()),
 				(u32)(sizeof(F_element__)),
-                bind_flags,
+                flags,
                 heap_type
             );
         }
@@ -102,7 +107,7 @@ namespace nrhi {
             const F_initial_resource_data& initial_data,
             u32 count,
             ED_format format,
-            ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+            ED_resource_flag flags = ED_resource_flag::NONE,
             ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
         );
 
@@ -112,7 +117,7 @@ namespace nrhi {
             TKPA_valid<A_device> device_p,
             const TG_span<F_element__>& data,
             ED_format format,
-            ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+            ED_resource_flag flags = ED_resource_flag::NONE,
             ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
         ) {
             return create(
@@ -120,83 +125,10 @@ namespace nrhi {
 				{ { .data_p = (void*)data.data() } },
 				(u32)(data.size()),
                 format,
-                bind_flags,
+                flags,
                 heap_type
             );
         }
-
-    public:
-        static U_structured_buffer_handle create_structured(
-            TKPA_valid<A_device> device_p,
-            const F_initial_resource_data& initial_data,
-            u32 count,
-            u32 stride,
-            ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-            ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
-        );
-
-    public:
-        template<typename F_element__>
-        static U_structured_buffer_handle T_create_structured(
-            TKPA_valid<A_device> device_p,
-            const F_initial_resource_data& initial_data,
-            u32 count,
-            ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-            ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
-        ) {
-            return create_structured(
-                device_p,
-                initial_data,
-                count,
-                sizeof(F_element__),
-                bind_flags,
-                heap_type
-            );
-        }
-
-    public:
-        template<typename F_element__>
-        static U_structured_buffer_handle T_create_structured(
-            TKPA_valid<A_device> device_p,
-            const TG_span<F_element__>& data,
-            ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-            ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
-        ) {
-            return create_structured(
-                device_p,
-				{ { .data_p = (void*)data.data() } },
-				(u32)(data.size()),
-				(u32)(sizeof(F_element__)),
-                bind_flags,
-                heap_type
-            );
-        }
-
-	public:
-		static U_indirect_buffer_handle create_indirect(
-			TKPA_valid<A_device> device_p,
-			const F_initial_resource_data& initial_data,
-			u32 count,
-			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
-		);
-
-	public:
-		static U_indirect_buffer_handle create_indirect(
-			TKPA_valid<A_device> device_p,
-			const TG_span<u32>& data,
-			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
-		) {
-
-			return create_indirect(
-				device_p,
-				{ { .data_p = (void*)(data.data()) } },
-				(u32)(data.size()),
-				bind_flags,
-				heap_type
-			);
-		}
 
 
 
@@ -206,7 +138,7 @@ namespace nrhi {
 			const F_initial_resource_data& initial_data,
 			u32 count,
 			u32 stride,
-			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+			ED_resource_flag flags = ED_resource_flag::NONE,
 			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 		);
 
@@ -216,7 +148,7 @@ namespace nrhi {
 			KPA_valid_buffer_handle buffer_p,
 			const F_initial_resource_data& initial_data,
 			u32 count,
-			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+			ED_resource_flag flags = ED_resource_flag::NONE,
 			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 		) {
 
@@ -225,7 +157,7 @@ namespace nrhi {
 				initial_data,
 				count,
 				sizeof(F_element__),
-				bind_flags,
+				flags,
 				heap_type
 			);
 		}
@@ -235,7 +167,7 @@ namespace nrhi {
 		static void T_rebuild(
 			KPA_valid_buffer_handle buffer_p,
 			const TG_span<F_element__>& data,
-			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+			ED_resource_flag flags = ED_resource_flag::NONE,
 			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 		) {
 
@@ -244,7 +176,7 @@ namespace nrhi {
 				{ { .data_p = (void*)data.data() } },
 				(u32)(data.size()),
 				(u32)(sizeof(F_element__)),
-				bind_flags,
+				flags,
 				heap_type
 			);
 		}
@@ -255,7 +187,7 @@ namespace nrhi {
 			const F_initial_resource_data& initial_data,
 			u32 count,
 			ED_format format,
-			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+			ED_resource_flag flags = ED_resource_flag::NONE,
 			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 		);
 
@@ -265,7 +197,7 @@ namespace nrhi {
 			KPA_valid_buffer_handle buffer_p,
 			const TG_span<F_element__>& data,
 			ED_format format,
-			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+			ED_resource_flag flags = ED_resource_flag::NONE,
 			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 		) {
 
@@ -274,85 +206,11 @@ namespace nrhi {
 				{ { .data_p = (void*)data.data() } },
 				(u32)(data.size()),
 				format,
-				bind_flags,
+				flags,
 				heap_type
 			);
 		}
-
-	public:
-		static void rebuild_structured(
-			KPA_valid_structured_buffer_handle structured_buffer_p,
-			const F_initial_resource_data& initial_data,
-			u32 count,
-			u32 stride,
-			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
-		);
-
-	public:
-		template<typename F_element__>
-		static void T_rebuild_structured(
-			KPA_valid_structured_buffer_handle structured_buffer_p,
-			const F_initial_resource_data& initial_data,
-			u32 count,
-			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
-		) {
-
-			return rebuild_structured(
-				structured_buffer_p,
-				initial_data,
-				count,
-				sizeof(F_element__),
-				bind_flags,
-				heap_type
-			);
-		}
-
-	public:
-		template<typename F_element__>
-		static void T_rebuild_structured(
-			KPA_valid_structured_buffer_handle structured_buffer_p,
-			const TG_span<F_element__>& data,
-			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
-		) {
-
-			return rebuild_structured(
-				structured_buffer_p,
-				{ { .data_p = (void*)data.data() } },
-				(u32)(data.size()),
-				(u32)(sizeof(F_element__)),
-				bind_flags,
-				heap_type
-			);
-		}
-
-	public:
-		static void rebuild_indirect(
-			KPA_valid_indirect_buffer_handle indirect_buffer_p,
-			const F_initial_resource_data& initial_data,
-			u32 count,
-			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
-		);
-
-	public:
-		static void rebuild_indirect(
-			KPA_valid_indirect_buffer_handle indirect_buffer_p,
-			const TG_span<u32>& data,
-			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
-		) {
-
-			return rebuild_indirect(
-				indirect_buffer_p,
-				{ { .data_p = (void*)(data.data()) } },
-				(u32)(data.size()),
-				bind_flags,
-				heap_type
-			);
-		}
+#endif // NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_MANAGEMENT
 
 
 
@@ -362,7 +220,7 @@ namespace nrhi {
 			TKPA_valid<A_device> device_p,
 			u32 count,
 			u32 stride,
-			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+			ED_resource_flag flags = ED_resource_flag::NONE,
 			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -370,14 +228,15 @@ namespace nrhi {
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
+			u64 alignment = 0
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		);
 		static U_buffer_handle create_committed(
 			TKPA_valid<A_device> device_p,
 			u32 count,
 			ED_format format,
-			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+			ED_resource_flag flags = ED_resource_flag::NONE,
 			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -385,36 +244,8 @@ namespace nrhi {
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-		);
-		static U_structured_buffer_handle create_committed_structured(
-			TKPA_valid<A_device> device_p,
-			u32 count,
-			u32 stride,
-			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-			, ED_resource_state initial_state = ED_resource_state::COMMON
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-		);
-		static U_indirect_buffer_handle create_committed_indirect(
-			TKPA_valid<A_device> device_p,
-			u32 count,
-			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-			, ED_resource_state initial_state = ED_resource_state::COMMON
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
+			u64 alignment = 0
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		);
 
@@ -423,7 +254,7 @@ namespace nrhi {
 		static U_buffer_handle T_create_committed(
 			TKPA_valid<A_device> device_p,
 			u32 count,
-			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+			ED_resource_flag flags = ED_resource_flag::NONE,
 			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -431,14 +262,15 @@ namespace nrhi {
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
+			u64 alignment = 0
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		) {
 			return create_committed(
 				device_p,
 				count,
 				sizeof(F_element__),
-				bind_flags,
+				flags,
 				heap_type
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 				, initial_state
@@ -450,10 +282,11 @@ namespace nrhi {
 			);
 		}
 		template<typename F_element__>
-		static U_structured_buffer_handle T_create_committed_structured(
+		static U_buffer_handle T_create_committed(
 			TKPA_valid<A_device> device_p,
 			u32 count,
-			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+			ED_format format,
+			ED_resource_flag flags = ED_resource_flag::NONE,
 			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -461,14 +294,15 @@ namespace nrhi {
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
+			u64 alignment = 0
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		) {
-			return create_committed_structured(
+			return create_committed(
 				device_p,
 				count,
-				sizeof(F_element__),
-				bind_flags,
+				format,
+				flags,
 				heap_type
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 				, initial_state
@@ -487,7 +321,7 @@ namespace nrhi {
 			KPA_valid_buffer_handle buffer_p,
 			u32 count,
 			u32 stride,
-			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+			ED_resource_flag flags = ED_resource_flag::NONE,
 			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -495,14 +329,15 @@ namespace nrhi {
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
+			u64 alignment = 0
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		);
 		static void rebuild_committed(
 			KPA_valid_buffer_handle buffer_p,
 			u32 count,
 			ED_format format,
-			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+			ED_resource_flag flags = ED_resource_flag::NONE,
 			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -510,36 +345,8 @@ namespace nrhi {
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-		);
-		static void rebuild_committed_structured(
-			KPA_valid_structured_buffer_handle structured_buffer_p,
-			u32 count,
-			u32 stride,
-			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-			, ED_resource_state initial_state = ED_resource_state::COMMON
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-		);
-		static void rebuild_committed_indirect(
-			KPA_valid_indirect_buffer_handle indirect_buffer_p,
-			u32 count,
-			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-			, ED_resource_state initial_state = ED_resource_state::COMMON
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
+			u64 alignment = 0
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		);
 
@@ -548,7 +355,7 @@ namespace nrhi {
 		static void T_rebuild_committed(
 			KPA_valid_buffer_handle buffer_p,
 			u32 count,
-			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
+			ED_resource_flag flags = ED_resource_flag::NONE,
 			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
@@ -556,14 +363,15 @@ namespace nrhi {
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
+			u64 alignment = 0
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		) {
 			rebuild_committed(
 				buffer_p,
 				count,
 				sizeof(F_element__),
-				bind_flags,
+				flags,
 				heap_type
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 				, initial_state
@@ -574,27 +382,341 @@ namespace nrhi {
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			);
 		}
-		template<typename F_element__>
-		static void T_rebuild_committed_structured(
-			KPA_valid_structured_buffer_handle structured_buffer_p,
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+
+
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+	public:
+		static U_buffer_handle create_placed(
+			TKPA_valid<A_device> device_p,
 			u32 count,
-			ED_resource_bind_flag bind_flags = ED_resource_bind_flag::NONE,
-			ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
+			u32 stride,
+			TKPA_valid<A_resource_heap> heap_p,
+			u64 heap_offset,
+			ED_resource_flag flags = ED_resource_flag::NONE
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 			, ED_resource_state initial_state = ED_resource_state::COMMON
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
+			u64 alignment = 0
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		);
+		static U_buffer_handle create_placed(
+			TKPA_valid<A_device> device_p,
+			u32 count,
+			ED_format format,
+			TKPA_valid<A_resource_heap> heap_p,
+			u64 heap_offset,
+			ED_resource_flag flags = ED_resource_flag::NONE
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, ED_resource_state initial_state = ED_resource_state::COMMON
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
+			u64 alignment = 0
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		);
+
+	public:
+		template<typename F_element__>
+		static U_buffer_handle T_create_placed(
+			TKPA_valid<A_device> device_p,
+			u32 count,
+			TKPA_valid<A_resource_heap> heap_p,
+			u64 heap_offset,
+			ED_resource_flag flags = ED_resource_flag::NONE
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, ED_resource_state initial_state = ED_resource_state::COMMON
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
+			u64 alignment = 0
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		) {
-			rebuild_committed_structured(
-				structured_buffer_p,
+			return create_placed(
+				device_p,
 				count,
 				sizeof(F_element__),
-				bind_flags,
-				heap_type
+				heap_p,
+				heap_offset,
+				flags
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+				, initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+				, layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			);
+		}
+		template<typename F_element__>
+		static U_buffer_handle T_create_placed(
+			TKPA_valid<A_device> device_p,
+			u32 count,
+			ED_format format,
+			TKPA_valid<A_resource_heap> heap_p,
+			u64 heap_offset,
+			ED_resource_flag flags = ED_resource_flag::NONE
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, ED_resource_state initial_state = ED_resource_state::COMMON
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
+			u64 alignment = 0
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		) {
+			return create_placed(
+				device_p,
+				count,
+				format,
+				heap_p,
+				heap_offset,
+				flags
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+				, initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+				, layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			);
+		}
+
+
+
+	public:
+		static void rebuild_placed(
+			KPA_valid_buffer_handle buffer_p,
+			u32 count,
+			u32 stride,
+			TKPA_valid<A_resource_heap> heap_p,
+			u64 heap_offset,
+			ED_resource_flag flags = ED_resource_flag::NONE
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, ED_resource_state initial_state = ED_resource_state::COMMON
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
+			u64 alignment = 0
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		);
+		static void rebuild_placed(
+			KPA_valid_buffer_handle buffer_p,
+			u32 count,
+			ED_format format,
+			TKPA_valid<A_resource_heap> heap_p,
+			u64 heap_offset,
+			ED_resource_flag flags = ED_resource_flag::NONE
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, ED_resource_state initial_state = ED_resource_state::COMMON
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
+			u64 alignment = 0
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		);
+
+	public:
+		template<typename F_element__>
+		static void T_rebuild_placed(
+			KPA_valid_buffer_handle buffer_p,
+			u32 count,
+			TKPA_valid<A_resource_heap> heap_p,
+			u64 heap_offset,
+			ED_resource_flag flags = ED_resource_flag::NONE
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, ED_resource_state initial_state = ED_resource_state::COMMON
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
+			u64 alignment = 0
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		) {
+			rebuild_placed(
+				buffer_p,
+				count,
+				sizeof(F_element__),
+				heap_p,
+				heap_offset,
+				flags
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+				, initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+				, layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			);
+		}
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+
+
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+	public:
+		static U_buffer_handle create_reserved(
+			TKPA_valid<A_device> device_p,
+			u32 count,
+			u32 stride,
+			ED_resource_flag flags = ED_resource_flag::NONE
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, ED_resource_state initial_state = ED_resource_state::COMMON
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
+			u64 alignment = 0
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		);
+		static U_buffer_handle create_reserved(
+			TKPA_valid<A_device> device_p,
+			u32 count,
+			ED_format format,
+			ED_resource_flag flags = ED_resource_flag::NONE
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, ED_resource_state initial_state = ED_resource_state::COMMON
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
+			u64 alignment = 0
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		);
+
+	public:
+		template<typename F_element__>
+		static U_buffer_handle T_create_reserved(
+			TKPA_valid<A_device> device_p,
+			u32 count,
+			ED_resource_flag flags = ED_resource_flag::NONE
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, ED_resource_state initial_state = ED_resource_state::COMMON
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
+			u64 alignment = 0
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		) {
+			return create_reserved(
+				device_p,
+				count,
+				sizeof(F_element__),
+				flags
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+				, initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+				, layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			);
+		}
+		template<typename F_element__>
+		static U_buffer_handle T_create_reserved(
+			TKPA_valid<A_device> device_p,
+			u32 count,
+			ED_format format,
+			ED_resource_flag flags = ED_resource_flag::NONE
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, ED_resource_state initial_state = ED_resource_state::COMMON
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
+			u64 alignment = 0
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		) {
+			return create_reserved(
+				device_p,
+				count,
+				format,
+				flags
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+				, initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+				, layout
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			);
+		}
+
+
+
+	public:
+		static void rebuild_reserved(
+			KPA_valid_buffer_handle buffer_p,
+			u32 count,
+			u32 stride,
+			ED_resource_flag flags = ED_resource_flag::NONE
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, ED_resource_state initial_state = ED_resource_state::COMMON
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
+			u64 alignment = 0
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		);
+		static void rebuild_reserved(
+			KPA_valid_buffer_handle buffer_p,
+			u32 count,
+			ED_format format,
+			ED_resource_flag flags = ED_resource_flag::NONE
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, ED_resource_state initial_state = ED_resource_state::COMMON
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
+			u64 alignment = 0
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		);
+
+	public:
+		template<typename F_element__>
+		static void T_rebuild_reserved(
+			KPA_valid_buffer_handle buffer_p,
+			u32 count,
+			ED_resource_flag flags = ED_resource_flag::NONE
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, ED_resource_state initial_state = ED_resource_state::COMMON
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
+			u64 alignment = 0
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		) {
+			rebuild_reserved(
+				buffer_p,
+				count,
+				sizeof(F_element__),
+				flags
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 				, initial_state
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION

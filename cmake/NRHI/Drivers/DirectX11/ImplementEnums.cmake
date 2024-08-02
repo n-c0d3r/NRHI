@@ -3,7 +3,7 @@ message(STATUS "<NRHI::Drivers::DirectX11> Start implementing enums")
 
 include(NRHI/Drivers/DXGI/FormatHelper)
 include(NRHI/Drivers/DirectX11/ImplementCommandListType)
-include(NRHI/Drivers/DirectX11/ImplementResourceBindFlag)
+include(NRHI/Drivers/DirectX11/ImplementResourceFlag)
 include(NRHI/Drivers/DirectX11/ImplementResourceType)
 include(NRHI/Drivers/DirectX11/ImplementResourceHeapType)
 include(NRHI/Drivers/DirectX11/ImplementResourceViewType)
@@ -17,6 +17,10 @@ include(NRHI/Drivers/DirectX11/ImplementClearFlag)
 include(NRHI/Drivers/DirectX11/ImplementTextureCubeFace)
 include(NRHI/Drivers/DirectX11/ImplementFilter)
 include(NRHI/Drivers/DirectX11/ImplementTexCoordAddressMode)
+include(NRHI/Drivers/DirectX11/ImplementBlendFactor)
+include(NRHI/Drivers/DirectX11/ImplementBlendOperation)
+include(NRHI/Drivers/DirectX11/ImplementColorWriteMode)
+include(NRHI/Drivers/DirectX11/ImplementInputClassification)
 
 
 
