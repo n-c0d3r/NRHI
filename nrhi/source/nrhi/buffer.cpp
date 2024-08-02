@@ -1,6 +1,9 @@
 #include <nrhi/buffer.hpp>
 #include <nrhi/resource.hpp>
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 #include <nrhi/resource_heap.hpp>
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
 
 
