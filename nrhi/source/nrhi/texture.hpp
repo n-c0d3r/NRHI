@@ -511,6 +511,170 @@ namespace nrhi {
 		);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
+
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+	public:
+		static U_texture_1d_handle create_reserved_1d(
+			TKPA_valid<A_device> device_p,
+			u32 width,
+			ED_format format = ED_format::R8G8B8A8_UNORM,
+			u32 mip_level_count = 1,
+			ED_resource_flag flags = ED_resource_flag::NONE
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, ED_resource_state initial_state = ED_resource_state::COMMON
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, ED_resource_layout layout = ED_resource_layout::UNKNOWN,
+			u64 alignment = 0
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		);
+
+	public:
+		static U_texture_2d_handle create_reserved_2d(
+			TKPA_valid<A_device> device_p,
+			u32 width,
+			u32 height,
+			ED_format format = ED_format::R8G8B8A8_UNORM,
+			u32 mip_level_count = 1,
+			F_sample_desc sample_desc = F_sample_desc{},
+			ED_resource_flag flags = ED_resource_flag::NONE
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, ED_resource_state initial_state = ED_resource_state::COMMON
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, ED_resource_layout layout = ED_resource_layout::UNKNOWN,
+			u64 alignment = 0
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		);
+
+	public:
+		static U_texture_3d_handle create_reserved_3d(
+			TKPA_valid<A_device> device_p,
+			u32 width,
+			u32 height,
+			u32 depth,
+			ED_format format = ED_format::R8G8B8A8_UNORM,
+			u32 mip_level_count = 1,
+			ED_resource_flag flags = ED_resource_flag::NONE
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, ED_resource_state initial_state = ED_resource_state::COMMON
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, ED_resource_layout layout = ED_resource_layout::UNKNOWN,
+			u64 alignment = 0
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		);
+
+	public:
+		static U_texture_2d_array_handle create_reserved_2d_array(
+			TKPA_valid<A_device> device_p,
+			u32 width,
+			u32 height,
+			u32 array_size,
+			ED_format format = ED_format::R8G8B8A8_UNORM,
+			u32 mip_level_count = 1,
+			F_sample_desc sample_desc = F_sample_desc{},
+			ED_resource_flag flags = ED_resource_flag::NONE
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, ED_resource_state initial_state = ED_resource_state::COMMON
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, ED_resource_layout layout = ED_resource_layout::UNKNOWN,
+			u64 alignment = 0
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		);
+
+
+
+	public:
+		static void rebuild_reserved_1d(
+			KPA_valid_texture_1d_handle texture_1d_p,
+			u32 width,
+			ED_format format = ED_format::R8G8B8A8_UNORM,
+			u32 mip_level_count = 1,
+			ED_resource_flag flags = ED_resource_flag::NONE
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, ED_resource_state initial_state = ED_resource_state::COMMON
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, ED_resource_layout layout = ED_resource_layout::UNKNOWN,
+			u64 alignment = 0
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		);
+
+	public:
+		static void rebuild_reserved_2d(
+			KPA_valid_texture_2d_handle texture_2d_p,
+			u32 width,
+			u32 height,
+			ED_format format = ED_format::R8G8B8A8_UNORM,
+			u32 mip_level_count = 1,
+			F_sample_desc sample_desc = F_sample_desc{},
+			ED_resource_flag flags = ED_resource_flag::NONE
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, ED_resource_state initial_state = ED_resource_state::COMMON
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, ED_resource_layout layout = ED_resource_layout::UNKNOWN,
+			u64 alignment = 0
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		);
+
+	public:
+		static void rebuild_reserved_3d(
+			KPA_valid_texture_3d_handle texture_3d_p,
+			u32 width,
+			u32 height,
+			u32 depth,
+			ED_format format = ED_format::R8G8B8A8_UNORM,
+			u32 mip_level_count = 1,
+			ED_resource_flag flags = ED_resource_flag::NONE
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, ED_resource_state initial_state = ED_resource_state::COMMON
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, ED_resource_layout layout = ED_resource_layout::UNKNOWN,
+			u64 alignment = 0
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		);
+
+	public:
+		static void rebuild_reserved_2d_array(
+			KPA_valid_texture_2d_array_handle texture_2d_array_p,
+			u32 width,
+			u32 height,
+			u32 array_size,
+			ED_format format = ED_format::R8G8B8A8_UNORM,
+			u32 mip_level_count = 1,
+			F_sample_desc sample_desc = F_sample_desc{},
+			ED_resource_flag flags = ED_resource_flag::NONE
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+			, ED_resource_state initial_state = ED_resource_state::COMMON
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			, ED_resource_layout layout = ED_resource_layout::UNKNOWN,
+			u64 alignment = 0
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		);
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+
     };
 
 }

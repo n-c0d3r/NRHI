@@ -147,6 +147,36 @@ namespace nrhi {
 		);
 
 	public:
+		static TU<A_resource> create_reserved(
+			TKPA_valid<A_device> device_p,
+			const F_resource_desc& desc
+		);
+
+	public:
+		static U_buffer_handle create_reserved_buffer(
+			TKPA_valid<A_device> device_p,
+			const F_resource_desc& desc
+		);
+
+	public:
+		static U_texture_1d_handle create_reserved_texture_1d(
+			TKPA_valid<A_device> device_p,
+			const F_resource_desc& desc
+		);
+		static U_texture_2d_handle create_reserved_texture_2d(
+			TKPA_valid<A_device> device_p,
+			const F_resource_desc& desc
+		);
+		static U_texture_3d_handle create_reserved_texture_3d(
+			TKPA_valid<A_device> device_p,
+			const F_resource_desc& desc
+		);
+		static U_texture_2d_array_handle create_reserved_texture_2d_array(
+			TKPA_valid<A_device> device_p,
+			const F_resource_desc& desc
+		);
+
+	public:
 		static F_mapped_subresource map(
 			TKPA_valid<A_resource> resource_p,
 			u32 subresource_index

@@ -1,6 +1,5 @@
-#include <nrhi/directx12/placed_resource.hpp>
+#include <nrhi/directx12/reserved_resource.hpp>
 #include <nrhi/directx12/resource.hpp>
-#include <nrhi/directx12/resource_heap.hpp>
 #include <nrhi/directx12/device.hpp>
 #include <nrhi/format_helper.hpp>
 
@@ -8,71 +7,56 @@
 
 namespace nrhi {
 
-	F_directx12_placed_resource::F_directx12_placed_resource(
+	F_directx12_reserved_resource::F_directx12_reserved_resource(
 		TKPA_valid<A_device> device_p,
-		const F_resource_desc& desc,
-		TKPA_valid<A_resource_heap> heap_p,
-		u64 heap_offset
+		const F_resource_desc& desc
 	) :
-		F_directx12_placed_resource(
+		F_directx12_resource(
 			device_p,
 			desc,
-			heap_p,
-			heap_offset,
-			desc.type
+			desc.type,
+			create_d3d12_reserved_resource(
+				device_p,
+				desc
+			)
 		)
 	{
 	}
-	F_directx12_placed_resource::F_directx12_placed_resource(
+	F_directx12_reserved_resource::F_directx12_reserved_resource(
 		TKPA_valid<A_device> device_p,
 		const F_resource_desc& desc,
-		TKPA_valid<A_resource_heap> heap_p,
-		u64 heap_offset,
 		ED_resource_type overrided_type
 	) :
 		F_directx12_resource(
 			device_p,
 			desc,
 			overrided_type,
-			create_d3d12_placed_resource(
+			create_d3d12_reserved_resource(
 				device_p,
-				desc,
-				heap_p,
-				heap_offset
+				desc
 			)
 		)
 	{
-		set_placed_heap_p_unsafe(heap_p);
-		set_placed_heap_offset_unsafe(heap_offset);
 	}
-	F_directx12_placed_resource::F_directx12_placed_resource(
+	F_directx12_reserved_resource::F_directx12_reserved_resource(
 		TKPA_valid<A_device> device_p,
 		const F_resource_desc& desc,
-		TKPA_valid<A_resource_heap> heap_p,
-		u64 heap_offset,
 		ED_resource_type overrided_type,
 		ID3D12Resource* d3d12_resource_p
 	) :
 		F_directx12_resource(device_p, desc, overrided_type, d3d12_resource_p)
 	{
-		set_placed_heap_p_unsafe(heap_p);
-		set_placed_heap_offset_unsafe(heap_offset);
 	}
-	F_directx12_placed_resource::~F_directx12_placed_resource() {
+	F_directx12_reserved_resource::~F_directx12_reserved_resource() {
 	}
 
-	ID3D12Resource* F_directx12_placed_resource::create_d3d12_placed_resource(
+	ID3D12Resource* F_directx12_reserved_resource::create_d3d12_reserved_resource(
 		TKPA_valid<A_device> device_p,
-		const F_resource_desc& desc,
-		TKPA_valid<A_resource_heap> heap_p,
-		u64 heap_offset
+		const F_resource_desc& desc
 	) {
 		ID3D12Device* d3d12_device_p = device_p.T_cast<F_directx12_device>()->d3d12_device_p();
-		ID3D12Heap* d3d12_resource_heap_p = heap_p.T_cast<F_directx12_resource_heap>()->d3d12_resource_heap_p();
 
 		ID3D12Resource* d3d12_resource_p = 0;
-
-		CD3DX12_HEAP_PROPERTIES d3d12_heap_properties(D3D12_HEAP_TYPE(desc.heap_type));
 
 		D3D12_RESOURCE_DESC d3d12_resource_desc;
 		d3d12_resource_desc.Dimension = NRHI_DRIVER_DIRECTX_12_MAP___RESOURCE_TYPE___TO___RESOURCE_DIMENSION(desc.type);
@@ -97,49 +81,41 @@ namespace nrhi {
 
 		if(
 			(d3d12_resource_desc.Flags & D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL)
-			& !flag_is_has(desc.flags, ED_resource_flag::SHADER_RESOURCE)
-		)
+				& !flag_is_has(desc.flags, ED_resource_flag::SHADER_RESOURCE)
+			)
 			d3d12_resource_desc.Flags &= D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE;
 
 		NCPP_ASSERT(
 			(desc.heap_type != ED_resource_heap_type::GREAD_CWRITE)
-			|| (
-				(desc.heap_type == ED_resource_heap_type::GREAD_CWRITE)
-				&& (d3d12_resource_states & D3D12_RESOURCE_STATE_GENERIC_READ)
-			)
+				|| (
+					(desc.heap_type == ED_resource_heap_type::GREAD_CWRITE)
+						&& (d3d12_resource_states & D3D12_RESOURCE_STATE_GENERIC_READ)
+				)
 		) << "GENERIC_READ initial state is required for GREAD-CWRITE resource";
 
-		HRESULT hr = d3d12_device_p->CreatePlacedResource(
-			d3d12_resource_heap_p,
-			heap_offset,
+		HRESULT hr = d3d12_device_p->CreateReservedResource(
 			&d3d12_resource_desc,
 			d3d12_resource_states,
 			nullptr,
 			IID_PPV_ARGS(&d3d12_resource_p)
 		);
 
-		NCPP_ASSERT(d3d12_resource_p) << "can't create d3d12 placed resource";
+		NCPP_ASSERT(d3d12_resource_p) << "can't create d3d12 reserved resource";
 
 		return d3d12_resource_p;
 	}
 
-	void F_directx12_placed_resource::rebuild_placed(
-		const F_resource_desc& desc,
-		TKPA_valid<A_resource_heap> heap_p,
-		u64 heap_offset
+	void F_directx12_reserved_resource::rebuild_reserved(
+		const F_resource_desc& desc
 	) {
 		if(d3d12_resource_p_)
 			d3d12_resource_p_->Release();
-		d3d12_resource_p_ = create_d3d12_placed_resource(
+		d3d12_resource_p_ = create_d3d12_reserved_resource(
 			device_p(),
-			desc,
-			heap_p,
-			heap_offset
+			desc
 		);
-		finalize_rebuild_placed(
-			desc,
-			heap_p,
-			heap_offset
+		finalize_rebuild_reserved(
+			desc
 		);
 	}
 

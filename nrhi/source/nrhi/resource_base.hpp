@@ -73,8 +73,8 @@ namespace nrhi {
 		u64 generation_ = 0;
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-		u64 heap_offset_;
-		TK<A_object> memory_p_;
+		u64 placed_heap_offset_;
+		TK<A_resource_heap> placed_heap_p_;
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
     public:
@@ -85,18 +85,26 @@ namespace nrhi {
 		NCPP_FORCE_INLINE void set_generation_unsafe(u64 value) noexcept { generation_ = value; }
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-		NCPP_FORCE_INLINE u64 heap_offset() const noexcept {
+		NCPP_FORCE_INLINE u64 placed_heap_offset() const noexcept {
 
 			NCPP_ASSERT(management_type() == E_resource_management_type::PLACED);
-			return heap_offset_;
+			return placed_heap_offset_;
 		}
-		NCPP_FORCE_INLINE void set_heap_offset_unsafe(u64 value) noexcept {
+		NCPP_FORCE_INLINE void set_placed_heap_offset_unsafe(u64 value) noexcept {
 
 			NCPP_ASSERT(management_type() == E_resource_management_type::PLACED);
-			heap_offset_ = value;
+			placed_heap_offset_ = value;
 		}
-		NCPP_FORCE_INLINE TKPA<A_object> memory_p() const noexcept { return memory_p_; }
-		NCPP_FORCE_INLINE void set_memory_p_unsafe(TKPA<A_object> value) noexcept { memory_p_ = value; }
+		NCPP_FORCE_INLINE TKPA_valid<A_resource_heap> placed_heap_p() const noexcept {
+
+			NCPP_ASSERT(management_type() == E_resource_management_type::PLACED);
+			return (TKPA_valid<A_resource_heap>)placed_heap_p_;
+		}
+		NCPP_FORCE_INLINE void set_placed_heap_p_unsafe(TKPA_valid<A_resource_heap> value) noexcept {
+
+			NCPP_ASSERT(management_type() == E_resource_management_type::PLACED);
+			placed_heap_p_ = value.no_requirements();
+		}
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
 
@@ -129,6 +137,9 @@ namespace nrhi {
 			TKPA_valid<A_resource_heap> heap_p,
 			u64 heap_offset
 		);
+		virtual void rebuild_reserved(
+			const F_resource_desc& desc
+		);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
 	protected:
@@ -144,6 +155,9 @@ namespace nrhi {
 			const F_resource_desc& desc,
 			TKPA_valid<A_resource_heap> heap_p,
 			u64 heap_offset
+		);
+		void finalize_rebuild_reserved(
+			const F_resource_desc& desc
 		);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 

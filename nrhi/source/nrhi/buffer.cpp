@@ -392,4 +392,146 @@ namespace nrhi {
 	}
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
+
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+	U_buffer_handle H_buffer::create_reserved(
+		TKPA_valid<A_device> device_p,
+		u32 count,
+		u32 stride,
+		ED_resource_flag flags
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+		, ED_resource_state initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		, ED_resource_layout layout,
+		u64 alignment
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+	) {
+		return H_resource::create_reserved_buffer(
+			device_p,
+			H_resource_desc::create_buffer_desc(
+				count,
+				stride,
+				flags,
+				ED_resource_heap_type::DEFAULT
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+				, initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+				, layout,
+				alignment
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			)
+		);
+	}
+	U_buffer_handle H_buffer::create_reserved(
+		TKPA_valid<A_device> device_p,
+		u32 count,
+		ED_format format,
+		ED_resource_flag flags
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+		, ED_resource_state initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		, ED_resource_layout layout,
+		u64 alignment
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+	) {
+		return H_resource::create_reserved_buffer(
+			device_p,
+			H_resource_desc::create_buffer_desc(
+				count,
+				format,
+				flags,
+				ED_resource_heap_type::DEFAULT
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+				, initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+				, layout,
+				alignment
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			)
+		);
+	}
+
+
+
+	void H_buffer::rebuild_reserved(
+		KPA_valid_buffer_handle buffer_p,
+		u32 count,
+		u32 stride,
+		ED_resource_flag flags
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+		, ED_resource_state initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		, ED_resource_layout layout,
+		u64 alignment
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+	) {
+		buffer_p->rebuild_reserved(
+			H_resource_desc::create_buffer_desc(
+				count,
+				stride,
+				flags,
+				ED_resource_heap_type::DEFAULT
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+				, initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+				, layout,
+				alignment
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			)
+		);
+	}
+	void H_buffer::rebuild_reserved(
+		KPA_valid_buffer_handle buffer_p,
+		u32 count,
+		ED_format format,
+		ED_resource_flag flags
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+		, ED_resource_state initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+		, ED_resource_layout layout,
+		u64 alignment
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+	) {
+		buffer_p->rebuild_reserved(
+			H_resource_desc::create_buffer_desc(
+				count,
+				format,
+				flags,
+				ED_resource_heap_type::DEFAULT
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+				, initial_state
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+				, layout,
+				alignment
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+			)
+		);
+	}
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+
 }

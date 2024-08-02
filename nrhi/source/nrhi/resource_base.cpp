@@ -46,6 +46,11 @@ namespace nrhi {
 			heap_offset
 		);
 	}
+	void A_resource::rebuild_reserved(
+		const F_resource_desc& desc
+	) {
+		finalize_rebuild_committed(desc);
+	}
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	void A_resource::finalize_rebuild(
 		const F_initial_resource_data& initial_data,
@@ -71,8 +76,14 @@ namespace nrhi {
 	) {
 		NCPP_ASSERT(management_type() == E_resource_management_type::PLACED);
 		desc_ = desc;
-		memory_p_ = heap_p.no_requirements();
-		heap_offset_ = heap_offset;
+		placed_heap_p_ = heap_p.no_requirements();
+		placed_heap_offset_ = heap_offset;
+	}
+	void A_resource::finalize_rebuild_reserved(
+		const F_resource_desc& desc
+	) {
+		NCPP_ASSERT(management_type() == E_resource_management_type::RESERVED);
+		desc_ = desc;
 	}
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
