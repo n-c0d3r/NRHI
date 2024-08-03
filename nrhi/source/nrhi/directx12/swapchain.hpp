@@ -109,6 +109,9 @@ namespace nrhi {
 	public:
 		static void async_present(TKPA_valid<A_swapchain>);
 
+	public:
+		static void present(TKPA_valid<A_swapchain>);
+
 	};
 
 }

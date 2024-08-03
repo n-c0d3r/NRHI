@@ -5,6 +5,7 @@
 #include <nrhi/directx12/committed_resource.hpp>
 #include <nrhi/resource_desc.hpp>
 #include <nrhi/directx12/factory.hpp>
+#include <nrhi/swapchain.hpp>
 #include <nrhi/descriptor_heap.hpp>
 #include <nrhi/device.hpp>
 
@@ -322,6 +323,13 @@ namespace nrhi {
 		auto dx12_swapchain_p = swapchain_p.T_cast<F_directx12_swapchain>();
 
 		dx12_swapchain_p->dxgi_swapchain_p()->Present(0, 0);
+	}
+
+	void HD_directx12_swapchain::present(TKPA_valid<A_swapchain> swapchain_p){
+
+		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
+			H_swapchain::ALTERNATIVE::present(swapchain_p);
+		);
 	}
 
 }

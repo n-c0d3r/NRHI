@@ -1009,8 +1009,8 @@ namespace nrhi {
 
 	void HD_directx11_command_list::draw_instanced_indirect(
 		TKPA_valid<A_command_list> command_list_p,
-		KPA_buffer_handle indirect_buffer_p,
-		u32 indirect_buffer_offset
+		KPA_buffer_handle buffer_p,
+		u32 buffer_offset
 	) {
 		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
@@ -1019,14 +1019,14 @@ namespace nrhi {
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
 
 		d3d11_device_context_p->DrawInstancedIndirect(
-			(ID3D11Buffer*)(indirect_buffer_p.T_cast<F_directx11_buffer>()->d3d11_resource_p()),
-			indirect_buffer_offset
+			(ID3D11Buffer*)(buffer_p.T_cast<F_directx11_buffer>()->d3d11_resource_p()),
+			buffer_offset
 		);
 	}
 	void HD_directx11_command_list::draw_indexed_instanced_indirect(
 		TKPA_valid<A_command_list> command_list_p,
-		KPA_buffer_handle indirect_buffer_p,
-		u32 indirect_buffer_offset
+		KPA_buffer_handle buffer_p,
+		u32 buffer_offset
 	) {
 		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
@@ -1035,15 +1035,15 @@ namespace nrhi {
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
 
 		d3d11_device_context_p->DrawIndexedInstancedIndirect(
-			(ID3D11Buffer*)(indirect_buffer_p.T_cast<F_directx11_buffer>()->d3d11_resource_p()),
-			indirect_buffer_offset
+			(ID3D11Buffer*)(buffer_p.T_cast<F_directx11_buffer>()->d3d11_resource_p()),
+			buffer_offset
 		);
 	}
 
 	void HD_directx11_command_list::dispatch_indirect(
 		TKPA_valid<A_command_list> command_list_p,
-		KPA_buffer_handle indirect_buffer_p,
-		u32 indirect_buffer_offset
+		KPA_buffer_handle buffer_p,
+		u32 buffer_offset
 	) {
 		NCPP_ASSERT(command_list_p->supports_compute()) << "command list does not support compute";
 
@@ -1052,8 +1052,8 @@ namespace nrhi {
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
 
 		d3d11_device_context_p->DispatchIndirect(
-			(ID3D11Buffer*)(indirect_buffer_p.T_cast<F_directx11_buffer>()->d3d11_resource_p()),
-			indirect_buffer_offset
+			(ID3D11Buffer*)(buffer_p.T_cast<F_directx11_buffer>()->d3d11_resource_p()),
+			buffer_offset
 		);
 	}
 

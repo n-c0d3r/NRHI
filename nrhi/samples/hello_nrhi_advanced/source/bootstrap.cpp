@@ -104,54 +104,6 @@ auto T_create_buffer(
 	return std::move(result_p);
 }
 
-template<typename F_element__>
-auto T_create_structured_buffer(
-	TKPA_valid<A_device> device_p,
-	const TG_span<F_element__>& elements,
-	TKPA_valid<A_command_list> copy_command_list_p,
-	TG_vector<TU<A_resource>>& intermediate_resource_p_vector,
-	ED_resource_flag flag = ED_resource_flag::NONE,
-	ED_resource_heap_type heap_type = ED_resource_heap_type::GREAD_GWRITE
-) {
-	// create buffers
-	auto result_p = H_buffer::T_create_committed_structured<F_element__>(
-		NCPP_FOH_VALID(device_p),
-		elements.size(),
-		flag,
-		heap_type
-	);
-	auto intermediate_p = H_buffer::T_create_committed_structured<F_element__>(
-		NCPP_FOH_VALID(device_p),
-		elements.size(),
-		ED_resource_flag::NONE,
-		ED_resource_heap_type::GREAD_CWRITE,
-		ED_resource_state::_GENERIC_READ
-	);
-
-	// upload data to intermediate buffer
-	auto mapped_resource = intermediate_p->map(0);
-	memcpy(
-		mapped_resource.data(),
-		elements.data(),
-		elements.size() * sizeof(F_element__)
-	);
-	intermediate_p->unmap(0);
-
-	// copy intermediate buffer to result buffer
-	copy_command_list_p->async_copy_resource(
-		NCPP_FOH_VALID(result_p),
-		NCPP_FOH_VALID(intermediate_p)
-	);
-
-	// push + move intermediate resource to intermediate resource pointer vectors
-	intermediate_resource_p_vector.push_back(
-		std::move(intermediate_p.oref)
-	);
-
-	// return result buffer
-	return std::move(result_p);
-}
-
 
 
 int main() {

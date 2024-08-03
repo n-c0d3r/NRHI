@@ -1,5 +1,5 @@
 
-message(STATUS "<NRHI::Drivers> Start implementing swapchain alternative")
+message(STATUS "<NRHI::Drivers::Alternatives> Start implementing swapchain")
 
 include(NRHI/Utilities/AlternativeHelper)
 
@@ -22,7 +22,13 @@ NRHI_AlternativeHelper_CreateAlternative(
             class A_command_queue;
         }"
     VALUES
+        "create" "TU<A_swapchain>(
+            TKPA_valid<A_command_queue> command_queue_p,
+            TKPA_valid<F_surface> surface_p,
+            const F_swapchain_desc& desc
+        )"
+        "back_rtv_p" "K_valid_rtv_handle(TKPA_valid<A_swapchain> swapchain_p)"
         "present" "void(TKPA_valid<A_swapchain> swapchain_p)"
 )
 
-message(STATUS "<NRHI::Drivers> Implement swapchain alternative done")
+message(STATUS "<NRHI::Drivers::Alternatives> Implement swapchain done")

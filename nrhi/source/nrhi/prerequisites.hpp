@@ -328,6 +328,18 @@ namespace nrhi {}
 
 #define NRHI_DRIVER_ALTERNATIVE(Namespace, ...) Namespace::internal::ALTERNATIVE_##__VA_ARGS__
 
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+#ifdef NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
+#define NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(...) __VA_ARGS__
+#define NRHI_DRIVER_DISABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(...) 
+#else
+#define NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(...)
+#define NRHI_DRIVER_DISABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(...) __VA_ARGS__
+#endif // NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
+
 #pragma endregion
 
 

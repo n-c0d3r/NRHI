@@ -1,7 +1,7 @@
 
-message(STATUS "<NRHI::Drivers::DirectX11> Start implementing command_list")
+message(STATUS "<NRHI::Drivers::Alternatives> Start implementing command_list")
 
-include(NRHI/Utilities/FunctionHelper)
+include(NRHI/Utilities/AlternativeHelper)
 
 
 
@@ -10,15 +10,13 @@ NCPP_SetGlobal(NRHI_COMMAND_LIST_CPP_FILE_PATH "${NRHI_GENERATED_FILES_DIR}/comm
 
 
 
-NRHI_FunctionHelper_CreateFunctionClass(
+NRHI_AlternativeHelper_CreateAlternative(
     NAMESPACE "nrhi"
     NAME "H_command_list"
-    DRIVER_SPECIFIC_NAME "HD_directx11_command_list"
-    DRIVER_UPPER_CASE_NAME "DIRECTX_11"
-    TARGET_HPP_FILE_PATH "${NRHI_COMMAND_LIST_HPP_FILE_PATH}"
-    TARGET_CPP_FILE_PATH "${NRHI_COMMAND_LIST_CPP_FILE_PATH}"
+    MAIN_HPP_FILE_PATH "${NRHI_COMMAND_LIST_HPP_FILE_PATH}"
+    MAIN_CPP_FILE_PATH "${NRHI_COMMAND_LIST_CPP_FILE_PATH}"
     INCLUDES
-        "<nrhi/directx11/command_list.hpp>"
+        "<nrhi/command_list_base.hpp>"
     ADDITIONAL_CODE
         "namespace nrhi {
             class A_device;
@@ -232,4 +230,4 @@ NRHI_FunctionHelper_CreateFunctionClass(
         )"
 )
 
-message(STATUS "<NRHI::Drivers::DirectX11> Implement command_list done")
+message(STATUS "<NRHI::Drivers::Alternatives> Implement command_list done")

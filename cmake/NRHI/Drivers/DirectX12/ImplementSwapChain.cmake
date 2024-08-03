@@ -35,6 +35,9 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "back_rtv_p" "K_valid_rtv_handle(TKPA_valid<A_swapchain> swapchain_p)"
         "back_buffer_p" "K_valid_texture_2d_handle(TKPA_valid<A_swapchain> swapchain_p)"
         "async_present" "void(TKPA_valid<A_swapchain> swapchain_p)"
+
+        # Alternative functions
+        "present" "void(TKPA_valid<A_swapchain> swapchain_p)"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement swapchain done")
