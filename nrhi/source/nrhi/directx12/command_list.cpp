@@ -690,11 +690,9 @@ namespace nrhi {
 		ID3D12GraphicsCommandList* d3d12_command_list_p = dx12_command_list_p->d3d12_command_list_p();
 
 		NCPP_ASSERT(
-			u32(
-				flag_combine(
-					index_buffer_p->desc().flags,
-					ED_resource_flag::INDEX_BUFFER
-				)
+			flag_is_has(
+				index_buffer_p->desc().flags,
+				ED_resource_flag::INDEX_BUFFER
 			)
 		) << "invalid resource bind flag";
 

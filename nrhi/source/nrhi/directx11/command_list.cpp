@@ -519,11 +519,9 @@ namespace nrhi {
 			const auto& constant_buffer_p = constant_buffer_p_span[i];
 
 			NCPP_ASSERT(
-				u32(
-					flag_combine(
-						constant_buffer_p->desc().flags,
-						ED_resource_flag::CONSTANT_BUFFER
-					)
+				flag_is_has(
+					constant_buffer_p->desc().flags,
+					ED_resource_flag::CONSTANT_BUFFER
 				)
 			) << "invalid resource bind flag";
 
@@ -745,11 +743,9 @@ namespace nrhi {
 			const auto& constant_buffer_p = constant_buffer_p_span[i];
 
 			NCPP_ASSERT(
-				u32(
-					flag_combine(
-						constant_buffer_p->desc().flags,
-						ED_resource_flag::CONSTANT_BUFFER
-					)
+				flag_is_has(
+					constant_buffer_p->desc().flags,
+					ED_resource_flag::CONSTANT_BUFFER
 				)
 			) << "invalid resource bind flag";
 
@@ -775,11 +771,9 @@ namespace nrhi {
 		ID3D11DeviceContext* d3d11_device_context_p = directx11_command_list_p->d3d11_device_context_p();
 
 		NCPP_ASSERT(
-			u32(
-				flag_combine(
-					constant_buffer_p->desc().flags,
-					ED_resource_flag::CONSTANT_BUFFER
-				)
+			flag_is_has(
+				constant_buffer_p->desc().flags,
+				ED_resource_flag::CONSTANT_BUFFER
 			)
 		) << "invalid resource bind flag";
 
