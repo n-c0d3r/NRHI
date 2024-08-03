@@ -120,7 +120,7 @@ namespace nrhi {
 		NCPP_OBJECT(A_command_list);
 
 
-
+ 
 	public:
 #ifdef NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
 		void begin();
