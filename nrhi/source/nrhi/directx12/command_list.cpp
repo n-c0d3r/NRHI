@@ -972,11 +972,11 @@ namespace nrhi {
 		KPA_valid_rtv_handle rtv_p,
 		PA_vector4_f32 color
 	) {
-			H_command_list::ALTERNATIVE::clear_rtv(
-				command_list_p,
-				rtv_p,
-				color
-			);
+		H_command_list::ALTERNATIVE::clear_rtv(
+			command_list_p,
+			rtv_p,
+			color
+		);
 	}
 	void HD_directx12_command_list::clear_dsv(
 		TKPA_valid<A_command_list> command_list_p,
