@@ -132,7 +132,7 @@ function(NRHI_EnumHelper_CreateEnum)
 
         if(PARGS_FLAG_OPERATORS)
             set(Operators "${Operators}
-        NCPP_FORCE_INLINE constexpr ${PARGS_NAME} operator | (${PARGS_NAME} a, ${PARGS_NAME} b) noexcept {
+        NCPP_FORCE_INLINE ${PARGS_NAME} operator | (${PARGS_NAME} a, ${PARGS_NAME} b) noexcept {
 
             using F_equivalent = ncpp::utilities::TF_nth_template_targ<
                 sizeof(${PARGS_TYPE}),
@@ -152,7 +152,7 @@ function(NRHI_EnumHelper_CreateEnum)
                 | ((${PARGS_TYPE})b)
             );
         }
-        NCPP_FORCE_INLINE constexpr ${PARGS_NAME} operator & (${PARGS_NAME} a, ${PARGS_NAME} b) noexcept {
+        NCPP_FORCE_INLINE ${PARGS_NAME} operator & (${PARGS_NAME} a, ${PARGS_NAME} b) noexcept {
 
             using F_equivalent = ncpp::utilities::TF_nth_template_targ<
                 sizeof(${PARGS_TYPE}),
@@ -172,7 +172,7 @@ function(NRHI_EnumHelper_CreateEnum)
                 & ((${PARGS_TYPE})b)
             );
         }
-        NCPP_FORCE_INLINE constexpr ${PARGS_NAME} operator ~ (${PARGS_NAME} b) noexcept {
+        NCPP_FORCE_INLINE ${PARGS_NAME} operator ~ (${PARGS_NAME} b) noexcept {
 
             using F_equivalent = ncpp::utilities::TF_nth_template_targ<
                 sizeof(${PARGS_TYPE}),
