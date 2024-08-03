@@ -37,6 +37,10 @@
 #include <nrhi/descriptor_heap_type.hpp>
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+#include <nrhi/resource_heap_tier.hpp>
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+
 #pragma endregion
 
 
@@ -73,6 +77,11 @@ namespace nrhi {
 			ED_descriptor_heap_type descriptor_heap_type
 		);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+	public:
+		E_resource_heap_tier resource_heap_tier();
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
     };
 

@@ -29,6 +29,9 @@ NRHI_FunctionHelper_CreateFunctionClass(
 			TKPA_valid<A_device> device_p,
 			ED_descriptor_heap_type descriptor_heap_type
 		)"
+        "resource_heap_tier" "E_resource_heap_tier(
+			TKPA_valid<A_device> device_p
+		)"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement device done")

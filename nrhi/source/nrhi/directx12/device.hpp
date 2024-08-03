@@ -34,6 +34,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/device_base.hpp>
+#include <nrhi/resource_heap_tier.hpp>
 
 #pragma endregion
 
@@ -73,6 +74,11 @@ namespace nrhi {
 		static u64 descriptor_increment_size(
 			TKPA_valid<A_device> device_p,
 			ED_descriptor_heap_type descriptor_heap_type
+		);
+
+	public:
+		static E_resource_heap_tier resource_heap_tier(
+			TKPA_valid<A_device> device_p
 		);
 
     };

@@ -78,6 +78,8 @@ namespace nrhi { }
 #include <nrhi/device_child.hpp>
 #include <nrhi/root_signature_child.hpp>
 
+#include <nrhi/resource_heap_tier.hpp>
+
 #ifdef NRHI_DRIVER_DIRECTX_11
 #include <nrhi/directx11/buffer.hpp>
 #include <nrhi/directx11/texture.hpp>

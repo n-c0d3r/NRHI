@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/device.external_use_only.inl
+/** @file nrhi/resource_heap_tier.hpp
 *
-*   Implement device inline functions that is only used by external.
+*   Implement resource heap tier.
 */
 
 
@@ -29,36 +29,18 @@
 
 #include <nrhi/prerequisites.hpp>
 
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-
-#include <nrhi/device_base.hpp>
-#include <nrhi/device.hpp>
-
 #pragma endregion
 
 
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 namespace nrhi {
 
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-	NCPP_FORCE_INLINE u64 A_device::descriptor_increment_size(
-		ED_descriptor_heap_type descriptor_heap_type
-	) {
-		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
-			return H_device::descriptor_increment_size(NCPP_KTHIS(), descriptor_heap_type);
-		);
-	}
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-	NCPP_FORCE_INLINE E_resource_heap_tier A_device::resource_heap_tier() {
-
-		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
-			return H_device::resource_heap_tier(NCPP_KTHIS());
-		);
-	}
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+	enum class E_resource_heap_tier {
+		A = 0,
+		B = 1,
+		DEFAULT = A
+	};
 
 }
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
