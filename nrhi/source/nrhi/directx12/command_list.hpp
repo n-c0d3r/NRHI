@@ -387,7 +387,6 @@ namespace nrhi {
 
 
 #pragma region Alternative Functions
-#ifdef NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
 	public:
 		static void clear_rtv(
 			TKPA_valid<A_command_list> command_list_p,
@@ -576,7 +575,6 @@ namespace nrhi {
 			TKPA_valid<A_command_list> command_list_p,
 			KPA_valid_srv_handle srv_p
 		);
-#endif // NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
 #pragma endregion
 
     };
