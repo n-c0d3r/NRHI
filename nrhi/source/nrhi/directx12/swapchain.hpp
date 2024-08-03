@@ -109,8 +109,10 @@ namespace nrhi {
 	public:
 		static void async_present(TKPA_valid<A_swapchain>);
 
+#pragma region Alternative Functions
 	public:
 		static void present(TKPA_valid<A_swapchain>);
+#pragma endregion
 
 	};
 

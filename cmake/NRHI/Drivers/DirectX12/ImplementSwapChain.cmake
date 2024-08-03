@@ -36,7 +36,7 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "back_buffer_p" "K_valid_texture_2d_handle(TKPA_valid<A_swapchain> swapchain_p)"
         "async_present" "void(TKPA_valid<A_swapchain> swapchain_p)"
 
-        # Alternative functions
+    ALTERNATIVE_VALUES
         "present" "void(TKPA_valid<A_swapchain> swapchain_p)"
 )
 

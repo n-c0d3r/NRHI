@@ -325,11 +325,13 @@ namespace nrhi {
 		dx12_swapchain_p->dxgi_swapchain_p()->Present(0, 0);
 	}
 
+#pragma region Alternative Functions
 	void HD_directx12_swapchain::present(TKPA_valid<A_swapchain> swapchain_p){
 
 		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
 			H_swapchain::ALTERNATIVE::present(swapchain_p);
 		);
 	}
+#pragma endregion
 
 }

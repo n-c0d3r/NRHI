@@ -8,7 +8,7 @@ function(NRHI_FunctionHelper_CreateFunctionClass)
         PARGS
         ""
         "NAMESPACE;NAME;DRIVER_UPPER_CASE_NAME;DRIVER_SPECIFIC_NAME;TARGET_HPP_FILE_PATH;TARGET_CPP_FILE_PATH"
-        "VALUES;INCLUDES;ADDITIONAL_CODE"
+        "VALUES;ALTERNATIVE_VALUES;INCLUDES;ADDITIONAL_CODE"
         ${ARGN}
     )
 
@@ -44,6 +44,12 @@ function(NRHI_FunctionHelper_CreateFunctionClass)
 
 
     # Prepare variables for iterating
+    if(PARGS_ALTERNATIVE_VALUES)
+        if(NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS)
+            list(APPEND PARGS_VALUES ${PARGS_ALTERNATIVE_VALUES})
+        endif()
+    endif()
+
     list(LENGTH PARGS_VALUES valueCount)
 
     set(step 2)

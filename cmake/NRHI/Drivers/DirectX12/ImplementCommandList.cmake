@@ -298,6 +298,177 @@ NRHI_FunctionHelper_CreateFunctionClass(
 			KPA_buffer_handle count_buffer_p,
 			u64 count_buffer_offset_in_bytes
 		)"
+
+	ALTERNATIVE_VALUES
+		"clear_rtv" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			KPA_valid_rtv_handle rtv_p,
+			PA_vector4_f32 color
+		)"
+		"clear_dsv" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            KPA_valid_dsv_handle dsv_p,
+            ED_clear_flag flag,
+            f32 depth,
+            u8 stencil
+        )"
+		"ZVS_bind_constant_buffers" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
+            u32 base_slot_index
+        )"
+		"ZVS_bind_constant_buffer" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            KPA_valid_buffer_handle constant_buffer_p,
+            u32 slot_index
+        )"
+		"ZVS_bind_srvs" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            const TG_span<K_valid_srv_handle>& srv_p_span,
+            u32 base_slot_index
+        )"
+		"ZVS_bind_srv" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            KPA_valid_srv_handle srv_p,
+            u32 slot_index
+        )"
+		"ZVS_bind_sampler_states" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            const TG_span<TK_valid<A_sampler_state>>& sampler_state_p_span,
+            u32 base_slot_index
+        )"
+		"ZVS_bind_sampler_state" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            TKPA_valid<A_sampler_state> sampler_state_p,
+            u32 slot_index
+        )"
+		"ZPS_bind_constant_buffers" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
+            u32 base_slot_index
+        )"
+		"ZPS_bind_constant_buffer" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            KPA_valid_buffer_handle constant_buffer_p,
+            u32 slot_index
+        )"
+		"ZPS_bind_srvs" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            const TG_span<K_valid_srv_handle>& srv_p_span,
+            u32 base_slot_index
+        )"
+		"ZPS_bind_srv" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            KPA_valid_srv_handle srv_p,
+            u32 slot_index
+        )"
+		"ZPS_bind_sampler_states" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            const TG_span<TK_valid<A_sampler_state>>& sampler_state_p_span,
+            u32 base_slot_index
+        )"
+		"ZPS_bind_sampler_state" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            TKPA_valid<A_sampler_state> sampler_state_p,
+            u32 slot_index
+        )"
+		"ZCS_bind_constant_buffers" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
+            u32 base_slot_index
+        )"
+		"ZCS_bind_constant_buffer" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            KPA_valid_buffer_handle constant_buffer_p,
+            u32 slot_index
+        )"
+		"ZCS_bind_srvs" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            const TG_span<K_valid_srv_handle>& srv_p_span,
+            u32 base_slot_index
+        )"
+		"ZCS_bind_srv" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            KPA_valid_srv_handle srv_p,
+            u32 slot_index
+        )"
+		"ZCS_bind_uavs" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            const TG_span<K_valid_uav_handle>& uav_p_span,
+            u32 base_slot_index
+        )"
+		"ZCS_bind_uav" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            KPA_valid_uav_handle uav_p,
+            u32 slot_index
+        )"
+		"ZCS_bind_sampler_states" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            const TG_span<TK_valid<A_sampler_state>>& sampler_state_p_span,
+            u32 base_slot_index
+        )"
+		"ZCS_bind_sampler_state" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            TKPA_valid<A_sampler_state> sampler_state_p,
+            u32 slot_index
+        )"
+		"draw" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            u32 vertex_count,
+            u32 base_vertex_location
+        )"
+		"draw_instanced" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            u32 vertex_count_per_instance,
+            u32 instance_count,
+            u32 base_vertex_location,
+            u32 base_instance_location
+        )"
+		"draw_indexed" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            u32 index_count,
+            u32 base_index_location,
+            u32 base_vertex_location
+        )"
+		"draw_indexed_instanced" "void(
+            TKPA_valid<A_command_list> command_list_p,
+			u32 index_count_per_instance,
+			u32 instance_count,
+			u32 base_index_location,
+			u32 base_vertex_location,
+			u32 base_instance_location
+        )"
+		"dispatch" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            PA_vector3_u32 thread_group_count_3d
+        )"
+		"draw_instanced_indirect" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            KPA_buffer_handle buffer_p,
+            u32 buffer_offset
+        )"
+		"draw_indexed_instanced_indirect" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            KPA_buffer_handle buffer_p,
+            u32 buffer_offset
+        )"
+		"dispatch_indirect" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            KPA_buffer_handle buffer_p,
+            u32 buffer_offset
+        )"
+		"update_resource_data" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			TKPA_valid<A_resource> resource_p,
+			void* data_p,
+            u32 data_size,
+            u32 src_data_offset,
+            u32 dst_data_offset
+		)"
+		"generate_mips" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            KPA_valid_srv_handle srv_p
+        )"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement command list done")

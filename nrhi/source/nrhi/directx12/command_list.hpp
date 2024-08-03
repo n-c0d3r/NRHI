@@ -384,6 +384,201 @@ namespace nrhi {
 			u64 count_buffer_offset_in_bytes
 		);
 
+
+
+#pragma region Alternative Functions
+#ifdef NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
+	public:
+		static void clear_rtv(
+			TKPA_valid<A_command_list> command_list_p,
+			KPA_valid_rtv_handle rtv_p,
+			PA_vector4_f32 color
+		);
+		static void clear_dsv(
+			TKPA_valid<A_command_list> command_list_p,
+			KPA_valid_dsv_handle dsv_p,
+			ED_clear_flag flag,
+			f32 depth,
+			u8 stencil
+		);
+
+	public:
+		static void ZVS_bind_constant_buffers(
+			TKPA_valid<A_command_list> command_list_p,
+			const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
+			u32 base_slot_index
+		);
+		static void ZVS_bind_constant_buffer(
+			TKPA_valid<A_command_list> command_list_p,
+			KPA_valid_buffer_handle constant_buffer_p,
+			u32 slot_index
+		);
+		static void ZVS_bind_srvs(
+			TKPA_valid<A_command_list> command_list_p,
+			const TG_span<K_valid_srv_handle>& srv_p_span,
+			u32 base_slot_index
+		);
+		static void ZVS_bind_srv(
+			TKPA_valid<A_command_list> command_list_p,
+			KPA_valid_srv_handle srv_p,
+			u32 slot_index
+		);
+		static void ZVS_bind_sampler_states(
+			TKPA_valid<A_command_list> command_list_p,
+			const TG_span<TK_valid<A_sampler_state>>& sampler_state_p_span,
+			u32 base_slot_index
+		);
+		static void ZVS_bind_sampler_state(
+			TKPA_valid<A_command_list> command_list_p,
+			TKPA_valid<A_sampler_state> sampler_state_p,
+			u32 slot_index
+		);
+
+	public:
+		static void ZPS_bind_constant_buffers(
+			TKPA_valid<A_command_list> command_list_p,
+			const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
+			u32 base_slot_index
+		);
+		static void ZPS_bind_constant_buffer(
+			TKPA_valid<A_command_list> command_list_p,
+			KPA_valid_buffer_handle constant_buffer_p,
+			u32 slot_index
+		);
+		static void ZPS_bind_srvs(
+			TKPA_valid<A_command_list> command_list_p,
+			const TG_span<K_valid_srv_handle>& srv_p_span,
+			u32 base_slot_index
+		);
+		static void ZPS_bind_srv(
+			TKPA_valid<A_command_list> command_list_p,
+			KPA_valid_srv_handle srv_p,
+			u32 slot_index
+		);
+		static void ZPS_bind_sampler_states(
+			TKPA_valid<A_command_list> command_list_p,
+			const TG_span<TK_valid<A_sampler_state>>& sampler_state_p_span,
+			u32 base_slot_index
+		);
+		static void ZPS_bind_sampler_state(
+			TKPA_valid<A_command_list> command_list_p,
+			TKPA_valid<A_sampler_state> sampler_state_p,
+			u32 slot_index
+		);
+
+	public:
+		static void ZCS_bind_constant_buffers(
+			TKPA_valid<A_command_list> command_list_p,
+			const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
+			u32 base_slot_index
+		);
+		static void ZCS_bind_constant_buffer(
+			TKPA_valid<A_command_list> command_list_p,
+			KPA_valid_buffer_handle constant_buffer_p,
+			u32 slot_index
+		);
+		static void ZCS_bind_srvs(
+			TKPA_valid<A_command_list> command_list_p,
+			const TG_span<K_valid_srv_handle>& srv_p_span,
+			u32 base_slot_index
+		);
+		static void ZCS_bind_srv(
+			TKPA_valid<A_command_list> command_list_p,
+			KPA_valid_srv_handle srv_p,
+			u32 slot_index
+		);
+		static void ZCS_bind_uavs(
+			TKPA_valid<A_command_list> command_list_p,
+			const TG_span<K_valid_uav_handle>& uav_p_span,
+			u32 base_slot_index
+		);
+		static void ZCS_bind_uav(
+			TKPA_valid<A_command_list> command_list_p,
+			KPA_valid_uav_handle uav_p,
+			u32 slot_index
+		);
+		static void ZCS_bind_sampler_states(
+			TKPA_valid<A_command_list> command_list_p,
+			const TG_span<TK_valid<A_sampler_state>>& sampler_state_p_span,
+			u32 base_slot_index
+		);
+		static void ZCS_bind_sampler_state(
+			TKPA_valid<A_command_list> command_list_p,
+			TKPA_valid<A_sampler_state> sampler_state_p,
+			u32 slot_index
+		);
+
+	public:
+		static void draw(
+			TKPA_valid<A_command_list> command_list_p,
+			u32 vertex_count,
+			u32 base_vertex_location
+		);
+		static void draw_instanced(
+			TKPA_valid<A_command_list> command_list_p,
+			u32 vertex_count_per_instance,
+			u32 instance_count,
+			u32 base_vertex_location,
+			u32 base_instance_location
+		);
+		static void draw_indexed(
+			TKPA_valid<A_command_list> command_list_p,
+			u32 index_count,
+			u32 base_index_location,
+			u32 base_vertex_location
+		);
+		static void draw_indexed_instanced(
+			TKPA_valid<A_command_list> command_list_p,
+			u32 index_count_per_instance,
+			u32 instance_count,
+			u32 base_index_location,
+			u32 base_vertex_location,
+			u32 base_instance_location
+		);
+
+	public:
+		static void dispatch(
+			TKPA_valid<A_command_list> command_list_p,
+			PA_vector3_u32 thread_group_count_3d
+		);
+
+	public:
+		static void draw_instanced_indirect(
+			TKPA_valid<A_command_list> command_list_p,
+			KPA_buffer_handle buffer_p,
+			u32 buffer_offset
+		);
+		static void draw_indexed_instanced_indirect(
+			TKPA_valid<A_command_list> command_list_p,
+			KPA_buffer_handle buffer_p,
+			u32 buffer_offset
+		);
+
+	public:
+		static void dispatch_indirect(
+			TKPA_valid<A_command_list> command_list_p,
+			KPA_buffer_handle buffer_p,
+			u32 buffer_offset
+		);
+
+	public:
+		static void update_resource_data(
+			TKPA_valid<A_command_list> command_list_p,
+			TKPA_valid<A_resource> resource_p,
+			void* data_p,
+			u32 data_size,
+			u32 src_data_offset,
+			u32 dst_data_offset
+		);
+
+	public:
+		static void generate_mips(
+			TKPA_valid<A_command_list> command_list_p,
+			KPA_valid_srv_handle srv_p
+		);
+#endif // NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
+#pragma endregion
+
     };
 
 }
