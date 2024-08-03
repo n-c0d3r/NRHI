@@ -42,6 +42,16 @@
 
 namespace nrhi {
 
+#ifdef NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
+	NCPP_FORCE_INLINE void A_command_list::begin() {
+
+		H_command_list::begin(NCPP_KTHIS());
+	}
+	NCPP_FORCE_INLINE void A_command_list::end() {
+		H_command_list::end(NCPP_KTHIS());
+	}
+#endif // NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
+
 	NCPP_FORCE_INLINE void A_command_list::clear_state() {
 
 		H_command_list::clear_state(NCPP_KTHIS());

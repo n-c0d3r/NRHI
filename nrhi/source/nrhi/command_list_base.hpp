@@ -122,7 +122,17 @@ namespace nrhi {
 
 
 	public:
+#ifdef NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
+		void begin();
+		void end();
+#endif // NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
+
+
+
+	public:
 		void clear_state();
+
+#ifdef NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
 		void clear_rtv(KPA_valid_rtv_handle rtv_p, PA_vector4 color);
 		void clear_dsv(
 			KPA_valid_dsv_handle dsv_p,
@@ -130,6 +140,7 @@ namespace nrhi {
 			f32 depth,
 			u8 stencil
 		);
+#endif // NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
 
 	public:
 		void bind_pipeline_state(TKPA_valid<A_pipeline_state> pipeline_state_p);
@@ -152,6 +163,10 @@ namespace nrhi {
 			u32 slot_index
 		);
 
+	public:
+		void ZOM_bind_frame_buffer(TKPA_valid<A_frame_buffer> frame_buffer_p);
+
+#ifdef NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_BINDING
 	public:
 		void ZVS_bind_constant_buffers(
 			const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
@@ -205,9 +220,6 @@ namespace nrhi {
 		);
 
 	public:
-		void ZOM_bind_frame_buffer(TKPA_valid<A_frame_buffer> frame_buffer_p);
-
-	public:
 		void ZCS_bind_constant_buffers(
 			const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
 			u32 base_slot_index
@@ -240,6 +252,7 @@ namespace nrhi {
 			TKPA_valid<A_sampler_state> sampler_state_p,
 			u32 slot_index
 		);
+#endif // NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_BINDING
 
 #ifdef NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
 	public:
