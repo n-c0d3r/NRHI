@@ -51,6 +51,7 @@ int main() {
 				ED_command_list_type::DIRECT
 			}
 		);
+		command_list_p->end();
 	);
 
 	return 0;

@@ -66,6 +66,10 @@ namespace nrhi {
     private:
         ID3D11DeviceContext* d3d11_device_context_p_ = 0;
 
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
+			b8 is_in_record_ = true;
+		);
+
     public:
         NCPP_FORCE_INLINE ID3D11DeviceContext* d3d11_device_context_p() noexcept { return d3d11_device_context_p_; }
 		NCPP_FORCE_INLINE void set_d3d11_device_context_p_unsafe(ID3D11DeviceContext* value) noexcept { d3d11_device_context_p_ = value; }
@@ -84,6 +88,14 @@ namespace nrhi {
 
     public:
         static TU<A_command_list> create(TKPA_valid<A_device> device_p, const F_command_list_desc& desc);
+
+	public:
+		static void begin(
+			TKPA_valid<A_command_list> command_list_p
+		);
+		static void end(
+			TKPA_valid<A_command_list> command_list_p
+		);
 
 	public:
 		static void clear_state(

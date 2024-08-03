@@ -25,6 +25,12 @@ NRHI_FunctionHelper_CreateFunctionClass(
         }"
     VALUES
         "create" "TU<A_command_list>(TKPA_valid<A_device> device_p, const F_command_list_desc& desc)"
+        "begin" "void(
+            TKPA_valid<A_command_list> command_list_p
+        )"
+        "end" "void(
+            TKPA_valid<A_command_list> command_list_p
+        )"
         "clear_state" "void(
             TKPA_valid<A_command_list> command_list_p
         )"

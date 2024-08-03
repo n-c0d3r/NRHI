@@ -57,6 +57,7 @@ int main() {
 				ED_command_list_type::DIRECT
 			}
 		);
+		command_list_p->end();
 	);
 
 
@@ -119,10 +120,14 @@ int main() {
 	  	auto back_buffer_p = swapchain_p->back_buffer_p();
 
 	  	NRHI_DRIVER_ENABLE_IF_SUPPORT_SIMPLE_WORK_SUBMISSION(
+			command_list_p->begin();
+
 			command_list_p->clear_rtv(
 				back_rtv_p,
 				F_vector4::forward()
 			);
+
+			command_list_p->end();
 
 			command_queue_p->execute_command_list(
 				NCPP_FOH_VALID(command_list_p)

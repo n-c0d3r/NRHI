@@ -62,6 +62,10 @@ namespace nrhi {
 	private:
 		ID3D12GraphicsCommandList* d3d12_command_list_p_ = 0;
 
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
+			b8 is_in_record_ = true;
+		);
+
 	public:
 		NCPP_FORCE_INLINE ID3D12GraphicsCommandList* d3d12_command_list_p() const noexcept { return d3d12_command_list_p_; }
 		NCPP_FORCE_INLINE void set_d3d12_command_list_p_unsafe(ID3D12GraphicsCommandList* value) noexcept { d3d12_command_list_p_ = value; }
@@ -388,6 +392,14 @@ namespace nrhi {
 
 #pragma region Alternative Functions
 #ifdef NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
+	public:
+		static void begin(
+			TKPA_valid<A_command_list> command_list_p
+		);
+		static void end(
+			TKPA_valid<A_command_list> command_list_p
+		);
+
 	public:
 		static void clear_rtv(
 			TKPA_valid<A_command_list> command_list_p,

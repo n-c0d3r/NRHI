@@ -49,6 +49,10 @@ namespace nrhi {
 		TKPA_valid<A_command_list> command_list_p,
 		TKPA_valid<A_command_allocator> command_allocator_p
 	) {
+		NCPP_ASSERT(!(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_)) << "already in record";
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
+			command_list_p.T_cast<F_directx12_command_list>()->is_in_record_ = true;
+		);
 		command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p()->Reset(
 			command_allocator_p.T_cast<F_directx12_command_allocator>()->d3d12_command_allocator_p(),
 			0
@@ -56,6 +60,10 @@ namespace nrhi {
 	}
 	void HD_directx12_command_list::async_end(TKPA_valid<A_command_list> command_list_p) {
 
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
+		NCPP_ENABLE_IF_ASSERTION_ENABLED(
+			command_list_p.T_cast<F_directx12_command_list>()->is_in_record_ = false;
+		);
 		command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p()->Close();
 	}
 
@@ -63,6 +71,8 @@ namespace nrhi {
 		TKPA_valid<A_command_list> command_list_p,
 		const F_resource_barrier& resource_barrier
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
+
 		auto dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
 
 		D3D12_RESOURCE_BARRIER d3d12_resource_barrier;
@@ -101,6 +111,8 @@ namespace nrhi {
 		TKPA_valid<A_command_list> command_list_p,
 		const TG_span<F_resource_barrier>& resource_barriers
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
+
 		auto dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
 
 		u32 barrier_count = resource_barriers.size();
@@ -149,6 +161,8 @@ namespace nrhi {
 	void HD_directx12_command_list::clear_state(
 		TKPA_valid<A_command_list> command_list_p
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
+
 		auto dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
 
 		dx12_command_list_p->d3d12_command_list_p()->ClearState(0);
@@ -158,6 +172,8 @@ namespace nrhi {
 		K_valid_rtv_handle rtv_p,
 		PA_vector4_f32 color
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
+
 		async_clear_rtv_with_descriptor(
 			command_list_p,
 			rtv_p->descriptor().handle.cpu_address,
@@ -171,6 +187,8 @@ namespace nrhi {
 		f32 depth,
 		u8 stencil
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
+
 		async_clear_dsv_with_descriptor(
 			command_list_p,
 			dsv_p->descriptor().handle.cpu_address,
@@ -184,6 +202,7 @@ namespace nrhi {
 		F_descriptor_cpu_address rtv_cpu_address,
 		PA_vector4_f32 color
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
 		auto dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
@@ -202,6 +221,7 @@ namespace nrhi {
 		f32 depth,
 		u8 stencil
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
 		auto dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
@@ -220,6 +240,7 @@ namespace nrhi {
 		TKPA_valid<A_command_list> command_list_p,
 		const TG_span<TK_valid<A_descriptor_heap>>& descriptor_heap_p_span
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_graphics() || command_list_p->supports_compute()) << "command list does not support graphics or compute";
 
 		ID3D12DescriptorHeap* d3d12_descriptor_heap_p_array[2];
@@ -240,6 +261,7 @@ namespace nrhi {
 		TKPA_valid<A_command_list> command_list_p,
 		TKPA_valid<A_pipeline_state> pipeline_state_p
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_compute() || command_list_p->supports_graphics()) << "command list does not support compute or graphics";
 
 		command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p()->SetPipelineState(
@@ -251,6 +273,7 @@ namespace nrhi {
 		TKPA_valid<A_command_list> command_list_p,
 		KPA_valid_compute_pipeline_state_handle pipeline_state_p
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_compute()) << "command list does not support compute";
 
 		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
@@ -263,6 +286,7 @@ namespace nrhi {
 		TKPA_valid <nrhi::A_command_list> command_list_p,
 		TKPA_valid <nrhi::A_root_signature> root_signature_p
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_compute()) << "command list does not support compute";
 
 		command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p()->SetComputeRootSignature(
@@ -274,6 +298,7 @@ namespace nrhi {
 		u32 root_param_index,
 		F_descriptor_gpu_address gpu_address
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_compute()) << "command list does not support compute";
 
 		command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p()->SetComputeRootDescriptorTable(
@@ -287,6 +312,7 @@ namespace nrhi {
 		const TG_span<u32>& constant_span,
 		u32 offset_in_constants
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_compute()) << "command list does not support compute";
 
 		command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p()->SetComputeRoot32BitConstants(
@@ -302,6 +328,7 @@ namespace nrhi {
 		u32 root_constant,
 		u32 offset_in_constants
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_compute()) << "command list does not support compute";
 
 		command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p()->SetComputeRoot32BitConstant(
@@ -315,6 +342,8 @@ namespace nrhi {
 		u32 root_param_index,
 		KPA_valid_srv_handle srv_p
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
+
 		return ZC_bind_root_srv_with_resource(
 			command_list_p,
 			root_param_index,
@@ -326,6 +355,8 @@ namespace nrhi {
 		u32 root_param_index,
 		KPA_valid_uav_handle uav_p
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
+
 		return ZC_bind_root_uav_with_resource(
 			command_list_p,
 			root_param_index,
@@ -337,6 +368,8 @@ namespace nrhi {
 		u32 root_param_index,
 		TKPA_valid<A_resource> resource_p
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
+
 		ZC_bind_root_cbv_with_gpu_virtual_address(
 			command_list_p,
 			root_param_index,
@@ -348,6 +381,8 @@ namespace nrhi {
 		u32 root_param_index,
 		TKPA_valid<A_resource> resource_p
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
+
 		ZC_bind_root_srv_with_gpu_virtual_address(
 			command_list_p,
 			root_param_index,
@@ -359,6 +394,8 @@ namespace nrhi {
 		u32 root_param_index,
 		TKPA_valid<A_resource> resource_p
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
+
 		ZC_bind_root_uav_with_gpu_virtual_address(
 			command_list_p,
 			root_param_index,
@@ -370,6 +407,7 @@ namespace nrhi {
 		u32 root_param_index,
 		F_resource_gpu_virtual_address gpu_virtual_address
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_compute()) << "command list does not support compute";
 
 		command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p()->SetComputeRootConstantBufferView(
@@ -382,6 +420,7 @@ namespace nrhi {
 		u32 root_param_index,
 		F_resource_gpu_virtual_address gpu_virtual_address
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_compute()) << "command list does not support compute";
 
 		command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p()->SetComputeRootShaderResourceView(
@@ -394,6 +433,7 @@ namespace nrhi {
 		u32 root_param_index,
 		F_resource_gpu_virtual_address gpu_virtual_address
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_compute()) << "command list does not support compute";
 
 		command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p()->SetComputeRootUnorderedAccessView(
@@ -406,6 +446,7 @@ namespace nrhi {
 		TKPA_valid<A_command_list> command_list_p,
 		KPA_valid_graphics_pipeline_state_handle pipeline_state_p
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
 		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
@@ -425,6 +466,7 @@ namespace nrhi {
 		TKPA_valid <nrhi::A_command_list> command_list_p,
 		TKPA_valid <nrhi::A_root_signature> root_signature_p
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
 		command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p()->SetGraphicsRootSignature(
@@ -436,6 +478,7 @@ namespace nrhi {
 		u32 root_param_index,
 		F_descriptor_gpu_address gpu_address
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
 		command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p()->SetGraphicsRootDescriptorTable(
@@ -449,6 +492,7 @@ namespace nrhi {
 		const TG_span<u32>& constant_span,
 		u32 offset_in_constants
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
 		command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p()->SetGraphicsRoot32BitConstants(
@@ -464,6 +508,7 @@ namespace nrhi {
 		u32 root_constant,
 		u32 offset_in_constants
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
 		command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p()->SetGraphicsRoot32BitConstant(
@@ -477,6 +522,8 @@ namespace nrhi {
 		u32 root_param_index,
 		KPA_valid_srv_handle srv_p
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
+
 		return ZG_bind_root_srv_with_resource(
 			command_list_p,
 			root_param_index,
@@ -488,6 +535,8 @@ namespace nrhi {
 		u32 root_param_index,
 		KPA_valid_uav_handle uav_p
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
+
 		return ZG_bind_root_uav_with_resource(
 			command_list_p,
 			root_param_index,
@@ -499,6 +548,8 @@ namespace nrhi {
 		u32 root_param_index,
 		TKPA_valid<A_resource> resource_p
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
+
 		ZG_bind_root_cbv_with_gpu_virtual_address(
 			command_list_p,
 			root_param_index,
@@ -510,6 +561,8 @@ namespace nrhi {
 		u32 root_param_index,
 		TKPA_valid<A_resource> resource_p
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
+
 		ZG_bind_root_srv_with_gpu_virtual_address(
 			command_list_p,
 			root_param_index,
@@ -521,6 +574,8 @@ namespace nrhi {
 		u32 root_param_index,
 		TKPA_valid<A_resource> resource_p
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
+
 		ZG_bind_root_uav_with_gpu_virtual_address(
 			command_list_p,
 			root_param_index,
@@ -532,6 +587,7 @@ namespace nrhi {
 		u32 root_param_index,
 		F_resource_gpu_virtual_address gpu_virtual_address
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
 		command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p()->SetGraphicsRootConstantBufferView(
@@ -544,6 +600,7 @@ namespace nrhi {
 		u32 root_param_index,
 		F_resource_gpu_virtual_address gpu_virtual_address
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
 		command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p()->SetGraphicsRootShaderResourceView(
@@ -556,6 +613,7 @@ namespace nrhi {
 		u32 root_param_index,
 		F_resource_gpu_virtual_address gpu_virtual_address
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
 		command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p()->SetGraphicsRootUnorderedAccessView(
@@ -568,8 +626,8 @@ namespace nrhi {
 		TKPA_valid<A_command_list> command_list_p,
 		TKPA_valid<A_frame_buffer> frame_buffer_p
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
-
 		NCPP_ASSERT(frame_buffer_p->is_valid_generation()) << "frame buffer's generation is not valid";
 
 		const auto& frame_buffer_desc = frame_buffer_p->desc();
@@ -623,6 +681,7 @@ namespace nrhi {
 		KPA_valid_buffer_handle index_buffer_p,
 		u32 offset
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
 		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
@@ -659,6 +718,7 @@ namespace nrhi {
 		const TG_span<u32>& offset_span,
 		u32 base_slot_index
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
 		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
@@ -695,6 +755,7 @@ namespace nrhi {
 		u32 offset,
 		u32 slot_index
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
 		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
@@ -725,6 +786,7 @@ namespace nrhi {
 		u32 size,
 		ED_format format
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
 		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
@@ -747,6 +809,7 @@ namespace nrhi {
 		TG_span<u32> strides,
 		u32 base_slot_index
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
 		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
@@ -777,6 +840,7 @@ namespace nrhi {
 		u32 stride,
 		u32 slot_index
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
 		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
@@ -800,6 +864,7 @@ namespace nrhi {
 		TKPA_valid<A_resource> dst_resource_p,
 		TKPA_valid<A_resource> src_resource_p
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_blit()) << "command list does not support blit";
 
 		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
@@ -822,6 +887,7 @@ namespace nrhi {
 		u64 src_offset,
 		u64 size
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_blit()) << "command list does not support blit";
 
 		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
@@ -840,6 +906,7 @@ namespace nrhi {
 		u32 vertex_count,
 		u32 base_vertex_location
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
 		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
@@ -860,6 +927,7 @@ namespace nrhi {
 		u32 base_vertex_location,
 		u32 base_instance_location
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
 		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
@@ -879,6 +947,7 @@ namespace nrhi {
 		u32 base_index_location,
 		u32 base_vertex_location
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
 		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
@@ -901,6 +970,7 @@ namespace nrhi {
 		u32 base_vertex_location,
 		u32 base_instance_location
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 
 		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
@@ -920,6 +990,7 @@ namespace nrhi {
 		TKPA_valid<A_command_list> command_list_p,
 		PA_vector3_u32 thread_group_count_3d
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
 		NCPP_ASSERT(command_list_p->supports_compute()) << "command list does not support compute";
 
 		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
@@ -942,6 +1013,8 @@ namespace nrhi {
 		KPA_buffer_handle count_buffer_p,
 		u64 count_buffer_offset_in_bytes
 	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
+
 		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
 
 		NCPP_ASSERT(
@@ -967,6 +1040,21 @@ namespace nrhi {
 
 #pragma region Alternative Functions
 #ifdef NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
+	void HD_directx12_command_list::begin(
+		TKPA_valid<A_command_list> command_list_p
+	) {
+		H_command_list::ALTERNATIVE::begin(
+			command_list_p
+		);
+	}
+	void HD_directx12_command_list::end(
+		TKPA_valid<A_command_list> command_list_p
+	) {
+		H_command_list::ALTERNATIVE::end(
+			command_list_p
+		);
+	}
+
 	void HD_directx12_command_list::clear_rtv(
 		TKPA_valid<A_command_list> command_list_p,
 		KPA_valid_rtv_handle rtv_p,

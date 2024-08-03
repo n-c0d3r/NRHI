@@ -46,6 +46,7 @@ int main() {
             command_list_type
         }
     );
+	command_list_p->end();
 
 
 
@@ -286,6 +287,8 @@ int main() {
 
 		if(swapchain_p.is_valid()) {
 
+			command_list_p->begin();
+
 			// update frame buffer
 			frame_buffer_p->update_viewport();
 
@@ -353,6 +356,8 @@ int main() {
 					0
 				);
 			}
+
+			command_list_p->end();
 
 			// submit command lists to GPU
 			command_queue_p->execute_command_list(
