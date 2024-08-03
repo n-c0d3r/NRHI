@@ -966,18 +966,17 @@ namespace nrhi {
 
 
 #pragma region Alternative Functions
+#ifdef NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
 	void HD_directx12_command_list::clear_rtv(
 		TKPA_valid<A_command_list> command_list_p,
 		KPA_valid_rtv_handle rtv_p,
 		PA_vector4_f32 color
 	) {
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
 			H_command_list::ALTERNATIVE::clear_rtv(
 				command_list_p,
 				rtv_p,
 				color
 			);
-		);
 	}
 	void HD_directx12_command_list::clear_dsv(
 		TKPA_valid<A_command_list> command_list_p,
@@ -986,14 +985,12 @@ namespace nrhi {
 		f32 depth,
 		u8 stencil
 	) {
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
-			H_command_list::ALTERNATIVE::clear_dsv(
-				command_list_p,
-				dsv_p,
-				flag,
-				depth,
-				stencil
-			);
+		H_command_list::ALTERNATIVE::clear_dsv(
+			command_list_p,
+			dsv_p,
+			flag,
+			depth,
+			stencil
 		);
 	}
 
@@ -1002,12 +999,10 @@ namespace nrhi {
 		const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
 		u32 base_slot_index
 	) {
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
-			H_command_list::ALTERNATIVE::ZVS_bind_constant_buffers(
-				command_list_p,
-				constant_buffer_p_span,
-				base_slot_index
-			);
+		H_command_list::ALTERNATIVE::ZVS_bind_constant_buffers(
+			command_list_p,
+			constant_buffer_p_span,
+			base_slot_index
 		);
 	}
 	void HD_directx12_command_list::ZVS_bind_constant_buffer(
@@ -1015,12 +1010,10 @@ namespace nrhi {
 		KPA_valid_buffer_handle constant_buffer_p,
 		u32 slot_index
 	) {
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
-			H_command_list::ALTERNATIVE::ZVS_bind_constant_buffer(
-				command_list_p,
-				constant_buffer_p,
-				slot_index
-			);
+		H_command_list::ALTERNATIVE::ZVS_bind_constant_buffer(
+			command_list_p,
+			constant_buffer_p,
+			slot_index
 		);
 	}
 	void HD_directx12_command_list::ZVS_bind_srvs(
@@ -1028,12 +1021,10 @@ namespace nrhi {
 		const TG_span<K_valid_srv_handle>& srv_p_span,
 		u32 base_slot_index
 	) {
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
-			H_command_list::ALTERNATIVE::ZVS_bind_srvs(
-				command_list_p,
-				srv_p_span,
-				base_slot_index
-			);
+		H_command_list::ALTERNATIVE::ZVS_bind_srvs(
+			command_list_p,
+			srv_p_span,
+			base_slot_index
 		);
 	}
 	void HD_directx12_command_list::ZVS_bind_srv(
@@ -1041,12 +1032,10 @@ namespace nrhi {
 		KPA_valid_srv_handle srv_p,
 		u32 slot_index
 	) {
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
-			H_command_list::ALTERNATIVE::ZVS_bind_srv(
-				command_list_p,
-				srv_p,
-				slot_index
-			);
+		H_command_list::ALTERNATIVE::ZVS_bind_srv(
+			command_list_p,
+			srv_p,
+			slot_index
 		);
 	}
 	void HD_directx12_command_list::ZVS_bind_sampler_states(
@@ -1054,12 +1043,10 @@ namespace nrhi {
 		const TG_span<TK_valid<A_sampler_state>>& sampler_state_p_span,
 		u32 base_slot_index
 	) {
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
-			H_command_list::ALTERNATIVE::ZVS_bind_sampler_states(
-				command_list_p,
-				sampler_state_p_span,
-				base_slot_index
-			);
+		H_command_list::ALTERNATIVE::ZVS_bind_sampler_states(
+			command_list_p,
+			sampler_state_p_span,
+			base_slot_index
 		);
 	}
 	void HD_directx12_command_list::ZVS_bind_sampler_state(
@@ -1067,12 +1054,10 @@ namespace nrhi {
 		TKPA_valid<A_sampler_state> sampler_state_p,
 		u32 slot_index
 	) {
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
-			H_command_list::ALTERNATIVE::ZVS_bind_sampler_state(
-				command_list_p,
-				sampler_state_p,
-				slot_index
-			);
+		H_command_list::ALTERNATIVE::ZVS_bind_sampler_state(
+			command_list_p,
+			sampler_state_p,
+			slot_index
 		);
 	}
 
@@ -1081,12 +1066,10 @@ namespace nrhi {
 		const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
 		u32 base_slot_index
 	) {
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
-			H_command_list::ALTERNATIVE::ZPS_bind_constant_buffers(
-				command_list_p,
-				constant_buffer_p_span,
-				base_slot_index
-			);
+		H_command_list::ALTERNATIVE::ZPS_bind_constant_buffers(
+			command_list_p,
+			constant_buffer_p_span,
+			base_slot_index
 		);
 	}
 	void HD_directx12_command_list::ZPS_bind_constant_buffer(
@@ -1094,12 +1077,10 @@ namespace nrhi {
 		KPA_valid_buffer_handle constant_buffer_p,
 		u32 slot_index
 	) {
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
-			H_command_list::ALTERNATIVE::ZPS_bind_constant_buffer(
-				command_list_p,
-				constant_buffer_p,
-				slot_index
-			);
+		H_command_list::ALTERNATIVE::ZPS_bind_constant_buffer(
+			command_list_p,
+			constant_buffer_p,
+			slot_index
 		);
 	}
 	void HD_directx12_command_list::ZPS_bind_srvs(
@@ -1107,12 +1088,10 @@ namespace nrhi {
 		const TG_span<K_valid_srv_handle>& srv_p_span,
 		u32 base_slot_index
 	) {
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
-			H_command_list::ALTERNATIVE::ZPS_bind_srvs(
-				command_list_p,
-				srv_p_span,
-				base_slot_index
-			);
+		H_command_list::ALTERNATIVE::ZPS_bind_srvs(
+			command_list_p,
+			srv_p_span,
+			base_slot_index
 		);
 	}
 	void HD_directx12_command_list::ZPS_bind_srv(
@@ -1120,12 +1099,10 @@ namespace nrhi {
 		KPA_valid_srv_handle srv_p,
 		u32 slot_index
 	) {
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
-			H_command_list::ALTERNATIVE::ZPS_bind_srv(
-				command_list_p,
-				srv_p,
-				slot_index
-			);
+		H_command_list::ALTERNATIVE::ZPS_bind_srv(
+			command_list_p,
+			srv_p,
+			slot_index
 		);
 	}
 	void HD_directx12_command_list::ZPS_bind_sampler_states(
@@ -1133,12 +1110,10 @@ namespace nrhi {
 		const TG_span<TK_valid<A_sampler_state>>& sampler_state_p_span,
 		u32 base_slot_index
 	) {
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
-			H_command_list::ALTERNATIVE::ZPS_bind_sampler_states(
-				command_list_p,
-				sampler_state_p_span,
-				base_slot_index
-			);
+		H_command_list::ALTERNATIVE::ZPS_bind_sampler_states(
+			command_list_p,
+			sampler_state_p_span,
+			base_slot_index
 		);
 	}
 	void HD_directx12_command_list::ZPS_bind_sampler_state(
@@ -1146,12 +1121,10 @@ namespace nrhi {
 		TKPA_valid<A_sampler_state> sampler_state_p,
 		u32 slot_index
 	) {
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
-			H_command_list::ALTERNATIVE::ZPS_bind_sampler_state(
-				command_list_p,
-				sampler_state_p,
-				slot_index
-			);
+		H_command_list::ALTERNATIVE::ZPS_bind_sampler_state(
+			command_list_p,
+			sampler_state_p,
+			slot_index
 		);
 	}
 
@@ -1160,12 +1133,10 @@ namespace nrhi {
 		const TG_span<K_valid_buffer_handle>& constant_buffer_p_span,
 		u32 base_slot_index
 	) {
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
-			H_command_list::ALTERNATIVE::ZCS_bind_constant_buffers(
-				command_list_p,
-				constant_buffer_p_span,
-				base_slot_index
-			);
+		H_command_list::ALTERNATIVE::ZCS_bind_constant_buffers(
+			command_list_p,
+			constant_buffer_p_span,
+			base_slot_index
 		);
 	}
 	void HD_directx12_command_list::ZCS_bind_constant_buffer(
@@ -1173,12 +1144,10 @@ namespace nrhi {
 		KPA_valid_buffer_handle constant_buffer_p,
 		u32 slot_index
 	) {
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
-			H_command_list::ALTERNATIVE::ZCS_bind_constant_buffer(
-				command_list_p,
-				constant_buffer_p,
-				slot_index
-			);
+		H_command_list::ALTERNATIVE::ZCS_bind_constant_buffer(
+			command_list_p,
+			constant_buffer_p,
+			slot_index
 		);
 	}
 	void HD_directx12_command_list::ZCS_bind_srvs(
@@ -1186,12 +1155,10 @@ namespace nrhi {
 		const TG_span<K_valid_srv_handle>& srv_p_span,
 		u32 base_slot_index
 	) {
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
-			H_command_list::ALTERNATIVE::ZCS_bind_srvs(
-				command_list_p,
-				srv_p_span,
-				base_slot_index
-			);
+		H_command_list::ALTERNATIVE::ZCS_bind_srvs(
+			command_list_p,
+			srv_p_span,
+			base_slot_index
 		);
 	}
 	void HD_directx12_command_list::ZCS_bind_srv(
@@ -1199,12 +1166,10 @@ namespace nrhi {
 		KPA_valid_srv_handle srv_p,
 		u32 slot_index
 	) {
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
-			H_command_list::ALTERNATIVE::ZCS_bind_srv(
-				command_list_p,
-				srv_p,
-				slot_index
-			);
+		H_command_list::ALTERNATIVE::ZCS_bind_srv(
+			command_list_p,
+			srv_p,
+			slot_index
 		);
 	}
 	void HD_directx12_command_list::ZCS_bind_uavs(
@@ -1212,12 +1177,10 @@ namespace nrhi {
 		const TG_span<K_valid_uav_handle>& uav_p_span,
 		u32 base_slot_index
 	) {
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
-			H_command_list::ALTERNATIVE::ZCS_bind_uavs(
-				command_list_p,
-				uav_p_span,
-				base_slot_index
-			);
+		H_command_list::ALTERNATIVE::ZCS_bind_uavs(
+			command_list_p,
+			uav_p_span,
+			base_slot_index
 		);
 	}
 	void HD_directx12_command_list::ZCS_bind_uav(
@@ -1225,12 +1188,10 @@ namespace nrhi {
 		KPA_valid_uav_handle uav_p,
 		u32 slot_index
 	) {
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
-			H_command_list::ALTERNATIVE::ZCS_bind_uav(
-				command_list_p,
-				uav_p,
-				slot_index
-			);
+		H_command_list::ALTERNATIVE::ZCS_bind_uav(
+			command_list_p,
+			uav_p,
+			slot_index
 		);
 	}
 	void HD_directx12_command_list::ZCS_bind_sampler_states(
@@ -1238,12 +1199,10 @@ namespace nrhi {
 		const TG_span<TK_valid<A_sampler_state>>& sampler_state_p_span,
 		u32 base_slot_index
 	) {
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
-			H_command_list::ALTERNATIVE::ZCS_bind_sampler_states(
-				command_list_p,
-				sampler_state_p_span,
-				base_slot_index
-			);
+		H_command_list::ALTERNATIVE::ZCS_bind_sampler_states(
+			command_list_p,
+			sampler_state_p_span,
+			base_slot_index
 		);
 	}
 	void HD_directx12_command_list::ZCS_bind_sampler_state(
@@ -1251,12 +1210,10 @@ namespace nrhi {
 		TKPA_valid<A_sampler_state> sampler_state_p,
 		u32 slot_index
 	) {
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
-			H_command_list::ALTERNATIVE::ZCS_bind_sampler_state(
-				command_list_p,
-				sampler_state_p,
-				slot_index
-			);
+		H_command_list::ALTERNATIVE::ZCS_bind_sampler_state(
+			command_list_p,
+			sampler_state_p,
+			slot_index
 		);
 	}
 
@@ -1265,12 +1222,10 @@ namespace nrhi {
 		u32 vertex_count,
 		u32 base_vertex_location
 	) {
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
-			H_command_list::ALTERNATIVE::draw(
-				command_list_p,
-				vertex_count,
-				base_vertex_location
-			);
+		H_command_list::ALTERNATIVE::draw(
+			command_list_p,
+			vertex_count,
+			base_vertex_location
 		);
 	}
 	void HD_directx12_command_list::draw_instanced(
@@ -1280,14 +1235,12 @@ namespace nrhi {
 		u32 base_vertex_location,
 		u32 base_instance_location
 	) {
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
-			H_command_list::ALTERNATIVE::draw_instanced(
-				command_list_p,
-				vertex_count_per_instance,
-				instance_count,
-				base_vertex_location,
-				base_instance_location
-			);
+		H_command_list::ALTERNATIVE::draw_instanced(
+			command_list_p,
+			vertex_count_per_instance,
+			instance_count,
+			base_vertex_location,
+			base_instance_location
 		);
 	}
 	void HD_directx12_command_list::draw_indexed(
@@ -1296,13 +1249,11 @@ namespace nrhi {
 		u32 base_index_location,
 		u32 base_vertex_location
 	) {
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
-			H_command_list::ALTERNATIVE::draw_indexed(
-				command_list_p,
-				index_count,
-				base_index_location,
-				base_vertex_location
-			);
+		H_command_list::ALTERNATIVE::draw_indexed(
+			command_list_p,
+			index_count,
+			base_index_location,
+			base_vertex_location
 		);
 	}
 	void HD_directx12_command_list::draw_indexed_instanced(
@@ -1313,15 +1264,13 @@ namespace nrhi {
 		u32 base_vertex_location,
 		u32 base_instance_location
 	) {
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
-			H_command_list::ALTERNATIVE::draw_indexed_instanced(
-				command_list_p,
-				index_count_per_instance,
-				instance_count,
-				base_index_location,
-				base_vertex_location,
-				base_instance_location
-			);
+		H_command_list::ALTERNATIVE::draw_indexed_instanced(
+			command_list_p,
+			index_count_per_instance,
+			instance_count,
+			base_index_location,
+			base_vertex_location,
+			base_instance_location
 		);
 	}
 
@@ -1329,11 +1278,9 @@ namespace nrhi {
 		TKPA_valid<A_command_list> command_list_p,
 		PA_vector3_u32 thread_group_count_3d
 	) {
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
-			H_command_list::ALTERNATIVE::dispatch(
-				command_list_p,
-				thread_group_count_3d
-			);
+		H_command_list::ALTERNATIVE::dispatch(
+			command_list_p,
+			thread_group_count_3d
 		);
 	}
 
@@ -1342,12 +1289,10 @@ namespace nrhi {
 		KPA_buffer_handle buffer_p,
 		u32 buffer_offset
 	) {
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
-			H_command_list::ALTERNATIVE::draw_instanced_indirect(
-				command_list_p,
-				buffer_p,
-				buffer_offset
-			);
+		H_command_list::ALTERNATIVE::draw_instanced_indirect(
+			command_list_p,
+			buffer_p,
+			buffer_offset
 		);
 	}
 	void HD_directx12_command_list::draw_indexed_instanced_indirect(
@@ -1355,12 +1300,10 @@ namespace nrhi {
 		KPA_buffer_handle buffer_p,
 		u32 buffer_offset
 	) {
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
-			H_command_list::ALTERNATIVE::draw_indexed_instanced_indirect(
-				command_list_p,
-				buffer_p,
-				buffer_offset
-			);
+		H_command_list::ALTERNATIVE::draw_indexed_instanced_indirect(
+			command_list_p,
+			buffer_p,
+			buffer_offset
 		);
 	}
 
@@ -1369,12 +1312,10 @@ namespace nrhi {
 		KPA_buffer_handle buffer_p,
 		u32 buffer_offset
 	) {
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
-			H_command_list::ALTERNATIVE::dispatch_indirect(
-				command_list_p,
-				buffer_p,
-				buffer_offset
-			);
+		H_command_list::ALTERNATIVE::dispatch_indirect(
+			command_list_p,
+			buffer_p,
+			buffer_offset
 		);
 	}
 
@@ -1386,15 +1327,13 @@ namespace nrhi {
 		u32 src_data_offset,
 		u32 dst_data_offset
 	) {
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
-			H_command_list::ALTERNATIVE::update_resource_data(
-				command_list_p,
-				resource_p,
-				data_p,
-				data_size,
-				src_data_offset,
-				dst_data_offset
-			);
+		H_command_list::ALTERNATIVE::update_resource_data(
+			command_list_p,
+			resource_p,
+			data_p,
+			data_size,
+			src_data_offset,
+			dst_data_offset
 		);
 	}
 
@@ -1402,13 +1341,12 @@ namespace nrhi {
 		TKPA_valid<A_command_list> command_list_p,
 		KPA_valid_srv_handle srv_p
 	) {
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
-			H_command_list::ALTERNATIVE::generate_mips(
-				command_list_p,
-				srv_p
-			);
+		H_command_list::ALTERNATIVE::generate_mips(
+			command_list_p,
+			srv_p
 		);
 	}
+#endif // NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
 #pragma endregion
 
 }

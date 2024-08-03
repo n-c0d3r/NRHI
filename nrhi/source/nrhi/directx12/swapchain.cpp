@@ -326,12 +326,12 @@ namespace nrhi {
 	}
 
 #pragma region Alternative Functions
+#ifdef NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
 	void HD_directx12_swapchain::present(TKPA_valid<A_swapchain> swapchain_p){
 
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
-			H_swapchain::ALTERNATIVE::present(swapchain_p);
-		);
+		H_swapchain::ALTERNATIVE::present(swapchain_p);
 	}
+#endif // NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
 #pragma endregion
 
 }

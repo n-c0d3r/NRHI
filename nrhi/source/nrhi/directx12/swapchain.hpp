@@ -110,8 +110,10 @@ namespace nrhi {
 		static void async_present(TKPA_valid<A_swapchain>);
 
 #pragma region Alternative Functions
+#ifdef NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
 	public:
 		static void present(TKPA_valid<A_swapchain>);
+#endif // NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
 #pragma endregion
 
 	};
