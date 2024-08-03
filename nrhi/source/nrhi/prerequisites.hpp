@@ -239,19 +239,19 @@ namespace nrhi {}
 ////////////////////////////////////////////////////////////////////////////////////
 
 #define NRHI_DRIVER_DIRECTX_11_GENERATE___RESOURCE_FLAG(FLAG, MISC_FLAG) (\
-                (0x00000000FFFFFFFFL & (uint64_t)MISC_FLAG)\
-                | (((uint64_t)FLAG) << 32L)\
+                (0x00000000FFFFFFFFL & (unsigned long long)MISC_FLAG)\
+                | (((unsigned long long)FLAG) << 32L)\
             )
 
 #define NRHI_DRIVER_DIRECTX_11_MAP___RESOURCE_FLAG___TO___RESOURCE_FLAG(...) (\
                 (D3D11_BIND_FLAG)(\
-                    (0xFFFFFFFF00000000L & ((uint64_t)__VA_ARGS__))\
+                    (0xFFFFFFFF00000000L & ((unsigned long long)__VA_ARGS__))\
                     >> 32L\
                 )\
             )
 #define NRHI_DRIVER_DIRECTX_11_MAP___RESOURCE_FLAG___TO___RESOURCE_MISC_FLAG(...) (\
                 (D3D11_RESOURCE_MISC_FLAG)(\
-                    0x00000000FFFFFFFFL & ((uint64_t)__VA_ARGS__)\
+                    0x00000000FFFFFFFFL & ((unsigned long long)__VA_ARGS__)\
                 )\
             )
 
