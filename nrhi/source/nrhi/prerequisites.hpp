@@ -238,8 +238,8 @@ namespace nrhi {}
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#define NRHI_DRIVER_DIRECTX_11_FLAG_MASK___RESOURCE_FLAG 0xFFFFFFFF00000000
-#define NRHI_DRIVER_DIRECTX_11_FLAG_OFFSET___RESOURCE_FLAG (4 * 8)
+#define NRHI_DRIVER_DIRECTX_11_FLAG_MASK___RESOURCE_FLAG 0xFFFFFFFF00000000L
+#define NRHI_DRIVER_DIRECTX_11_FLAG_OFFSET___RESOURCE_FLAG (4L * 8L)
 #define NRHI_DRIVER_DIRECTX_11_REMOVE_FLAG___RESOURCE_FLAG(...) (\
                 (~NRHI_DRIVER_DIRECTX_11_FLAG_MASK___RESOURCE_FLAG) \
                 & (ncpp::u64(__VA_ARGS__))\
@@ -297,8 +297,8 @@ namespace nrhi {}
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#define NRHI_DRIVER_DIRECTX_12_ID_MASK___RESOURCE_FLAG 0xFFFFFFFFFFFF0000
-#define NRHI_DRIVER_DIRECTX_12_ID_OFFSET___RESOURCE_FLAG (4 * 4)
+#define NRHI_DRIVER_DIRECTX_12_ID_MASK___RESOURCE_FLAG 0xFFFFFFFFFFFF0000L
+#define NRHI_DRIVER_DIRECTX_12_ID_OFFSET___RESOURCE_FLAG (4L * 4L)
 #define NRHI_DRIVER_DIRECTX_12_REMOVE_ID___RESOURCE_FLAG(...) (\
                 (~NRHI_DRIVER_DIRECTX_12_ID_MASK___RESOURCE_FLAG) \
                 & (ncpp::u64(__VA_ARGS__))\
