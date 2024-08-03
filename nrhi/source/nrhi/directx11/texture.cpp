@@ -452,7 +452,7 @@ namespace nrhi {
 
 		NCPP_ASSERT(desc_.array_size) << "texture 2d array size can't be zero";
 
-		TG_fixed_vector<D3D11_SUBRESOURCE_DATA, 6> d3d11_subresource_datas(initial_data_.size());
+		TG_vector<D3D11_SUBRESOURCE_DATA> d3d11_subresource_datas(initial_data_.size());
 		if(initial_data_.size()) {
 
 			for(u32 i = 0; i < initial_data_.size(); ++i) {
