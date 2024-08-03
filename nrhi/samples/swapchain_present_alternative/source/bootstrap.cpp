@@ -8,6 +8,7 @@ using namespace nrhi;
 void NRHI_DRIVER_ALTERNATIVE(nrhi, H_swapchain)::present(
 	TKPA_valid<A_swapchain> swapchain_p
 ) {
+	// your own implementation of H_swapchain::present
 }
 
 
