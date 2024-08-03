@@ -239,19 +239,19 @@ namespace nrhi {}
 ////////////////////////////////////////////////////////////////////////////////////
 
 #define NRHI_DRIVER_DIRECTX_11_GENERATE___RESOURCE_FLAG(FLAG, MISC_FLAG) (\
-                (0x00000000FFFFFFFFLL & (uint64_t)MISC_FLAG)\
-                | ((uint64_t)FLAG << 32LL)\
+                (0x00000000FFFFFFFFULL & (unsigned __int64)MISC_FLAG)\
+                | ((unsigned __int64)FLAG << 32ULL)\
             )
 
 #define NRHI_DRIVER_DIRECTX_11_MAP___RESOURCE_FLAG___TO___RESOURCE_FLAG(...) (\
                 (D3D11_BIND_FLAG)(\
-                    (0xFFFFFFFF00000000LL & (uint64_t)__VA_ARGS__)\
-                    >> 32LL\
+                    (0xFFFFFFFF00000000ULL & (unsigned __int64)__VA_ARGS__)\
+                    >> 32ULL\
                 )\
             )
 #define NRHI_DRIVER_DIRECTX_11_MAP___RESOURCE_FLAG___TO___RESOURCE_MISC_FLAG(...) (\
                 (D3D11_RESOURCE_MISC_FLAG)(\
-                    0x00000000FFFFFFFFLL & (uint64_t)__VA_ARGS__\
+                    0x00000000FFFFFFFFULL & (unsigned __int64)__VA_ARGS__\
                 )\
             )
 
@@ -277,13 +277,13 @@ namespace nrhi {}
 ////////////////////////////////////////////////////////////////////////////////////
 
 #define NRHI_DRIVER_DIRECTX_12_GENERATE___RESOURCE_FLAG(ID, ...) (\
-                (0x000000000000FFFFLL & (uint64_t)__VA_ARGS__)\
-                | ((uint64_t)ID << 16LL)\
+                (0x000000000000FFFFULL & (unsigned __int64)__VA_ARGS__)\
+                | ((unsigned __int64)ID << 16ULL)\
             )
 
 #define NRHI_DRIVER_DIRECTX_12_MAP___RESOURCE_FLAG___TO___RESOURCE_FLAG(...) (\
                 (D3D12_RESOURCE_FLAGS)(\
-                    0x000000000000FFFFLL & (uint64_t)__VA_ARGS__\
+                    0x000000000000FFFFULL & (unsigned __int64)__VA_ARGS__\
                 )\
             )
 
