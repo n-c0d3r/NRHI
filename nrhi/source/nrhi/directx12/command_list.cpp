@@ -8,6 +8,7 @@
 #include <nrhi/directx12/pipeline_state.hpp>
 #include <nrhi/directx12/command_signature.hpp>
 #include <nrhi/command_allocator.hpp>
+#include <nrhi/command_list.hpp>
 
 
 

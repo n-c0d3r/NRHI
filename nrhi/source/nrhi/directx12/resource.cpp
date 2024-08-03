@@ -4,6 +4,7 @@
 #include <nrhi/directx12/reserved_resource.hpp>
 #include <nrhi/directx12/device.hpp>
 #include <nrhi/format_helper.hpp>
+#include <nrhi/resource.hpp>
 
 
 
@@ -197,5 +198,80 @@ namespace nrhi {
 	) {
 		return resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p()->GetGPUVirtualAddress();
 	}
+
+
+
+#pragma region Alternative Functions
+#ifdef NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
+	TU<A_resource> HD_directx12_resource::create(
+		TKPA_valid<A_device> device_p,
+		const F_initial_resource_data& inital_data,
+		const F_resource_desc& desc
+	) {
+		return H_resource::ALTERNATIVE::create(
+			device_p,
+			inital_data,
+			desc
+		);
+	}
+
+	U_buffer_handle HD_directx12_resource::create_buffer(
+		TKPA_valid<A_device> device_p,
+		const F_initial_resource_data& inital_data,
+		const F_resource_desc& desc
+	) {
+		return H_resource::ALTERNATIVE::create_buffer(
+			device_p,
+			inital_data,
+			desc
+		);
+	}
+
+	U_texture_1d_handle HD_directx12_resource::create_texture_1d(
+		TKPA_valid<A_device> device_p,
+		const F_initial_resource_data& inital_data,
+		const F_resource_desc& desc
+	) {
+		return H_resource::ALTERNATIVE::create_texture_1d(
+			device_p,
+			inital_data,
+			desc
+		);
+	}
+	U_texture_2d_handle HD_directx12_resource::create_texture_2d(
+		TKPA_valid<A_device> device_p,
+		const F_initial_resource_data& inital_data,
+		const F_resource_desc& desc
+	) {
+		return H_resource::ALTERNATIVE::create_texture_2d(
+			device_p,
+			inital_data,
+			desc
+		);
+	}
+	U_texture_3d_handle HD_directx12_resource::create_texture_3d(
+		TKPA_valid<A_device> device_p,
+		const F_initial_resource_data& inital_data,
+		const F_resource_desc& desc
+	) {
+		return H_resource::ALTERNATIVE::create_texture_3d(
+			device_p,
+			inital_data,
+			desc
+		);
+	}
+	U_texture_2d_array_handle HD_directx12_resource::create_texture_2d_array(
+		TKPA_valid<A_device> device_p,
+		const F_initial_resource_data& inital_data,
+		const F_resource_desc& desc
+	) {
+		return H_resource::ALTERNATIVE::create_texture_2d_array(
+			device_p,
+			inital_data,
+			desc
+		);
+	}
+#endif // NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
+#pragma endregion
 
 }

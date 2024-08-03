@@ -2,6 +2,7 @@
 #include <nrhi/directx12/command_list.hpp>
 #include <nrhi/directx12/device.hpp>
 #include <nrhi/directx12/fence.hpp>
+#include <nrhi/command_queue.hpp>
 
 
 
@@ -96,5 +97,30 @@ namespace nrhi {
 				(ID3D12CommandList**)&d3d12_command_list_p
 			);
 	}
+
+
+
+#pragma region Alternative Functions
+#ifdef NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
+	void HD_directx12_command_queue::execute_command_lists(
+		TKPA_valid<A_command_queue> command_queue_p,
+		TG_span<TK_valid<A_command_list>> command_list_p_span
+	) {
+		H_command_queue::ALTERNATIVE::execute_command_lists(
+			command_queue_p,
+			command_list_p_span
+		);
+	}
+	void HD_directx12_command_queue::execute_command_list(
+		TKPA_valid<A_command_queue> command_queue_p,
+		TKPA_valid<A_command_list> command_list_p
+	) {
+		H_command_queue::ALTERNATIVE::execute_command_list(
+			command_queue_p,
+			command_list_p
+		);
+	}
+#endif // NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
+#pragma endregion
 
 }

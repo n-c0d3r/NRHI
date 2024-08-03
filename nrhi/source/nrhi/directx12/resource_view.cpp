@@ -1,6 +1,7 @@
 #include <nrhi/directx12/resource_view.hpp>
 #include <nrhi/directx12/device.hpp>
 #include <nrhi/directx12/descriptor.hpp>
+#include <nrhi/resource_view.hpp>
 
 
 
@@ -138,5 +139,87 @@ namespace nrhi {
 			)
 		};
 	}
+
+
+
+#pragma region Alternative Functions
+#ifdef NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
+	TU<A_resource_view> HD_directx12_resource_view::create(
+		TKPA_valid<A_device> device_p,
+		const F_resource_view_desc& desc
+	) {
+		return H_resource_view::ALTERNATIVE::create(
+			device_p,
+			desc
+		);
+	}
+
+	U_srv_handle HD_directx12_resource_view::create_srv(
+		TKPA_valid<A_device> device_p,
+		const F_resource_view_desc& desc
+	) {
+		return H_resource_view::ALTERNATIVE::create_srv(
+			device_p,
+			desc
+		);
+	}
+	U_uav_handle HD_directx12_resource_view::create_uav(
+		TKPA_valid<A_device> device_p,
+		const F_resource_view_desc& desc
+	) {
+		return H_resource_view::ALTERNATIVE::create_uav(
+			device_p,
+			desc
+		);
+	}
+	U_rtv_handle HD_directx12_resource_view::create_rtv(
+		TKPA_valid<A_device> device_p,
+		const F_resource_view_desc& desc
+	) {
+		return H_resource_view::ALTERNATIVE::create_rtv(
+			device_p,
+			desc
+		);
+	}
+	U_dsv_handle HD_directx12_resource_view::create_dsv(
+		TKPA_valid<A_device> device_p,
+		const F_resource_view_desc& desc
+	) {
+		return H_resource_view::ALTERNATIVE::create_dsv(
+			device_p,
+			desc
+		);
+	}
+
+	U_srv_handle HD_directx12_resource_view::create_default_srv(
+		TKPA_valid<A_resource> resource_p
+	) {
+		return H_resource_view::ALTERNATIVE::create_default_srv(
+			resource_p
+		);
+	}
+	U_uav_handle HD_directx12_resource_view::create_default_uav(
+		TKPA_valid<A_resource> resource_p
+	) {
+		return H_resource_view::ALTERNATIVE::create_default_uav(
+			resource_p
+		);
+	}
+	U_rtv_handle HD_directx12_resource_view::create_default_rtv(
+		TKPA_valid<A_resource> resource_p
+	) {
+		return H_resource_view::ALTERNATIVE::create_default_rtv(
+			resource_p
+		);
+	}
+	U_dsv_handle HD_directx12_resource_view::create_default_dsv(
+		TKPA_valid<A_resource> resource_p
+	) {
+		return H_resource_view::ALTERNATIVE::create_default_dsv(
+			resource_p
+		);
+	}
+#endif // NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
+#pragma endregion
 
 }

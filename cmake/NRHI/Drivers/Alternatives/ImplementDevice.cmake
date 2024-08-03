@@ -23,7 +23,6 @@ NRHI_AlternativeHelper_CreateAlternative(
         }"
     VALUES
         "create" "TU<A_device>(TKPA_valid<A_adapter> adapter_p)"
-        "max_queue_count" "u32(A_device*)"
 )
 
 message(STATUS "<NRHI::Drivers::Alternatives> Implement device done")

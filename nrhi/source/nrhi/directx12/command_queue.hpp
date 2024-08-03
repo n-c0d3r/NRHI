@@ -93,6 +93,22 @@ namespace nrhi {
 			TKPA_valid<A_command_list> command_list_p
 		);
 
+
+
+#pragma region Alternative Functions
+#ifdef NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
+	public:
+		static void execute_command_lists(
+			TKPA_valid<A_command_queue> command_queue_p,
+			TG_span<TK_valid<A_command_list>> command_list_p_span
+		);
+		static void execute_command_list(
+			TKPA_valid<A_command_queue> command_queue_p,
+			TKPA_valid<A_command_list> command_list_p
+		);
+#endif // NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
+#pragma endregion
+
 	};
 
 }

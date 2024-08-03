@@ -21,7 +21,11 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "<nrhi/directx12/sampler_state.hpp>"
     ADDITIONAL_CODE
         ""
-    VALUES
+    ALTERNATIVE_VALUES
+        "create" "TU<A_sampler_state>(
+            TKPA_valid<A_device> device_p,
+            const F_sampler_state_desc& desc
+        )"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement sampler state done")

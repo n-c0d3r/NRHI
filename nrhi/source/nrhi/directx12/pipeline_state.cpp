@@ -1,6 +1,7 @@
 #include <nrhi/directx12/pipeline_state.hpp>
 #include <nrhi/directx12/graphics_pipeline_state.hpp>
 #include <nrhi/directx12/compute_pipeline_state.hpp>
+#include <nrhi/pipeline_state.hpp>
 
 
 
@@ -65,5 +66,40 @@ namespace nrhi {
 	) {
 		return pso_p.T_cast<F_directx12_compute_pipeline_state>()->options();
 	}
+
+
+
+#pragma region Alternative Functions
+#ifdef NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
+	TU<A_pipeline_state> HD_directx12_pipeline_state::create(
+		TKPA_valid<A_device> device_p,
+		const A_pipeline_state_desc& desc
+	) {
+		return H_pipeline_state::ALTERNATIVE::create(
+			device_p,
+			desc
+		);
+	}
+
+	U_graphics_pipeline_state_handle HD_directx12_pipeline_state::create_graphics_pipeline_state(
+		TKPA_valid<A_device> device_p,
+		const F_graphics_pipeline_state_options& options
+	) {
+		return H_pipeline_state::ALTERNATIVE::create_graphics_pipeline_state(
+			device_p,
+			options
+		);
+	}
+	U_compute_pipeline_state_handle HD_directx12_pipeline_state::create_compute_pipeline_state(
+		TKPA_valid<A_device> device_p,
+		const F_compute_pipeline_state_options& options
+	) {
+		return H_pipeline_state::ALTERNATIVE::create_compute_pipeline_state(
+			device_p,
+			options
+		);
+	}
+#endif // NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
+#pragma endregion
 
 }

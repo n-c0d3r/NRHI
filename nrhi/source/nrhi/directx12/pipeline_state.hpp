@@ -100,6 +100,28 @@ namespace nrhi {
 			KPA_valid_compute_pipeline_state_handle pso_p
 		);
 
+
+
+#pragma region Alternative Functions
+#ifdef NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
+	public:
+		static TU<A_pipeline_state> create(
+			TKPA_valid<A_device> device_p,
+			const A_pipeline_state_desc& desc
+		);
+
+	public:
+		static U_graphics_pipeline_state_handle create_graphics_pipeline_state(
+			TKPA_valid<A_device> device_p,
+			const F_graphics_pipeline_state_options& options
+		);
+		static U_compute_pipeline_state_handle create_compute_pipeline_state(
+			TKPA_valid<A_device> device_p,
+			const F_compute_pipeline_state_options& options
+		);
+#endif // NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
+#pragma endregion
+
 	};
 
 }

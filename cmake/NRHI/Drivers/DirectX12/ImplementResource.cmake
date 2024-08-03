@@ -117,6 +117,38 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "gpu_virtual_address" "F_resource_gpu_virtual_address(
 			TKPA_valid<A_resource> resource_p
 		)"
+
+    ALTERNATIVE_VALUES
+        "create" "TU<A_resource>(
+            TKPA_valid<A_device> device_p,
+            const F_initial_resource_data& initial_data,
+            const F_resource_desc& desc
+        )"
+        "create_buffer" "U_buffer_handle(
+            TKPA_valid<A_device> device_p,
+            const F_initial_resource_data& initial_resource_data,
+            const F_resource_desc& desc
+        )"
+        "create_texture_1d" "U_texture_1d_handle(
+            TKPA_valid<A_device> device_p,
+            const F_initial_resource_data& initial_resource_data,
+            const F_resource_desc& desc
+        )"
+        "create_texture_2d" "U_texture_2d_handle(
+            TKPA_valid<A_device> device_p,
+            const F_initial_resource_data& initial_resource_data,
+            const F_resource_desc& desc
+        )"
+        "create_texture_3d" "U_texture_3d_handle(
+            TKPA_valid<A_device> device_p,
+            const F_initial_resource_data& initial_resource_data,
+            const F_resource_desc& desc
+        )"
+        "create_texture_2d_array" "U_texture_2d_array_handle(
+            TKPA_valid<A_device> device_p,
+            const F_initial_resource_data& initial_resource_data,
+            const F_resource_desc& desc
+        )"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement resource done")

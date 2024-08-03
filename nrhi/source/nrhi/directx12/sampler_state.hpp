@@ -79,7 +79,15 @@ namespace nrhi {
 
 	class NRHI_API HD_directx12_sampler_state {
 
+#pragma region Alternative Functions
+#ifdef NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
 	public:
+		static TU<A_sampler_state> create(
+			TKPA_valid<A_device> device_p,
+			const F_sampler_state_desc& desc
+		);
+#endif // NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
+#pragma endregion
 
 	};
 

@@ -191,6 +191,48 @@ namespace nrhi {
 			TKPA_valid<A_resource> resource_p
 		);
 
+
+
+#pragma region Alternative Functions
+#ifdef NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
+	public:
+		static TU<A_resource> create(
+			TKPA_valid<A_device> device_p,
+			const F_initial_resource_data& inital_data,
+			const F_resource_desc& desc
+		);
+
+	public:
+		static U_buffer_handle create_buffer(
+			TKPA_valid<A_device> device_p,
+			const F_initial_resource_data& inital_data,
+			const F_resource_desc& desc
+		);
+
+	public:
+		static U_texture_1d_handle create_texture_1d(
+			TKPA_valid<A_device> device_p,
+			const F_initial_resource_data& inital_data,
+			const F_resource_desc& desc
+		);
+		static U_texture_2d_handle create_texture_2d(
+			TKPA_valid<A_device> device_p,
+			const F_initial_resource_data& inital_data,
+			const F_resource_desc& desc
+		);
+		static U_texture_3d_handle create_texture_3d(
+			TKPA_valid<A_device> device_p,
+			const F_initial_resource_data& inital_data,
+			const F_resource_desc& desc
+		);
+		static U_texture_2d_array_handle create_texture_2d_array(
+			TKPA_valid<A_device> device_p,
+			const F_initial_resource_data& inital_data,
+			const F_resource_desc& desc
+		);
+#endif // NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
+#pragma endregion
+
 	};
 
 }

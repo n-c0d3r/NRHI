@@ -112,6 +112,50 @@ namespace nrhi {
 			const F_descriptor& descriptor
 		);
 
+
+
+#pragma region Alternative Functions
+#ifdef NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
+	public:
+		static TU<A_resource_view> create(
+			TKPA_valid<A_device> device_p,
+			const F_resource_view_desc& desc
+		);
+
+	public:
+		static U_srv_handle create_srv(
+			TKPA_valid<A_device> device_p,
+			const F_resource_view_desc& desc
+		);
+		static U_uav_handle create_uav(
+			TKPA_valid<A_device> device_p,
+			const F_resource_view_desc& desc
+		);
+		static U_rtv_handle create_rtv(
+			TKPA_valid<A_device> device_p,
+			const F_resource_view_desc& desc
+		);
+		static U_dsv_handle create_dsv(
+			TKPA_valid<A_device> device_p,
+			const F_resource_view_desc& desc
+		);
+
+	public:
+		static U_srv_handle create_default_srv(
+			TKPA_valid<A_resource> resource_p
+		);
+		static U_uav_handle create_default_uav(
+			TKPA_valid<A_resource> resource_p
+		);
+		static U_rtv_handle create_default_rtv(
+			TKPA_valid<A_resource> resource_p
+		);
+		static U_dsv_handle create_default_dsv(
+			TKPA_valid<A_resource> resource_p
+		);
+#endif // NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
+#pragma endregion
+
 	};
 
 }
