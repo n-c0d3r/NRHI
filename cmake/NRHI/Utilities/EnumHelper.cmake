@@ -111,27 +111,11 @@ function(NRHI_EnumHelper_CreateEnum)
 
 
 
-    # Add file headers
-    if(isFirstImplementation)
-        set(
-            hppFileContent
-            "${hppFileContent}
-                #include <nrhi/prerequisites.hpp>
+    # For the case using flag operators
+    set(flagOperators "")
 
-                namespace ${PARGS_NAMESPACE} {
-            "
-        )
-        set(
-            cppFileContent
-            "${cppFileContent}
-                namespace ${PARGS_NAMESPACE} {
-            "
-        )
-
-        set(Operators "")
-
-        if(PARGS_FLAG_OPERATORS)
-            set(Operators "${Operators}
+    if(PARGS_FLAG_OPERATORS)
+        set(flagOperators "${flagOperators}
         NCPP_FORCE_INLINE ${PARGS_NAME} operator | (${PARGS_NAME} a, ${PARGS_NAME} b) noexcept {
 
             using F_equivalent = ncpp::utilities::TF_nth_template_targ<
@@ -192,8 +176,27 @@ function(NRHI_EnumHelper_CreateEnum)
             );
         }
 "
-            )
-        endif()
+        )
+    endif()
+
+
+
+    # Add file headers
+    if(isFirstImplementation)
+        set(
+            hppFileContent
+            "${hppFileContent}
+                #include <nrhi/prerequisites.hpp>
+
+                namespace ${PARGS_NAMESPACE} {
+            "
+        )
+        set(
+            cppFileContent
+            "${cppFileContent}
+                namespace ${PARGS_NAMESPACE} {
+            "
+        )
 
         if(${NRHI_DRIVER_MULTIPLE})
             set(
@@ -452,7 +455,7 @@ function(NRHI_EnumHelper_CreateEnum)
         set(
             hppFileContent
             "${hppFileContent}
-            ${Operators}
+            ${flagOperators}
             "
         )
 

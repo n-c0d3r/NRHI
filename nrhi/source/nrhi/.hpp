@@ -64,6 +64,9 @@ namespace nrhi { }
 #include <nrhi/buffer.hpp>
 #include <nrhi/texture.hpp>
 
+#include <nrhi/texture_cube.hpp>
+#include <nrhi/texture_2d_array.hpp>
+
 #include <nrhi/resource_barrier.hpp>
 
 #include <nrhi/nsl_shader_compiler.hpp>
