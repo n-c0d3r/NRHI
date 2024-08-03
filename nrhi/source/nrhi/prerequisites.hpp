@@ -262,13 +262,13 @@ namespace nrhi {}
 #define NRHI_DRIVER_DIRECTX_12_ID_MASK___RESOURCE_TYPE 0xFF000000
 #define NRHI_DRIVER_DIRECTX_12_ID_OFFSET___RESOURCE_TYPE 24
 #define NRHI_DRIVER_DIRECTX_12_GENERATE___RESOURCE_TYPE(ID, ...) (\
-                (0x00FFFFFF & __VA_ARGS__)\
-                | (ID << 24)\
+                (0x00FFFFFF & (uint32_t)__VA_ARGS__)\
+                | ((uint32_t)ID << 24)\
             )
 
 #define NRHI_DRIVER_DIRECTX_12_MAP___RESOURCE_TYPE___TO___RESOURCE_DIMENSION(...) (\
                 (D3D12_RESOURCE_DIMENSION)(\
-                    0x00FFFFFF & __VA_ARGS__\
+                    0x00FFFFFF & (uint32_t)__VA_ARGS__\
                 )\
             )
 
@@ -277,13 +277,13 @@ namespace nrhi {}
 ////////////////////////////////////////////////////////////////////////////////////
 
 #define NRHI_DRIVER_DIRECTX_12_GENERATE___RESOURCE_FLAG(ID, ...) (\
-                (0x000000000000FFFFL & __VA_ARGS__)\
-                | (ID << 16L)\
+                (0x000000000000FFFFL & (uint64_t)__VA_ARGS__)\
+                | ((uint64_t)ID << 16L)\
             )
 
 #define NRHI_DRIVER_DIRECTX_12_MAP___RESOURCE_FLAG___TO___RESOURCE_FLAG(...) (\
                 (D3D12_RESOURCE_FLAGS)(\
-                    0x000000000000FFFFL & __VA_ARGS__\
+                    0x000000000000FFFFL & (uint64_t)__VA_ARGS__\
                 )\
             )
 
