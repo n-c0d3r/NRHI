@@ -259,8 +259,6 @@ namespace nrhi {}
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#define NRHI_DRIVER_DIRECTX_12_ID_MASK___RESOURCE_TYPE 0xFF000000
-#define NRHI_DRIVER_DIRECTX_12_ID_OFFSET___RESOURCE_TYPE 24
 #define NRHI_DRIVER_DIRECTX_12_GENERATE___RESOURCE_TYPE(ID, ...) (\
                 (0x00FFFFFF & (uint32_t)__VA_ARGS__)\
                 | ((uint32_t)ID << 24)\
