@@ -18,7 +18,7 @@ namespace nrhi {
 
 		UINT creation_flags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 
-#if defined(DEBUG) || defined(_DEBUG)
+#ifdef NCPP_ENABLE_ASSERT
 		creation_flags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 

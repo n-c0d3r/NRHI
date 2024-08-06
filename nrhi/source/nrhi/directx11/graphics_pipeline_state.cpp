@@ -16,6 +16,7 @@ namespace nrhi {
 		d3d11_rs_desc.CullMode = D3D11_CULL_MODE(desc.cull_mode);
 		d3d11_rs_desc.FrontCounterClockwise = desc.front_counter_clock_wise;
 		d3d11_rs_desc.DepthBias = 0;
+		d3d11_rs_desc.DepthBiasClamp = 0;
 		d3d11_rs_desc.SlopeScaledDepthBias = 0.0f;
 		d3d11_rs_desc.DepthClipEnable = true;
 		d3d11_rs_desc.ScissorEnable = false;
