@@ -60,6 +60,9 @@ NRHI_FunctionHelper_CreateFunctionClass(
             TKPA_valid<A_resource> resource_p,
             u32 subresource_index
         )"
+        "first_pitch" "sz(u32 element_stride, u32 count)"
+        "second_pitch" "sz(u32 first_pitch, u32 count)"
+        "third_pitch" "sz(u32 second_pitch, u32 count)"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX11> Implement resource done")

@@ -126,6 +126,11 @@ namespace nrhi {
 			u32 subresource_index
 		);
 
+    public:
+        static sz first_pitch(u32 element_stride, u32 count);
+        static sz second_pitch(sz first_pitch, u32 count);
+        static sz third_pitch(sz second_pitch, u32 count = 1);
+
     };
 
 }

@@ -1,5 +1,6 @@
 #include <nrhi/resource_desc.hpp>
 #include <nrhi/format_helper.hpp>
+#include <nrhi/resource.hpp>
 
 
 
@@ -106,7 +107,7 @@ namespace nrhi {
     ) {
 
 		u32 stride = H_format::stride(format);
-		u32 size = width * stride;
+		u32 size = H_resource::first_pitch(stride, width);
 
         return {
 
@@ -156,7 +157,10 @@ namespace nrhi {
     ) {
 
 		u32 stride = H_format::stride(format);
-		u32 size = width * height * stride;
+		u32 size = H_resource::second_pitch(
+			H_resource::first_pitch(stride, width),
+			height
+		);
 
         return {
 
@@ -207,7 +211,13 @@ namespace nrhi {
     ) {
 
 		u32 stride = H_format::stride(format);
-		u32 size = width * height * depth * stride;
+    	u32 size = H_resource::third_pitch(
+    		H_resource::second_pitch(
+				H_resource::first_pitch(stride, width),
+				height
+			),
+			depth
+		);
 
         return {
 
@@ -257,8 +267,14 @@ namespace nrhi {
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 
-		u32 stride = H_format::stride(format);
-		u32 size = width * height * array_size * stride;
+    	u32 stride = H_format::stride(format);
+    	u32 size = H_resource::third_pitch(
+			H_resource::second_pitch(
+				H_resource::first_pitch(stride, width),
+				height
+			),
+			array_size
+		);
 
 		return {
 

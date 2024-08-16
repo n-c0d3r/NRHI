@@ -152,6 +152,19 @@ namespace nrhi {
 			d3d11_resource_p,
 			subresource_index
 		);
+    }
+
+	sz HD_directx11_resource::first_pitch(u32 element_stride, u32 count)
+    {
+    	return element_stride * count;
+    }
+	sz HD_directx11_resource::second_pitch(sz first_pitch, u32 count)
+	{
+    	return first_pitch * count;
+	}
+	sz HD_directx11_resource::third_pitch(sz second_pitch, u32 count = 1)
+	{
+    	return second_pitch * count;
 	}
 
 }

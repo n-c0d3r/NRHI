@@ -117,6 +117,9 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "gpu_virtual_address" "F_resource_gpu_virtual_address(
 			TKPA_valid<A_resource> resource_p
 		)"
+		"first_pitch" "sz(u32 element_stride, u32 count)"
+		"second_pitch" "sz(u32 first_pitch, u32 count)"
+		"third_pitch" "sz(u32 second_pitch, u32 count)"
 
     ALTERNATIVE_VALUES
         "create" "TU<A_resource>(

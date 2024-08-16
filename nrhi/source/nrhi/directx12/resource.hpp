@@ -191,6 +191,11 @@ namespace nrhi {
 			TKPA_valid<A_resource> resource_p
 		);
 
+	public:
+		static sz first_pitch(u32 element_stride, u32 count);
+		static sz second_pitch(sz first_pitch, u32 count);
+		static sz third_pitch(sz second_pitch, u32 count = 1);
+
 
 
 #pragma region Alternative Functions
