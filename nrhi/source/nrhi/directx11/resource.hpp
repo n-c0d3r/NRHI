@@ -129,7 +129,21 @@ namespace nrhi {
     public:
         static sz first_pitch(u32 element_stride, u32 count);
         static sz second_pitch(sz first_pitch, u32 count);
-        static sz third_pitch(sz second_pitch, u32 count = 1);
+        static sz third_pitch(sz second_pitch, u32 count);
+
+    public:
+        static u32 subresource_index(
+            u32 array_slice,
+            u32 mip_level,
+            u32 mip_level_count
+        );
+        static u32 subresource_index_with_plane_slice(
+            u32 array_slice,
+            u32 mip_level,
+            u32 mip_level_count,
+            u32 array_size,
+            u32 plane_slice
+        );
 
     };
 

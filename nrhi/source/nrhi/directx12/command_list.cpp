@@ -899,6 +899,49 @@ namespace nrhi {
 			size
 		);
 	}
+	void HD_directx12_command_list::async_copy_texture_region(
+		TKPA_valid<A_command_list> command_list_p,
+		const F_texture_copy_location& dst_location,
+		const F_texture_copy_location& src_location,
+		PA_vector3_u32 dst_coord,
+		PA_vector3_u32 src_coord,
+		PA_vector3_u32 volume
+	)
+    {
+    	NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
+    	NCPP_ASSERT(command_list_p->supports_blit()) << "command list does not support blit";
+
+    	const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
+
+		D3D12_TEXTURE_COPY_LOCATION d3d12_texture_copy_location_dst;
+    	d3d12_texture_copy_location_dst.pResource = dst_location.resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p();
+    	d3d12_texture_copy_location_dst.Type = D3D12_TEXTURE_COPY_TYPE(dst_location.type);
+    	d3d12_texture_copy_location_dst.SubresourceIndex = dst_location.subresource_index;
+
+    	D3D12_TEXTURE_COPY_LOCATION d3d12_texture_copy_location_src;
+    	d3d12_texture_copy_location_src.pResource = src_location.resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p();
+    	d3d12_texture_copy_location_src.Type = D3D12_TEXTURE_COPY_TYPE(src_location.type);
+    	d3d12_texture_copy_location_src.SubresourceIndex = src_location.subresource_index;
+
+    	D3D12_BOX d3d12_box;
+    	d3d12_box.left = src_coord.x;
+    	d3d12_box.top = src_coord.y;
+    	d3d12_box.front = src_coord.z;
+
+		F_vector3_u32 box_end = src_coord + volume;
+    	d3d12_box.right = box_end.x;
+    	d3d12_box.bottom = box_end.y;
+    	d3d12_box.back = box_end.z;
+
+    	dx12_command_list_p->d3d12_command_list_p()->CopyTextureRegion(
+			&d3d12_texture_copy_location_dst,
+			dst_coord.x,
+			dst_coord.y,
+			dst_coord.z,
+			&d3d12_texture_copy_location_src,
+			&d3d12_box
+		);
+    }
 
 	void HD_directx12_command_list::async_draw(
 		TKPA_valid<A_command_list> command_list_p,

@@ -162,9 +162,32 @@ namespace nrhi {
 	{
     	return first_pitch * count;
 	}
-	sz HD_directx11_resource::third_pitch(sz second_pitch, u32 count = 1)
+	sz HD_directx11_resource::third_pitch(sz second_pitch, u32 count)
 	{
     	return second_pitch * count;
 	}
+
+	u32 HD_directx11_resource::subresource_index(
+		u32 array_slice,
+		u32 mip_level,
+		u32 mip_level_count
+	)
+    {
+    	return (
+			+ (array_slice * mip_level_count)
+			+ mip_level
+		);
+    }
+	u32 HD_directx11_resource::subresource_index_with_plane_slice(
+		u32 array_slice,
+		u32 mip_level,
+		u32 mip_level_count,
+		u32 array_size,
+		u32 plane_slice
+	)
+    {
+    	NCPP_ASSERT(plane_slice == 0) << "non-zero plane slice is not supported";
+		return 0;
+    }
 
 }

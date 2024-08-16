@@ -76,6 +76,8 @@ namespace nrhi { }
 #include <nrhi/indirect_argument_desc.hpp>
 #include <nrhi/command_signature_desc.hpp>
 
+#include <nrhi/texture_copy_location.hpp>
+
 #include <nrhi/nsl_factory.hpp>
 
 #include <nrhi/device_child.hpp>

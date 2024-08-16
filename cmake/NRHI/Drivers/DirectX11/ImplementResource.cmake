@@ -63,6 +63,18 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "first_pitch" "sz(u32 element_stride, u32 count)"
         "second_pitch" "sz(u32 first_pitch, u32 count)"
         "third_pitch" "sz(u32 second_pitch, u32 count)"
+        "subresource_index" "u32(
+			u32 array_slice,
+			u32 mip_level,
+			u32 mip_level_count
+		)"
+        "subresource_index_with_plane_slice" "u32(
+			u32 array_slice,
+			u32 mip_level,
+			u32 mip_level_count,
+			u32 array_size,
+			u32 plane_slice
+		)"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX11> Implement resource done")

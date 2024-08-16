@@ -259,6 +259,14 @@ NRHI_FunctionHelper_CreateFunctionClass(
 			u64 src_offset,
 			u64 size
 		)"
+		"async_copy_texture_region" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			const F_texture_copy_location& dst_location,
+			const F_texture_copy_location& src_location,
+			PA_vector3_u32 dst_coord,
+			PA_vector3_u32 src_coord,
+			PA_vector3_u32 volume
+		)"
 		"async_draw" "void(
 			TKPA_valid<A_command_list> command_list_p,
 			u32 vertex_count,

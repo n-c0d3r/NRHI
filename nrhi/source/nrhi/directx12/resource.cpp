@@ -208,13 +208,39 @@ namespace nrhi {
 	}
 	sz HD_directx12_resource::second_pitch(sz first_pitch, u32 count)
 	{
-		NCPP_ASSERT(first_pitch % D3D12_TEXTURE_DATA_PITCH_ALIGNMENT) << "first pitch is not aligned";
+		NCPP_ASSERT(first_pitch % D3D12_TEXTURE_DATA_PITCH_ALIGNMENT == 0) << "first pitch is not aligned";
 		return first_pitch * count;
 	}
-	sz HD_directx12_resource::third_pitch(sz second_pitch, u32 count = 1)
+	sz HD_directx12_resource::third_pitch(sz second_pitch, u32 count)
 	{
-		NCPP_ASSERT(second_pitch % D3D12_TEXTURE_DATA_PITCH_ALIGNMENT) << "second pitch is not aligned";
+		NCPP_ASSERT(second_pitch % D3D12_TEXTURE_DATA_PITCH_ALIGNMENT == 0) << "second pitch is not aligned";
 		return second_pitch * count;
+	}
+
+	u32 HD_directx12_resource::subresource_index(
+		u32 array_slice,
+		u32 mip_level,
+		u32 mip_level_count
+	)
+	{
+		return (
+			+ (array_slice * mip_level_count)
+			+ mip_level
+		);
+	}
+	u32 HD_directx12_resource::subresource_index_with_plane_slice(
+		u32 array_slice,
+		u32 mip_level,
+		u32 mip_level_count,
+		u32 array_size,
+		u32 plane_slice
+	)
+	{
+		return (
+			(plane_slice * mip_level_count * array_size)
+			+ (array_slice * mip_level_count)
+			+ mip_level
+		);
 	}
 
 
