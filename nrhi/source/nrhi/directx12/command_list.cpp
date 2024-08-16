@@ -1039,6 +1039,14 @@ namespace nrhi {
 
 #pragma region Alternative Functions
 #ifdef NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
+	TU<A_command_list> HD_directx12_command_list::create(TKPA_valid<A_device> device_p, const F_command_list_desc& desc) {
+
+    	return H_command_list::ALTERNATIVE::create(
+    		device_p,
+    		desc
+		);
+	}
+
 	void HD_directx12_command_list::begin(
 		TKPA_valid<A_command_list> command_list_p
 	) {

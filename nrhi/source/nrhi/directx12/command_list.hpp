@@ -392,6 +392,9 @@ namespace nrhi {
 
 #pragma region Alternative Functions
 #ifdef NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
+    public:
+    	static TU<A_command_list> create(TKPA_valid<A_device> device_p, const F_command_list_desc& desc);
+
 	public:
 		static void begin(
 			TKPA_valid<A_command_list> command_list_p
