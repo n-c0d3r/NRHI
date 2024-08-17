@@ -132,6 +132,10 @@ NRHI_FunctionHelper_CreateFunctionClass(
 			u32 array_size,
 			u32 plane_slice
 		)"
+		"most_detailed_subresource_volume" "F_vector3_u32(
+			ED_resource_type type,
+			PA_vector3_u32 resource_volume
+		)"
 		"mip_divisor" "F_vector3_u32(
             ED_resource_type type
         )"

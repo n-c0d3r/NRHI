@@ -146,6 +146,10 @@ namespace nrhi {
         );
 
     public:
+        static F_vector3_u32 most_detailed_subresource_volume(
+            ED_resource_type type,
+            PA_vector3_u32 resource_volume
+        );
         static F_vector3_u32 mip_divisor(
             ED_resource_type type
         );

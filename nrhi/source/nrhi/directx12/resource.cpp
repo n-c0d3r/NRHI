@@ -243,10 +243,37 @@ namespace nrhi {
 		);
 	}
 
+	F_vector3_u32 HD_directx12_resource::most_detailed_subresource_volume(
+		ED_resource_type type,
+		PA_vector3_u32 resource_volume
+	)
+	{
+		NCPP_ASSERT(type != ED_resource_type::BUFFER);
+		NRHI_ENUM_SWITCH(
+			type,
+			NRHI_ENUM_CASE(
+				ED_resource_type::TEXTURE_1D,
+				return { resource_volume.x, 1, 1 };
+			)
+			NRHI_ENUM_CASE(
+				ED_resource_type::TEXTURE_2D,
+				return { resource_volume.xy(), 1 };
+			)
+			NRHI_ENUM_CASE(
+				ED_resource_type::TEXTURE_2D_ARRAY,
+				return { resource_volume.xy(), 1 };
+			)
+			NRHI_ENUM_CASE(
+				ED_resource_type::TEXTURE_3D,
+				return resource_volume;
+			)
+		);
+	}
 	F_vector3_u32 HD_directx12_resource::mip_divisor(
 		ED_resource_type type
 	)
 	{
+		NCPP_ASSERT(type != ED_resource_type::BUFFER);
 		NRHI_ENUM_SWITCH(
 			type,
 			NRHI_ENUM_CASE(
