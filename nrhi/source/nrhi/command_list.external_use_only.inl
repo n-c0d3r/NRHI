@@ -978,6 +978,25 @@ namespace nrhi {
 			);
 		);
 	}
+	NCPP_FORCE_INLINE void A_command_list::async_copy_texture_region(
+		const F_texture_copy_location& dst_location,
+		const F_texture_copy_location& src_location,
+		PA_vector3_u32 dst_coord,
+		PA_vector3_u32 src_coord,
+		PA_vector3_u32 volume
+	)
+	{
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			H_command_list::async_copy_texture_region(
+				NCPP_KTHIS(),
+				dst_location,
+				src_location,
+				dst_coord,
+				src_coord,
+				volume
+			);
+		);
+	}
 
 	NCPP_FORCE_INLINE void A_command_list::async_draw(
 		u32 vertex_count,
