@@ -210,6 +210,11 @@ namespace nrhi {
 			u32 plane_slice
 		);
 
+	public:
+		static F_vector3_u32 mip_divisor(
+			ED_resource_type type
+		);
+
 
 
 #pragma region Alternative Functions

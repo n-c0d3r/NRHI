@@ -132,6 +132,9 @@ NRHI_FunctionHelper_CreateFunctionClass(
 			u32 array_size,
 			u32 plane_slice
 		)"
+		"mip_divisor" "F_vector3_u32(
+            ED_resource_type type
+        )"
 
     ALTERNATIVE_VALUES
         "create" "TU<A_resource>(

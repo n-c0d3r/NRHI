@@ -190,4 +190,29 @@ namespace nrhi {
 		return 0;
     }
 
+	F_vector3_u32 HD_directx11_resource::mip_divisor(
+		ED_resource_type type
+	)
+	{
+		NRHI_ENUM_SWITCH(
+			type,
+			NRHI_ENUM_CASE(
+				ED_resource_type::TEXTURE_1D,
+				return element_min(F_vector3_u32 { 2, 1, 1 }, F_vector3_u32::one());
+			)
+			NRHI_ENUM_CASE(
+				ED_resource_type::TEXTURE_2D,
+				return element_min(F_vector3_u32 { 2, 2, 1 }, F_vector3_u32::one());
+			)
+			NRHI_ENUM_CASE(
+				ED_resource_type::TEXTURE_2D_ARRAY,
+				return element_min(F_vector3_u32 { 2, 2, 1 }, F_vector3_u32::one());
+			)
+			NRHI_ENUM_CASE(
+				ED_resource_type::TEXTURE_3D,
+				return element_min(F_vector3_u32 { 2, 2, 2 }, F_vector3_u32::one());
+			)
+		);
+	}
+
 }
