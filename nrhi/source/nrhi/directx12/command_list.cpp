@@ -916,12 +916,36 @@ namespace nrhi {
 		D3D12_TEXTURE_COPY_LOCATION d3d12_texture_copy_location_dst;
     	d3d12_texture_copy_location_dst.pResource = dst_location.resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p();
     	d3d12_texture_copy_location_dst.Type = D3D12_TEXTURE_COPY_TYPE(dst_location.type);
-    	d3d12_texture_copy_location_dst.SubresourceIndex = dst_location.subresource_index;
+    	if(d3d12_texture_copy_location_dst.Type == D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX)
+    	{
+    		d3d12_texture_copy_location_dst.SubresourceIndex = dst_location.subresource_index;
+    	}
+    	else
+    	{
+    		d3d12_texture_copy_location_dst.PlacedFootprint.Offset = dst_location.subresource_footprint.offset;
+    		d3d12_texture_copy_location_dst.PlacedFootprint.Footprint.Width = dst_location.subresource_footprint.volume.x;
+    		d3d12_texture_copy_location_dst.PlacedFootprint.Footprint.Height = dst_location.subresource_footprint.volume.y;
+    		d3d12_texture_copy_location_dst.PlacedFootprint.Footprint.Depth = dst_location.subresource_footprint.volume.z;
+    		d3d12_texture_copy_location_dst.PlacedFootprint.Footprint.Format = DXGI_FORMAT(dst_location.subresource_footprint.format);
+    		d3d12_texture_copy_location_dst.PlacedFootprint.Footprint.RowPitch = dst_location.subresource_footprint.first_pitch;
+    	}
 
     	D3D12_TEXTURE_COPY_LOCATION d3d12_texture_copy_location_src;
     	d3d12_texture_copy_location_src.pResource = src_location.resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p();
     	d3d12_texture_copy_location_src.Type = D3D12_TEXTURE_COPY_TYPE(src_location.type);
-    	d3d12_texture_copy_location_src.SubresourceIndex = src_location.subresource_index;
+    	if(d3d12_texture_copy_location_src.Type == D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX)
+    	{
+    		d3d12_texture_copy_location_src.SubresourceIndex = src_location.subresource_index;
+    	}
+    	else
+    	{
+    		d3d12_texture_copy_location_src.PlacedFootprint.Offset = src_location.subresource_footprint.offset;
+    		d3d12_texture_copy_location_src.PlacedFootprint.Footprint.Width = src_location.subresource_footprint.volume.x;
+    		d3d12_texture_copy_location_src.PlacedFootprint.Footprint.Height = src_location.subresource_footprint.volume.y;
+    		d3d12_texture_copy_location_src.PlacedFootprint.Footprint.Depth = src_location.subresource_footprint.volume.z;
+    		d3d12_texture_copy_location_src.PlacedFootprint.Footprint.Format = DXGI_FORMAT(src_location.subresource_footprint.format);
+    		d3d12_texture_copy_location_src.PlacedFootprint.Footprint.RowPitch = src_location.subresource_footprint.first_pitch;
+    	}
 
     	D3D12_BOX d3d12_box;
     	d3d12_box.left = src_coord.x;

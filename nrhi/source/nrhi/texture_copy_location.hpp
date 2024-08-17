@@ -41,14 +41,25 @@
 
 namespace nrhi {
 
+    struct F_texture_subresource_footprint
+    {
+        u64 offset = 0;
+        ED_format format = ED_format::NONE;
+        F_vector3_u32 volume = F_vector3_u32::zero();
+        u32 first_pitch = 0;
+    };
+
     struct F_texture_copy_location {
 
         TK<A_resource> resource_p;
 
         ED_texture_copy_location_type type = ED_texture_copy_location_type::SUBRESOURCE_INDEX;
 
-        u32 subresource_index = 0;
-
+        union
+        {
+            F_texture_subresource_footprint subresource_footprint = {};
+            u32 subresource_index;
+        };
     };
 
 }
