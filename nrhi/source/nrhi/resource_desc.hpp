@@ -82,6 +82,29 @@ namespace nrhi {
 
 
 
+	struct F_subresource
+	{
+		sz offset = 0;
+		sz size = 0;
+
+		union {
+			u32 width = 1;
+			u32 element_count;
+		};
+		u32 height = 1;
+		union {
+			u32 array_size = 1;
+			u32 depth;
+		};
+
+		sz first_pitch = 0;
+
+		u32 mip_level = 0;
+		u32 array_slice = 0;
+	};
+
+
+
     struct F_resource_desc {
 
 		union {
@@ -93,7 +116,7 @@ namespace nrhi {
             u32 array_size = 0;
             u32 depth;
         };
-		u32 size = 0;
+		sz size = 0;
 
         ED_format format = ED_format::NONE;
         u32 stride = 0;
@@ -107,7 +130,9 @@ namespace nrhi {
 
 		NCPP_ENABLE_IF_ASSERTION_ENABLED(
 			b8 can_create_view = true;
-		)
+		);
+
+    	TG_fixed_vector<F_subresource, 1> subresources;
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 		ED_resource_state initial_state = ED_resource_state::COMMON;

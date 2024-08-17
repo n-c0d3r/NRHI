@@ -45,7 +45,17 @@ namespace nrhi {
     {
         u64 offset = 0;
         ED_format format = ED_format::NONE;
-        F_vector3_u32 volume = F_vector3_u32::zero();
+
+        union {
+            u32 width = 1;
+            u32 element_count;
+        };
+        u32 height = 1;
+        union {
+            u32 array_size = 1;
+            u32 depth;
+        };
+
         u32 first_pitch = 0;
     };
 
