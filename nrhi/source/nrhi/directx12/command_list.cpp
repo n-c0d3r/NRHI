@@ -923,9 +923,9 @@ namespace nrhi {
     	else
     	{
     		d3d12_texture_copy_location_dst.PlacedFootprint.Offset = dst_location.subresource_footprint.offset;
-    		d3d12_texture_copy_location_dst.PlacedFootprint.Footprint.Width = dst_location.subresource_footprint.volume.x;
-    		d3d12_texture_copy_location_dst.PlacedFootprint.Footprint.Height = dst_location.subresource_footprint.volume.y;
-    		d3d12_texture_copy_location_dst.PlacedFootprint.Footprint.Depth = dst_location.subresource_footprint.volume.z;
+    		d3d12_texture_copy_location_dst.PlacedFootprint.Footprint.Width = dst_location.subresource_footprint.width;
+    		d3d12_texture_copy_location_dst.PlacedFootprint.Footprint.Height = dst_location.subresource_footprint.height;
+    		d3d12_texture_copy_location_dst.PlacedFootprint.Footprint.Depth = dst_location.subresource_footprint.depth;
     		d3d12_texture_copy_location_dst.PlacedFootprint.Footprint.Format = DXGI_FORMAT(dst_location.subresource_footprint.format);
     		d3d12_texture_copy_location_dst.PlacedFootprint.Footprint.RowPitch = dst_location.subresource_footprint.first_pitch;
     	}
@@ -940,9 +940,9 @@ namespace nrhi {
     	else
     	{
     		d3d12_texture_copy_location_src.PlacedFootprint.Offset = src_location.subresource_footprint.offset;
-    		d3d12_texture_copy_location_src.PlacedFootprint.Footprint.Width = src_location.subresource_footprint.volume.x;
-    		d3d12_texture_copy_location_src.PlacedFootprint.Footprint.Height = src_location.subresource_footprint.volume.y;
-    		d3d12_texture_copy_location_src.PlacedFootprint.Footprint.Depth = src_location.subresource_footprint.volume.z;
+    		d3d12_texture_copy_location_src.PlacedFootprint.Footprint.Width = src_location.subresource_footprint.width;
+    		d3d12_texture_copy_location_src.PlacedFootprint.Footprint.Height = src_location.subresource_footprint.height;
+    		d3d12_texture_copy_location_src.PlacedFootprint.Footprint.Depth = src_location.subresource_footprint.depth;
     		d3d12_texture_copy_location_src.PlacedFootprint.Footprint.Format = DXGI_FORMAT(src_location.subresource_footprint.format);
     		d3d12_texture_copy_location_src.PlacedFootprint.Footprint.RowPitch = src_location.subresource_footprint.first_pitch;
     	}
