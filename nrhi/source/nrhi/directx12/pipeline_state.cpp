@@ -7,6 +7,18 @@
 
 namespace nrhi {
 
+#ifdef NRHI_ENABLE_DRIVER_DEBUGGER
+	void F_directx12_pipeline_state::set_debug_name(const F_debug_name& value)
+	{
+		A_render_object::set_debug_name(value);
+
+		auto wvalue = G_to_wstring(value.c_str());
+		d3d12_pipeline_state_p_->SetName(wvalue.data());
+	}
+#endif
+
+
+
 	F_directx12_pipeline_state::F_directx12_pipeline_state(
 		TKPA_valid<A_device> device_p,
 		ED_pipeline_state_type overrided_type,

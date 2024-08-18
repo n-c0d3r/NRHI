@@ -16,6 +16,21 @@
 
 namespace nrhi {
 
+#ifdef NRHI_ENABLE_DRIVER_DEBUGGER
+	void F_directx11_command_list::set_debug_name(const F_debug_name& value)
+	{
+		A_render_object::set_debug_name(value);
+
+		d3d11_device_context_p_->SetPrivateData(
+			WKPDID_D3DDebugObjectName,
+			value.size() - 1,
+			value.data()
+		);
+	}
+#endif
+
+
+
     F_directx11_command_list::F_directx11_command_list(TKPA_valid<A_device> device_p, const F_command_list_desc& desc) :
         A_command_list(device_p, desc)
     {

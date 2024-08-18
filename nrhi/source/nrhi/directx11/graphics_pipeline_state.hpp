@@ -109,6 +109,10 @@ namespace nrhi {
 
 		NCPP_FORCE_INLINE const auto& options() const noexcept { return options_; }
 
+#ifdef NRHI_ENABLE_DRIVER_DEBUGGER
+        virtual void set_debug_name(const F_debug_name& value) override;
+#endif
+
 
 
 	public:

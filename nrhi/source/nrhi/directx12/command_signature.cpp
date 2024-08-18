@@ -6,6 +6,18 @@
 
 namespace nrhi {
 
+#ifdef NRHI_ENABLE_DRIVER_DEBUGGER
+	void F_directx12_command_signature::set_debug_name(const F_debug_name& value)
+	{
+		A_render_object::set_debug_name(value);
+
+		auto wvalue = G_to_wstring(value.c_str());
+		d3d12_command_signature_p_->SetName(wvalue.data());
+	}
+#endif
+
+
+
 	F_directx12_command_signature::F_directx12_command_signature(
 		TKPA_valid<A_device> device_p,
 		const F_command_signature_desc& desc,

@@ -7,7 +7,7 @@ namespace nrhi {
 
     void HD_directx12_system::initialize(){
 
-#ifdef NCPP_ENABLE_ASSERT
+#ifdef NRHI_ENABLE_DRIVER_DEBUGGER
 		Microsoft::WRL::ComPtr<ID3D12Debug> debugController;
 		if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
 			debugController->EnableDebugLayer();

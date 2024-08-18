@@ -38,6 +38,7 @@
 #include <nrhi/resource_base.hpp>
 #include <nrhi/resource_view_base.hpp>
 #include <nrhi/texture.hpp>
+#include <nrhi/render_object.hpp>
 
 #pragma endregion
 
@@ -63,7 +64,7 @@ namespace nrhi {
 
 
 
-    class NRHI_API A_swapchain {
+    class NRHI_API A_swapchain : public A_render_object {
 
     private:
         TK_valid<A_command_queue> command_queue_p_;

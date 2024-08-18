@@ -54,6 +54,10 @@ namespace nrhi {
 		NCPP_FORCE_INLINE ID3D11SamplerState* d3d11_sampler_state_p() noexcept { return d3d11_sampler_state_p_; }
 		NCPP_FORCE_INLINE void set_d3d11_sampler_state_p_unsafe(ID3D11SamplerState* value) noexcept { d3d11_sampler_state_p_ = value; }
 
+#ifdef NRHI_ENABLE_DRIVER_DEBUGGER
+        virtual void set_debug_name(const F_debug_name& value) override;
+#endif
+
 
 
 	public:

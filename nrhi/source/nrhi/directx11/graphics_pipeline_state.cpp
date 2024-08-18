@@ -5,6 +5,45 @@
 
 namespace nrhi {
 
+#ifdef NRHI_ENABLE_DRIVER_DEBUGGER
+	void F_directx11_graphics_pipeline_state::set_debug_name(const F_debug_name& value)
+	{
+		A_render_object::set_debug_name(value);
+
+		if(d3d11_vertex_shader_p_)
+		{
+			F_debug_name shader_name = value + ".vertex_shader";
+			d3d11_vertex_shader_p_->SetPrivateData(
+				WKPDID_D3DDebugObjectName,
+				shader_name.size() - 1,
+				shader_name.data()
+			);
+		}
+
+		if(d3d11_pixel_shader_p_)
+		{
+			F_debug_name shader_name = value + ".pixel_shader";
+			d3d11_pixel_shader_p_->SetPrivateData(
+				WKPDID_D3DDebugObjectName,
+				shader_name.size() - 1,
+				shader_name.data()
+			);
+		}
+
+		if(d3d11_input_layout_p_)
+		{
+			F_debug_name input_layout_name = value + ".input_layout";
+			d3d11_input_layout_p_->SetPrivateData(
+				WKPDID_D3DDebugObjectName,
+				input_layout_name.size() - 1,
+				input_layout_name.data()
+			);
+		}
+	}
+#endif
+
+
+
 	F_rasterizer_desc F_directx11_rasterizer_state_pool::default_input() {
 
 		return {};

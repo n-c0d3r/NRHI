@@ -73,6 +73,10 @@ namespace nrhi {
 		NCPP_FORCE_INLINE IDXGISwapChain3* dxgi_swapchain_p() noexcept { return dxgi_swapchain_p_; }
 		NCPP_FORCE_INLINE void set_dxgi_swapchain_p_unsafe(IDXGISwapChain3* value) noexcept { dxgi_swapchain_p_ = value; }
 
+#ifdef NRHI_ENABLE_DRIVER_DEBUGGER
+		virtual void set_debug_name(const F_debug_name& value) override;
+#endif
+
 
 
 	public:

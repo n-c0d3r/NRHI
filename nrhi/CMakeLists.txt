@@ -34,6 +34,10 @@ set(NRHI_MAX_COMMAND_LIST_COUNT_PER_BATCH 128 CACHE STRING "Max command list cou
 # NRHI threading options
 option(NRHI_THREAD_SAFE "If checked, NRHI will use locks when creating and releasing objects" OFF)
 
+# NRHI debugging options
+option(NRHI_ENABLE_DRIVER_DEBUGGER "If checked, NRHI will enable driver debugger if possible" ON)
+set(NRHI_DEBUG_NAME_STATIC_SIZE 32 CACHE STRING "")
+
 # Compute driver count and some supports
 NCPP_SetGlobal(NRHI_DRIVER_INTERFACE_SUPPORT_SIMPLE_RESOURCE_BINDING OFF)
 NCPP_SetGlobal(NRHI_DRIVER_INTERFACE_SUPPORT_SIMPLE_INDIRECT_COMMANDS OFF)
@@ -335,6 +339,12 @@ if(NRHI_ENABLE_DXGI)
         PUBLIC
             dxgi.lib
     )
+    if(NRHI_ENABLE_DRIVER_DEBUGGER)
+        target_link_libraries(nrhi
+            PUBLIC
+                dxguid.lib
+        )
+    endif()
 endif()
 
 # MSVC compile options

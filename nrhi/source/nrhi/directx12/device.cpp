@@ -5,6 +5,18 @@
 
 namespace nrhi {
 
+#ifdef NRHI_ENABLE_DRIVER_DEBUGGER
+	void F_directx12_device::set_debug_name(const F_debug_name& value)
+	{
+		A_render_object::set_debug_name(value);
+
+		auto wvalue = G_to_wstring(value.c_str());
+		d3d12_device_p_->SetName(wvalue.data());
+	}
+#endif
+
+
+
     F_directx12_device::F_directx12_device(TK_valid<A_adapter> adapter_p) :
         A_device(adapter_p)
     {

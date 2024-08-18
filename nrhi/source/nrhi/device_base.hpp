@@ -33,6 +33,8 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+#include <nrhi/render_object.hpp>
+
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 #include <nrhi/descriptor_heap_type.hpp>
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
@@ -52,7 +54,7 @@ namespace nrhi {
 
 
 
-    class NRHI_API A_device {
+    class NRHI_API A_device : public A_render_object {
 
     private:
         TK_valid<A_adapter> adapter_p_;

@@ -59,6 +59,10 @@ namespace nrhi {
 		NCPP_FORCE_INLINE ID3D12Fence* d3d12_fence_p() noexcept { return d3d12_fence_p_; }
 		NCPP_FORCE_INLINE void set_d3d12_fence_p_unsafe(ID3D12Fence* value) noexcept { d3d12_fence_p_ = value; }
 
+#ifdef NRHI_ENABLE_DRIVER_DEBUGGER
+		virtual void set_debug_name(const F_debug_name& value) override;
+#endif
+
 
 
 	public:

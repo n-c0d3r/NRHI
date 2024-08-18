@@ -85,6 +85,9 @@ namespace nrhi { }
 
 #include <nrhi/resource_heap_tier.hpp>
 
+#include <nrhi/debug_name.hpp>
+#include <nrhi/render_object.hpp>
+
 #ifdef NRHI_DRIVER_DIRECTX_11
 #include <nrhi/directx11/buffer.hpp>
 #include <nrhi/directx11/texture.hpp>

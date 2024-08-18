@@ -2,6 +2,8 @@
 
 #include <nrhi/prerequisites.hpp>
 
+#include <nrhi/render_object.hpp>
+
 
 
 namespace nrhi {
@@ -10,7 +12,7 @@ namespace nrhi {
 
 
 
-	class NRHI_API A_device_child {
+	class NRHI_API A_device_child : public A_render_object {
 
 	private:
 		TK_valid<A_device> device_p_;

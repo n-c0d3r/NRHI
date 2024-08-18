@@ -5,6 +5,21 @@
 
 namespace nrhi {
 
+#ifdef NRHI_ENABLE_DRIVER_DEBUGGER
+	void F_directx11_device::set_debug_name(const F_debug_name& value)
+	{
+		A_render_object::set_debug_name(value);
+
+		d3d11_device_p_->SetPrivateData(
+			WKPDID_D3DDebugObjectName,
+			value.size() - 1,
+			value.data()
+		);
+	}
+#endif
+
+
+
     F_directx11_device::F_directx11_device(TKPA_valid<A_adapter> adapter_p) :
         A_device(adapter_p)
     {
@@ -18,7 +33,7 @@ namespace nrhi {
 
 		UINT creation_flags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 
-#ifdef NCPP_ENABLE_ASSERT
+#ifdef NRHI_ENABLE_DRIVER_DEBUGGER
 		creation_flags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 

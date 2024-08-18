@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/directx11/command_queue.hpp
+/** @file nrhi/render_object.hpp
 *
-*   Implement directx11 command_queue.
+*   Implement render object base class.
 */
 
 
@@ -33,7 +33,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <nrhi/command_queue_base.hpp>
+#include <nrhi/debug_name.hpp>
 
 #pragma endregion
 
@@ -41,47 +41,33 @@
 
 namespace nrhi {
 
-    class A_device;
-    class A_command_list;
+    class A_render_object;
 
 
 
-    class NRHI_API F_directx11_command_queue : public A_command_queue {
+    class NRHI_API A_render_object {
 
     private:
-        ID3D11DeviceContext* d3d11_device_context_p_ = 0;
+        F_debug_name debug_name_;
 
     public:
-        NCPP_FORCE_INLINE ID3D11DeviceContext* d3d11_device_context_p() noexcept { return d3d11_device_context_p_; }
-		NCPP_FORCE_INLINE void set_d3d11_device_context_p_unsafe(ID3D11DeviceContext* value) noexcept { d3d11_device_context_p_ = value; }
-
+        NCPP_FORCE_INLINE const auto& debug_name() const noexcept { return debug_name_; }
 #ifdef NRHI_ENABLE_DRIVER_DEBUGGER
-        virtual void set_debug_name(const F_debug_name& value) override;
+        virtual void set_debug_name(const F_debug_name& value);
+#else
+        NCPP_FORCE_INLINE void set_debug_name(const F_debug_name& value) noexcept {}
 #endif
 
 
 
-    public:
-        F_directx11_command_queue(TKPA_valid<A_device> device_p, const F_command_queue_desc& desc);
-        ~F_directx11_command_queue();
-
-    };
-
-
-
-    class NRHI_API HD_directx11_command_queue {
+    protected:
+        A_render_object();
 
     public:
-        static TU<A_command_queue> create(TKPA_valid<A_device> device_p, const F_command_queue_desc& desc);
+        virtual ~A_render_object();
 
-        static void execute_command_lists(
-            TKPA_valid<A_command_queue> command_queue_p,
-            TG_span<TK_valid<A_command_list>> command_list_p_span
-        );
-		static void execute_command_list(
-			TKPA_valid<A_command_queue> command_queue_p,
-			TKPA_valid<A_command_list> command_list_p
-		);
+	public:
+		NCPP_OBJECT(A_render_object);
 
     };
 

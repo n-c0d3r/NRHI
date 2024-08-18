@@ -54,6 +54,12 @@ namespace nrhi {
 			d3d12_resource_p_ = value;
 		}
 
+#ifdef NRHI_ENABLE_DRIVER_DEBUGGER
+		virtual void set_debug_name(const F_debug_name& value) override;
+#endif
+
+
+
 	public:
 		F_directx12_resource(
 			TKPA_valid<A_device> device_p,

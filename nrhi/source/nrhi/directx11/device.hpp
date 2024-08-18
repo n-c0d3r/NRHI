@@ -55,6 +55,10 @@ namespace nrhi {
         NCPP_FORCE_INLINE ID3D11Device* d3d11_device_p() noexcept { return d3d11_device_p_; }
 		NCPP_FORCE_INLINE void set_d3d11_device_p_unsafe(ID3D11Device* value) noexcept { d3d11_device_p_ = value; }
 
+#ifdef NRHI_ENABLE_DRIVER_DEBUGGER
+        virtual void set_debug_name(const F_debug_name& value) override;
+#endif NRHI_ENABLE_DRIVER_DEBUGGER
+
 
 
     public:
@@ -65,7 +69,6 @@ namespace nrhi {
         ID3D11DeviceContext* d3d11_immediate_ctx_p_unsafe();
         ID3D11DeviceContext* pop_d3d11_immediate_ctx();
         void push_d3d11_immediate_ctx();
-
     };
 
 

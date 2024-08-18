@@ -5,6 +5,18 @@
 
 namespace nrhi {
 
+#ifdef NRHI_ENABLE_DRIVER_DEBUGGER
+	void F_directx12_command_allocator::set_debug_name(const F_debug_name& value)
+	{
+		A_render_object::set_debug_name(value);
+
+		auto wvalue = G_to_wstring(value.c_str());
+		d3d12_command_allocator_p_->SetName(wvalue.data());
+	}
+#endif
+
+
+
 	F_directx12_command_allocator::F_directx12_command_allocator(TKPA_valid<A_device> device_p, const F_command_allocator_desc& desc) :
 		A_command_allocator(device_p, desc)
 	{

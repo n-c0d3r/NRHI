@@ -6,6 +6,21 @@
 
 namespace nrhi {
 
+#ifdef NRHI_ENABLE_DRIVER_DEBUGGER
+	void F_directx11_command_queue::set_debug_name(const F_debug_name& value)
+	{
+		A_render_object::set_debug_name(value);
+
+		d3d11_device_context_p_->SetPrivateData(
+			WKPDID_D3DDebugObjectName,
+			value.size() - 1,
+			value.data()
+		);
+	}
+#endif
+
+
+
     F_directx11_command_queue::F_directx11_command_queue(TKPA_valid<A_device> device_p, const F_command_queue_desc& desc) :
         A_command_queue(device_p, desc),
         d3d11_device_context_p_(

@@ -13,6 +13,15 @@
 
 namespace nrhi {
 
+#ifdef NRHI_ENABLE_DRIVER_DEBUGGER
+	void F_directx12_swapchain::set_debug_name(const F_debug_name& value)
+	{
+		A_render_object::set_debug_name(value);
+	}
+#endif
+
+
+
 	F_directx12_swapchain::F_directx12_swapchain(
 		TKPA_valid<A_command_queue> command_queue_p,
 		TKPA_valid<F_surface> surface_p,
