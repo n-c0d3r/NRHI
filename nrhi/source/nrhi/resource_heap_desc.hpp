@@ -36,6 +36,7 @@
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 #include <nrhi/resource_heap_type.hpp>
 #include <nrhi/resource_heap_flag.hpp>
+#include <nrhi/resource_placement_alignment.hpp>
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
 #pragma endregion
@@ -50,7 +51,7 @@ namespace nrhi {
 		ED_resource_heap_type type = ED_resource_heap_type::GREAD_GWRITE;
 		ED_resource_heap_flag flags = ED_resource_heap_flag::NONE;
 		u64 size = 0;
-		u64 alignment = 0;
+		u64 alignment = u64(ED_resource_placement_alignment::DEFAULT);
 
 	};
 
