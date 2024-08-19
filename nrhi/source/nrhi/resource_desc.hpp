@@ -45,6 +45,7 @@
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 #include <nrhi/resource_layout.hpp>
+#include <nrhi/resource_placement_alignment.hpp>
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
 #include <nrhi/sample_desc.hpp>
@@ -140,7 +141,7 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		ED_resource_layout layout = ED_resource_layout::UNKNOWN;
-		u64 alignment = 0;
+		u64 alignment = u64(ED_resource_placement_alignment::DEFAULT);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
     };
@@ -160,7 +161,7 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
-			u64 alignment = 0
+			u64 alignment = u64(ED_resource_placement_alignment::DEFAULT)
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
         );
 
@@ -177,7 +178,7 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
-			u64 alignment = 0
+			u64 alignment = u64(ED_resource_placement_alignment::DEFAULT)
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
         );
 
@@ -194,7 +195,7 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
-			u64 alignment = 0
+			u64 alignment = u64(ED_resource_placement_alignment::DEFAULT)
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
         ) {
             return create_buffer_desc(
@@ -227,7 +228,7 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			, ED_resource_layout layout = ED_resource_layout::UNKNOWN,
-			u64 alignment = 0
+			u64 alignment = u64(ED_resource_placement_alignment::DEFAULT)
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
         );
 
@@ -247,7 +248,7 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			, ED_resource_layout layout = ED_resource_layout::UNKNOWN,
-			u64 alignment = 0
+			u64 alignment = u64(ED_resource_placement_alignment::DEFAULT)
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
         );
 
@@ -267,7 +268,7 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			, ED_resource_layout layout = ED_resource_layout::UNKNOWN,
-			u64 alignment = 0
+			u64 alignment = u64(ED_resource_placement_alignment::DEFAULT)
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
         );
 
@@ -288,7 +289,7 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			, ED_resource_layout layout = ED_resource_layout::UNKNOWN,
-			u64 alignment = 0
+			u64 alignment = u64(ED_resource_placement_alignment::DEFAULT)
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		);
 
