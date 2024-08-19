@@ -56,6 +56,7 @@ namespace nrhi {
 		const F_initial_resource_data& initial_data,
 		const F_resource_desc& desc
 	) {
+    	NCPP_ASSERT(desc_.type == desc.type) << "can't change type";
 		NRHI_DRIVER_REQUIRE_SUPPORT_SIMPLE_RESOURCE_MANAGEMENT(
 			initial_data_ = initial_data;
 			desc_ = desc;
@@ -66,6 +67,7 @@ namespace nrhi {
 	void A_resource::finalize_rebuild_committed(
 		const F_resource_desc& desc
 	) {
+    	NCPP_ASSERT(desc_.type == desc.type) << "can't change type";
 		NCPP_ASSERT(management_type() == E_resource_management_type::COMMITTED);
 		desc_ = desc;
 	}
@@ -74,6 +76,7 @@ namespace nrhi {
 		TKPA_valid<A_resource_heap> heap_p,
 		u64 heap_offset
 	) {
+    	NCPP_ASSERT(desc_.type == desc.type) << "can't change type";
 		NCPP_ASSERT(management_type() == E_resource_management_type::PLACED);
 		desc_ = desc;
 		placed_heap_p_ = heap_p.no_requirements();
@@ -82,6 +85,7 @@ namespace nrhi {
 	void A_resource::finalize_rebuild_reserved(
 		const F_resource_desc& desc
 	) {
+    	NCPP_ASSERT(desc_.type == desc.type) << "can't change type";
 		NCPP_ASSERT(management_type() == E_resource_management_type::RESERVED);
 		desc_ = desc;
 	}

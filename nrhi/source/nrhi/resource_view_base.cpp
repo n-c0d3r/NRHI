@@ -74,6 +74,7 @@ namespace nrhi {
 	void A_resource_view::finalize_rebuild(
 		const F_resource_view_desc& desc
 	) {
+    	NCPP_ASSERT(desc_.type == desc.type) << "can't change type";
 		desc_ = desc;
 		finalize_rebuild();
 	}
