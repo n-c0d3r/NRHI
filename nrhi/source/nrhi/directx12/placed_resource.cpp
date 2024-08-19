@@ -143,4 +143,9 @@ namespace nrhi {
 		);
 	}
 
+	E_resource_management_type F_directx12_placed_resource::management_type() const
+	{
+		return E_resource_management_type::PLACED;
+	}
+
 }

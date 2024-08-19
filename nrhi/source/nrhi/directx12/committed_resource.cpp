@@ -123,4 +123,9 @@ namespace nrhi {
 		);
 	}
 
+	E_resource_management_type F_directx12_committed_resource::management_type() const
+	{
+		return E_resource_management_type::COMMITTED;
+	}
+
 }

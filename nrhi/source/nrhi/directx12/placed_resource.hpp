@@ -82,6 +82,9 @@ namespace nrhi {
 			u64 heap_offset
 		) override;
 
+	public:
+		virtual E_resource_management_type management_type() const override;
+
 	};
 
 }

@@ -72,6 +72,9 @@ namespace nrhi {
 			const F_resource_desc& desc
 		) override;
 
+	public:
+		virtual E_resource_management_type management_type() const override;
+
 	};
 
 }

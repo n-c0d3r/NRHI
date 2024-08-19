@@ -119,4 +119,9 @@ namespace nrhi {
 		);
 	}
 
+	E_resource_management_type F_directx12_reserved_resource::management_type() const
+	{
+		return E_resource_management_type::RESERVED;
+	}
+
 }
