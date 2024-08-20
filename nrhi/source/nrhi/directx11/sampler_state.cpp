@@ -45,7 +45,10 @@ namespace nrhi {
 	F_directx11_sampler_state::~F_directx11_sampler_state() {
 
 		if(d3d11_sampler_state_p_)
+		{
 			d3d11_sampler_state_p_->Release();
+			d3d11_sampler_state_p_ = 0;
+		}
 	}
 
 
@@ -53,7 +56,10 @@ namespace nrhi {
 	void F_directx11_sampler_state::release_driver_specific_implementation()
 	{
 		if(d3d11_sampler_state_p_)
+		{
 			d3d11_sampler_state_p_->Release();
+			d3d11_sampler_state_p_ = 0;
+		}
 	}
 
 	ID3D11SamplerState* F_directx11_sampler_state::create_d3d11_sampler_state(

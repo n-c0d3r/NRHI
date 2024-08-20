@@ -210,7 +210,10 @@ namespace nrhi {
 		NCPP_FOH_VALID(back_buffer_p_).T_cast<F_directx12_resource>()->set_d3d12_resource_p_unsafe(0);
 
 		if(dxgi_swapchain_p_)
+		{
 			dxgi_swapchain_p_->Release();
+			dxgi_swapchain_p_ = 0;
+		}
 	}
 
 	void F_directx12_swapchain::update_d3d12_object_for_buffer_rtvs(){

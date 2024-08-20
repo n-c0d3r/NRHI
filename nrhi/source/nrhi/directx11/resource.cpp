@@ -55,7 +55,10 @@ namespace nrhi {
 	void F_directx11_resource::release_driver_specific_implementation()
 	{
 		if(d3d11_resource_p_)
+		{
 			d3d11_resource_p_->Release();
+			d3d11_resource_p_ = 0;
+		}
 	}
 
 

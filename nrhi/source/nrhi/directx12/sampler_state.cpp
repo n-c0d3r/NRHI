@@ -43,6 +43,7 @@ namespace nrhi {
 
 	void F_directx12_sampler_state::release_driver_specific_implementation()
 	{
+		descriptor_ = {};
 	}
 
 
