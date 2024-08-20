@@ -82,6 +82,10 @@ namespace nrhi {
 		finalize_rebuild(desc);
 	}
 
+	void F_directx12_resource_heap::release_driver_specific_implementation()
+	{
+	}
+
 
 
 	TU<A_resource_heap> HD_directx12_resource_heap::create(

@@ -100,4 +100,7 @@ namespace nrhi {
 	}
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
+	void A_resource::release_driver_specific_implementation()
+    {
+    }
 }

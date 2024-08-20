@@ -48,6 +48,14 @@ namespace nrhi {
 			d3d11_sampler_state_p_->Release();
 	}
 
+
+
+	void F_directx11_sampler_state::release_driver_specific_implementation()
+	{
+		if(d3d11_sampler_state_p_)
+			d3d11_sampler_state_p_->Release();
+	}
+
 	ID3D11SamplerState* F_directx11_sampler_state::create_d3d11_sampler_state(
 		TKPA_valid<A_device> device_p,
 		const F_sampler_state_desc& desc

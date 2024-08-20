@@ -74,6 +74,10 @@ namespace nrhi {
 		finalize_rebuild();
 	}
 
+	void F_directx12_frame_buffer::release_driver_specific_implementation()
+	{
+	}
+
 
 
 	TU<A_frame_buffer> HD_directx12_frame_buffer::create(

@@ -117,6 +117,8 @@ namespace nrhi {
 		);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
+	public:
+		virtual void release_driver_specific_implementation();
 	};
 
 }

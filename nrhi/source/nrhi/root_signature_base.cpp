@@ -15,18 +15,5 @@ namespace nrhi {
 	}
 	A_root_signature::~A_root_signature() {
 	}
-
-	void A_root_signature::rebuild(
-		const F_root_signature_desc& desc
-	) {
-		finalize_rebuild(desc);
-	}
-
-	void A_root_signature::finalize_rebuild(
-		const F_root_signature_desc& desc
-	) {
-		desc_ = desc;
-	}
-
 }
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING

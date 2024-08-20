@@ -46,6 +46,13 @@ namespace nrhi {
 			d3d12_resource_p_->Release();
 	}
 
+	void F_directx12_resource::release_driver_specific_implementation()
+	{
+		if(d3d12_resource_p_)
+			d3d12_resource_p_->Release();
+	}
+
+
 
 
 	TU<A_resource> HD_directx12_resource::create_committed(

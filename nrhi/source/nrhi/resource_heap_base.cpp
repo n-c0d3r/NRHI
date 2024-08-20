@@ -28,5 +28,9 @@ namespace nrhi {
 		desc_ = desc;
 	}
 
+	void A_resource_heap::release_driver_specific_implementation()
+	{
+	}
+
 }
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT

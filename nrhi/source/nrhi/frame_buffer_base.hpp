@@ -116,6 +116,8 @@ namespace nrhi {
 	protected:
 		void finalize_rebuild();
 
+	public:
+		virtual void release_driver_specific_implementation();
 	};
 
 }

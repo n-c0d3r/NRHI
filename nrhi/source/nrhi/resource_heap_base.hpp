@@ -79,6 +79,9 @@ namespace nrhi {
 			const F_resource_heap_desc& desc
 		);
 
+	public:
+		virtual void release_driver_specific_implementation();
+
 	};
 
 }

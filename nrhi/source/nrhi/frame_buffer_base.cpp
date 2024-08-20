@@ -58,4 +58,8 @@ namespace nrhi {
 			depth_stencil_attachment_generation_ = desc_.depth_stencil_attachment->generation();
 	}
 
+	void A_frame_buffer::release_driver_specific_implementation()
+	{
+	}
+
 }

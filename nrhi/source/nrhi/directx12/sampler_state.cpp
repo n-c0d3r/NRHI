@@ -41,6 +41,11 @@ namespace nrhi {
 	}
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
+	void F_directx12_sampler_state::release_driver_specific_implementation()
+	{
+	}
+
+
 
 
 #pragma region Alternative Functions

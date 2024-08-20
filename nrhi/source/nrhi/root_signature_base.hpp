@@ -70,17 +70,6 @@ namespace nrhi {
 
 	public:
 		NCPP_OBJECT(A_root_signature);
-
-	public:
-		virtual void rebuild(
-			const F_root_signature_desc& desc
-		);
-
-	protected:
-		void finalize_rebuild(
-			const F_root_signature_desc& desc
-		);
-
 	};
 
 }

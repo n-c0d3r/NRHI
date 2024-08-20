@@ -84,6 +84,10 @@ namespace nrhi {
         );
         ~F_directx11_resource_view();
 
+
+
+    public:
+        virtual void release_driver_specific_implementation() override;
     };
 
 

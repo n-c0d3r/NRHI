@@ -88,4 +88,7 @@ namespace nrhi {
 	}
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
+	void A_resource_view::release_driver_specific_implementation()
+    {
+    }
 }

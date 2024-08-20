@@ -161,6 +161,9 @@ namespace nrhi {
 		);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
+    public:
+    	virtual void release_driver_specific_implementation();
+
 	public:
 		F_mapped_subresource map(u32 subresource_index);
 		void unmap(u32 subresource_index);
@@ -171,7 +174,6 @@ namespace nrhi {
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		virtual E_resource_management_type management_type() const;
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-
     };
 
 

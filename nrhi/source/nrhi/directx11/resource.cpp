@@ -52,6 +52,14 @@ namespace nrhi {
 
 
 
+	void F_directx11_resource::release_driver_specific_implementation()
+	{
+		if(d3d11_resource_p_)
+			d3d11_resource_p_->Release();
+	}
+
+
+
     TU<A_resource> HD_directx11_resource::create(
         TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_resource_data,

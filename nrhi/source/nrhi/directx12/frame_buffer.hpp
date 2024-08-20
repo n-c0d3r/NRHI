@@ -75,6 +75,9 @@ namespace nrhi {
 	public:
 		virtual void rebuild() override;
 
+	public:
+		virtual void release_driver_specific_implementation() override;
+
 	};
 
 

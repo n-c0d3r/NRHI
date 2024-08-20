@@ -75,6 +75,8 @@ namespace nrhi {
 	public:
 		NCPP_OBJECT(F_directx11_sampler_state);
 
+
+
 	private:
 		static ID3D11SamplerState* create_d3d11_sampler_state(
 			TKPA_valid<A_device> device_p,
@@ -85,6 +87,9 @@ namespace nrhi {
 		virtual void rebuild(
 			const F_sampler_state_desc& desc
 		) override;
+
+	public:
+		virtual void release_driver_specific_implementation() override;
 
 	};
 

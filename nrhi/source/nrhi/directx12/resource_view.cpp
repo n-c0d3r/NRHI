@@ -68,6 +68,11 @@ namespace nrhi {
 		);
 	}
 
+	void F_directx12_resource_view::release_driver_specific_implementation()
+	{
+		descriptor_ = {};
+	}
+
 
 
 	TU<A_resource_view> HD_directx12_resource_view::create_with_descriptor(

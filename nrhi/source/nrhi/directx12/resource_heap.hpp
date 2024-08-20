@@ -87,6 +87,8 @@ namespace nrhi {
 			const F_resource_heap_desc& desc
 		) override;
 
+	public:
+		virtual void release_driver_specific_implementation() override;
 	};
 
 
