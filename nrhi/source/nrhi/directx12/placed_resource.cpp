@@ -66,13 +66,12 @@ namespace nrhi {
 		const F_resource_desc& desc,
 		TKPA_valid<A_resource_heap> heap_p,
 		u64 heap_offset
-	) {
+	)
+	{
 		ID3D12Device* d3d12_device_p = device_p.T_cast<F_directx12_device>()->d3d12_device_p();
 		ID3D12Heap* d3d12_resource_heap_p = heap_p.T_cast<F_directx12_resource_heap>()->d3d12_resource_heap_p();
 
 		ID3D12Resource* d3d12_resource_p = 0;
-
-		CD3DX12_HEAP_PROPERTIES d3d12_heap_properties(D3D12_HEAP_TYPE(desc.heap_type));
 
 		D3D12_RESOURCE_DESC d3d12_resource_desc;
 		d3d12_resource_desc.Dimension = NRHI_DRIVER_DIRECTX_12_MAP___RESOURCE_TYPE___TO___RESOURCE_DIMENSION(desc.type);
