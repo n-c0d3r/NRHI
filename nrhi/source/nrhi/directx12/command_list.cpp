@@ -130,8 +130,7 @@ namespace nrhi {
 
 		u32 barrier_count = resource_barriers.size();
 
-		using F_resource_barrier_batch = TG_array<D3D12_RESOURCE_BARRIER, NRHI_MAX_RESOURCE_BARRIER_COUNT_PER_BATCH>;
-		F_resource_barrier_batch batch;
+		D3D12_RESOURCE_BARRIER batch[NRHI_MAX_RESOURCE_BARRIER_COUNT_PER_BATCH];
 
 		for(u32 i = 0; i < barrier_count; ++i)
 		{
@@ -163,6 +162,8 @@ namespace nrhi {
 					d3d12_resource_barrier.UAV.pResource = resource_uav_barrier.resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p();
 				)
 			);
+
+			batch[i] = d3d12_resource_barrier;
 		}
 
 		dx12_command_list_p->d3d12_command_list_p()->ResourceBarrier(
