@@ -168,7 +168,7 @@ namespace nrhi {
 
 		dx12_command_list_p->d3d12_command_list_p()->ResourceBarrier(
 			resource_barriers.size(),
-			batch.data()
+			batch
 		);
 	}
 
