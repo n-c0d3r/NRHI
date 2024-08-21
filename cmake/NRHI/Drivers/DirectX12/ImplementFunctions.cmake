@@ -22,5 +22,7 @@ include(NRHI/Drivers/DirectX12/ImplementRootSignature)
 include(NRHI/Drivers/DirectX12/ImplementFrameBuffer)
 include(NRHI/Drivers/DirectX12/ImplementIndirectArgument)
 include(NRHI/Drivers/DirectX12/ImplementCommandSignature)
+include(NRHI/Drivers/DirectX12/ImplementFormatHelper)
+include(NRHI/Drivers/DirectX12/ImplementResourceStateHelper)
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement functions done")

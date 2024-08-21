@@ -152,7 +152,6 @@ namespace nrhi {
 			const F_resource_uav_barrier& uav_barrier,
 			ED_resource_barrier_flag flags = ED_resource_barrier_flag::NONE
 		);
-
 	};
 
 }
