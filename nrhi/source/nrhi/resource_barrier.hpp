@@ -157,6 +157,8 @@ namespace nrhi {
 		{
 			if(other.type != type)
 				return false;
+			if(other.flags != flags)
+				return false;
 
 			NRHI_ENUM_SWITCH(
 				type,
