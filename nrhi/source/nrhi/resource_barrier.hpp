@@ -61,17 +61,37 @@ namespace nrhi {
 		ED_resource_state state_before;
 		ED_resource_state state_after;
 
+		b8 operator == (const F_resource_transition_barrier& other) const noexcept
+		{
+			return (
+				(resource_p == other.resource_p)
+				&& (subresource_index == other.subresource_index)
+				&& (state_before == other.state_before)
+				&& (state_after == other.state_after)
+			);
+		}
 	};
 	struct F_resource_aliasing_barrier {
 
 		TK<A_resource> resource_before_p;
 		TK<A_resource> resource_after_p;
 
+		b8 operator == (const F_resource_aliasing_barrier& other) const noexcept
+		{
+			return (
+				(resource_before_p == other.resource_before_p)
+				&& (resource_after_p == other.resource_after_p)
+			);
+		}
 	};
 	struct F_resource_uav_barrier {
 
 		TK<A_resource> resource_p;
 
+		b8 operator == (const F_resource_uav_barrier& other) const noexcept
+		{
+			return (resource_p == other.resource_p);
+		}
 	};
 
 	struct F_resource_barrier {
@@ -133,6 +153,27 @@ namespace nrhi {
 			return *this;
 		}
 
+		b8 operator == (const F_resource_barrier& other) const noexcept
+		{
+			if(other.type != type)
+				return false;
+
+			NRHI_ENUM_SWITCH(
+				type,
+				NRHI_ENUM_CASE(
+					ED_resource_barrier_type::TRANSITION,
+					return (transition == other.transition);
+				)
+				NRHI_ENUM_CASE(
+					ED_resource_barrier_type::ALIASING,
+					return (aliasing == other.aliasing);
+				)
+				NRHI_ENUM_CASE(
+					ED_resource_barrier_type::UNORDERED_ACCESS,
+					return (uav == other.uav);
+				)
+			);
+		}
 	};
 
 
