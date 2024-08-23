@@ -13,6 +13,10 @@ namespace nrhi {
 
 		UINT dxgiFactoryFlags = 0;
 
+#ifdef NRHI_ENABLE_DRIVER_DEBUGGER
+        dxgiFactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
+#endif
+
         HRESULT hr = CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(&factory_p_));
         NCPP_ASSERT(!FAILED(hr)) << "can't create factory";
 
