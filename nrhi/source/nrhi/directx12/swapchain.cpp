@@ -207,8 +207,17 @@ namespace nrhi {
 
 		surface_p()->T_get_event<F_surface_resize_event>().remove_listener(surface_resize_handle_);
 
+		// reset back buffer d3d12_resource_p to prevent it from releasing d3d12_resource_p
 		NCPP_FOH_VALID(back_buffer_p_).T_cast<F_directx12_resource>()->set_d3d12_resource_p_unsafe(0);
 
+		// reset descriptors in RTVs to prevent they from calling release_driver_specific_implementation
+		for(auto& rtv_p : rtv_p_vector_)
+		{
+			rtv_p->set_descriptor_unsafe({});
+		}
+		back_rtv_p_->set_descriptor_unsafe({});
+
+		// release swapchain
 		if(dxgi_swapchain_p_)
 		{
 			dxgi_swapchain_p_->Release();
