@@ -52,6 +52,7 @@ NRHI_AlternativeHelper_CreateAlternative(
         "create_default_dsv" "U_dsv_handle(
             TKPA_valid<A_resource> resource_p
         )"
+        "release_driver_specific_implementation" "void(TKPA_valid<A_resource_view> resource_view_p)"
 )
 
 message(STATUS "<NRHI::Drivers::Alternatives> Implement resource view done")

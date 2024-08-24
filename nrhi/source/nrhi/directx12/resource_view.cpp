@@ -25,9 +25,14 @@ namespace nrhi {
 	{
 	}
 	F_directx12_resource_view::~F_directx12_resource_view() {
+
+		if(descriptor_)
+			F_directx12_resource_view::release_driver_specific_implementation();
 	}
 
 	void F_directx12_resource_view::rebuild() {
+
+		NCPP_ASSERT(descriptor_) << "invalid descriptor";
 
 		HD_directx12_descriptor::initialize_resource_view(
 			NCPP_FOH_VALID(descriptor_.heap_p),
@@ -56,6 +61,11 @@ namespace nrhi {
 		const F_resource_view_desc& desc,
 		const F_descriptor& descriptor
 	) {
+		if(descriptor_)
+			F_directx12_resource_view::release_driver_specific_implementation();
+
+		NCPP_ASSERT(descriptor) << "invalid descriptor";
+
 		HD_directx12_descriptor::initialize_resource_view(
 			NCPP_FOH_VALID(descriptor.heap_p),
 			descriptor.handle.cpu_address,
@@ -70,6 +80,9 @@ namespace nrhi {
 
 	void F_directx12_resource_view::release_driver_specific_implementation()
 	{
+		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
+			H_resource_view::ALTERNATIVE::release_driver_specific_implementation(NCPP_KTHIS());
+		);
 		descriptor_ = {};
 	}
 
