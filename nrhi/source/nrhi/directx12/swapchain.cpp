@@ -120,7 +120,7 @@ namespace nrhi {
 		for(u32 i = 0; i < desc.rtv_count; ++i) {
 
 			F_resource_view_desc rtv_desc = {
-				.resource_p = NCPP_AOH_VALID(buffer_p_vector_[i])
+				.resource_p = buffer_p_vector_[i].oref
 			};
 			rtv_p_vector_.push_back({
 				TU<F_directx12_resource_view>()(
@@ -138,7 +138,7 @@ namespace nrhi {
 		}
 
 		F_resource_view_desc rtv_desc = {
-			.resource_p = NCPP_AOH_VALID(buffer_p_vector_[0])
+			.resource_p = buffer_p_vector_[0].oref
 		};
 		back_rtv_p_ ={
 			TU<F_directx12_resource_view>()(

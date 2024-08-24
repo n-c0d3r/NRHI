@@ -126,7 +126,7 @@ namespace nrhi {
 			TU<F_directx11_shader_resource_view>()(
 				resource_p->device_p(),
 				F_resource_view_desc {
-					.resource_p = resource_p
+					.resource_p = resource_p.no_requirements()
 				}
 			)
 		};
@@ -138,7 +138,7 @@ namespace nrhi {
 			TU<F_directx11_unordered_access_view>()(
 				resource_p->device_p(),
 				F_resource_view_desc {
-					.resource_p = resource_p
+					.resource_p = resource_p.no_requirements()
 				}
 			)
 		};
@@ -150,7 +150,7 @@ namespace nrhi {
 			TU<F_directx11_render_target_view>()(
 				resource_p->device_p(),
 				F_resource_view_desc {
-					.resource_p = resource_p
+					.resource_p = resource_p.no_requirements()
 				}
 			)
 		};
@@ -162,7 +162,7 @@ namespace nrhi {
 			TU<F_directx11_depth_stencil_view>()(
 				resource_p->device_p(),
 				F_resource_view_desc {
-					.resource_p = resource_p
+					.resource_p = resource_p.no_requirements()
 				}
 			)
 		};

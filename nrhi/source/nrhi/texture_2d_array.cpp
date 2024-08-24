@@ -23,7 +23,7 @@ namespace nrhi {
 			{
 				.overrided_resource_type = ED_resource_type::TEXTURE_2D_ARRAY,
 				.overrided_resource_flags = resource_flags,
-				.resource_p = NCPP_FOH_VALID(texture_2d_array_p),
+				.resource_p = texture_2d_array_p.oref.no_requirements(),
 				.base_mip_level = base_mip_level,
 				.index = index,
 				.overrided_array_size = array_size
@@ -42,7 +42,7 @@ namespace nrhi {
 			{
 				.overrided_resource_type = ED_resource_type::TEXTURE_2D_ARRAY,
 				.overrided_resource_flags = resource_flags,
-				.resource_p = NCPP_FOH_VALID(texture_2d_array_p),
+				.resource_p = texture_2d_array_p.oref.no_requirements(),
 				.base_mip_level = base_mip_level,
 				.index = index,
 				.overrided_array_size = array_size
@@ -60,7 +60,7 @@ namespace nrhi {
 			{
 				.overrided_resource_type = ED_resource_type::TEXTURE_2D_ARRAY,
 				.overrided_resource_flags = resource_flags,
-				.resource_p = NCPP_FOH_VALID(texture_2d_array_p),
+				.resource_p = texture_2d_array_p.oref.no_requirements(),
 				.base_mip_level = target_mip_level,
 				.index = index,
 				.overrided_array_size = 1
@@ -85,7 +85,7 @@ namespace nrhi {
 			{
 				.overrided_resource_type = ED_resource_type::TEXTURE_2D_ARRAY,
 				.overrided_resource_flags = resource_flags,
-				.resource_p = NCPP_FOH_VALID(texture_2d_array_p),
+				.resource_p = texture_2d_array_p.oref.no_requirements(),
 				.base_mip_level = base_mip_level,
 				.index = index,
 				.overrided_array_size = array_size
@@ -107,7 +107,7 @@ namespace nrhi {
 			{
 				.overrided_resource_type = ED_resource_type::TEXTURE_2D_ARRAY,
 				.overrided_resource_flags = resource_flags,
-				.resource_p = NCPP_FOH_VALID(texture_2d_array_p),
+				.resource_p = texture_2d_array_p.oref.no_requirements(),
 				.base_mip_level = base_mip_level,
 				.index = index,
 				.overrided_array_size = array_size
@@ -128,7 +128,7 @@ namespace nrhi {
 			{
 				.overrided_resource_type = ED_resource_type::TEXTURE_2D_ARRAY,
 				.overrided_resource_flags = resource_flags,
-				.resource_p = NCPP_FOH_VALID(texture_2d_array_p),
+				.resource_p = texture_2d_array_p.oref.no_requirements(),
 				.base_mip_level = target_mip_level,
 				.index = index,
 				.overrided_array_size = 1

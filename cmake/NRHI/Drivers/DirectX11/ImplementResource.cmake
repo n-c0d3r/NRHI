@@ -61,8 +61,8 @@ NRHI_FunctionHelper_CreateFunctionClass(
             u32 subresource_index
         )"
         "first_pitch" "sz(u32 element_stride, u32 count)"
-        "second_pitch" "sz(u32 first_pitch, u32 count)"
-        "third_pitch" "sz(u32 second_pitch, u32 count)"
+        "second_pitch" "sz(sz first_pitch, u32 count)"
+        "third_pitch" "sz(sz second_pitch, u32 count)"
         "subresource_index" "u32(
 			u32 array_slice,
 			u32 mip_level,

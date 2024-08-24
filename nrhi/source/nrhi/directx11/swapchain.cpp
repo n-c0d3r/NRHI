@@ -78,7 +78,7 @@ namespace nrhi {
 
         // create back texture 2d rtv
 		F_resource_view_desc back_rtv_desc = {
-			.resource_p = NCPP_AOH_VALID(buffer_p_)
+			.resource_p = buffer_p_.oref
 		};
 		back_rtv_p_ = {
 			TU<F_directx11_render_target_view>()(

@@ -44,7 +44,7 @@ int main() {
 		NCPP_FOH_VALID(descriptor_heap_1_p),
 		base_cpu_address_1,
 		{
-			.resource_p = NCPP_FOH_VALID(buffer_p)
+			.resource_p = buffer_p
 		}
 	);
 

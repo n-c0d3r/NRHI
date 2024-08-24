@@ -186,13 +186,13 @@ int main() {
     U_srv_handle texture_2d_srv_p = H_resource_view::create_srv(
         NCPP_FOREF_VALID(device_p),
         {
-            .resource_p = NCPP_FHANDLE_VALID_AS_OREF(texture_2d_p)
+            .resource_p = texture_2d_p.oref
         }
     );
     U_rtv_handle texture_2d_rtv_p = H_resource_view::create_rtv(
         NCPP_FOREF_VALID(device_p),
         {
-            .resource_p = NCPP_FHANDLE_VALID_AS_OREF(texture_2d_p)
+            .resource_p = texture_2d_p.oref
         }
     );
 

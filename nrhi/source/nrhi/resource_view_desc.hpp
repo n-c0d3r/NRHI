@@ -57,7 +57,7 @@ namespace nrhi {
 		ED_resource_type overrided_resource_type = ED_resource_type::NONE;
 		ED_resource_flag overrided_resource_flags = ED_resource_flag::NONE;
 
-        TK_valid<A_resource> resource_p;
+        TK<A_resource> resource_p;
 
         union {
             u32 base_mip_level = 0;

@@ -51,7 +51,7 @@ namespace nrhi {
 			oref->device_p(),
 			{
 				.overrided_resource_type = ED_resource_type::TEXTURE_2D_ARRAY,
-				.resource_p = NCPP_FOH_VALID(oref),
+				.resource_p = oref.no_requirements(),
 				.base_mip_level = base_mip_level,
 				.index = index,
 				.count = count
@@ -65,7 +65,7 @@ namespace nrhi {
 			oref->device_p(),
 			{
 				.overrided_resource_type = ED_resource_type::TEXTURE_2D_ARRAY,
-				.resource_p = NCPP_FOH_VALID(oref),
+				.resource_p = oref.no_requirements(),
 				.base_mip_level = base_mip_level,
 				.index = index,
 				.count = count
@@ -79,7 +79,7 @@ namespace nrhi {
 			oref->device_p(),
 			{
 				.overrided_resource_type = ED_resource_type::TEXTURE_2D_ARRAY,
-				.resource_p = NCPP_FOH_VALID(oref),
+				.resource_p = oref.no_requirements(),
 				.target_mip_level = target_mip_level,
 				.index = index,
 				.count = 1
