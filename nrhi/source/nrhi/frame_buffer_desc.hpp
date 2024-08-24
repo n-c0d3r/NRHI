@@ -40,20 +40,16 @@
 
 
 
-namespace nrhi {
-
+namespace nrhi
+{
 	class A_device;
 
 
 
-	struct F_frame_buffer_desc {
-
+	struct F_frame_buffer_desc
+	{
 		TG_fixed_vector<K_valid_rtv_handle, 8, false> color_attachments;
 
 		K_dsv_handle depth_stencil_attachment;
-
-		F_vector2_u32 size = F_vector2_u32::zero();
-
 	};
-
 }
