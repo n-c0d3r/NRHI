@@ -52,6 +52,8 @@ namespace nrhi {
 
 		K_dsv_handle depth_stencil_attachment;
 
+		F_vector2_u32 size = F_vector2_u32::zero();
+
 	};
 
 }

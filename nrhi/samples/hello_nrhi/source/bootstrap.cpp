@@ -289,8 +289,8 @@ int main() {
 
 			command_list_p->begin();
 
-			// update frame buffer
-			frame_buffer_p->update_viewport();
+			//
+			frame_buffer_p->guarantee_generation();
 
 			// clear main render target view to cyan (r: 0, g: 255, b:255, a: 1.0)
 			command_list_p->clear_rtv(

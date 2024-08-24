@@ -84,10 +84,6 @@ namespace nrhi {
 			TKPA_valid<A_device> device_p,
 			const F_frame_buffer_desc& desc
 		);
-
-	public:
-		static void update_viewport(TK_valid<A_frame_buffer> frame_bufer_p);
-
 	};
 
 }

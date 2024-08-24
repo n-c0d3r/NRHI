@@ -12,7 +12,6 @@ namespace nrhi {
 	) :
 		A_frame_buffer(device_p, desc)
 	{
-
 		update_d3d11_viewport();
 	}
 	F_directx11_frame_buffer::~F_directx11_frame_buffer()
@@ -67,13 +66,6 @@ namespace nrhi {
 		TKPA_valid<A_device> device_p,
 		const F_frame_buffer_desc& desc
 	) {
-
 		return TU<F_directx11_frame_buffer>()(device_p, desc);
 	}
-
-	void HD_directx11_frame_buffer::update_viewport(TK_valid<A_frame_buffer> frame_bufer_p) {
-
-		frame_bufer_p.T_cast<F_directx11_frame_buffer>()->update_d3d11_viewport();
-	}
-
 }

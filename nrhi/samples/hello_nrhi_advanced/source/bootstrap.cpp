@@ -488,11 +488,8 @@ int main() {
 
 		if(swapchain_p) {
 
-			// guarantee frame buffer generation
+			//
 			frame_buffer_p->guarantee_generation();
-
-			// update frame buffer
-			frame_buffer_p->update_viewport();
 
 			// fill command list
 			{

@@ -107,9 +107,6 @@ namespace nrhi {
 		NCPP_OBJECT(A_frame_buffer);
 
 	public:
-		void update_viewport();
-
-	public:
 		virtual void rebuild();
 		void guarantee_generation();
 
