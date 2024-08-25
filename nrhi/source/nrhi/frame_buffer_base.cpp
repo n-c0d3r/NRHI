@@ -31,6 +31,7 @@ namespace nrhi {
 			|| is_has_dsv_
 		) << "invalid frame buffer, require at least 1 attachment";
 	}
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 	// managed
 	A_frame_buffer::A_frame_buffer(
 		TKPA_valid<A_device> device_p,
@@ -54,6 +55,7 @@ namespace nrhi {
 		depth_stencil_attachment_descriptor_cpu_address_(depth_stencil_attachment_descriptor_cpu_address)
 	{
 	}
+#endif
 	A_frame_buffer::~A_frame_buffer()
 	{
 	}
