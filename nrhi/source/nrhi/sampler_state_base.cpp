@@ -62,7 +62,9 @@ namespace nrhi {
 	void A_sampler_state::finalize_rebuild(
 		const F_sampler_state_desc& desc
 	) {
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 		NCPP_ASSERT(management_type() == E_sampler_state_management_type::MANAGED);
+#endif
 
 		desc_ = desc;
 	}
