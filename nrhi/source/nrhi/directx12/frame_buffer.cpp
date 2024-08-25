@@ -12,64 +12,23 @@ namespace nrhi {
 	) :
 		A_frame_buffer(device_p, desc)
 	{
-		update_d3d12_viewport();
+		const auto& color_attachments = desc.color_attachments;
+		u32 color_attachment_size = color_attachments.size();
+		color_attachment_descriptors_.resize(color_attachment_size);
+		for(u32 i = 0; i < color_attachment_size; ++i)
+		{
+			color_attachment_descriptors_[i] = color_attachments[i]->descriptor();
+		}
+
+		const auto& depth_stencil_attachment = desc.depth_stencil_attachment;
+		if(depth_stencil_attachment)
+			depth_stencil_attachment_descriptor_ = depth_stencil_attachment->descriptor();
 	}
 	F_directx12_frame_buffer::~F_directx12_frame_buffer()
 	{
 	}
 
-	void F_directx12_frame_buffer::update_d3d12_viewport() {
-
-		const auto& desc_ = desc();
-
-		const auto& color_attachments = desc_.color_attachments;
-
-		if(color_attachments.size()) {
-
-			const auto& texture_desc = color_attachments[0]->desc().resource_p->desc();
-
-			d3d12_viewport_.TopLeftX = 0;
-			d3d12_viewport_.TopLeftY = 0;
-			d3d12_viewport_.Width = (f32)(texture_desc.width);
-			d3d12_viewport_.Height = (f32)(texture_desc.height);
-			d3d12_viewport_.MinDepth = 0.0f;
-			d3d12_viewport_.MaxDepth = 1.0f;
-
-			d3d12_scissor_rect_ = {
-				0,
-				0,
-				(LONG)(texture_desc.width),
-				(LONG)(texture_desc.height)
-			};
-		}
-		else {
-
-			if(is_has_dsv()) {
-
-				const auto& depth_stencil_attachment = desc_.depth_stencil_attachment;
-
-				const auto& texture_desc = depth_stencil_attachment->desc().resource_p->desc();
-
-				d3d12_viewport_.TopLeftX = 0;
-				d3d12_viewport_.TopLeftY = 0;
-				d3d12_viewport_.Width = (f32)(texture_desc.width);
-				d3d12_viewport_.Height = (f32)(texture_desc.height);
-				d3d12_viewport_.MinDepth = 0.0f;
-				d3d12_viewport_.MaxDepth = 1.0f;
-
-				d3d12_scissor_rect_ = {
-					0,
-					0,
-					(LONG)(texture_desc.width),
-					(LONG)(texture_desc.height)
-				};
-			}
-		}
-	}
-
 	void F_directx12_frame_buffer::rebuild() {
-
-		update_d3d12_viewport();
 
 		finalize_rebuild();
 	}

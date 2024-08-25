@@ -541,6 +541,11 @@ int main() {
 					),
 					0
 				);
+				command_list_p->ZRS_bind_viewport(
+					{
+						.max_xy = surface_p->desc().size
+					}
+				);
 				command_list_p->ZOM_bind_frame_buffer(
 					NCPP_FOH_VALID(frame_buffer_p)
 				);

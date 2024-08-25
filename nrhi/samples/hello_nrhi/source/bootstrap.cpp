@@ -338,16 +338,18 @@ int main() {
 					),
 					0
 				);
-
 				command_list_p->ZPS_bind_constant_buffer(
 					NCPP_FHANDLE_VALID(cbuffer_p),
 					0
 				);
-
+				command_list_p->ZRS_bind_viewport(
+					{
+						.max_xy = surface_p->desc().size
+					}
+				);
 				command_list_p->ZOM_bind_frame_buffer(
 					NCPP_FOREF_VALID(frame_buffer_p)
 				);
-
 				command_list_p->draw_indexed_instanced(
 					indices.size(),
 					instances.size(),

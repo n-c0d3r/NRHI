@@ -205,6 +205,10 @@ NRHI_FunctionHelper_CreateFunctionClass(
 			u32 root_param_index,
 			F_resource_gpu_virtual_address gpu_virtual_address
 		)"
+		"ZRS_bind_viewport" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			const F_viewport& viewport
+		)"
 		"ZOM_bind_frame_buffer" "void(
 			TKPA_valid<A_command_list> command_list_p,
 			TKPA_valid<A_frame_buffer> frame_buffer_p

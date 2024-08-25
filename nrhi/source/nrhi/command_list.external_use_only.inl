@@ -90,6 +90,11 @@ namespace nrhi {
 		H_command_list::ZC_bind_pipeline_state(NCPP_KTHIS(), compute_pipeline_state_p);
 	}
 
+	NCPP_FORCE_INLINE void A_command_list::ZRS_bind_viewport(const F_viewport& viewport) {
+
+		H_command_list::ZRS_bind_viewport(NCPP_KTHIS(), viewport);
+	}
+
 	NCPP_FORCE_INLINE void A_command_list::ZOM_bind_frame_buffer(TKPA_valid<A_frame_buffer> frame_buffer_p) {
 
 		H_command_list::ZOM_bind_frame_buffer(NCPP_KTHIS(), frame_buffer_p);

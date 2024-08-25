@@ -636,6 +636,40 @@ namespace nrhi {
 		);
 	}
 
+	void HD_directx12_command_list::ZRS_bind_viewport(
+		TKPA_valid<A_command_list> command_list_p,
+		const F_viewport& viewport
+	)
+	{
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
+		const auto& d3d12_command_list_p = command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p();
+
+		D3D12_VIEWPORT d3d12_viewport;
+		d3d12_viewport.TopLeftX = viewport.min_x;
+		d3d12_viewport.TopLeftY = viewport.min_y;
+		d3d12_viewport.Width = viewport.max_x - viewport.min_x;
+		d3d12_viewport.Height = viewport.max_y - viewport.min_y;
+		d3d12_viewport.MinDepth = viewport.min_z;
+		d3d12_viewport.MaxDepth = viewport.max_z;
+		d3d12_command_list_p->RSSetViewports(
+			1,
+			&d3d12_viewport
+		);
+
+		D3D12_RECT d3d12_scissor_rect {
+			(LONG)(viewport.min_x),
+			(LONG)(viewport.min_y),
+			(LONG)(viewport.max_x),
+			(LONG)(viewport.max_y)
+		};
+		d3d12_command_list_p->RSSetScissorRects(
+			1,
+			&d3d12_scissor_rect
+		);
+	}
+
 	void HD_directx12_command_list::ZOM_bind_frame_buffer(
 		TKPA_valid<A_command_list> command_list_p,
 		TKPA_valid<A_frame_buffer> frame_buffer_p
@@ -650,15 +684,6 @@ namespace nrhi {
 		u32 color_attachment_count = (u32)(color_attachments.size());
 
 		const auto& d3d12_command_list_p = command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p();
-
-		d3d12_command_list_p->RSSetViewports(
-			1,
-			&(frame_buffer_p.T_cast<F_directx12_frame_buffer>()->d3d12_viewport())
-		);
-		d3d12_command_list_p->RSSetScissorRects(
-			1,
-			&(frame_buffer_p.T_cast<F_directx12_frame_buffer>()->d3d12_scissor_rect())
-		);
 
 		F_descriptor_cpu_address d3d12_rtv_addresses[NRHI_MAX_RENDER_TARGET_COUNT_PER_DRAWCALL];
 		for(u32 i = 0; i < color_attachment_count; ++i) {

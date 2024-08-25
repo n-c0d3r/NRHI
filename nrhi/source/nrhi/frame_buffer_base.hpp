@@ -38,6 +38,10 @@
 #include <nrhi/texture.hpp>
 #include <nrhi/resource_view_base.hpp>
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+#include <nrhi/descriptor_base.hpp>
+#endif
+
 #pragma endregion
 
 
@@ -59,6 +63,11 @@ namespace nrhi {
 	protected:
 		TG_fixed_vector<u64, 8, false> color_attachment_generations_;
 		u64 depth_stencil_attachment_generation_ = 0xFFFFFFFFFFFFFFFF;
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		TG_fixed_vector<F_descriptor, 8, false> color_attachment_descriptors_;
+		F_descriptor depth_stencil_attachment_descriptor_;
+#endif
 
 	public:
 		NCPP_FORCE_INLINE const F_frame_buffer_desc& desc() const noexcept { return desc_; }
@@ -91,6 +100,11 @@ namespace nrhi {
 
 			return true;
 		}
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		NCPP_FORCE_INLINE const auto& color_attachment_descriptors() const noexcept { return color_attachment_descriptors_; }
+		NCPP_FORCE_INLINE const auto& depth_stencil_attachment_descriptor() const noexcept { return depth_stencil_attachment_descriptor_; }
+#endif
 
 
 

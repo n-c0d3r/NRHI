@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/directx12/frame_buffer.hpp
+/** @file nrhi/viewport.hpp
 *
-*   Implement directx12 frame_buffer.
+*   Implement viewport.
 */
 
 
@@ -29,53 +29,31 @@
 
 #include <nrhi/prerequisites.hpp>
 
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-
-#include <nrhi/frame_buffer_base.hpp>
-
 #pragma endregion
 
 
 
 namespace nrhi {
 
-	class A_device;
+    struct F_viewport {
 
+        union
+        {
+            f32 min_x;
+            f32 min_y;
+            F_vector2_f32 min_xy = F_vector2_u32::zero();
+        };
 
+        f32 min_z = 0.0f;
 
-	class NRHI_API F_directx12_frame_buffer : public A_frame_buffer {
+        union
+        {
+            f32 max_x;
+            f32 max_y;
+            F_vector2_f32 max_xy = F_vector2_u32::zero();
+        };
 
-	public:
-		friend class HD_directx12_frame_buffer;
+        f32 max_z = 1.0f;
 
-
-
-	public:
-		F_directx12_frame_buffer(
-			TKPA_valid<A_device> device_p,
-			const F_frame_buffer_desc& desc
-		);
-		virtual ~F_directx12_frame_buffer();
-
-	public:
-		virtual void rebuild() override;
-
-	public:
-		virtual void release_driver_specific_implementation() override;
-
-	};
-
-
-
-	class NRHI_API HD_directx12_frame_buffer {
-
-	public:
-		static TU<A_frame_buffer> create(
-			TKPA_valid<A_device> device_p,
-			const F_frame_buffer_desc& desc
-		);
-	};
-
+    };
 }

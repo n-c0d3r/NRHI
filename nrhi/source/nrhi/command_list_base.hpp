@@ -41,6 +41,7 @@
 #include <nrhi/buffer_handle.hpp>
 #include <nrhi/clear_flag.hpp>
 #include <nrhi/resource_gpu_virtual_address.hpp>
+#include <nrhi/viewport.hpp>
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 #include <nrhi/descriptor_base.hpp>
@@ -163,6 +164,9 @@ namespace nrhi {
 			u32 offset,
 			u32 slot_index
 		);
+
+    public:
+    	void ZRS_bind_viewport(const F_viewport& viewport);
 
 	public:
 		void ZOM_bind_frame_buffer(TKPA_valid<A_frame_buffer> frame_buffer_p);

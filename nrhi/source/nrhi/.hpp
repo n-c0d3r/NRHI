@@ -85,6 +85,8 @@ namespace nrhi { }
 
 #include <nrhi/resource_heap_tier.hpp>
 
+#include <nrhi/viewport.hpp>
+
 #include <nrhi/debug_name.hpp>
 #include <nrhi/render_object.hpp>
 

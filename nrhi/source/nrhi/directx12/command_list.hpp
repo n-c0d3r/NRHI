@@ -286,6 +286,12 @@ namespace nrhi {
 			F_resource_gpu_virtual_address gpu_virtual_address
 		);
 
+    public:
+    	static void ZRS_bind_viewport(
+			TKPA_valid<A_command_list> command_list_p,
+			const F_viewport& viewport
+		);
+
 	public:
 		static void ZOM_bind_frame_buffer(
 			TKPA_valid<A_command_list> command_list_p,

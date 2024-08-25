@@ -135,6 +135,10 @@ NRHI_FunctionHelper_CreateFunctionClass(
             TKPA_valid<A_sampler_state> sampler_state_p,
             u32 slot_index
         )"
+        "ZRS_bind_viewport" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			const F_viewport& viewport
+		)"
         "ZOM_bind_frame_buffer" "void(
             TKPA_valid<A_command_list> command_list_p,
             TKPA_valid<A_frame_buffer> frame_buffer_p
