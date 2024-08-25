@@ -71,11 +71,11 @@ namespace nrhi {
 
 			descriptor_ = value;
 		}
-		NCPP_FORCE_INLINE const F_descriptor_handle& unmanaged_descriptor_handle() const noexcept {
+		NCPP_FORCE_INLINE const F_descriptor_handle& descriptor_handle() const noexcept {
 
 			return descriptor_.handle;
 		}
-		NCPP_FORCE_INLINE void set_unmanaged_descriptor_handle_unsafe(const F_descriptor_handle& value) noexcept {
+		NCPP_FORCE_INLINE void set_descriptor_handle_unsafe(const F_descriptor_handle& value) noexcept {
 
 			descriptor_.handle = value;
 		}
@@ -114,7 +114,7 @@ namespace nrhi {
 		virtual void rebuild_with_managed_descriptor(
 			const F_sampler_state_desc& desc,
 			const F_descriptor& managed_descriptor
-			);
+		);
 		virtual void rebuild_with_unmanaged_descriptor_handle(
 			const F_descriptor_handle& unmanaged_descriptor_handle
 		);
