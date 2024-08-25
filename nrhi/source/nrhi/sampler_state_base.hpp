@@ -138,6 +138,8 @@ namespace nrhi {
 		virtual void release_driver_specific_implementation();
 
 	public:
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 		virtual E_sampler_state_management_type management_type() const;
+#endif
 	};
 }
