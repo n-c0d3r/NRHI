@@ -130,7 +130,9 @@ namespace nrhi {
 
 	void A_resource_view::release_driver_specific_implementation()
     {
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
     	descriptor_ = {};
+#endif
     }
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING

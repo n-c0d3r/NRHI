@@ -87,11 +87,15 @@ namespace nrhi {
 
 	void A_sampler_state::release_driver_specific_implementation()
 	{
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
     	descriptor_ = {};
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 	}
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 	E_sampler_state_management_type A_sampler_state::management_type() const
 	{
 		return E_sampler_state_management_type::MANAGED;
 	}
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 }

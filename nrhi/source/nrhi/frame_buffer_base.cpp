@@ -116,12 +116,16 @@ namespace nrhi {
 
 	void A_frame_buffer::release_driver_specific_implementation()
 	{
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 		color_attachment_descriptor_cpu_addresses_.clear();
 		depth_stencil_attachment_descriptor_cpu_address_ = 0;
+#endif
 	}
 
 	E_frame_buffer_management_type A_frame_buffer::management_type() const
 	{
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 		return E_frame_buffer_management_type::MANAGED;
+#endif
 	}
 }
