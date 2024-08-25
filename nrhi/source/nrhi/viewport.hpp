@@ -43,10 +43,8 @@ namespace nrhi {
             {
                 f32 min_x;
                 f32 min_y;
-                f32 min_z;
             };
             F_vector2_f32 min_xy;
-            F_vector3_f32 min_xyz = F_vector3_f32::zero();
         };
 
         union
@@ -55,10 +53,11 @@ namespace nrhi {
             {
                 f32 max_x;
                 f32 max_y;
-                f32 max_z;
             };
             F_vector2_f32 max_xy;
-            F_vector3_f32 max_xyz = F_vector3_f32::forward();
         };
+
+        f32 min_z = 0.0f;
+        f32 max_z = 1.0f;
     };
 }
