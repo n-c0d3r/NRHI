@@ -213,9 +213,9 @@ namespace nrhi {
 		// reset descriptors in RTVs to prevent they from calling release_driver_specific_implementation
 		for(auto& rtv_p : rtv_p_vector_)
 		{
-			rtv_p->set_descriptor_unsafe({});
+			rtv_p->set_managed_descriptor_unsafe({});
 		}
-		back_rtv_p_->set_descriptor_unsafe({});
+		back_rtv_p_->set_managed_descriptor_unsafe({});
 
 		// release swapchain
 		if(dxgi_swapchain_p_)
@@ -237,14 +237,14 @@ namespace nrhi {
 			auto d3d12_device_p = device_p.T_cast<F_directx12_device>()->d3d12_device_p();
 
 			ID3D12Resource* main_rtbuffer_p = 0;
-			const F_descriptor& main_rtview_descriptor = dx12_buffer_rtv_p->descriptor();
+			const F_descriptor_handle& main_rtview_descriptor_handle = dx12_buffer_rtv_p->descriptor_handle();
 
 			dxgi_swapchain_p_->GetBuffer(i, __uuidof(ID3D12Resource), (void**)&main_rtbuffer_p);
 
 			d3d12_device_p->CreateRenderTargetView(
 				main_rtbuffer_p,
 				0,
-				{ main_rtview_descriptor.handle.cpu_address }
+				{ main_rtview_descriptor_handle.cpu_address }
 			);
 			NCPP_ASSERT(!FAILED(d3d12_device_p->GetDeviceRemovedReason())) << "update d3d12 object for rtv failed";
 
@@ -296,9 +296,9 @@ namespace nrhi {
 			auto& current_rtv_p = dx12_swapchain_p->rtv_p_vector_[current_rtv_index];
 			auto& back_rtv_p = dx12_swapchain_p->back_rtv_p_;
 
-			auto& current_rtv_descriptor = (F_descriptor&)(current_rtv_p->descriptor());
-			auto& back_rtv_descriptor = (F_descriptor&)(back_rtv_p->descriptor());
-			back_rtv_descriptor.handle = current_rtv_descriptor.handle;
+			auto& current_rtv_descriptor_handle = (F_descriptor&)(current_rtv_p->descriptor_handle());
+			auto& back_rtv_descriptor_handle = (F_descriptor&)(back_rtv_p->descriptor_handle());
+			back_rtv_descriptor_handle = current_rtv_descriptor_handle;
 
 			auto& current_rtv_desc = (F_resource_view_desc&)(current_rtv_p->desc());
 			auto& back_rtv_desc = (F_resource_view_desc&)(back_rtv_p->desc());

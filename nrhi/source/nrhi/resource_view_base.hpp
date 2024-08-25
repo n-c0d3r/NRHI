@@ -70,14 +70,14 @@ namespace nrhi {
 
     private:
         F_resource_view_desc desc_;
-		ED_resource_type resource_type_ = ED_resource_type::NONE;
+    	ED_resource_type resource_type_ = ED_resource_type::NONE;
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+    	F_descriptor descriptor_;
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 	protected:
 		u64 generation_ = 0;
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		F_descriptor descriptor_;
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
     public:
         NCPP_FORCE_INLINE const F_resource_view_desc& desc() const noexcept { return desc_; }
@@ -96,14 +96,26 @@ namespace nrhi {
 		}
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		NCPP_FORCE_INLINE const F_descriptor& descriptor() const noexcept {
+		NCPP_FORCE_INLINE const F_descriptor& managed_descriptor() const noexcept {
+
+			NCPP_ASSERT(management_type() == E_resource_view_management_type::MANAGED);
 
 			return descriptor_;
 		}
-		NCPP_FORCE_INLINE void set_descriptor_unsafe(const F_descriptor& value) noexcept {
+		NCPP_FORCE_INLINE void set_managed_descriptor_unsafe(const F_descriptor& value) noexcept {
+
+			NCPP_ASSERT(management_type() == E_resource_view_management_type::MANAGED);
 
 			descriptor_ = value;
-		}
+        }
+    	NCPP_FORCE_INLINE const F_descriptor_handle& descriptor_handle() const noexcept {
+
+        	return descriptor_.handle;
+        }
+    	NCPP_FORCE_INLINE void set_descriptor_handle_unsafe(const F_descriptor_handle& value) noexcept {
+
+        	descriptor_.handle = value;
+        }
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 
@@ -117,13 +129,13 @@ namespace nrhi {
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 		A_resource_view(
 			TKPA_valid<A_device> device_p,
-			const F_descriptor& descriptor,
+            const F_resource_view_desc& desc,
+			const F_descriptor& managed_descriptor,
 			ED_resource_view_type overrided_type
 		);
     	A_resource_view(
 			TKPA_valid<A_device> device_p,
-            const F_resource_view_desc& desc,
-			const F_descriptor& descriptor,
+			const F_descriptor_handle& unmanaged_descriptor_handle,
 			ED_resource_view_type overrided_type
 		);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
@@ -140,12 +152,12 @@ namespace nrhi {
 			const F_resource_view_desc& desc
 		);
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		virtual void rebuild_with_descriptor(
+		virtual void rebuild_with_managed_descriptor(
 			const F_resource_view_desc& desc,
-			const F_descriptor& descriptor
+			const F_descriptor& managed_descriptor
 		);
-    	virtual void rebuild_unmanaged_with_descriptor(
-			const F_descriptor& descriptor
+    	virtual void rebuild_with_unmanaged_descriptor_handle(
+			const F_descriptor_handle& unmanaged_descriptor_handle
 		);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 		void guarantee_generation();
@@ -156,12 +168,12 @@ namespace nrhi {
 			const F_resource_view_desc& desc
 		);
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		void finalize_rebuild_with_descriptor(
+		void finalize_rebuild_with_managed_descriptor(
 			const F_resource_view_desc& desc,
-			const F_descriptor& descriptor
+			const F_descriptor& managed_descriptor
 		);
-    	void finalize_rebuild_unmanaged_with_descriptor(
-			const F_descriptor& descriptor
+    	void finalize_rebuild_with_unmanaged_descriptor_handle(
+			const F_descriptor_handle& unmanaged_descriptor_handle
 		);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
@@ -184,5 +196,4 @@ namespace nrhi {
 
 		return resource_view_p->generation_;
 	}
-
 }

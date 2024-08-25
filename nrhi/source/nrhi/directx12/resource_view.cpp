@@ -10,22 +10,31 @@ namespace nrhi {
 	F_directx12_resource_view::F_directx12_resource_view(
 		TKPA_valid<A_device> device_p,
 		const F_resource_view_desc& desc,
-		const F_descriptor& descriptor,
+		const F_descriptor& managed_descriptor,
 		ED_resource_view_type overrided_type
 	) :
-		A_resource_view(device_p, desc, descriptor, overrided_type)
+		A_resource_view(device_p, desc, managed_descriptor, overrided_type)
 	{
 	}
 	F_directx12_resource_view::F_directx12_resource_view(
 		TKPA_valid<A_device> device_p,
-		const F_descriptor& descriptor,
+		const F_descriptor_handle& unmanaged_descriptor_handle,
 		ED_resource_view_type overrided_type
 	) :
-		A_resource_view(device_p, descriptor, overrided_type)
+		A_resource_view(device_p, unmanaged_descriptor_handle, overrided_type)
 	{
 	}
 	F_directx12_resource_view::~F_directx12_resource_view()
 	{
+	}
+
+	void F_directx12_resource_view::release_driver_specific_implementation()
+	{
+		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
+			H_resource_view::ALTERNATIVE::release_driver_specific_implementation(NCPP_KTHIS());
+		);
+
+		A_resource_view::release_driver_specific_implementation();
 	}
 
 
@@ -33,25 +42,25 @@ namespace nrhi {
 	F_directx12_managed_resource_view::F_directx12_managed_resource_view(
 		TKPA_valid<A_device> device_p,
 		const F_resource_view_desc& desc,
-		const F_descriptor& descriptor,
+		const F_descriptor& managed_descriptor,
 		ED_resource_view_type overrided_type
 	) :
-		F_directx12_resource_view(device_p, desc, descriptor, overrided_type)
+		F_directx12_resource_view(device_p, desc, managed_descriptor, overrided_type)
 	{
 	}
 	F_directx12_managed_resource_view::~F_directx12_managed_resource_view() {
 
-		if(descriptor_)
+		if(managed_descriptor())
 			F_directx12_managed_resource_view::release_driver_specific_implementation();
 	}
 
 	void F_directx12_managed_resource_view::rebuild() {
 
-		NCPP_ASSERT(descriptor_) << "invalid descriptor";
+		NCPP_ASSERT(managed_descriptor()) << "invalid descriptor";
 
 		HD_directx12_descriptor::initialize_resource_view(
-			NCPP_FOH_VALID(descriptor_.heap_p),
-			descriptor_.handle.cpu_address,
+			NCPP_FOH_VALID(managed_descriptor().heap_p),
+			managed_descriptor().handle.cpu_address,
 			desc()
 		);
 
@@ -60,11 +69,11 @@ namespace nrhi {
 	void F_directx12_managed_resource_view::rebuild(
 		const F_resource_view_desc& desc
 	) {
-		NCPP_ASSERT(descriptor_) << "invalid descriptor";
+		NCPP_ASSERT(managed_descriptor()) << "invalid descriptor";
 
 		HD_directx12_descriptor::initialize_resource_view(
-			NCPP_FOH_VALID(descriptor_.heap_p),
-			descriptor_.handle.cpu_address,
+			NCPP_FOH_VALID(managed_descriptor().heap_p),
+			managed_descriptor().handle.cpu_address,
 			desc
 		);
 
@@ -72,11 +81,11 @@ namespace nrhi {
 			desc
 		);
 	}
-	void F_directx12_managed_resource_view::rebuild_with_descriptor(
+	void F_directx12_managed_resource_view::rebuild_with_managed_descriptor(
 		const F_resource_view_desc& desc,
 		const F_descriptor& descriptor
 	) {
-		if(descriptor_)
+		if(managed_descriptor())
 			F_directx12_managed_resource_view::release_driver_specific_implementation();
 
 		NCPP_ASSERT(descriptor) << "invalid descriptor";
@@ -87,44 +96,36 @@ namespace nrhi {
 			desc
 		);
 
-		finalize_rebuild_with_descriptor(
+		finalize_rebuild_with_managed_descriptor(
 			desc,
 			descriptor
 		);
-	}
-
-	void F_directx12_managed_resource_view::release_driver_specific_implementation()
-	{
-		NRHI_DRIVER_ENABLE_IF_ENABLE_INTERFACE_ONLY_SUPPORTS(
-			H_resource_view::ALTERNATIVE::release_driver_specific_implementation(NCPP_KTHIS());
-		);
-		descriptor_ = {};
 	}
 
 
 
 	F_directx12_unmanaged_resource_view::F_directx12_unmanaged_resource_view(
 		TKPA_valid<A_device> device_p,
-		const F_descriptor& descriptor,
+		const F_descriptor_handle& unmanaged_descriptor_handle,
 		ED_resource_view_type overrided_type
 	) :
-		F_directx12_resource_view(device_p, descriptor, overrided_type)
+		F_directx12_resource_view(device_p, unmanaged_descriptor_handle, overrided_type)
 	{
 	}
 	F_directx12_unmanaged_resource_view::~F_directx12_unmanaged_resource_view()
 	{
 	}
 
-	void F_directx12_unmanaged_resource_view::rebuild_unmanaged_with_descriptor(
-		const F_descriptor& descriptor
+	void F_directx12_unmanaged_resource_view::rebuild_with_unmanaged_descriptor_handle(
+		const F_descriptor_handle& unmanaged_descriptor_handle
 	)
 	{
-		finalize_rebuild_unmanaged_with_descriptor(descriptor);
+		finalize_rebuild_with_unmanaged_descriptor_handle(unmanaged_descriptor_handle);
 	}
 
 
 
-	TU<A_resource_view> HD_directx12_resource_view::create_with_descriptor(
+	TU<A_resource_view> HD_directx12_resource_view::create_with_managed_descriptor(
 		TKPA_valid<A_device> device_p,
 		const F_resource_view_desc& desc,
 		const F_descriptor& descriptor
@@ -137,7 +138,7 @@ namespace nrhi {
 		);
 	}
 
-	U_srv_handle HD_directx12_resource_view::create_srv_with_descriptor(
+	U_srv_handle HD_directx12_resource_view::create_srv_with_managed_descriptor(
 		TKPA_valid<A_device> device_p,
 		const F_resource_view_desc& desc,
 		const F_descriptor& descriptor
@@ -151,7 +152,7 @@ namespace nrhi {
 			)
 		};
 	}
-	U_uav_handle HD_directx12_resource_view::create_uav_with_descriptor(
+	U_uav_handle HD_directx12_resource_view::create_uav_with_managed_descriptor(
 		TKPA_valid<A_device> device_p,
 		const F_resource_view_desc& desc,
 		const F_descriptor& descriptor
@@ -165,7 +166,7 @@ namespace nrhi {
 			)
 		};
 	}
-	U_rtv_handle HD_directx12_resource_view::create_rtv_with_descriptor(
+	U_rtv_handle HD_directx12_resource_view::create_rtv_with_managed_descriptor(
 		TKPA_valid<A_device> device_p,
 		const F_resource_view_desc& desc,
 		const F_descriptor& descriptor
@@ -179,7 +180,7 @@ namespace nrhi {
 			)
 		};
 	}
-	U_dsv_handle HD_directx12_resource_view::create_dsv_with_descriptor(
+	U_dsv_handle HD_directx12_resource_view::create_dsv_with_managed_descriptor(
 		TKPA_valid<A_device> device_p,
 		const F_resource_view_desc& desc,
 		const F_descriptor& descriptor
@@ -194,62 +195,62 @@ namespace nrhi {
 		};
 	}
 
-	TU<A_resource_view> HD_directx12_resource_view::create_unmanaged_with_descriptor(
+	TU<A_resource_view> HD_directx12_resource_view::create_with_unmanaged_descriptor_handle(
 		TKPA_valid<A_device> device_p,
-		const F_descriptor& descriptor,
+        const F_descriptor_handle& unmanaged_descriptor_handle,
 		ED_resource_view_type overrided_type
 	) {
 		return TU<F_directx12_unmanaged_resource_view>()(
 			device_p,
-			descriptor,
+			unmanaged_descriptor_handle,
 			overrided_type
 		);
 	}
 
-	U_srv_handle HD_directx12_resource_view::create_unmanaged_srv_with_descriptor(
+	U_srv_handle HD_directx12_resource_view::create_srv_with_unmanaged_descriptor_handle(
 		TKPA_valid<A_device> device_p,
-		const F_descriptor& descriptor
+        const F_descriptor_handle& unmanaged_descriptor_handle
 	) {
 		return {
 			TU<F_directx12_unmanaged_resource_view>()(
 				device_p,
-				descriptor,
+				unmanaged_descriptor_handle,
 				ED_resource_view_type::SHADER_RESOURCE
 			)
 		};
 	}
-	U_uav_handle HD_directx12_resource_view::create_unmanaged_uav_with_descriptor(
+	U_uav_handle HD_directx12_resource_view::create_uav_with_unmanaged_descriptor_handle(
 		TKPA_valid<A_device> device_p,
-		const F_descriptor& descriptor
+        const F_descriptor_handle& unmanaged_descriptor_handle
 	) {
 		return {
 			TU<F_directx12_unmanaged_resource_view>()(
 				device_p,
-				descriptor,
+				unmanaged_descriptor_handle,
 				ED_resource_view_type::UNORDERED_ACCESS
 			)
 		};
 	}
-	U_rtv_handle HD_directx12_resource_view::create_unmanaged_rtv_with_descriptor(
+	U_rtv_handle HD_directx12_resource_view::create_rtv_with_unmanaged_descriptor_handle(
 		TKPA_valid<A_device> device_p,
-		const F_descriptor& descriptor
+        const F_descriptor_handle& unmanaged_descriptor_handle
 	) {
 		return {
 			TU<F_directx12_unmanaged_resource_view>()(
 				device_p,
-				descriptor,
+				unmanaged_descriptor_handle,
 				ED_resource_view_type::RENDER_TARGET
 			)
 		};
 	}
-	U_dsv_handle HD_directx12_resource_view::create_unmanaged_dsv_with_descriptor(
+	U_dsv_handle HD_directx12_resource_view::create_dsv_with_unmanaged_descriptor_handle(
 		TKPA_valid<A_device> device_p,
-		const F_descriptor& descriptor
+        const F_descriptor_handle& unmanaged_descriptor_handle
 	) {
 		return {
 			TU<F_directx12_unmanaged_resource_view>()(
 				device_p,
-				descriptor,
+				unmanaged_descriptor_handle,
 				ED_resource_view_type::DEPTH_STENCIL
 			)
 		};

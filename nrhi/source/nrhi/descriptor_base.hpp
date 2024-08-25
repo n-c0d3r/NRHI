@@ -124,8 +124,6 @@ namespace nrhi {
 				|| (heap_p != b.heap_p)
 			);
 		}
-
 	};
-
 }
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING

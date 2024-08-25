@@ -25,13 +25,13 @@ namespace nrhi {
 	A_resource_view::A_resource_view(
 		TKPA_valid<A_device> device_p,
 		const F_resource_view_desc& desc,
-		const F_descriptor& descriptor,
+		const F_descriptor& managed_descriptor,
 		ED_resource_view_type overrided_type
 	) :
 		A_device_child(device_p),
 		desc_(desc),
 		generation_(desc.resource_p->generation()),
-		descriptor_(descriptor)
+		descriptor_(managed_descriptor)
 	{
 		desc_.type = overrided_type;
 
@@ -42,11 +42,11 @@ namespace nrhi {
 	}
 	A_resource_view::A_resource_view(
 		TKPA_valid<A_device> device_p,
-		const F_descriptor& descriptor,
+		const F_descriptor_handle& descriptor_handle,
 		ED_resource_view_type overrided_type
 	) :
 		A_device_child(device_p),
-		descriptor_(descriptor)
+		descriptor_({ .handle = descriptor_handle })
     {
     	desc_.type = overrided_type;
     }
@@ -65,22 +65,22 @@ namespace nrhi {
 		finalize_rebuild(desc);
 	}
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-	void A_resource_view::rebuild_with_descriptor(
+	void A_resource_view::rebuild_with_managed_descriptor(
 		const F_resource_view_desc& desc,
 		const F_descriptor& descriptor
 	) {
-		finalize_rebuild_with_descriptor(desc, descriptor);
+		finalize_rebuild_with_managed_descriptor(desc, descriptor);
     }
-	void A_resource_view::rebuild_unmanaged_with_descriptor(
-		const F_descriptor& descriptor
+	void A_resource_view::rebuild_with_unmanaged_descriptor_handle(
+		const F_descriptor_handle& unmanaged_descriptor_handle
 	) {
-    	finalize_rebuild_unmanaged_with_descriptor(descriptor);
+    	finalize_rebuild_with_unmanaged_descriptor_handle(unmanaged_descriptor_handle);
     }
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 	void A_resource_view::guarantee_generation() {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-    	NCPP_ASSERT(management_type() == E_resource_view_management_type::MANAGED) << "can't guarantee generation for unmanaged resource view";
+    	NCPP_ASSERT(management_type() == E_resource_view_management_type::MANAGED) << "can only guarantee generation for managed resource view";
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
     	if(!is_valid_generation())
@@ -89,7 +89,7 @@ namespace nrhi {
 	void A_resource_view::finalize_rebuild() {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-    	NCPP_ASSERT(management_type() == E_resource_view_management_type::MANAGED) << "can't rebuild unmanaged resource view";
+    	NCPP_ASSERT(management_type() == E_resource_view_management_type::MANAGED) << "can only rebuild managed resource view";
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 		generation_ = desc_.resource_p->generation();
@@ -98,7 +98,7 @@ namespace nrhi {
 		const F_resource_view_desc& desc
 	) {
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-    	NCPP_ASSERT(management_type() == E_resource_view_management_type::MANAGED) << "can't rebuild unmanaged resource view";
+    	NCPP_ASSERT(management_type() == E_resource_view_management_type::MANAGED) << "can only rebuild managed resource view";
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
     	NCPP_ASSERT(desc_.type == desc.type) << "can't change type";
@@ -106,33 +106,31 @@ namespace nrhi {
 		finalize_rebuild();
 	}
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-	void A_resource_view::finalize_rebuild_with_descriptor(
+	void A_resource_view::finalize_rebuild_with_managed_descriptor(
 		const F_resource_view_desc& desc,
-		const F_descriptor& descriptor
+		const F_descriptor& managed_descriptor
 	) {
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-    	NCPP_ASSERT(management_type() == E_resource_view_management_type::MANAGED) << "can't rebuild unmanaged resource view";
+    	NCPP_ASSERT(management_type() == E_resource_view_management_type::MANAGED) << "can only rebuild managed resource view";
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
-		descriptor_ = descriptor;
+		descriptor_ = managed_descriptor;
 		finalize_rebuild(desc);
     }
-	void A_resource_view::finalize_rebuild_unmanaged_with_descriptor(
-		const F_descriptor& descriptor
+	void A_resource_view::finalize_rebuild_with_unmanaged_descriptor_handle(
+		const F_descriptor_handle& unmanaged_descriptor_handle
 	) {
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
     	NCPP_ASSERT(management_type() == E_resource_view_management_type::UNMANAGED) << "can only rebuild unmanaged resource view";
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
-    	descriptor_ = descriptor;
+    	descriptor_.handle = unmanaged_descriptor_handle;
     }
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 	void A_resource_view::release_driver_specific_implementation()
     {
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-    	NCPP_ASSERT(management_type() == E_resource_view_management_type::UNMANAGED) << "can't release driver specific implementation unmanaged resource view";
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+    	descriptor_ = {};
     }
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING

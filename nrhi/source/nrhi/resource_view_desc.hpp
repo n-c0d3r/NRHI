@@ -84,5 +84,4 @@ namespace nrhi {
 		ED_format overrided_format = ED_format::NONE;
 
     };
-
 }

@@ -22,51 +22,51 @@ NRHI_FunctionHelper_CreateFunctionClass(
     ADDITIONAL_CODE
         ""
     VALUES
-        "create_with_descriptor" "TU<A_resource_view>(
+        "create_with_managed_descriptor" "TU<A_resource_view>(
             TKPA_valid<A_device> device_p,
             const F_resource_view_desc& desc,
-            const F_descriptor& descriptor
+            const F_descriptor& managed_descriptor
         )"
-        "create_srv_with_descriptor" "U_srv_handle(
+        "create_srv_with_managed_descriptor" "U_srv_handle(
             TKPA_valid<A_device> device_p,
             const F_resource_view_desc& desc,
-            const F_descriptor& descriptor
+            const F_descriptor& managed_descriptor
         )"
-        "create_uav_with_descriptor" "U_uav_handle(
+        "create_uav_with_managed_descriptor" "U_uav_handle(
             TKPA_valid<A_device> device_p,
             const F_resource_view_desc& desc,
-            const F_descriptor& descriptor
+            const F_descriptor& managed_descriptor
         )"
-        "create_rtv_with_descriptor" "U_rtv_handle(
+        "create_rtv_with_managed_descriptor" "U_rtv_handle(
             TKPA_valid<A_device> device_p,
             const F_resource_view_desc& desc,
-            const F_descriptor& descriptor
+            const F_descriptor& managed_descriptor
         )"
-        "create_dsv_with_descriptor" "U_dsv_handle(
+        "create_dsv_with_managed_descriptor" "U_dsv_handle(
             TKPA_valid<A_device> device_p,
             const F_resource_view_desc& desc,
-            const F_descriptor& descriptor
+            const F_descriptor& managed_descriptor
         )"
-        "create_unmanaged_with_descriptor" "TU<A_resource_view>(
+        "create_with_unmanaged_descriptor_handle" "TU<A_resource_view>(
             TKPA_valid<A_device> device_p,
-            const F_descriptor& descriptor,
+            const F_descriptor_handle& unmanaged_descriptor_handle,
 			ED_resource_view_type overrided_type
         )"
-        "create_unmanaged_srv_with_descriptor" "U_srv_handle(
+        "create_srv_with_unmanaged_descriptor_handle" "U_srv_handle(
             TKPA_valid<A_device> device_p,
-            const F_descriptor& descriptor
+            const F_descriptor_handle& unmanaged_descriptor_handle
         )"
-        "create_unmanaged_uav_with_descriptor" "U_uav_handle(
+        "create_uav_with_unmanaged_descriptor_handle" "U_uav_handle(
             TKPA_valid<A_device> device_p,
-            const F_descriptor& descriptor
+            const F_descriptor_handle& unmanaged_descriptor_handle
         )"
-        "create_unmanaged_rtv_with_descriptor" "U_rtv_handle(
+        "create_rtv_with_unmanaged_descriptor_handle" "U_rtv_handle(
             TKPA_valid<A_device> device_p,
-            const F_descriptor& descriptor
+            const F_descriptor_handle& unmanaged_descriptor_handle
         )"
-        "create_unmanaged_dsv_with_descriptor" "U_dsv_handle(
+        "create_dsv_with_unmanaged_descriptor_handle" "U_dsv_handle(
             TKPA_valid<A_device> device_p,
-            const F_descriptor& descriptor
+            const F_descriptor_handle& unmanaged_descriptor_handle
         )"
 
     ALTERNATIVE_VALUES

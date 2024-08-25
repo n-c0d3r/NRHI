@@ -52,18 +52,21 @@ namespace nrhi {
 		F_directx12_resource_view(
 			TKPA_valid<A_device> device_p,
 			const F_resource_view_desc& desc,
-			const F_descriptor& descriptor,
+			const F_descriptor& managed_descriptor,
 			ED_resource_view_type overrided_type
 		);
 		F_directx12_resource_view(
 			TKPA_valid<A_device> device_p,
-			const F_descriptor& descriptor,
+			const F_descriptor_handle& unmanaged_descriptor_handle,
 			ED_resource_view_type overrided_type
 		);
 		virtual ~F_directx12_resource_view();
 
 	public:
 		NCPP_OBJECT(F_directx12_resource_view);
+
+	public:
+		virtual void release_driver_specific_implementation() override;
 	};
 
 
@@ -74,7 +77,7 @@ namespace nrhi {
 		F_directx12_managed_resource_view(
 			TKPA_valid<A_device> device_p,
 			const F_resource_view_desc& desc,
-			const F_descriptor& descriptor,
+			const F_descriptor& managed_descriptor,
 			ED_resource_view_type overrided_type
 		);
 		virtual ~F_directx12_managed_resource_view();
@@ -88,14 +91,11 @@ namespace nrhi {
 			const F_resource_view_desc& desc
 		) override;
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		virtual void rebuild_with_descriptor(
+		virtual void rebuild_with_managed_descriptor(
 			const F_resource_view_desc& desc,
 			const F_descriptor& descriptor
 		) override;
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-
-	public:
-		virtual void release_driver_specific_implementation() override;
 	};
 
 
@@ -105,7 +105,7 @@ namespace nrhi {
 	public:
 		F_directx12_unmanaged_resource_view(
 			TKPA_valid<A_device> device_p,
-			const F_descriptor& descriptor,
+			const F_descriptor_handle& unmanaged_descriptor_handle,
 			ED_resource_view_type overrided_type
 		);
 		virtual ~F_directx12_unmanaged_resource_view();
@@ -114,8 +114,8 @@ namespace nrhi {
 		NCPP_OBJECT(F_directx12_unmanaged_resource_view);
 
 	public:
-		virtual void rebuild_unmanaged_with_descriptor(
-			const F_descriptor& descriptor
+		virtual void rebuild_with_unmanaged_descriptor_handle(
+			const F_descriptor_handle& unmanaged_descriptor_handle
 		) override;
 	};
 
@@ -124,57 +124,57 @@ namespace nrhi {
 	class NRHI_API HD_directx12_resource_view {
 
 	public:
-		static TU<A_resource_view> create_with_descriptor(
+		static TU<A_resource_view> create_with_managed_descriptor(
 			TKPA_valid<A_device> device_p,
 			const F_resource_view_desc& desc,
-			const F_descriptor& descriptor
+			const F_descriptor& managed_descriptor
 		);
 
 	public:
-		static U_srv_handle create_srv_with_descriptor(
+		static U_srv_handle create_srv_with_managed_descriptor(
 			TKPA_valid<A_device> device_p,
 			const F_resource_view_desc& desc,
-			const F_descriptor& descriptor
+			const F_descriptor& managed_descriptor
 		);
-		static U_uav_handle create_uav_with_descriptor(
+		static U_uav_handle create_uav_with_managed_descriptor(
 			TKPA_valid<A_device> device_p,
 			const F_resource_view_desc& desc,
-			const F_descriptor& descriptor
+			const F_descriptor& managed_descriptor
 		);
-		static U_rtv_handle create_rtv_with_descriptor(
+		static U_rtv_handle create_rtv_with_managed_descriptor(
 			TKPA_valid<A_device> device_p,
 			const F_resource_view_desc& desc,
-			const F_descriptor& descriptor
+			const F_descriptor& managed_descriptor
 		);
-		static U_dsv_handle create_dsv_with_descriptor(
+		static U_dsv_handle create_dsv_with_managed_descriptor(
 			TKPA_valid<A_device> device_p,
 			const F_resource_view_desc& desc,
-			const F_descriptor& descriptor
-			);
+			const F_descriptor& managed_descriptor
+		);
 
 	public:
-		static TU<A_resource_view> create_unmanaged_with_descriptor(
+		static TU<A_resource_view> create_with_unmanaged_descriptor_handle(
 			TKPA_valid<A_device> device_p,
-			const F_descriptor& descriptor,
+            const F_descriptor_handle& unmanaged_descriptor_handle,
 			ED_resource_view_type overrided_type
 		);
 
 	public:
-		static U_srv_handle create_unmanaged_srv_with_descriptor(
+		static U_srv_handle create_srv_with_unmanaged_descriptor_handle(
 			TKPA_valid<A_device> device_p,
-			const F_descriptor& descriptor
+            const F_descriptor_handle& unmanaged_descriptor_handle
 		);
-		static U_uav_handle create_unmanaged_uav_with_descriptor(
+		static U_uav_handle create_uav_with_unmanaged_descriptor_handle(
 			TKPA_valid<A_device> device_p,
-			const F_descriptor& descriptor
+            const F_descriptor_handle& unmanaged_descriptor_handle
 		);
-		static U_rtv_handle create_unmanaged_rtv_with_descriptor(
+		static U_rtv_handle create_rtv_with_unmanaged_descriptor_handle(
 			TKPA_valid<A_device> device_p,
-			const F_descriptor& descriptor
+            const F_descriptor_handle& unmanaged_descriptor_handle
 		);
-		static U_dsv_handle create_unmanaged_dsv_with_descriptor(
+		static U_dsv_handle create_dsv_with_unmanaged_descriptor_handle(
 			TKPA_valid<A_device> device_p,
-			const F_descriptor& descriptor
+            const F_descriptor_handle& unmanaged_descriptor_handle
 		);
 
 

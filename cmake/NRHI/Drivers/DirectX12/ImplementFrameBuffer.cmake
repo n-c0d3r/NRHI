@@ -27,6 +27,11 @@ NRHI_FunctionHelper_CreateFunctionClass(
             TKPA_valid<A_device> device_p,
             const F_frame_buffer_desc& desc
         )"
+        "create_with_unmanaged_descriptor_cpu_addresses" "TU<A_frame_buffer>(
+			TKPA_valid<A_device> device_p,
+			TG_fixed_vector<F_descriptor_cpu_address, 8, false> color_attachment_descriptor_cpu_addresses,
+			F_descriptor_cpu_address depth_stencil_attachment_descriptor_cpu_address
+		)"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement frame buffer done")

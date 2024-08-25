@@ -55,16 +55,44 @@ namespace nrhi {
 	public:
 		F_directx12_frame_buffer(
 			TKPA_valid<A_device> device_p,
-			const F_frame_buffer_desc& desc
+			const F_frame_buffer_desc& desc,
+			TG_fixed_vector<F_descriptor_cpu_address, 8, false> color_attachment_descriptor_cpu_addresses,
+			F_descriptor_cpu_address depth_stencil_attachment_descriptor_cpu_address
+		);
+		F_directx12_frame_buffer(
+			TKPA_valid<A_device> device_p,
+			TG_fixed_vector<F_descriptor_cpu_address, 8, false> color_attachment_descriptor_cpu_addresses,
+			F_descriptor_cpu_address depth_stencil_attachment_descriptor_cpu_address
 		);
 		virtual ~F_directx12_frame_buffer();
+	};
+
+
+
+	class NRHI_API F_directx12_managed_frame_buffer : public F_directx12_frame_buffer {
 
 	public:
-		virtual void rebuild() override;
+		F_directx12_managed_frame_buffer(
+			TKPA_valid<A_device> device_p,
+			const F_frame_buffer_desc& desc
+		);
+		virtual ~F_directx12_managed_frame_buffer();
+	};
+
+
+
+	class NRHI_API F_directx12_unmanaged_frame_buffer : public F_directx12_frame_buffer {
 
 	public:
-		virtual void release_driver_specific_implementation() override;
+		F_directx12_unmanaged_frame_buffer(
+			TKPA_valid<A_device> device_p,
+			TG_fixed_vector<F_descriptor_cpu_address, 8, false> color_attachment_descriptor_cpu_addresses,
+			F_descriptor_cpu_address depth_stencil_attachment_descriptor_cpu_address
+		);
+		virtual ~F_directx12_unmanaged_frame_buffer();
 
+	public:
+		virtual E_frame_buffer_management_type management_type() const override;
 	};
 
 
@@ -75,6 +103,13 @@ namespace nrhi {
 		static TU<A_frame_buffer> create(
 			TKPA_valid<A_device> device_p,
 			const F_frame_buffer_desc& desc
+		);
+
+	public:
+		static TU<A_frame_buffer> create_with_unmanaged_descriptor_cpu_addresses(
+			TKPA_valid<A_device> device_p,
+			TG_fixed_vector<F_descriptor_cpu_address, 8, false> color_attachment_descriptor_cpu_addresses,
+			F_descriptor_cpu_address depth_stencil_attachment_descriptor_cpu_address
 		);
 	};
 

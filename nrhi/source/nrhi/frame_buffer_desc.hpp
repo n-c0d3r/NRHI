@@ -46,6 +46,16 @@ namespace nrhi
 
 
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+	enum class E_frame_buffer_management_type
+	{
+		MANAGED,
+		UNMANAGED
+	};
+#endif
+
+
+
 	struct F_frame_buffer_desc
 	{
 		TG_fixed_vector<K_valid_rtv_handle, 8, false> color_attachments;

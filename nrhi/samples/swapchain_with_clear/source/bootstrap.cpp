@@ -149,7 +149,7 @@ int main() {
 			);
 
 			command_list_p->async_clear_rtv_with_descriptor(
-				back_rtv_p->descriptor().handle.cpu_address,
+				back_rtv_p->descriptor_handle().cpu_address,
 				F_vector4::forward()
 			);
 
