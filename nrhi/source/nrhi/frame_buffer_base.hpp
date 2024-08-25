@@ -80,8 +80,10 @@ namespace nrhi {
 		NCPP_FORCE_INLINE void set_depth_stencil_attachment_generation_unsafe(u64 value) noexcept { depth_stencil_attachment_generation_ = value; }
 		NCPP_FORCE_INLINE b8 is_valid_generation() const noexcept {
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 			if(management_type() == E_frame_buffer_management_type::UNMANAGED)
 				return true;
+#endif
 
 			u32 color_attachment_count = desc_.color_attachments.size();
 			for(u32 i = 0; i < color_attachment_count; ++i) {
