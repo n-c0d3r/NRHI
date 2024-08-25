@@ -87,8 +87,10 @@ namespace nrhi {
 		NCPP_FORCE_INLINE void set_generation_unsafe(u64 value) noexcept { generation_ = value; }
 		NCPP_FORCE_INLINE b8 is_valid_generation() const noexcept {
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 			if(management_type() == E_resource_view_management_type::UNMANAGED)
 				return true;
+#endif
 
 			return (generation_ == desc_.resource_p->generation());
 		}
