@@ -47,6 +47,27 @@ NRHI_FunctionHelper_CreateFunctionClass(
             const F_resource_view_desc& desc,
             const F_descriptor& descriptor
         )"
+        "create_unmanaged_with_descriptor" "TU<A_resource_view>(
+            TKPA_valid<A_device> device_p,
+            const F_descriptor& descriptor,
+			ED_resource_view_type overrided_type
+        )"
+        "create_unmanaged_srv_with_descriptor" "U_srv_handle(
+            TKPA_valid<A_device> device_p,
+            const F_descriptor& descriptor
+        )"
+        "create_unmanaged_uav_with_descriptor" "U_uav_handle(
+            TKPA_valid<A_device> device_p,
+            const F_descriptor& descriptor
+        )"
+        "create_unmanaged_rtv_with_descriptor" "U_rtv_handle(
+            TKPA_valid<A_device> device_p,
+            const F_descriptor& descriptor
+        )"
+        "create_unmanaged_dsv_with_descriptor" "U_dsv_handle(
+            TKPA_valid<A_device> device_p,
+            const F_descriptor& descriptor
+        )"
 
     ALTERNATIVE_VALUES
         "create" "TU<A_resource_view>(

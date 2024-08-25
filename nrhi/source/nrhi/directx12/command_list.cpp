@@ -666,7 +666,6 @@ namespace nrhi {
 			NCPP_ASSERT(color_attachments[i]->is_valid_generation()) << "color attachment's generation is not valid";
 
 			d3d12_rtv_addresses[i] = color_attachments[i]
-				.T_cast<F_directx12_resource_view>()
 				->descriptor().handle.cpu_address;
 		}
 
@@ -678,7 +677,6 @@ namespace nrhi {
 			NCPP_ASSERT(depth_stencil_attachment->is_valid_generation()) << "depth stencil attachment's generation is not valid";
 
 			d3d12_dsv_address = depth_stencil_attachment
-				.T_cast<F_directx12_resource_view>()
 				->descriptor().handle.cpu_address;
 		}
 

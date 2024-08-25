@@ -123,7 +123,7 @@ namespace nrhi {
 				.resource_p = buffer_p_vector_[i].oref
 			};
 			rtv_p_vector_.push_back({
-				TU<F_directx12_resource_view>()(
+				TU<F_directx12_managed_resource_view>()(
 					device_p,
 					rtv_desc,
 					F_descriptor {
@@ -141,7 +141,7 @@ namespace nrhi {
 			.resource_p = buffer_p_vector_[0].oref
 		};
 		back_rtv_p_ ={
-			TU<F_directx12_resource_view>()(
+			TU<F_directx12_managed_resource_view>()(
 				device_p,
 				rtv_desc,
 				F_descriptor {
@@ -169,7 +169,7 @@ namespace nrhi {
 		  	for(u32 i = 0; i < rtv_count; ++i)
 		  	{
 			  	auto dx12_buffer_p = NCPP_FOH_VALID(buffer_p_vector_[i]).T_cast<F_directx12_committed_resource>();
-			  	auto dx12_rtv_p = NCPP_FOH_VALID(rtv_p_vector_[i]).T_cast<F_directx12_resource_view>();
+			  	auto dx12_rtv_p = NCPP_FOH_VALID(rtv_p_vector_[i]).T_cast<F_directx12_managed_resource_view>();
 
 			  	if(dx12_buffer_p->d3d12_resource_p()) {
 
@@ -231,7 +231,7 @@ namespace nrhi {
 		for(u32 i = 0; i < rtv_count; ++i)
 		{
 			auto dx12_buffer_p = NCPP_FOH_VALID(buffer_p_vector_[i]).T_cast<F_directx12_committed_resource>();
-			auto dx12_buffer_rtv_p = NCPP_FOH_VALID(rtv_p_vector_[i]).T_cast<F_directx12_resource_view>();
+			auto dx12_buffer_rtv_p = NCPP_FOH_VALID(rtv_p_vector_[i]).T_cast<F_directx12_managed_resource_view>();
 
 			auto device_p = command_queue_p()->device_p();
 			auto d3d12_device_p = device_p.T_cast<F_directx12_device>()->d3d12_device_p();

@@ -46,7 +46,18 @@ namespace nrhi {
 
     class A_device;
     class A_resource;
-    class A_resource_view;
+	class A_resource_view;
+
+
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+	enum class E_resource_view_management_type {
+
+		MANAGED,
+		UNMANAGED
+
+	};
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 
 
