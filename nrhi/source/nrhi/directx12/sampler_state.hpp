@@ -41,21 +41,17 @@
 
 namespace nrhi {
 
-	class A_device;
-
-
-
 	class NRHI_API F_directx12_sampler_state : public A_sampler_state {
 
 	public:
 		F_directx12_sampler_state(
 			TKPA_valid<A_device> device_p,
-			const F_sampler_state_desc& desc
+			const F_sampler_state_desc& desc,
+			const F_descriptor& managed_descriptor
 		);
 		F_directx12_sampler_state(
 			TKPA_valid<A_device> device_p,
-			const F_sampler_state_desc& desc,
-			const F_descriptor& descriptor
+			const F_descriptor_handle& unmanaged_descriptor_handle
 		);
 		virtual ~F_directx12_sampler_state();
 
@@ -63,23 +59,70 @@ namespace nrhi {
 		NCPP_OBJECT(F_directx12_sampler_state);
 
 	public:
-		virtual void rebuild(
-			const F_sampler_state_desc& desc
-		) override;
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		virtual void rebuild(
-			const F_sampler_state_desc& desc,
-			const F_descriptor& descriptor
-		) override;
-#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-
-	public:
 		virtual void release_driver_specific_implementation() override;
 	};
 
 
 
+	class NRHI_API F_directx12_managed_sampler_state : public F_directx12_sampler_state {
+
+	public:
+		F_directx12_managed_sampler_state(
+			TKPA_valid<A_device> device_p,
+			const F_sampler_state_desc& desc,
+			const F_descriptor& managed_descriptor
+		);
+		virtual ~F_directx12_managed_sampler_state();
+
+	public:
+		NCPP_OBJECT(F_directx12_managed_sampler_state);
+
+	public:
+		virtual void rebuild(
+			const F_sampler_state_desc& desc
+		) override;
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		virtual void rebuild_with_managed_descriptor(
+			const F_sampler_state_desc& desc,
+			const F_descriptor& descriptor
+		) override;
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+	};
+
+
+
+	class NRHI_API F_directx12_unmanaged_sampler_state : public F_directx12_sampler_state {
+
+	public:
+		F_directx12_unmanaged_sampler_state(
+			TKPA_valid<A_device> device_p,
+			const F_descriptor_handle& unmanaged_descriptor_handle
+		);
+		virtual ~F_directx12_unmanaged_sampler_state();
+
+	public:
+		NCPP_OBJECT(F_directx12_unmanaged_sampler_state);
+
+	public:
+		virtual E_sampler_state_management_type management_type() const override;
+	};
+
+
+
 	class NRHI_API HD_directx12_sampler_state {
+
+	public:
+		static TU<A_sampler_state> create_with_managed_descriptor(
+			TKPA_valid<A_device> device_p,
+			const F_sampler_state_desc& desc,
+			const F_descriptor& managed_descriptor
+		);
+
+	public:
+		static TU<A_sampler_state> create_with_unmanaged_descriptor_handle(
+			TKPA_valid<A_device> device_p,
+			const F_descriptor_handle& unmanaged_descriptor_handle
+		);
 
 #pragma region Alternative Functions
 #ifdef NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
@@ -90,7 +133,6 @@ namespace nrhi {
 		);
 #endif // NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
 #pragma endregion
-
 	};
 
 }

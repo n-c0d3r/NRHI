@@ -77,7 +77,7 @@ namespace nrhi {
 	void A_frame_buffer::guarantee_generation() {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		NCPP_ASSERT(management_type() == E_frame_buffer_management_type::MANAGED) << "can only guarantee managed frame buffer";
+		NCPP_ASSERT(management_type() == E_frame_buffer_management_type::MANAGED);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 		if(!is_valid_generation())
@@ -87,7 +87,7 @@ namespace nrhi {
 	void A_frame_buffer::finalize_rebuild() {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		NCPP_ASSERT(management_type() == E_frame_buffer_management_type::MANAGED) << "can only rebuild managed frame buffer";
+		NCPP_ASSERT(management_type() == E_frame_buffer_management_type::MANAGED);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 		u32 color_attachment_count = desc_.color_attachments.size();

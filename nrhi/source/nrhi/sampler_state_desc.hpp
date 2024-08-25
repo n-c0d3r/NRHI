@@ -42,6 +42,16 @@
 
 namespace nrhi {
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+	enum class E_sampler_state_management_type
+	{
+		MANAGED,
+		UNMANAGED
+	};
+#endif
+
+
+
 	struct F_sampler_state_desc {
 
 		ED_filter filter = ED_filter::MIN_MAG_MIP_LINEAR;
@@ -54,7 +64,5 @@ namespace nrhi {
 		f32 lod_offset = 0;
 		f32 min_lod = 0;
 		f32 max_lod = NMATH_F32_INFINITY;
-
 	};
-
 }

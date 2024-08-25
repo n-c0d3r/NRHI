@@ -21,6 +21,16 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "<nrhi/directx12/sampler_state.hpp>"
     ADDITIONAL_CODE
         ""
+    VALUES
+        "create_with_managed_descriptor" "TU<A_sampler_state>(
+            TKPA_valid<A_device> device_p,
+            const F_sampler_state_desc& desc,
+            const F_descriptor& managed_descriptor
+        )"
+        "create_with_unmanaged_descriptor_handle" "TU<A_sampler_state>(
+            TKPA_valid<A_device> device_p,
+            const F_descriptor_handle& unmanaged_descriptor_handle
+        )"
     ALTERNATIVE_VALUES
         "create" "TU<A_sampler_state>(
             TKPA_valid<A_device> device_p,

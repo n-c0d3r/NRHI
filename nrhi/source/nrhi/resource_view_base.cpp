@@ -80,7 +80,7 @@ namespace nrhi {
 	void A_resource_view::guarantee_generation() {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-    	NCPP_ASSERT(management_type() == E_resource_view_management_type::MANAGED) << "can only guarantee generation for managed resource view";
+    	NCPP_ASSERT(management_type() == E_resource_view_management_type::MANAGED);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
     	if(!is_valid_generation())
@@ -89,7 +89,7 @@ namespace nrhi {
 	void A_resource_view::finalize_rebuild() {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-    	NCPP_ASSERT(management_type() == E_resource_view_management_type::MANAGED) << "can only rebuild managed resource view";
+    	NCPP_ASSERT(management_type() == E_resource_view_management_type::MANAGED);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 		generation_ = desc_.resource_p->generation();
@@ -98,7 +98,7 @@ namespace nrhi {
 		const F_resource_view_desc& desc
 	) {
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-    	NCPP_ASSERT(management_type() == E_resource_view_management_type::MANAGED) << "can only rebuild managed resource view";
+    	NCPP_ASSERT(management_type() == E_resource_view_management_type::MANAGED);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
     	NCPP_ASSERT(desc_.type == desc.type) << "can't change type";
@@ -111,7 +111,7 @@ namespace nrhi {
 		const F_descriptor& managed_descriptor
 	) {
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-    	NCPP_ASSERT(management_type() == E_resource_view_management_type::MANAGED) << "can only rebuild managed resource view";
+    	NCPP_ASSERT(management_type() == E_resource_view_management_type::MANAGED);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 		descriptor_ = managed_descriptor;
@@ -121,7 +121,7 @@ namespace nrhi {
 		const F_descriptor_handle& unmanaged_descriptor_handle
 	) {
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-    	NCPP_ASSERT(management_type() == E_resource_view_management_type::UNMANAGED) << "can only rebuild unmanaged resource view";
+    	NCPP_ASSERT(management_type() == E_resource_view_management_type::UNMANAGED);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
     	descriptor_.handle = unmanaged_descriptor_handle;

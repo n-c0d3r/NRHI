@@ -24,6 +24,7 @@ NRHI_AlternativeHelper_CreateAlternative(
             TKPA_valid<A_device> device_p,
             const F_sampler_state_desc& desc
         )"
+        "release_driver_specific_implementation" "void(TKPA_valid<A_sampler_state> sampler_state_p)"
 )
 
 message(STATUS "<NRHI::Drivers::Alternatives> Implement sampler state done")

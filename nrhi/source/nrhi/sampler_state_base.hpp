@@ -55,7 +55,6 @@ namespace nrhi {
 	private:
 		F_sampler_state_desc desc_;
 
-	protected:
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 		F_descriptor descriptor_;
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
@@ -64,13 +63,21 @@ namespace nrhi {
 		NCPP_FORCE_INLINE const F_sampler_state_desc& desc() const noexcept { return desc_; }
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		NCPP_FORCE_INLINE const F_descriptor& descriptor() const noexcept {
+		NCPP_FORCE_INLINE const F_descriptor& managed_descriptor() const noexcept {
 
 			return descriptor_;
 		}
-		NCPP_FORCE_INLINE void set_descriptor_unsafe(const auto& value) noexcept {
+		NCPP_FORCE_INLINE void set_managed_descriptor_unsafe(const F_descriptor& value) noexcept {
 
 			descriptor_ = value;
+		}
+		NCPP_FORCE_INLINE const F_descriptor_handle& unmanaged_descriptor_handle() const noexcept {
+
+			return descriptor_.handle;
+		}
+		NCPP_FORCE_INLINE void set_unmanaged_descriptor_handle_unsafe(const F_descriptor_handle& value) noexcept {
+
+			descriptor_.handle = value;
 		}
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
@@ -85,7 +92,11 @@ namespace nrhi {
 		A_sampler_state(
 			TKPA_valid<A_device> device_p,
 			const F_sampler_state_desc& desc,
-			const F_descriptor& descriptor
+			const F_descriptor& managed_descriptor
+		);
+		A_sampler_state(
+			TKPA_valid<A_device> device_p,
+			const F_descriptor_handle& unmanaged_descriptor_handle
 		);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
@@ -100,9 +111,12 @@ namespace nrhi {
 			const F_sampler_state_desc& desc
 		);
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		virtual void rebuild(
+		virtual void rebuild_with_managed_descriptor(
 			const F_sampler_state_desc& desc,
-			const F_descriptor& descriptor
+			const F_descriptor& managed_descriptor
+			);
+		virtual void rebuild_with_unmanaged_descriptor_handle(
+			const F_descriptor_handle& unmanaged_descriptor_handle
 		);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
@@ -111,14 +125,19 @@ namespace nrhi {
 			const F_sampler_state_desc& desc
 		);
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		void finalize_rebuild(
+		void finalize_rebuild_with_managed_descriptor(
 			const F_sampler_state_desc& desc,
-			const F_descriptor& descriptor
+			const F_descriptor& managed_descriptor
+		);
+		void finalize_rebuild_with_unmanaged_descriptor_handle(
+			const F_descriptor_handle& unmanaged_descriptor_handle
 		);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 	public:
 		virtual void release_driver_specific_implementation();
-	};
 
+	public:
+		virtual E_sampler_state_management_type management_type() const;
+	};
 }
