@@ -60,11 +60,11 @@ namespace nrhi {
 	}
 	void HD_directx12_fence::wait(TKPA_valid<A_fence> fence_p, u64 target_value){
 
-		while(value(fence_p) != target_value);
+		while(value(fence_p) < target_value);
 	}
 	b8 HD_directx12_fence::is_completed(TKPA_valid<A_fence> fence_p, u64 target_value){
 
-		return (value(fence_p) == target_value);
+		return (value(fence_p) >= target_value);
 	}
 
 }
