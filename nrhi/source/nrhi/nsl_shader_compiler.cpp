@@ -77,6 +77,31 @@ namespace nrhi {
 			}
 		}
 
+		// override sampler state actual slot spaces
+		{
+			u32 sample_state_count = reflection.sampler_states.size();
+
+			for (u32 i = 0; i < sample_state_count; ++i)
+			{
+				const auto& sampler_state = reflection.sampler_states[i];
+
+				u32 actual_slot_space = sampler_state.actual_slot_spaces[shader_index];
+
+				G_string register_slot_space_macro = (
+					"NSL_REGISTER_SLOT_SPACE_"
+					+ sampler_state.name
+				);
+
+				result += (
+					"#define "
+					+ register_slot_space_macro
+					+ " "
+					+ G_to_string(actual_slot_space)
+					+ "\n"
+				);
+			}
+		}
+
 		// override resource actual slots
 		{
 			u32 sample_state_count = reflection.resources.size();
@@ -100,6 +125,34 @@ namespace nrhi {
 					+ register_slot_macro
 					+ " "
 					+ G_to_string(actual_slot)
+					+ "\n"
+				);
+			}
+		}
+
+		// override resource actual slot spaces
+		{
+			u32 sample_state_count = reflection.resources.size();
+
+			for (u32 i = 0; i < sample_state_count; ++i)
+			{
+				const auto& resource = reflection.resources[i];
+
+				u32 actual_slot_space = resource.actual_slot_spaces[shader_index];
+
+				if(actual_slot_space == -1)
+					continue;
+
+				G_string register_slot_space_macro = (
+					"NSL_REGISTER_SLOT_SPACE_"
+					+ resource.name
+				);
+
+				result += (
+					"#define "
+					+ register_slot_space_macro
+					+ " "
+					+ G_to_string(actual_slot_space)
 					+ "\n"
 				);
 			}
@@ -3897,6 +3950,22 @@ namespace nrhi {
 			}
 		}
 
+		// check for slot_space annotation
+		{
+			auto it = context.current_object_config.find("slot_space");
+			if(it != context.current_object_config.end()) {
+
+				const auto& info_tree_reader = it->second;
+
+				auto value_opt = info_tree_reader.read_u32(0);
+
+				if(!value_opt)
+					return eastl::nullopt;
+
+				resource_info.slot_space = value_opt.value();
+			}
+		}
+
 		// check for sort_uniforms annotation
 		{
 			auto it = context.current_object_config.find("sort_uniforms");
@@ -3930,11 +3999,31 @@ namespace nrhi {
 				for(u32 i = 0; i < shader_count; ++i) {
 
 					auto value_opt = shaders_info_tree_reader.read_string(i);
-
 					if(!value_opt)
 						return eastl::nullopt;
 
-					resource_info.shader_filters.insert(value_opt.value());
+					auto& value = value_opt.value();
+
+					auto value_childs_opt = shaders_info_tree_reader.read_sub(value);
+					if(!value_childs_opt)
+						return eastl::nullopt;
+
+					auto& value_childs = value_childs_opt.value();
+
+					if(value_childs.info_trees().size() == 0)
+					{
+						resource_info.shader_filters[value] = {};
+					}
+					else
+					{
+						auto value_register_space_opt = value_childs.read_u32(0);
+						if(!value_register_space_opt)
+							return eastl::nullopt;
+
+						auto& value_register_space = value_register_space_opt.value();
+
+						resource_info.shader_filters[value] = { value_register_space };
+					}
 				}
 			}
 		}
@@ -4297,6 +4386,22 @@ namespace nrhi {
 			}
 		}
 
+		// check for slot_space annotation
+		{
+			auto it = context.current_object_config.find("slot_space");
+			if(it != context.current_object_config.end()) {
+
+				const auto& info_tree_reader = it->second;
+
+				auto value_opt = info_tree_reader.read_u32(0);
+
+				if(!value_opt)
+					return eastl::nullopt;
+
+				sampler_state_info.slot_space = value_opt.value();
+			}
+		}
+
 		// check for shaders annotation
 		{
 			auto it = context.current_object_config.find("shaders");
@@ -4314,11 +4419,31 @@ namespace nrhi {
 				for(u32 i = 0; i < shader_count; ++i) {
 
 					auto value_opt = shaders_info_tree_reader.read_string(i);
-
 					if(!value_opt)
 						return eastl::nullopt;
 
-					sampler_state_info.shader_filters.insert(value_opt.value());
+					auto& value = value_opt.value();
+
+					auto value_childs_opt = shaders_info_tree_reader.read_sub(value);
+					if(!value_childs_opt)
+						return eastl::nullopt;
+
+					auto& value_childs = value_childs_opt.value();
+
+					if(value_childs.info_trees().size() == 0)
+					{
+						sampler_state_info.shader_filters[value] = {};
+					}
+					else
+					{
+						auto value_register_space_opt = value_childs.read_u32(0);
+						if(!value_register_space_opt)
+							return eastl::nullopt;
+
+						auto& value_register_space = value_register_space_opt.value();
+
+						sampler_state_info.shader_filters[value] = { value_register_space };
+					}
 				}
 			}
 		}
@@ -5935,6 +6060,20 @@ namespace nrhi {
 			}
 		}
 
+		// @default_slot_space annotation
+		{
+			auto it = context.current_object_config.find("default_slot_space");
+			if(it != context.current_object_config.end()) {
+
+				auto value_opt = it->second.read_u32(0);
+
+				if(!value_opt)
+					return eastl::nullopt;
+
+				default_slot_space = value_opt.value();
+			}
+		}
+
 		return std::move(childs);
 	}
 	eastl::optional<G_string> F_nsl_compute_shader_object::apply(
@@ -6320,6 +6459,10 @@ namespace nrhi {
 			sampler_state.second.actual_slots.resize(shader_count);
 			for(auto& actual_slot : sampler_state.second.actual_slots)
 				actual_slot = -1;
+
+			sampler_state.second.actual_slot_spaces.resize(shader_count);
+			for(auto& actual_slot_space : sampler_state.second.actual_slot_spaces)
+				actual_slot_space = -1;
 		}
 
 		using F_sampler_state_iterator = std::remove_reference_t<decltype(name_to_sampler_state_info_map)>::iterator;
@@ -6344,9 +6487,9 @@ namespace nrhi {
 				}
 			}
 			else {
-				for(const auto& shader_name : sampler_state.second.shader_filters) {
+				for(const auto& shader_filter : sampler_state.second.shader_filters) {
 
-					shader_name_to_sampler_state_iterators_map[shader_name].push_back(it);
+					shader_name_to_sampler_state_iterators_map[shader_filter.first].push_back(it);
 				}
 			}
 		}
@@ -6414,6 +6557,12 @@ namespace nrhi {
 				auto& sampler_state = *sampler_state_it;
 
 				sampler_state.second.actual_slots[shader_index] = i;
+
+				auto& actual_slot_space = sampler_state.second.actual_slot_spaces[shader_index];
+				if(actual_slot_space == -1)
+				{
+					actual_slot_space = shader_object_p->default_slot_space;
+				}
 			}
 		}
 
@@ -6437,6 +6586,10 @@ namespace nrhi {
 			resource.second.actual_slots.resize(shader_count);
 			for(auto& actual_slot : resource.second.actual_slots)
 				actual_slot = -1;
+
+			resource.second.actual_slot_spaces.resize(shader_count);
+			for(auto& actual_slot_space : resource.second.actual_slot_spaces)
+				actual_slot_space = -1;
 		}
 
 		using F_resource_iterator = std::remove_reference_t<decltype(name_to_resource_info_map)>::iterator;
@@ -6464,9 +6617,9 @@ namespace nrhi {
 				}
 			}
 			else {
-				for(const auto& shader_name : resource.second.shader_filters) {
+				for(const auto& shader_filter : resource.second.shader_filters) {
 
-					shader_name_to_resource_iterators_map[shader_name].push_back(it);
+					shader_name_to_resource_iterators_map[shader_filter.first].push_back(it);
 				}
 			}
 		}
@@ -6534,6 +6687,12 @@ namespace nrhi {
 				auto& resource = *resource_it;
 
 				resource.second.actual_slots[shader_index] = i;
+
+				auto& actual_slot_space = resource.second.actual_slot_spaces[shader_index];
+				if(actual_slot_space == -1)
+				{
+					actual_slot_space = shader_object_p->default_slot_space;
+				}
 			}
 		}
 
@@ -6557,6 +6716,10 @@ namespace nrhi {
 			resource.second.actual_slots.resize(shader_count);
 			for(auto& actual_slot : resource.second.actual_slots)
 				actual_slot = -1;
+
+			resource.second.actual_slot_spaces.resize(shader_count);
+			for(auto& actual_slot_space : resource.second.actual_slot_spaces)
+				actual_slot_space = -1;
 		}
 
 		using F_resource_iterator = std::remove_reference_t<decltype(name_to_resource_info_map)>::iterator;
@@ -6584,9 +6747,9 @@ namespace nrhi {
 				}
 			}
 			else {
-				for(const auto& shader_name : resource.second.shader_filters) {
+				for(const auto& shader_filter : resource.second.shader_filters) {
 
-					shader_name_to_resource_iterators_map[shader_name].push_back(it);
+					shader_name_to_resource_iterators_map[shader_filter.first].push_back(it);
 				}
 			}
 		}
@@ -6654,6 +6817,12 @@ namespace nrhi {
 				auto& resource = *resource_it;
 
 				resource.second.actual_slots[shader_index] = i;
+
+				auto& actual_slot_space = resource.second.actual_slot_spaces[shader_index];
+				if(actual_slot_space == -1)
+				{
+					actual_slot_space = shader_object_p->default_slot_space;
+				}
 			}
 		}
 
@@ -6677,6 +6846,10 @@ namespace nrhi {
 			resource.second.actual_slots.resize(shader_count);
 			for(auto& actual_slot : resource.second.actual_slots)
 				actual_slot = -1;
+
+			resource.second.actual_slot_spaces.resize(shader_count);
+			for(auto& actual_slot_space : resource.second.actual_slot_spaces)
+				actual_slot_space = -1;
 		}
 
 		using F_resource_iterator = std::remove_reference_t<decltype(name_to_resource_info_map)>::iterator;
@@ -6704,9 +6877,9 @@ namespace nrhi {
 				}
 			}
 			else {
-				for(const auto& shader_name : resource.second.shader_filters) {
+				for(const auto& shader_filter : resource.second.shader_filters) {
 
-					shader_name_to_resource_iterators_map[shader_name].push_back(it);
+					shader_name_to_resource_iterators_map[shader_filter.first].push_back(it);
 				}
 			}
 		}
@@ -6774,6 +6947,12 @@ namespace nrhi {
 				auto& resource = *resource_it;
 
 				resource.second.actual_slots[shader_index] = i;
+
+				auto& actual_slot_space = resource.second.actual_slot_spaces[shader_index];
+				if(actual_slot_space == -1)
+				{
+					actual_slot_space = shader_object_p->default_slot_space;
+				}
 			}
 		}
 
@@ -7357,6 +7536,10 @@ namespace nrhi {
 	G_string A_nsl_output_language::register_slot_macro(const G_string& name) {
 
 		return "NSL_REGISTER_SLOT_" + name;
+	}
+	G_string A_nsl_output_language::register_slot_space_macro(const G_string& name) {
+
+		return "NSL_REGISTER_SLOT_SPACE_" + name;
 	}
 
 	b8 A_nsl_output_language::is_support(E_nsl_feature feature) {
@@ -8001,17 +8184,26 @@ namespace nrhi {
 		G_string result;
 
 		G_string sampler_state_register_slot_macro = register_slot_macro(sampler_state.first);
+		G_string sampler_state_register_slot_space_macro = register_slot_space_macro(sampler_state.first);
 
 		result += (
 			G_string("\n#ifdef ")
 			+ sampler_state_register_slot_macro
 			+ "\n"
 
+			+ "#define NSL_REGISTER_SPACE_"
+			+ sampler_state.first
+			+ " NSL_GLUE(space,"
+			+ sampler_state_register_slot_space_macro
+			+ ")\n"
+
 			+ "#define NSL_REGISTER_"
 			+ sampler_state.first
 			+ " register(NSL_GLUE(s,"
 			+ sampler_state_register_slot_macro
 			+ ")"
+			+ ", NSL_REGISTER_SPACE_"
+			+ sampler_state.first
 			+ ")\n"
 
 			+ "SamplerState "
@@ -8217,6 +8409,7 @@ namespace nrhi {
 		G_string result;
 
 		G_string resource_register_slot_macro = register_slot_macro(resource.first);
+		G_string resource_register_slot_space_macro = register_slot_space_macro(resource.first);
 
 		G_string uniform_declarations;
 		auto uniform_manager_p = shader_compiler_p()->uniform_manager_p();
@@ -8232,6 +8425,12 @@ namespace nrhi {
 			+ resource_register_slot_macro
 			+ "\n"
 
+			+ "#define NSL_REGISTER_SPACE_"
+			+ resource.first
+			+ " NSL_GLUE(space,"
+			+ resource_register_slot_space_macro
+			+ ")\n"
+
 			+ "#define NSL_REGISTER_"
 			+ resource.first
 			+ " register(NSL_GLUE("
@@ -8239,6 +8438,8 @@ namespace nrhi {
 			+ ","
 			+ resource_register_slot_macro
 			+ ")"
+			+ ", NSL_REGISTER_SPACE_"
+			+ resource.first
 			+ ")\n"
 		);
 
@@ -8746,7 +8947,8 @@ namespace nrhi {
 					.name = it->first,
 					.desc = sampler_state_info.desc,
 					.is_static = sampler_state_info.is_static,
-					.actual_slots = sampler_state_info.actual_slots
+					.actual_slots = sampler_state_info.actual_slots,
+					.actual_slot_spaces = sampler_state_info.actual_slot_spaces
 
 				};
 
@@ -8815,6 +9017,7 @@ namespace nrhi {
 					.dimension_count = resource_info.dimension_count,
 					.is_array = resource_info.is_array,
 					.actual_slots = resource_info.actual_slots,
+					.actual_slot_spaces = resource_info.actual_slot_spaces,
 					.data_arguments = std::move(data_arguments),
 					.sort_uniforms = resource_info.sort_uniforms,
 					.constant_size = resource_info.constant_size

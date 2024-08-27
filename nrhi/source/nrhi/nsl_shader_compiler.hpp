@@ -315,6 +315,11 @@ namespace nrhi {
 	};
 	using F_nsl_enumeration = eastl::pair<G_string, F_nsl_enumeration_info>;
 
+	struct E_nsl_shader_filter
+	{
+		u32 slot_space = 0;
+	};
+
 	enum class E_nsl_resource_type {
 		NONE,
 		ConstantBuffer,
@@ -353,7 +358,9 @@ namespace nrhi {
 		E_nsl_resource_type_class type_class = E_nsl_resource_type_class::NONE;
 
 		u32 slot = NCPP_U32_MAX;
+		u32 slot_space = NCPP_U32_MAX;
 		TG_vector<u32> actual_slots;
+		TG_vector<u32> actual_slot_spaces;
 
 		TG_vector<G_string> uniforms;
 		u32 sort_uniforms = true;
@@ -363,7 +370,7 @@ namespace nrhi {
 		u32 dimension_count = 1;
 		u32 is_array = false;
 
-		TG_unordered_set<G_string> shader_filters = { "*" };
+		TG_unordered_map<G_string, E_nsl_shader_filter> shader_filters = { { "*", {} } };
 
 		F_nsl_resource_config_map config_map;
 
@@ -401,9 +408,11 @@ namespace nrhi {
 		b8 is_static = false;
 
 		u32 slot = NCPP_U32_MAX;
+		u32 slot_space = NCPP_U32_MAX;
 		TG_vector<u32> actual_slots;
+		TG_vector<u32> actual_slot_spaces;
 
-		TG_unordered_set<G_string> shader_filters = { "*" };
+		TG_unordered_map<G_string, E_nsl_shader_filter> shader_filters = { { "*", {} } };
 
 		F_nsl_sampler_state_config_map config_map;
 
@@ -746,6 +755,7 @@ namespace nrhi {
 		b8 is_static = false;
 
 		TG_vector<u32> actual_slots;
+		TG_vector<u32> actual_slot_spaces;
 
 	public:
 		NCPP_FORCE_INLINE TG_vector<u32> shader_indices() const {
@@ -789,6 +799,7 @@ namespace nrhi {
 		u32 is_array = false;
 
 		TG_vector<u32> actual_slots;
+		TG_vector<u32> actual_slot_spaces;
 
 		TG_vector<F_nsl_data_argument_reflection> data_arguments;
 		u32 sort_uniforms = true;
@@ -2001,6 +2012,7 @@ namespace nrhi {
 
 	public:
 		u32 index = NCPP_U32_MAX;
+		u32 default_slot_space = 0;
 
 	public:
 		NCPP_FORCE_INLINE const auto& data_params() const noexcept { return data_params_; }
@@ -3102,6 +3114,7 @@ namespace nrhi {
 
 	public:
 		G_string register_slot_macro(const G_string& name);
+		G_string register_slot_space_macro(const G_string& name);
 
 	public:
 		virtual b8 is_support(E_nsl_feature feature);
