@@ -8191,18 +8191,24 @@ namespace nrhi {
 			+ sampler_state_register_slot_macro
 			+ "\n"
 
+			+ "#if (NSL_HLSL_MAJOR >= 5) && (NSL_HLSL_MINOR >= 1)\n"
 			+ "#define NSL_REGISTER_SPACE_"
 			+ sampler_state.first
-			+ " NSL_GLUE(space,"
+			+ " , NSL_GLUE(space,"
 			+ sampler_state_register_slot_space_macro
 			+ ")\n"
+			+ "#else\n"
+			+ "#define NSL_REGISTER_SPACE_"
+			+ sampler_state.first
+			+ "\n"
+			+ "#endif\n"
 
 			+ "#define NSL_REGISTER_"
 			+ sampler_state.first
 			+ " register(NSL_GLUE(s,"
 			+ sampler_state_register_slot_macro
 			+ ")"
-			+ ", NSL_REGISTER_SPACE_"
+			+ " NSL_REGISTER_SPACE_"
 			+ sampler_state.first
 			+ ")\n"
 
@@ -8425,11 +8431,17 @@ namespace nrhi {
 			+ resource_register_slot_macro
 			+ "\n"
 
+			+ "#if (NSL_HLSL_MAJOR >= 5) && (NSL_HLSL_MINOR >= 1)\n"
 			+ "#define NSL_REGISTER_SPACE_"
 			+ resource.first
-			+ " NSL_GLUE(space,"
+			+ " , NSL_GLUE(space,"
 			+ resource_register_slot_space_macro
 			+ ")\n"
+			+ "#else\n"
+			+ "#define NSL_REGISTER_SPACE_"
+			+ resource.first
+			+ "\n"
+			+ "#endif\n"
 
 			+ "#define NSL_REGISTER_"
 			+ resource.first
@@ -8438,7 +8450,7 @@ namespace nrhi {
 			+ ","
 			+ resource_register_slot_macro
 			+ ")"
-			+ ", NSL_REGISTER_SPACE_"
+			+ " NSL_REGISTER_SPACE_"
 			+ resource.first
 			+ ")\n"
 		);
