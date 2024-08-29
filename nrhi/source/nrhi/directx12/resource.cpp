@@ -207,11 +207,9 @@ namespace nrhi {
 		TKPA_valid<A_resource> resource_p,
 		u32 subresource_index
 	) {
-		CD3DX12_RANGE range(0, resource_p->desc().size);
-
 		resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p()->Unmap(
 			subresource_index,
-			&range
+			0
 		);
 	}
 
