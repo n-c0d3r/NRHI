@@ -24,10 +24,11 @@ NCoder's Learning Aimed C++ Render Hardware Interface Library.
 ---
 
 ## Core Dependencies
-+ NCPP
-+ NMath
-+ NSurface
++ [NCPP](https://github.com/n-c0d3r/NCPP)
++ [NMath](https://github.com/n-c0d3r/NMath)
++ [NSurface](https://github.com/n-c0d3r/NSurface)
 + SPIRV-Cross
++ WinPixEventRuntime
 
 ---
 
