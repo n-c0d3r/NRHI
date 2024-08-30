@@ -1,5 +1,8 @@
 #include <nrhi/directx12/system.hpp>
 #include <nrhi/directx12/factory.hpp>
+#ifdef NRHI_ENABLE_DRIVER_DEBUGGER
+#include <nrhi/directx12/pix_runtime.hpp>
+#endif
 
 
 
@@ -19,11 +22,18 @@ namespace nrhi {
 		}
 #endif
 
+#ifdef NRHI_ENABLE_DRIVER_DEBUGGER
+		HD_directx12_pix_runtime::initialize();
+#endif
+
         F_directx12_factory_helper::initialize();
     }
     void HD_directx12_system::release(){
 
-		F_directx12_factory_helper::release();
-    }
+    	F_directx12_factory_helper::release();
 
+#ifdef NRHI_ENABLE_DRIVER_DEBUGGER
+		HD_directx12_pix_runtime::release();
+#endif
+    }
 }

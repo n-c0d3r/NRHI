@@ -89,7 +89,17 @@ namespace nrhi {
 
 
 
-    class NRHI_API HD_directx12_command_list {
+	class NRHI_API HD_directx12_command_list {
+
+#ifdef NRHI_ENABLE_DRIVER_DEBUGGER
+	public:
+		static void begin_event(
+			TKPA_valid<A_command_list> command_list_p,
+			PA_vector3_f32 color,
+			const F_debug_name& name
+		);
+		static void end_event(TKPA_valid<A_command_list> command_list_p);
+#endif
 
     public:
         static TU<A_command_list> create_with_command_allocator(TKPA_valid<A_device> device_p, const F_command_list_desc& desc);

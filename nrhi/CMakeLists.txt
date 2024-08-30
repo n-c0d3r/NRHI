@@ -294,6 +294,16 @@ add_library(nrhi ${nrhiLinkingMode}
 
 
 #####################################################################################
+#   Add third party
+#####################################################################################
+NCPP_SetGlobal(NRHI_THIRD_PARTY_TARGETS "")
+NCPP_SetGlobal(NRHI_THIRD_PARTY_DEFINITIONS "")
+NCPP_SetGlobal(NRHI_THIRD_PARTY_LINK_OPTIONS "")
+add_subdirectory(third_party)
+
+
+
+#####################################################################################
 #   nrhi target settings
 #####################################################################################
 set_target_properties(nrhi
@@ -318,6 +328,7 @@ target_link_libraries(nrhi
         nmath
         nsurface
         spirv-cross-cpp
+        ${NRHI_THIRD_PARTY_TARGETS}
 )
 
 if(NRHI_DRIVER_DIRECTX_12)
@@ -373,6 +384,15 @@ if(${NRHI_DLL})
     )
 endif()
 
+target_compile_definitions(nrhi
+    PUBLIC
+        ${NRHI_THIRD_PARTY_DEFINITIONS}
+)
+target_link_options(nrhi
+    PUBLIC
+        ${NRHI_THIRD_PARTY_LINK_OPTIONS}
+)
+
 
 
 #####################################################################################
@@ -383,6 +403,7 @@ add_dependencies(nrhi
     nmath
     nsurface
     spirv-cross-cpp
+    ${NRHI_THIRD_PARTY_TARGETS}
 )
 
 

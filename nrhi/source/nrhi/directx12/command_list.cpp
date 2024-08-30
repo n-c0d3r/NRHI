@@ -7,6 +7,7 @@
 #include <nrhi/directx12/root_signature.hpp>
 #include <nrhi/directx12/pipeline_state.hpp>
 #include <nrhi/directx12/command_signature.hpp>
+#include <nrhi/directx12/pix_runtime.hpp>
 #include <nrhi/command_allocator.hpp>
 #include <nrhi/command_list.hpp>
 
@@ -52,6 +53,29 @@ namespace nrhi {
     }
 
 
+
+#ifdef NRHI_ENABLE_DRIVER_DEBUGGER
+	void HD_directx12_command_list::begin_event(
+		TKPA_valid<A_command_list> command_list_p,
+		PA_vector3_f32 color,
+		const F_debug_name& name
+	)
+	{
+		auto dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
+		HD_directx12_pix_runtime::begin_event_on_command_list()(
+			dx12_command_list_p->d3d12_command_list_p(),
+			HD_directx12_pix_runtime::to_pix_color(color),
+			name.c_str()
+		);
+	}
+	void HD_directx12_command_list::end_event(TKPA_valid<A_command_list> command_list_p)
+	{
+		auto dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
+		HD_directx12_pix_runtime::end_event_on_command_list()(
+			dx12_command_list_p->d3d12_command_list_p()
+		);
+	}
+#endif
 
     TU<A_command_list> HD_directx12_command_list::create_with_command_allocator(TKPA_valid<A_device> device_p, const F_command_list_desc& desc){
 

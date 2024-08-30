@@ -10,6 +10,17 @@ NCPP_SetGlobal(NRHI_COMMAND_LIST_CPP_FILE_PATH "${NRHI_GENERATED_FILES_DIR}/comm
 
 
 
+if(NRHI_ENABLE_DRIVER_DEBUGGER)
+	set(MarkerFunctionValues
+		"begin_event" "void(TKPA_valid<A_command_list> command_list_p, PA_vector3_f32 color, const F_debug_name& name)"
+		"end_event" "void(TKPA_valid<A_command_list> command_list_p)"
+	)
+else()
+	set(MarkerFunctionValues "")
+endif()
+
+
+
 NRHI_FunctionHelper_CreateFunctionClass(
     NAMESPACE "nrhi"
     NAME "H_command_list"
@@ -310,6 +321,7 @@ NRHI_FunctionHelper_CreateFunctionClass(
 			KPA_buffer_handle count_buffer_p,
 			u64 count_buffer_offset_in_bytes
 		)"
+		${MarkerFunctionValues}
 
 	ALTERNATIVE_VALUES
 		"create" "TU<A_command_list>(TKPA_valid<A_device> device_p, const F_command_list_desc& desc)"

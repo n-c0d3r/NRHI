@@ -119,7 +119,7 @@ namespace nrhi {
         virtual ~A_command_list();
 
 	public:
-		NCPP_OBJECT(A_command_list);
+    	NCPP_OBJECT(A_command_list);
 
 
  
@@ -587,3 +587,13 @@ namespace nrhi {
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 }
+
+
+
+#ifdef NRHI_ENABLE_DRIVER_DEBUGGER
+#define NRHI_COMMAND_LIST_BEGIN_EVENT(...) nrhi::H_command_list::begin_event(__VA_ARGS__)
+#define NRHI_COMMAND_LIST_END_EVENT(...) nrhi::H_command_list::end_event(__VA_ARGS__)
+#else
+#define NRHI_COMMAND_LIST_BEGIN_EVENT(...)
+#define NRHI_COMMAND_LIST_END_EVENT(...)
+#endif

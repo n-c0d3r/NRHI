@@ -507,6 +507,12 @@ int main() {
 					})
 				);
 
+				NRHI_COMMAND_LIST_BEGIN_EVENT(
+					NCPP_FOH_VALID(command_list_p),
+					F_vector3_f32::forward(),
+					"clear_back_buffer"
+				);
+
 				// clear rtv
 				command_list_p->async_clear_rtv(
 					swapchain_p->back_rtv_p(),
@@ -549,12 +555,17 @@ int main() {
 				command_list_p->ZOM_bind_frame_buffer(
 					NCPP_FOH_VALID(frame_buffer_p)
 				);
+
 				command_list_p->async_draw_indexed_instanced(
 					indices.size(),
 					instances.size(),
 					0,
 					0,
 					0
+				);
+
+				NRHI_COMMAND_LIST_END_EVENT(
+					NCPP_FOH_VALID(command_list_p)
 				);
 
 				// transition back buffer state back to PRESENT

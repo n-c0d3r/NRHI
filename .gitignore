@@ -13,3 +13,6 @@ _deps
 build
 
 gitignores
+
+!nrhi/third_party/WinPixEventRuntime/**/*.lib
+!nrhi/third_party/WinPixEventRuntime/**/*.dll
