@@ -108,21 +108,31 @@ namespace nrhi {
 			)
 		) << "GENERIC_READ initial state is required for GREAD-CWRITE resource";
 
+		D3D12_CLEAR_VALUE* d3d12_clear_value_p = 0;
+
 		D3D12_CLEAR_VALUE d3d12_clear_value;
-		d3d12_clear_value.Format = d3d12_resource_desc.Format;
-		d3d12_clear_value.Color[0] = 0.0f;
-		d3d12_clear_value.Color[1] = 0.0f;
-		d3d12_clear_value.Color[2] = 0.0f;
-		d3d12_clear_value.Color[3] = 0.0f;
-		d3d12_clear_value.DepthStencil.Depth = 1.0f;
-		d3d12_clear_value.DepthStencil.Stencil = 0;
+		if(
+			(d3d12_resource_desc.Flags == D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET)
+			|| (d3d12_resource_desc.Flags == D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL)
+		)
+		{
+			d3d12_clear_value.Format = d3d12_resource_desc.Format;
+			d3d12_clear_value.Color[0] = 0.0f;
+			d3d12_clear_value.Color[1] = 0.0f;
+			d3d12_clear_value.Color[2] = 0.0f;
+			d3d12_clear_value.Color[3] = 0.0f;
+			d3d12_clear_value.DepthStencil.Depth = 1.0f;
+			d3d12_clear_value.DepthStencil.Stencil = 0;
+
+			d3d12_clear_value_p = &d3d12_clear_value;
+		}
 
 		HRESULT hr = d3d12_device_p->CreatePlacedResource(
 			d3d12_resource_heap_p,
 			heap_offset,
 			&d3d12_resource_desc,
 			d3d12_resource_states,
-			&d3d12_clear_value,
+			d3d12_clear_value_p,
 			IID_PPV_ARGS(&d3d12_resource_p)
 		);
 
