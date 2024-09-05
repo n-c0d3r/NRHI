@@ -101,7 +101,8 @@ namespace nrhi {
 		NCPP_ENABLE_IF_ASSERTION_ENABLED(
 			command_list_p.T_cast<F_directx12_command_list>()->is_in_record_ = false;
 		);
-		command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p()->Close();
+		HRESULT hr = command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p()->Close();
+		NCPP_ASSERT(!FAILED(hr)) << "invalid record";
 	}
 
 	void HD_directx12_command_list::async_resource_barrier(
