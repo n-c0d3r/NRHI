@@ -302,7 +302,7 @@ namespace nrhi {
 
 			auto& current_rtv_desc = (F_resource_view_desc&)(current_rtv_p->desc());
 			auto& back_rtv_desc = (F_resource_view_desc&)(back_rtv_p->desc());
-			back_rtv_desc = back_rtv_desc;
+			back_rtv_desc = current_rtv_desc;
 
 			back_rtv_p->set_generation_unsafe(
 				current_rtv_p->generation()
