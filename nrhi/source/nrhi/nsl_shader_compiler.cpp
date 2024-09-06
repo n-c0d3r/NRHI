@@ -2465,21 +2465,26 @@ namespace nrhi {
 				src_content
 			);
 
-			if (load_result_opt)
+			it = abs_path_to_translation_unit_p_.find(path);
+
+			if(it != abs_path_to_translation_unit_p_.end())
 			{
-				const auto& load_result = std::move(load_result_opt.value());
-				const auto& abs_path = load_result.abs_path;
-
-				it = abs_path_to_translation_unit_p_.find(abs_path);
-
-				if (it == abs_path_to_translation_unit_p_.end())
+				if (load_result_opt)
 				{
-					return shader_compiler_p_->translation_unit_manager_p()->create_unit(
-						src_content,
-						abs_path
-					).no_requirements();
+					const auto& load_result = std::move(load_result_opt.value());
+					const auto& abs_path = load_result.abs_path;
+
+					it = abs_path_to_translation_unit_p_.find(abs_path);
+
+					if (it == abs_path_to_translation_unit_p_.end())
+					{
+						return shader_compiler_p_->translation_unit_manager_p()->create_unit(
+							src_content,
+							abs_path
+						).no_requirements();
+					}
+					else return it->second;
 				}
-				else return it->second;
 			}
 		}
 		else return it->second;
