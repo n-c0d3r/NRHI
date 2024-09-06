@@ -6208,7 +6208,7 @@ namespace nrhi {
 			auto object_type_p = NCPP_FOH_VALID(it.second);
 
 			if(
-				flag_is_has(
+				flag_is_has_any(
 					object_type_p->channel_mask(),
 					mask
 				)
