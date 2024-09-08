@@ -10,7 +10,7 @@ namespace nrhi {
 	) :
 		A_device_child(device_p),
 		desc_(desc),
-
+		management_type_(E_frame_buffer_management_type::MANAGED),
 		is_has_dsv_(desc.depth_stencil_attachment.is_valid())
 	{
 
@@ -32,18 +32,6 @@ namespace nrhi {
 		) << "invalid frame buffer, require at least 1 attachment";
 	}
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-	// managed
-	A_frame_buffer::A_frame_buffer(
-		TKPA_valid<A_device> device_p,
-		const F_frame_buffer_desc& desc,
-		TG_fixed_vector<F_descriptor_cpu_address, 8, false> color_attachment_descriptor_cpu_addresses,
-		F_descriptor_cpu_address depth_stencil_attachment_descriptor_cpu_address
-	) :
-		A_frame_buffer(device_p, desc)
-	{
-		color_attachment_descriptor_cpu_addresses_ = color_attachment_descriptor_cpu_addresses;
-		depth_stencil_attachment_descriptor_cpu_address_ = depth_stencil_attachment_descriptor_cpu_address;
-	}
 	// unmanaged
 	A_frame_buffer::A_frame_buffer(
 		TKPA_valid<A_device> device_p,
@@ -51,8 +39,10 @@ namespace nrhi {
 		F_descriptor_cpu_address depth_stencil_attachment_descriptor_cpu_address
 	) :
 		A_device_child(device_p),
-		color_attachment_descriptor_cpu_addresses_(color_attachment_descriptor_cpu_addresses),
-		depth_stencil_attachment_descriptor_cpu_address_(depth_stencil_attachment_descriptor_cpu_address)
+		management_type_(E_frame_buffer_management_type::UNMANAGED),
+		unmanaged_color_attachment_descriptor_cpu_addresses_(color_attachment_descriptor_cpu_addresses),
+		unmanaged_depth_stencil_attachment_descriptor_cpu_address_(depth_stencil_attachment_descriptor_cpu_address),
+		is_has_dsv_(depth_stencil_attachment_descriptor_cpu_address != 0)
 	{
 	}
 #endif
@@ -109,23 +99,16 @@ namespace nrhi {
 		F_descriptor_cpu_address depth_stencil_attachment_descriptor_cpu_address
 	)
 	{
-		color_attachment_descriptor_cpu_addresses_ = color_attachment_descriptor_cpu_addresses;
-		depth_stencil_attachment_descriptor_cpu_address_ = depth_stencil_attachment_descriptor_cpu_address;
+		unmanaged_color_attachment_descriptor_cpu_addresses_ = color_attachment_descriptor_cpu_addresses;
+		unmanaged_depth_stencil_attachment_descriptor_cpu_address_ = depth_stencil_attachment_descriptor_cpu_address;
 	}
 #endif
 
 	void A_frame_buffer::release_driver_specific_implementation()
 	{
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		color_attachment_descriptor_cpu_addresses_.clear();
-		depth_stencil_attachment_descriptor_cpu_address_ = 0;
+		unmanaged_color_attachment_descriptor_cpu_addresses_.clear();
+		unmanaged_depth_stencil_attachment_descriptor_cpu_address_ = 0;
 #endif
 	}
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-	E_frame_buffer_management_type A_frame_buffer::management_type() const
-	{
-		return E_frame_buffer_management_type::MANAGED;
-	}
-#endif
 }

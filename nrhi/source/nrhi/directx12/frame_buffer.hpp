@@ -55,9 +55,7 @@ namespace nrhi {
 	public:
 		F_directx12_frame_buffer(
 			TKPA_valid<A_device> device_p,
-			const F_frame_buffer_desc& desc,
-			TG_fixed_vector<F_descriptor_cpu_address, 8, false> color_attachment_descriptor_cpu_addresses,
-			F_descriptor_cpu_address depth_stencil_attachment_descriptor_cpu_address
+			const F_frame_buffer_desc& desc
 		);
 		F_directx12_frame_buffer(
 			TKPA_valid<A_device> device_p,
@@ -90,9 +88,6 @@ namespace nrhi {
 			F_descriptor_cpu_address depth_stencil_attachment_descriptor_cpu_address
 		);
 		virtual ~F_directx12_unmanaged_frame_buffer();
-
-	public:
-		virtual E_frame_buffer_management_type management_type() const override;
 	};
 
 

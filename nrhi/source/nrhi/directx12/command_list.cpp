@@ -703,39 +703,60 @@ namespace nrhi {
 		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
 		NCPP_ASSERT(frame_buffer_p->is_valid_generation()) << "frame buffer's generation is not valid";
 
-		const auto& frame_buffer_desc = frame_buffer_p->desc();
-
-		const auto& color_attachments = frame_buffer_desc.color_attachments;
-		u32 color_attachment_count = (u32)(color_attachments.size());
-
 		const auto& d3d12_command_list_p = command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p();
 
-		F_descriptor_cpu_address d3d12_rtv_addresses[NRHI_MAX_RENDER_TARGET_COUNT_PER_DRAWCALL];
-		for(u32 i = 0; i < color_attachment_count; ++i) {
+		if(frame_buffer_p->management_type() == E_frame_buffer_management_type::MANAGED)
+		{
+			const auto& frame_buffer_desc = frame_buffer_p->desc();
 
-			NCPP_ASSERT(color_attachments[i]->is_valid_generation()) << "color attachment's generation is not valid";
+			const auto& color_attachments = frame_buffer_desc.color_attachments;
+			u32 color_attachment_count = (u32)(color_attachments.size());
 
-			d3d12_rtv_addresses[i] = color_attachments[i]
-				->descriptor_handle().cpu_address;
+			F_descriptor_cpu_address d3d12_rtv_addresses[NRHI_MAX_RENDER_TARGET_COUNT_PER_DRAWCALL];
+			for(u32 i = 0; i < color_attachment_count; ++i) {
+
+				NCPP_ASSERT(color_attachments[i]->is_valid_generation()) << "color attachment's generation is not valid";
+
+				d3d12_rtv_addresses[i] = color_attachments[i]
+					->descriptor_handle().cpu_address;
+			}
+
+			F_descriptor_cpu_address d3d12_dsv_address = 0;
+			if(frame_buffer_p->is_has_dsv()) {
+
+				const auto& depth_stencil_attachment = frame_buffer_desc.depth_stencil_attachment;
+
+				NCPP_ASSERT(depth_stencil_attachment->is_valid_generation()) << "depth stencil attachment's generation is not valid";
+
+				d3d12_dsv_address = depth_stencil_attachment
+					->descriptor_handle().cpu_address;
+			}
+
+			d3d12_command_list_p->OMSetRenderTargets(
+				color_attachment_count,
+				(const D3D12_CPU_DESCRIPTOR_HANDLE*)d3d12_rtv_addresses,
+				false,
+				(const D3D12_CPU_DESCRIPTOR_HANDLE*)d3d12_dsv_address
+			);
 		}
+		else
+		{
+			const auto& rtv_addresses = frame_buffer_p->unmanaged_color_attachment_descriptor_cpu_addresses();
+			F_descriptor_cpu_address dsv_address = frame_buffer_p->unmanaged_depth_stencil_attachment_descriptor_cpu_address();
 
-		F_descriptor_cpu_address d3d12_dsv_address = 0;
-		if(frame_buffer_p->is_has_dsv()) {
+			F_descriptor_cpu_address* dsv_address_p = 0;
+			if(dsv_address)
+			{
+				dsv_address_p = &dsv_address;
+			}
 
-			const auto& depth_stencil_attachment = frame_buffer_desc.depth_stencil_attachment;
-
-			NCPP_ASSERT(depth_stencil_attachment->is_valid_generation()) << "depth stencil attachment's generation is not valid";
-
-			d3d12_dsv_address = depth_stencil_attachment
-				->descriptor_handle().cpu_address;
+			d3d12_command_list_p->OMSetRenderTargets(
+				rtv_addresses.size(),
+				(const D3D12_CPU_DESCRIPTOR_HANDLE*)(rtv_addresses.data()),
+				false,
+				(const D3D12_CPU_DESCRIPTOR_HANDLE*)dsv_address_p
+			);
 		}
-
-		d3d12_command_list_p->OMSetRenderTargets(
-			color_attachment_count,
-			(const D3D12_CPU_DESCRIPTOR_HANDLE*)d3d12_rtv_addresses,
-			false,
-			(const D3D12_CPU_DESCRIPTOR_HANDLE*)d3d12_dsv_address
-		);
 	}
 
 	void HD_directx12_command_list::ZIA_bind_index_buffer(

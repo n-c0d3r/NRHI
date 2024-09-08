@@ -58,11 +58,13 @@ namespace nrhi {
 	private:
 		F_frame_buffer_desc desc_;
 
+		E_frame_buffer_management_type management_type_ = E_frame_buffer_management_type::MANAGED;
+
 		b8 is_has_dsv_;
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		TG_fixed_vector<F_descriptor_cpu_address, 8, false> color_attachment_descriptor_cpu_addresses_;
-		F_descriptor_cpu_address depth_stencil_attachment_descriptor_cpu_address_;
+		TG_fixed_vector<F_descriptor_cpu_address, 8, false> unmanaged_color_attachment_descriptor_cpu_addresses_;
+		F_descriptor_cpu_address unmanaged_depth_stencil_attachment_descriptor_cpu_address_ = 0;
 #endif
 
 	protected:
@@ -71,6 +73,8 @@ namespace nrhi {
 
 	public:
 		NCPP_FORCE_INLINE const F_frame_buffer_desc& desc() const noexcept { return desc_; }
+
+		NCPP_FORCE_INLINE E_frame_buffer_management_type management_type() const noexcept { return management_type_; }
 
 		NCPP_FORCE_INLINE b8 is_has_dsv() const noexcept { return is_has_dsv_; }
 
@@ -107,16 +111,17 @@ namespace nrhi {
 		}
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		NCPP_FORCE_INLINE const auto& color_attachment_descriptor_cpu_addresses() const noexcept { return color_attachment_descriptor_cpu_addresses_; }
+		NCPP_FORCE_INLINE const auto& unmanaged_color_attachment_descriptor_cpu_addresses() const noexcept { return unmanaged_color_attachment_descriptor_cpu_addresses_; }
+		NCPP_FORCE_INLINE const auto& unmanaged_depth_stencil_attachment_descriptor_cpu_address() const noexcept { return unmanaged_depth_stencil_attachment_descriptor_cpu_address_; }
 		NCPP_FORCE_INLINE void set_color_attachment_descriptor_cpu_addresses_unsafe(
 			const TG_fixed_vector<F_descriptor_cpu_address, 8, false>& value
 		) noexcept
 		{
-			color_attachment_descriptor_cpu_addresses_ = value;
+			unmanaged_color_attachment_descriptor_cpu_addresses_ = value;
 		}
 		NCPP_FORCE_INLINE void set_depth_stencil_attachment_descriptor_cpu_address_unsafe(F_descriptor_cpu_address value) noexcept
 		{
-			depth_stencil_attachment_descriptor_cpu_address_ = value;
+			unmanaged_depth_stencil_attachment_descriptor_cpu_address_ = value;
 		}
 #endif
 
@@ -128,13 +133,6 @@ namespace nrhi {
 			const F_frame_buffer_desc& desc
 		);
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		// managed
-		A_frame_buffer(
-			TKPA_valid<A_device> device_p,
-			const F_frame_buffer_desc& desc,
-			TG_fixed_vector<F_descriptor_cpu_address, 8, false> color_attachment_descriptor_cpu_addresses,
-			F_descriptor_cpu_address depth_stencil_attachment_descriptor_cpu_address
-		);
 		// unmanaged
 		A_frame_buffer(
 			TKPA_valid<A_device> device_p,
@@ -170,11 +168,6 @@ namespace nrhi {
 
 	public:
 		virtual void release_driver_specific_implementation();
-
-	public:
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		virtual E_frame_buffer_management_type management_type() const;
-#endif
 	};
 
 }
