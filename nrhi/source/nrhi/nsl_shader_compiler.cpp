@@ -9091,7 +9091,8 @@ namespace nrhi {
 		const G_string& raw_src_content,
 		const G_string& class_name,
 		E_nsl_output_language output_language_enum,
-		const G_string& abs_path
+		const G_string& abs_path,
+		const TG_vector<eastl::pair<G_string, G_string>>& macros
 	) {
 		if(output_language_enum == E_nsl_output_language::NONE) {
 
@@ -9120,8 +9121,16 @@ namespace nrhi {
 #endif
 		}
 
+		//
 		output_language_p_ = create_output_language(output_language_enum);
 
+		// bind macros
+		{
+			for(auto& macro : macros)
+				name_manager_p_->register_name(macro.first, macro.second);
+		}
+
+		//
 		if(
 			!(
 				translation_unit_compiler_p_->prepare_units(
