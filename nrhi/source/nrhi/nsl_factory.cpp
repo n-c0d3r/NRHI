@@ -45,9 +45,9 @@ namespace nrhi {
 
 					// setup shader binaries for options
 					u32 shader_count = nsl_pipeline_state_reflection.shader_indices.size();
-					for(u32 i = 0; i < shader_count; ++i) {
+					for(u32 j = 0; j < shader_count; ++j) {
 
-						u32 shader_index = nsl_pipeline_state_reflection.shader_indices[i];
+						u32 shader_index = nsl_pipeline_state_reflection.shader_indices[j];
 						const auto& shader_binary = shader_binaries[shader_index];
 						const auto& nsl_shader_reflection = nsl_shader_reflections[shader_index];
 
@@ -128,9 +128,9 @@ namespace nrhi {
 
 					// setup shader binaries for options
 					u32 shader_count = nsl_pipeline_state_reflection.shader_indices.size();
-					for(u32 i = 0; i < shader_count; ++i) {
+					for(u32 j = 0; j < shader_count; ++j) {
 
-						u32 shader_index = nsl_pipeline_state_reflection.shader_indices[i];
+						u32 shader_index = nsl_pipeline_state_reflection.shader_indices[j];
 						const auto& shader_binary = shader_binaries[shader_index];
 						const auto& nsl_shader_reflection = nsl_shader_reflections[shader_index];
 
