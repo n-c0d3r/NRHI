@@ -300,11 +300,18 @@ namespace nrhi {
 		TKPA_valid<A_command_list> command_list_p,
 		TKPA_valid<A_pipeline_state> pipeline_state_p
 	) {
-		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
-		NCPP_ASSERT(command_list_p->supports_compute() || command_list_p->supports_graphics()) << "command list does not support compute or graphics";
+		NCPP_ASSERT(pipeline_state_p->type() != ED_pipeline_state_type::NONE);
 
-		command_list_p.T_cast<F_directx12_command_list>()->d3d12_command_list_p()->SetPipelineState(
-			pipeline_state_p.T_cast<F_directx12_pipeline_state>()->d3d12_pipeline_state_p()
+		NRHI_ENUM_SWITCH(
+			pipeline_state_p->type(),
+			NRHI_ENUM_CASE(
+				ED_pipeline_state_type::GRAPHICS,
+				ZG_bind_pipeline_state(command_list_p, { pipeline_state_p });
+			)
+			NRHI_ENUM_CASE(
+				ED_pipeline_state_type::COMPUTE,
+				ZC_bind_pipeline_state(command_list_p, { pipeline_state_p });
+			)
 		);
 	}
 
