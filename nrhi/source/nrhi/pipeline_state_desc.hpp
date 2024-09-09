@@ -112,7 +112,7 @@ namespace nrhi {
 
 		b8 enable_depth_test = false;
 		ED_format format = ED_format::D32_FLOAT;
-		ED_depth_comparison_func depth_comparison_func = ED_depth_comparison_func::ALWAYS;
+		ED_depth_comparison_func depth_comparison_func = ED_depth_comparison_func::LESS;
 		b8 depth_buffer_write = true;
 
 		NCPP_FORCE_INLINE b8 operator == (const F_depth_stencil_desc& b) const noexcept {
