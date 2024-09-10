@@ -186,8 +186,8 @@ namespace nrhi {
 
 		  	HRESULT hr = dxgi_swapchain_p_->ResizeBuffers(
 			  	this->desc().rtv_count,
-				surface_p->desc().size.x,
-				surface_p->desc().size.y,
+				surface_p->client_size().x,
+				surface_p->client_size().y,
 			  	(DXGI_FORMAT)(this->desc().format),
 			  	DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH
 		  	);
