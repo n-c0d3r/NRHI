@@ -363,7 +363,7 @@ namespace nrhi {
 		TG_vector<u32> actual_slot_spaces;
 
 		TG_vector<G_string> uniforms;
-		u32 sort_uniforms = true;
+		u32 sort_uniforms = false;
 		u32 constant_size = NCPP_U32_MAX;
 
 		F_resource_dimension_sizes dimension_sizes = { 1 };
