@@ -8427,7 +8427,18 @@ namespace nrhi {
 
 		G_string uniform_declarations;
 		auto uniform_manager_p = shader_compiler_p()->uniform_manager_p();
-		for(const auto& uniform : resource.second.uniforms) {
+		auto uniforms = resource.second.uniforms;
+		{
+			auto compare = [&](const G_string& a, const G_string& b)
+			{
+				const auto& uniform_info_a = uniform_manager_p->uniform_info(a);
+				const auto& uniform_info_b = uniform_manager_p->uniform_info(b);
+
+				return (uniform_info_a.creation_index < uniform_info_b.creation_index);
+			};
+			eastl::sort(uniforms.begin(), uniforms.end(), compare);
+		}
+		for(const auto& uniform : uniforms) {
 
 			const auto& uniform_info = uniform_manager_p->uniform_info(uniform);
 
