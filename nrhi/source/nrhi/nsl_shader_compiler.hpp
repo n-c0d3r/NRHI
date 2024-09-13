@@ -398,6 +398,7 @@ namespace nrhi {
 		u32 end_location = 0;
 		TK<F_nsl_translation_unit> translation_unit_p;
 
+		u32 creation_index = NCPP_U32_MAX;
 	};
 	using F_nsl_uniform = eastl::pair<G_string, F_nsl_uniform_info>;
 
@@ -3415,6 +3416,8 @@ namespace nrhi {
 
 	private:
 		TK_valid<F_nsl_shader_compiler> shader_compiler_p_;
+
+		u32 next_uniform_creation_index_ = 0;
 
 	protected:
 		TG_unordered_map<G_string, F_nsl_uniform_info> name_to_uniform_info_map_;

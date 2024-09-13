@@ -7023,6 +7023,14 @@ namespace nrhi {
 					};
 					eastl::sort(uniform_iterator_vector.begin(), uniform_iterator_vector.end(), sort_func);
 				}
+				else
+				{
+					auto sort_func = [&](const F_uniform_iterator& a, const F_uniform_iterator& b) -> b8 {
+
+						return (a->second.creation_index < b->second.creation_index);
+					};
+					eastl::sort(uniform_iterator_vector.begin(), uniform_iterator_vector.end(), sort_func);
+				}
 
 				// calculate buffer size and uniform offset
 				{
@@ -8678,6 +8686,9 @@ namespace nrhi {
 	F_nsl_uniform_info F_nsl_uniform_manager::process_uniform_info(const G_string& name, const F_nsl_uniform_info& uniform_info) {
 
 		F_nsl_uniform_info result = uniform_info;
+
+		result.creation_index = next_uniform_creation_index_;
+		++next_uniform_creation_index_;
 
 		return std::move(result);
 	}
