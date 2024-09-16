@@ -8597,7 +8597,7 @@ namespace nrhi {
 				sub_name_keyword += "[";
 				if(dimension_size != NCPP_U32_MAX)
 				{
-					sub_name_keyword += dimension_size;
+					sub_name_keyword += G_to_string(dimension_size);
 				}
 				sub_name_keyword += "]";
 			}
