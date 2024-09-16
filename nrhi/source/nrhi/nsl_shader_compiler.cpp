@@ -3912,7 +3912,7 @@ namespace nrhi {
 
 				auto& dimension_size_child_info_tree = child_info_trees[i];
 
-				auto value_opt = child_info_trees_reader.read_u32(i);
+				auto value_opt = child_info_trees_reader.read_i32(i);
 
 				if(!value_opt)
 					return eastl::nullopt;
@@ -8592,8 +8592,13 @@ namespace nrhi {
 		if(resource_info.is_array)
 			for(u32 i = 0; i < resource_info.dimension_count; ++i) {
 
+				u32 dimension_size = resource_info.dimension_sizes[i];
+
 				sub_name_keyword += "[";
-				sub_name_keyword += G_to_string(resource_info.dimension_sizes[i]);
+				if(dimension_size != NCPP_U32_MAX)
+				{
+					sub_name_keyword += dimension_size;
+				}
 				sub_name_keyword += "]";
 			}
 
