@@ -4,6 +4,8 @@
 #####################################################################################
 include(NCPP/ConfigureCompiler)
 include(NCPP/Utilities/SetGlobal)
+include(NCPP/Utilities/AddTargetFileAsDependency)
+include(NCPP/Utilities/ApplyDependencies)
 
 
 
@@ -411,15 +413,18 @@ target_link_options(nrhi
 #####################################################################################
 #   Dependencies
 #####################################################################################
-add_dependencies(nrhi
-    ncpp
-    nmath
-    nsurface
-    dxclib
-    dxcompiler
-#    spirv-cross-cpp
-    ${NRHI_THIRD_PARTY_TARGETS}
+NCPP_ApplyDependencies(
+    TARGET nrhi
+    DEPENDENT_TARGETS
+        ncpp
+        nmath
+        nsurface
+        dxclib
+        dxcompiler
+    #    spirv-cross-cpp
+        ${NRHI_THIRD_PARTY_TARGETS}
 )
+NCPP_AddTargetFileAsDependency(nrhi dxcompiler)
 
 
 
