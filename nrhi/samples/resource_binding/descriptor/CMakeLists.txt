@@ -1,4 +1,8 @@
 
+include(NCPP/Utilities/ApplyDependencies)
+
+
+
 # nrhi.samples.resource_binding.descriptor target source files
 file(GLOB source_files
     "source/*.cpp"
@@ -34,6 +38,8 @@ target_include_directories(nrhi.samples.resource_binding.descriptor
 
 
 # nrhi.samples.resource_binding.descriptor target dependencies
-add_dependencies(nrhi.samples.resource_binding.descriptor 
-    nrhi
+NCPP_ApplyDependencies(
+    TARGET nrhi.samples.resource_binding.descriptor
+    DEPENDENT_TARGETS
+        nrhi
 )

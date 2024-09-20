@@ -1,4 +1,8 @@
 
+include(NCPP/Utilities/ApplyDependencies)
+
+
+
 # nrhi.samples.swapchain_with_clear target source files
 file(GLOB source_files
     "source/*.cpp"
@@ -34,6 +38,8 @@ target_include_directories(nrhi.samples.swapchain_with_clear
 
 
 # nrhi.samples.swapchain_with_clear target dependencies
-add_dependencies(nrhi.samples.swapchain_with_clear 
-    nrhi
+NCPP_ApplyDependencies(
+    TARGET nrhi.samples.swapchain_with_clear
+    DEPENDENT_TARGETS
+        nrhi
 )

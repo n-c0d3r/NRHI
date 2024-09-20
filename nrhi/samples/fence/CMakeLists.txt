@@ -1,4 +1,8 @@
 
+include(NCPP/Utilities/ApplyDependencies)
+
+
+
 # nrhi.samples.fence target source files
 file(GLOB source_files
     "source/*.cpp"
@@ -34,6 +38,8 @@ target_include_directories(nrhi.samples.fence
 
 
 # nrhi.samples.fence target dependencies
-add_dependencies(nrhi.samples.fence 
-    nrhi
+NCPP_ApplyDependencies(
+    TARGET nrhi.samples.fence
+    DEPENDENT_TARGETS
+        nrhi
 )

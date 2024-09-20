@@ -1,4 +1,8 @@
 
+include(NCPP/Utilities/ApplyDependencies)
+
+
+
 # nrhi.samples.map_unmap_resource_advanced target source files
 file(GLOB source_files
     "source/*.cpp"
@@ -34,6 +38,8 @@ target_include_directories(nrhi.samples.map_unmap_resource_advanced
 
 
 # nrhi.samples.map_unmap_resource_advanced target dependencies
-add_dependencies(nrhi.samples.map_unmap_resource_advanced 
-    nrhi
+NCPP_ApplyDependencies(
+    TARGET nrhi.samples.map_unmap_resource_advanced
+    DEPENDENT_TARGETS
+        nrhi
 )

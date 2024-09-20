@@ -1,4 +1,8 @@
 
+include(NCPP/Utilities/ApplyDependencies)
+
+
+
 # nrhi.samples.root_signature target source files
 file(GLOB source_files
     "source/*.cpp"
@@ -34,6 +38,8 @@ target_include_directories(nrhi.samples.root_signature
 
 
 # nrhi.samples.root_signature target dependencies
-add_dependencies(nrhi.samples.root_signature 
-    nrhi
+NCPP_ApplyDependencies(
+    TARGET nrhi.samples.root_signature
+    DEPENDENT_TARGETS
+        nrhi
 )

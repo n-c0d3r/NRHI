@@ -1,4 +1,8 @@
 
+include(NCPP/Utilities/ApplyDependencies)
+
+
+
 # nrhi.samples.pipeline_state target source files
 file(GLOB source_files
     "source/*.cpp"
@@ -34,6 +38,8 @@ target_include_directories(nrhi.samples.pipeline_state
 
 
 # nrhi.samples.pipeline_state target dependencies
-add_dependencies(nrhi.samples.pipeline_state 
-    nrhi
+NCPP_ApplyDependencies(
+    TARGET nrhi.samples.pipeline_state
+    DEPENDENT_TARGETS
+        nrhi
 )

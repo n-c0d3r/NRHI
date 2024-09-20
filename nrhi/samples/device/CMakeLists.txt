@@ -1,4 +1,8 @@
 
+include(NCPP/Utilities/ApplyDependencies)
+
+
+
 # nrhi.samples.device target source files
 file(GLOB source_files
     "source/*.cpp"
@@ -34,6 +38,8 @@ target_include_directories(nrhi.samples.device
 
 
 # nrhi.samples.device target dependencies
-add_dependencies(nrhi.samples.device 
-    nrhi
+NCPP_ApplyDependencies(
+    TARGET nrhi.samples.device
+    DEPENDENT_TARGETS
+        nrhi
 )

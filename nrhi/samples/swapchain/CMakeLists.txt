@@ -1,4 +1,8 @@
 
+include(NCPP/Utilities/ApplyDependencies)
+
+
+
 # nrhi.samples.swapchain target source files
 file(GLOB source_files
     "source/*.cpp"
@@ -34,6 +38,8 @@ target_include_directories(nrhi.samples.swapchain
 
 
 # nrhi.samples.swapchain target dependencies
-add_dependencies(nrhi.samples.swapchain 
-    nrhi
+NCPP_ApplyDependencies(
+    TARGET nrhi.samples.swapchain
+    DEPENDENT_TARGETS
+        nrhi
 )

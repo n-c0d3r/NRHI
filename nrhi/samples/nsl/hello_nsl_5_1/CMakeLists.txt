@@ -1,4 +1,8 @@
 
+include(NCPP/Utilities/ApplyDependencies)
+
+
+
 # nrhi.samples.nsl.hello_nsl_5_1 target source files
 file(GLOB source_files
     "source/*.cpp"
@@ -34,6 +38,8 @@ target_include_directories(nrhi.samples.nsl.hello_nsl_5_1
 
 
 # nrhi.samples.nsl.hello_nsl_5_1 target dependencies
-add_dependencies(nrhi.samples.nsl.hello_nsl_5_1 
-    nrhi
+NCPP_ApplyDependencies(
+    TARGET nrhi.samples.nsl.hello_nsl_5_1
+    DEPENDENT_TARGETS
+        nrhi
 )

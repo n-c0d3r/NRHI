@@ -1,4 +1,8 @@
 
+include(NCPP/Utilities/ApplyDependencies)
+
+
+
 # nrhi.samples.command_queue target source files
 file(GLOB source_files
     "source/*.cpp"
@@ -34,6 +38,8 @@ target_include_directories(nrhi.samples.command_queue
 
 
 # nrhi.samples.command_queue target dependencies
-add_dependencies(nrhi.samples.command_queue 
-    nrhi
+NCPP_ApplyDependencies(
+    TARGET nrhi.samples.command_queue
+    DEPENDENT_TARGETS
+        nrhi
 )
