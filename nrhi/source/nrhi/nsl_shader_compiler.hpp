@@ -3160,6 +3160,40 @@ namespace nrhi {
 
 
 
+	class NRHI_API H_nsl_output_language
+	{
+	public:
+		static E_nsl_output_language default_as_enum()
+		{
+#ifdef NRHI_DRIVER_DIRECTX_12
+			if(driver_index() == NRHI_DRIVER_INDEX_DIRECTX_12)
+				return E_nsl_output_language::HLSL_5_1;
+#endif
+#ifdef NRHI_DRIVER_DIRECTX_11
+			if(driver_index() == NRHI_DRIVER_INDEX_DIRECTX_11)
+				return E_nsl_output_language::HLSL_5;
+#endif
+#ifdef NRHI_DRIVER_VULKAN
+#error "Vulkan is not supported"
+			//			if(driver_index() == NRHI_DRIVER_INDEX_VULKAN)
+			//				return E_nsl_output_language::HLSL_5;
+#endif
+#ifdef NRHI_DRIVER_METAL
+#error "Metal is not supported"
+			//			if(driver_index() == NRHI_DRIVER_INDEX_METAL)
+			//				return E_nsl_output_language::HLSL_5;
+#endif
+#ifdef NRHI_DRIVER_OPENGL
+#error "OpenGL is not supported"
+			//			if(driver_index() == NRHI_DRIVER_INDEXOPENGL)
+			//				return E_nsl_output_language::HLSL_5;
+#endif
+			return E_nsl_output_language::NONE;
+		}
+	};
+
+
+
 	class NRHI_API A_nsl_output_hlsl : public A_nsl_output_language {
 
 	protected:

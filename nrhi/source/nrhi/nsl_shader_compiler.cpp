@@ -9123,31 +9123,9 @@ namespace nrhi {
 		const G_string& abs_path,
 		const TG_vector<eastl::pair<G_string, G_string>>& macros
 	) {
-		if(output_language_enum == E_nsl_output_language::NONE) {
-
-#ifdef NRHI_DRIVER_DIRECTX_12
-			if(driver_index() == NRHI_DRIVER_INDEX_DIRECTX_12)
-				output_language_enum = E_nsl_output_language::HLSL_5_1;
-#endif
-#ifdef NRHI_DRIVER_DIRECTX_11
-			if(driver_index() == NRHI_DRIVER_INDEX_DIRECTX_11)
-				output_language_enum = E_nsl_output_language::HLSL_5;
-#endif
-#ifdef NRHI_DRIVER_VULKAN
-			#error "Vulkan is not supported"
-//			if(driver_index() == NRHI_DRIVER_INDEX_VULKAN)
-//				output_language_enum = E_nsl_output_language::HLSL_5;
-#endif
-#ifdef NRHI_DRIVER_METAL
-			#error "Metal is not supported"
-//			if(driver_index() == NRHI_DRIVER_INDEX_METAL)
-//				output_language_enum = E_nsl_output_language::HLSL_5;
-#endif
-#ifdef NRHI_DRIVER_OPENGL
-			#error "OpenGL is not supported"
-//			if(driver_index() == NRHI_DRIVER_INDEXOPENGL)
-//				output_language_enum = E_nsl_output_language::HLSL_5;
-#endif
+		if(output_language_enum == E_nsl_output_language::NONE)
+		{
+			output_language_enum = H_nsl_output_language::default_as_enum();
 		}
 
 		//
