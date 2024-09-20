@@ -61,6 +61,22 @@ if(NOT TARGET spirv-cross)
     endif()
 endif()
 
+#####################################################################################
+#   DirectXShaderCompiler checking
+#####################################################################################
+#if(NOT TARGET spirv-cross)
+    if(NOT EXISTS "${NRHI_DEPENDENCIES_DIR}/DirectXShaderCompiler")
+        file(MAKE_DIRECTORY "${NRHI_DEPENDENCIES_DIR}/DirectXShaderCompiler")
+        NCPP_GitHelper_Clone(
+            PROJECT_NAME "SPIRV-Cross"
+            GIT_URL "https://github.com/microsoft/DirectXShaderCompiler"
+            GIT_COMMIT "9bfbee6c44deecf28111879f8d21fa15773181ef"
+            GIT_BRANCH "main"
+            DIRECTORY "${NRHI_DEPENDENCIES_DIR}"
+        )
+    endif()
+#endif()
+
 
 
 message(STATUS "<NRHI::CheckDependencies> Check dependencies done")
