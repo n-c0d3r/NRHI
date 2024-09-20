@@ -41,6 +41,7 @@
 #include <nrhi/depth_comparison_func.hpp>
 #include <nrhi/primitive_topology.hpp>
 #include <nrhi/pipeline_state_desc.hpp>
+#include <nrhi/device.hpp>
 
 #pragma endregion
 
@@ -67,7 +68,8 @@ namespace nrhi {
 		NONE = 0,
 		HLSL_4 = 1,
 		HLSL_5 = 2,
-		HLSL_5_1 = 3
+		HLSL_5_1 = 3,
+		HLSL_6_5 = 4
 
 	};
 
@@ -3163,11 +3165,24 @@ namespace nrhi {
 	class NRHI_API H_nsl_output_language
 	{
 	public:
-		static E_nsl_output_language default_as_enum()
+		static E_nsl_output_language default_as_enum(TKPA_valid<A_device> device_p)
 		{
 #ifdef NRHI_DRIVER_DIRECTX_12
 			if(driver_index() == NRHI_DRIVER_INDEX_DIRECTX_12)
+			{
+				auto highest_shader_model = HD_directx12_device::hlsl_highest_shader_model(device_p);
+
+				if(
+					(highest_shader_model.first > 6)
+					|| (
+						(highest_shader_model.first == 6)
+						&& (highest_shader_model.second >= 5)
+					)
+				)
+					return E_nsl_output_language::HLSL_6_5;
+
 				return E_nsl_output_language::HLSL_5_1;
+			}
 #endif
 #ifdef NRHI_DRIVER_DIRECTX_11
 			if(driver_index() == NRHI_DRIVER_INDEX_DIRECTX_11)
@@ -3317,6 +3332,24 @@ namespace nrhi {
 			const F_nsl_resource& resource
 		) override;
 
+	};
+
+
+
+	class NRHI_API F_nsl_output_hlsl_6_5 : public F_nsl_output_hlsl_5_1 {
+
+	public:
+		F_nsl_output_hlsl_6_5(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			E_nsl_output_language output_language_as_enum = E_nsl_output_language::HLSL_6_5
+		);
+		virtual ~F_nsl_output_hlsl_6_5();
+
+	public:
+		NCPP_OBJECT(F_nsl_output_hlsl_6_5);
+
+	private:
+		void register_data_types_internal();
 	};
 
 
@@ -3802,8 +3835,8 @@ namespace nrhi {
 	public:
 		eastl::optional<F_nsl_compiled_result> compile(
 			const G_string& raw_src_content,
-			const G_string& class_name = "",
-			E_nsl_output_language output_language_enum = E_nsl_output_language::NONE,
+			const G_string& class_name,
+			E_nsl_output_language output_language_enum,
 			const G_string& abs_path = "",
 			const TG_vector<eastl::pair<G_string, G_string>>& macros = {}
 		);

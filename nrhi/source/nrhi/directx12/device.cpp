@@ -80,4 +80,165 @@ namespace nrhi {
 		}
 	}
 
+	struct eastl::pair<u32, u32> HD_directx12_device::hlsl_highest_shader_model(
+		TKPA_valid<A_device> device_p
+	)
+	{
+		auto d3d12_device_p = device_p.T_cast<F_directx12_device>()->d3d12_device_p();
+
+		{
+			D3D12_FEATURE_DATA_SHADER_MODEL shader_model = {};
+			shader_model.HighestShaderModel = D3D_SHADER_MODEL_6_7;
+			if(
+				SUCCEEDED(
+					d3d12_device_p->CheckFeatureSupport(
+						D3D12_FEATURE_SHADER_MODEL,
+						&shader_model,
+						sizeof(shader_model)
+					)
+				)
+			)
+			{
+				return { 6, 7 };
+			}
+		}
+
+		{
+			D3D12_FEATURE_DATA_SHADER_MODEL shader_model = {};
+			shader_model.HighestShaderModel = D3D_SHADER_MODEL_6_6;
+			if(
+				SUCCEEDED(
+					d3d12_device_p->CheckFeatureSupport(
+						D3D12_FEATURE_SHADER_MODEL,
+						&shader_model,
+						sizeof(shader_model)
+					)
+				)
+			)
+			{
+				return { 6, 6 };
+			}
+		}
+
+		{
+			D3D12_FEATURE_DATA_SHADER_MODEL shader_model = {};
+			shader_model.HighestShaderModel = D3D_SHADER_MODEL_6_5;
+			if(
+				SUCCEEDED(
+					d3d12_device_p->CheckFeatureSupport(
+						D3D12_FEATURE_SHADER_MODEL,
+						&shader_model,
+						sizeof(shader_model)
+					)
+				)
+			)
+			{
+				return { 6, 5 };
+			}
+		}
+
+		{
+			D3D12_FEATURE_DATA_SHADER_MODEL shader_model = {};
+			shader_model.HighestShaderModel = D3D_SHADER_MODEL_6_4;
+			if(
+				SUCCEEDED(
+					d3d12_device_p->CheckFeatureSupport(
+						D3D12_FEATURE_SHADER_MODEL,
+						&shader_model,
+						sizeof(shader_model)
+					)
+				)
+			)
+			{
+				return { 6, 4 };
+			}
+		}
+
+		{
+			D3D12_FEATURE_DATA_SHADER_MODEL shader_model = {};
+			shader_model.HighestShaderModel = D3D_SHADER_MODEL_6_3;
+			if(
+				SUCCEEDED(
+					d3d12_device_p->CheckFeatureSupport(
+						D3D12_FEATURE_SHADER_MODEL,
+						&shader_model,
+						sizeof(shader_model)
+					)
+				)
+			)
+			{
+				return { 6, 3 };
+			}
+		}
+
+		{
+			D3D12_FEATURE_DATA_SHADER_MODEL shader_model = {};
+			shader_model.HighestShaderModel = D3D_SHADER_MODEL_6_2;
+			if(
+				SUCCEEDED(
+					d3d12_device_p->CheckFeatureSupport(
+						D3D12_FEATURE_SHADER_MODEL,
+						&shader_model,
+						sizeof(shader_model)
+					)
+				)
+			)
+			{
+				return { 6, 2 };
+			}
+		}
+
+		{
+			D3D12_FEATURE_DATA_SHADER_MODEL shader_model = {};
+			shader_model.HighestShaderModel = D3D_SHADER_MODEL_6_1;
+			if(
+				SUCCEEDED(
+					d3d12_device_p->CheckFeatureSupport(
+						D3D12_FEATURE_SHADER_MODEL,
+						&shader_model,
+						sizeof(shader_model)
+					)
+				)
+			)
+			{
+				return { 6, 1 };
+			}
+		}
+
+		{
+			D3D12_FEATURE_DATA_SHADER_MODEL shader_model = {};
+			shader_model.HighestShaderModel = D3D_SHADER_MODEL_6_0;
+			if(
+				SUCCEEDED(
+					d3d12_device_p->CheckFeatureSupport(
+						D3D12_FEATURE_SHADER_MODEL,
+						&shader_model,
+						sizeof(shader_model)
+					)
+				)
+			)
+			{
+				return { 6, 0 };
+			}
+		}
+
+		{
+			D3D12_FEATURE_DATA_SHADER_MODEL shader_model = {};
+			shader_model.HighestShaderModel = D3D_SHADER_MODEL_5_1;
+			if(
+				SUCCEEDED(
+					d3d12_device_p->CheckFeatureSupport(
+						D3D12_FEATURE_SHADER_MODEL,
+						&shader_model,
+						sizeof(shader_model)
+					)
+				)
+			)
+			{
+				return { 5, 1 };
+			}
+		}
+
+		return { 0, 0 };
+	}
 }

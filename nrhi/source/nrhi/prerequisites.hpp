@@ -80,6 +80,7 @@ namespace nrhi {}
 #include <d3d12.h>
 #include <nrhi/directx12/d3dx12.h>
 #include <wrl.h>
+#include <dxcapi.h>
 #ifdef NRHI_ENABLE_DRIVER_DEBUGGER
 // #include "WinPixEventRuntime/pix3.h"
 #endif

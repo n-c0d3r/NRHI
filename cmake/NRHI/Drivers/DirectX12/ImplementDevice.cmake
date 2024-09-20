@@ -32,6 +32,9 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "resource_heap_tier" "E_resource_heap_tier(
 			TKPA_valid<A_device> device_p
 		)"
+        "hlsl_highest_shader_model" "eastl::pair<u32, u32>(
+    		TKPA_valid<A_device> device_p
+    	)"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement device done")

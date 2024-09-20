@@ -8537,6 +8537,9 @@ namespace nrhi {
 
 		name_manager_p->deregister_name("NSL_HLSL_MAJOR");
 		name_manager_p->register_name("NSL_HLSL_MAJOR", "4");
+
+		name_manager_p->deregister_name("NSL_HLSL_MINOR");
+		name_manager_p->register_name("NSL_HLSL_MINOR", "0");
 	}
 
 
@@ -8559,6 +8562,9 @@ namespace nrhi {
 
 		name_manager_p->deregister_name("NSL_HLSL_MAJOR");
 		name_manager_p->register_name("NSL_HLSL_MAJOR", "5");
+
+		name_manager_p->deregister_name("NSL_HLSL_MINOR");
+		name_manager_p->register_name("NSL_HLSL_MINOR", "0");
 	}
 
 
@@ -8578,6 +8584,9 @@ namespace nrhi {
 
 		auto name_manager_p = shader_compiler_p()->name_manager_p();
 		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
+
+		name_manager_p->deregister_name("NSL_HLSL_MAJOR");
+		name_manager_p->register_name("NSL_HLSL_MAJOR", "5");
 
 		name_manager_p->deregister_name("NSL_HLSL_MINOR");
 		name_manager_p->register_name("NSL_HLSL_MINOR", "1");
@@ -8609,6 +8618,31 @@ namespace nrhi {
 			resource,
 			sub_name_keyword
 		);
+	}
+
+
+
+	F_nsl_output_hlsl_6_5::F_nsl_output_hlsl_6_5(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		E_nsl_output_language output_language_as_enum
+	) :
+		F_nsl_output_hlsl_5_1(shader_compiler_p, output_language_as_enum)
+	{
+		register_data_types_internal();
+	}
+	F_nsl_output_hlsl_6_5::~F_nsl_output_hlsl_6_5() {
+	}
+
+	void F_nsl_output_hlsl_6_5::register_data_types_internal() {
+
+		auto name_manager_p = shader_compiler_p()->name_manager_p();
+		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
+
+		name_manager_p->deregister_name("NSL_HLSL_MAJOR");
+		name_manager_p->register_name("NSL_HLSL_MAJOR", "6");
+
+		name_manager_p->deregister_name("NSL_HLSL_MINOR");
+		name_manager_p->register_name("NSL_HLSL_MINOR", "5");
 	}
 
 
@@ -9111,6 +9145,10 @@ namespace nrhi {
 			return TU<F_nsl_output_hlsl_5_1>()(
 				NCPP_KTHIS()
 			);
+		case E_nsl_output_language::HLSL_6_5:
+			return TU<F_nsl_output_hlsl_6_5>()(
+				NCPP_KTHIS()
+			);
 		default:
 			return null;
 		}
@@ -9123,11 +9161,6 @@ namespace nrhi {
 		const G_string& abs_path,
 		const TG_vector<eastl::pair<G_string, G_string>>& macros
 	) {
-		if(output_language_enum == E_nsl_output_language::NONE)
-		{
-			output_language_enum = H_nsl_output_language::default_as_enum();
-		}
-
 		//
 		output_language_p_ = create_output_language(output_language_enum);
 

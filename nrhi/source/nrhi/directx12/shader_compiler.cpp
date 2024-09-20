@@ -6,6 +6,96 @@
 
 namespace nrhi {
 
+	F_shader_binary HD_directx12_shader_compiler::dxcapi_compile_hlsl_from_src_content(
+		const G_string& class_name,
+		const G_string& shader_name,
+		const G_string& entry_point_name,
+		const G_string& src_content,
+		const G_string& abs_path,
+		u32 model_major,
+		u32 model_minor,
+		ED_shader_type type
+	)
+	{
+		NCPP_ASSERT(model_major >= 6);
+		NCPP_ASSERT(type != ED_shader_type::NONE);
+
+		G_string src_name = class_name + "::" + shader_name;
+
+		G_wstring wide_model = G_to_wstring(model_major) + L"_" + G_to_wstring(model_minor);
+		G_wstring wide_src_content = G_to_wstring(src_content);
+		G_wstring wide_entry_point_name = G_to_wstring(entry_point_name);
+
+		G_string shader_type_name;
+
+		NRHI_ENUM_SWITCH(
+			type,
+			NRHI_ENUM_CASE(
+				ED_shader_type::VERTEX,
+				shader_type_name = "vertex";
+				wide_model = L"vs_" + wide_model;
+			)
+			NRHI_ENUM_CASE(
+				ED_shader_type::PIXEL,
+				shader_type_name = "pixel";
+				wide_model = L"ps_" + wide_model;
+			)
+			NRHI_ENUM_CASE(
+				ED_shader_type::COMPUTE,
+				shader_type_name = "compute";
+				wide_model = L"cs_" + wide_model;
+			)
+		);
+
+		Microsoft::WRL::ComPtr<IDxcCompiler3> pCompiler;
+		Microsoft::WRL::ComPtr<IDxcUtils> pUtils;
+		Microsoft::WRL::ComPtr<IDxcIncludeHandler> pIncludeHandler;
+
+		DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&pCompiler));
+		DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&pUtils));
+		pUtils->CreateDefaultIncludeHandler(&pIncludeHandler);
+
+		DxcBuffer sourceBuffer;
+		sourceBuffer.Ptr = wide_src_content.data();
+		sourceBuffer.Size = wide_src_content.length() * sizeof(wchar_t);
+		sourceBuffer.Encoding = 0;
+
+		const wchar_t* args[] = {
+			L"-T", wide_model.c_str(), // Target profile
+			L"-E", wide_entry_point_name.c_str(), // Entry point
+		};
+
+		Microsoft::WRL::ComPtr<IDxcResult> pResults;
+		pCompiler->Compile(
+			&sourceBuffer,
+			args,
+			_countof(args),
+			0,
+			IID_PPV_ARGS(pResults.GetAddressOf())
+		);
+
+		// Check for compilation errors
+		Microsoft::WRL::ComPtr<IDxcBlobUtf8> pErrors;
+		pResults->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&pErrors), nullptr);
+		NCPP_ASSERT(!(pErrors && pErrors->GetStringLength() > 0))
+			<< "can't compile "
+			<< ncpp::T_cout_field_name(shader_type_name)
+			<< " shader blob "
+			<< ncpp::T_cout_value(entry_point_name)
+			<< std::endl
+			<< ncpp::E_log_color::V_FOREGROUND_BRIGHT_RED
+			<< (char*)pErrors->GetBufferPointer();
+
+		// Get the compiled shader
+		Microsoft::WRL::ComPtr<IDxcBlob> pShader;
+		pResults->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&pShader), nullptr);
+
+		return {
+			(u8*)(pShader->GetBufferPointer()),
+			(u8*)(pShader->GetBufferPointer()) + pShader->GetBufferSize()
+		};
+	}
+
 	F_shader_binary HD_directx12_shader_compiler::compile_hlsl_from_src_content(
 		const G_string& class_name,
 		const G_string& shader_name,
@@ -16,6 +106,8 @@ namespace nrhi {
 		u32 model_minor,
 		ED_shader_type type
 	) {
+		NCPP_ASSERT(model_major <= 5);
+
 		ID3DBlob* d3d12_shader_blob_p = 0;
 		ID3DBlob* d3d12_error_blob_p = 0;
 
@@ -125,6 +217,8 @@ namespace nrhi {
 		u32 model_minor,
 		ED_shader_type type
 	) {
+		NCPP_ASSERT(model_major <= 5);
+
 		ID3DBlob* d3d12_shader_blob_p = 0;
 		ID3DBlob* d3d12_error_blob_p = 0;
 
@@ -240,6 +334,24 @@ namespace nrhi {
 			model_major = 5;
 			model_minor = 1;
 			break;
+		case E_nsl_output_language::HLSL_6_5:
+			model_major = 6;
+			model_minor = 5;
+			break;
+		}
+
+		if(model_major >= 6)
+		{
+			dxcapi_compile_hlsl_from_src_content(
+				compiled_result.class_name,
+				compiled_result.reflection.shaders[shader_index].name,
+				"main",
+				compiled_result.build(shader_index),
+				"",
+				model_major,
+				model_minor,
+				compiled_result.reflection.shaders[shader_index].type
+			);
 		}
 
 		return compile_hlsl_from_src_content(

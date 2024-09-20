@@ -74,7 +74,11 @@ int main() {
 		"\n"
 		"output = vout;\n"
 		"}\n"
-		"\n"
+		"\n",
+		"",
+		H_nsl_output_language::default_as_enum(
+			NCPP_FOH_VALID(device_p)
+		)
 	);
 	NCPP_ASSERT(nsl_shader_compiled_result_opt);
 

@@ -88,7 +88,13 @@ int main() {
 		"\n";
 
 	auto compiler_p = TU<F_nsl_shader_compiler>()();
-	auto nsl_shader_compiled_result_opt = compiler_p->compile(shader_src_content);
+	auto nsl_shader_compiled_result_opt = compiler_p->compile(
+		shader_src_content,
+		"",
+		H_nsl_output_language::default_as_enum(
+			NCPP_FOH_VALID(device_p)
+		)
+	);
 	NCPP_ASSERT(nsl_shader_compiled_result_opt);
 
 	const auto& nsl_shader_compiled_result = nsl_shader_compiled_result_opt.value();
