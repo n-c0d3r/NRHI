@@ -14,14 +14,7 @@ namespace nrhi
 
     void HD_directx12_pix_runtime::initialize()
     {
-        // try to load DLL from static path
-        module_handle_ = LoadLibrary(NCPP_TEXT(NRHI_WIN_PIX_EVENT_RUNTIME_DLL_PATH_X64));
-
-        // try to load DLL from dynamic path
-        if(!module_handle_)
-        {
-            module_handle_ = LoadLibrary(NCPP_TEXT("WinPixEventRuntime.dll"));
-        }
+        module_handle_ = LoadLibrary(NCPP_TEXT("WinPixEventRuntime.dll"));
 
         NCPP_ASSERT(module_handle_) << "not found WinPixEventRuntime.dll";
 

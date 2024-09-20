@@ -3327,6 +3327,9 @@ namespace nrhi {
 		void register_data_types_internal();
 
 	public:
+		virtual eastl::optional<G_string> src_header() override;
+
+	public:
 		virtual eastl::optional<G_string> resource_to_string(
 			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
 			const F_nsl_resource& resource

@@ -7681,7 +7681,8 @@ namespace nrhi {
 		result += G_string("#define SV_POSITION SV_Position\n");
 		result += G_string("#define SV_TARGET SV_Target\n");
 
-		result += G_string("#define NSL_GLUE(A, B) A##B\n");
+		result += G_string("#define NSL_GLUE_INTERNAL(A, B) A##B\n");
+		result += G_string("#define NSL_GLUE(A, B) NSL_GLUE_INTERNAL(A, B)\n");
 
 		return std::move(result);
 	}
@@ -8201,7 +8202,7 @@ namespace nrhi {
 			+ sampler_state_register_slot_macro
 			+ "\n"
 
-			+ "#if (NSL_HLSL_MAJOR >= 5) && (NSL_HLSL_MINOR >= 1)\n"
+			+ "#ifdef NSL_HLSL_SUPPORT_REGISTER_SLOT_SPACE\n"
 			+ "#define NSL_REGISTER_SPACE_"
 			+ sampler_state.first
 			+ " , NSL_GLUE(space,"
@@ -8452,7 +8453,7 @@ namespace nrhi {
 			+ resource_register_slot_macro
 			+ "\n"
 
-			+ "#if (NSL_HLSL_MAJOR >= 5) && (NSL_HLSL_MINOR >= 1)\n"
+			+ "#ifdef NSL_HLSL_SUPPORT_REGISTER_SLOT_SPACE\n"
 			+ "#define NSL_REGISTER_SPACE_"
 			+ resource.first
 			+ " , NSL_GLUE(space,"
@@ -8590,6 +8591,17 @@ namespace nrhi {
 
 		name_manager_p->deregister_name("NSL_HLSL_MINOR");
 		name_manager_p->register_name("NSL_HLSL_MINOR", "1");
+
+		name_manager_p->register_name("NSL_HLSL_SUPPORT_REGISTER_SLOT_SPACE");
+	}
+
+	eastl::optional<G_string> F_nsl_output_hlsl_5_1::src_header()
+	{
+		auto result = F_nsl_output_hlsl_5::src_header().value();
+
+		result += "#define NSL_HLSL_SUPPORT_REGISTER_SLOT_SPACE\n";
+
+		return eastl::move(result);
 	}
 
 	eastl::optional<G_string> F_nsl_output_hlsl_5_1::resource_to_string(

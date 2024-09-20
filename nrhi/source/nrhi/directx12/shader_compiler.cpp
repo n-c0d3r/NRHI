@@ -23,7 +23,6 @@ namespace nrhi {
 		G_string src_name = class_name + "::" + shader_name;
 
 		G_wstring wide_model = G_to_wstring(model_major) + L"_" + G_to_wstring(model_minor);
-		G_wstring wide_src_content = G_to_wstring(src_content);
 		G_wstring wide_entry_point_name = G_to_wstring(entry_point_name);
 
 		G_string shader_type_name;
@@ -56,9 +55,9 @@ namespace nrhi {
 		pUtils->CreateDefaultIncludeHandler(&pIncludeHandler);
 
 		DxcBuffer sourceBuffer;
-		sourceBuffer.Ptr = wide_src_content.data();
-		sourceBuffer.Size = wide_src_content.length() * sizeof(wchar_t);
-		sourceBuffer.Encoding = 0;
+		sourceBuffer.Ptr = src_content.data();
+		sourceBuffer.Size = src_content.length() * sizeof(char);
+		sourceBuffer.Encoding = DXC_CP_UTF8;
 
 		const wchar_t* args[] = {
 			L"-T", wide_model.c_str(), // Target profile
@@ -342,7 +341,7 @@ namespace nrhi {
 
 		if(model_major >= 6)
 		{
-			dxcapi_compile_hlsl_from_src_content(
+			return dxcapi_compile_hlsl_from_src_content(
 				compiled_result.class_name,
 				compiled_result.reflection.shaders[shader_index].name,
 				"main",

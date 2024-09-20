@@ -5,6 +5,7 @@
 include(NCPP/ConfigureCompiler)
 include(NCPP/Utilities/SetGlobal)
 include(NCPP/Utilities/AddTargetFileAsDependency)
+include(NCPP/Utilities/AddFileAsDependency)
 include(NCPP/Utilities/ApplyDependencies)
 
 
@@ -301,6 +302,8 @@ add_library(nrhi ${nrhiLinkingMode}
 NCPP_SetGlobal(NRHI_THIRD_PARTY_TARGETS "")
 NCPP_SetGlobal(NRHI_THIRD_PARTY_DEFINITIONS "")
 NCPP_SetGlobal(NRHI_THIRD_PARTY_LINK_OPTIONS "")
+NCPP_SetGlobal(NRHI_THIRD_PARTY_FILES_AS_DEPENDENCIES "")
+NCPP_SetGlobal(NRHI_THIRD_PARTY_TARGET_FILES_AS_DEPENDENCIES "")
 add_subdirectory(third_party)
 
 
@@ -425,6 +428,12 @@ NCPP_ApplyDependencies(
         ${NRHI_THIRD_PARTY_TARGETS}
 )
 NCPP_AddTargetFileAsDependency(nrhi dxcompiler)
+foreach(File ${NRHI_THIRD_PARTY_FILES_AS_DEPENDENCIES})
+    NCPP_AddFileAsDependency(nrhi "${File}")
+endforeach()
+foreach(File ${NRHI_THIRD_PARTY_TARGET_FILES_AS_DEPENDENCIES})
+    NCPP_AddTargetFileAsDependency(nrhi "${File}")
+endforeach()
 
 
 
