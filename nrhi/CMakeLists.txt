@@ -318,16 +318,25 @@ target_precompile_headers(nrhi
 
 target_include_directories(nrhi
     PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/source
-        ${CMAKE_CURRENT_BINARY_DIR}/generated_files
+        "${CMAKE_CURRENT_SOURCE_DIR}/source"
+        "${CMAKE_CURRENT_BINARY_DIR}/generated_files"
 )
+
+if(EXISTS "${NRHI_DEPENDENCIES_DIR}/DirectXShaderCompiler/include")
+    target_include_directories(nrhi
+        PUBLIC
+            "${NRHI_DEPENDENCIES_DIR}/DirectXShaderCompiler/include"
+    )
+endif()
 
 target_link_libraries(nrhi
     PUBLIC
         ncpp
         nmath
         nsurface
-        spirv-cross-cpp
+        dxclib
+        dxcompiler
+#        spirv-cross-cpp
         ${NRHI_THIRD_PARTY_TARGETS}
 )
 
@@ -406,7 +415,9 @@ add_dependencies(nrhi
     ncpp
     nmath
     nsurface
-    spirv-cross-cpp
+    dxclib
+    dxcompiler
+#    spirv-cross-cpp
     ${NRHI_THIRD_PARTY_TARGETS}
 )
 

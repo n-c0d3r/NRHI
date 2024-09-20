@@ -90,12 +90,12 @@ namespace nrhi {}
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include <spirv.hpp>
-#include <spirv_cross.hpp>
-#include <spirv_hlsl.hpp>
-#include <spirv_glsl.hpp>
-#include <spirv_msl.hpp>
-#include <spirv_cpp.hpp>
+// #include <spirv.hpp>
+// #include <spirv_cross.hpp>
+// #include <spirv_hlsl.hpp>
+// #include <spirv_glsl.hpp>
+// #include <spirv_msl.hpp>
+// #include <spirv_cpp.hpp>
 
 #pragma endregion
 
