@@ -6081,13 +6081,13 @@ namespace nrhi {
 	) {
 		return apply_shader_with_customizations(
 			tree,
-			G_string("[numthreads(")
+			G_string("NSL_PRE_SHADER_KEYWORDS_NUM_THREADS(")
 			+ G_to_string(thread_group_size_.x)
 			+ ","
 			+ G_to_string(thread_group_size_.y)
 			+ ","
 			+ G_to_string(thread_group_size_.z)
-			+ ")]\n"
+			+ ")\n"
 		);
 	}
 
@@ -7577,6 +7577,8 @@ namespace nrhi {
 		result += "#define NSL_HLSL\n";
 		result += "#define NSL_HLSL_MAJOR " + name_manager_p->target("NSL_HLSL_MAJOR") + "\n";
 		result += "#define NSL_HLSL_MINOR " + name_manager_p->target("NSL_HLSL_MINOR") + "\n";
+
+		result += "#define NSL_PRE_SHADER_KEYWORDS_NUM_THREADS(X, Y, Z) [numthreads(X, Y, Z)]\n";
 
 		result += G_string("#define b8 bool\n");
 		result += G_string("#define i32 int\n");
