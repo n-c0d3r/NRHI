@@ -54,6 +54,8 @@ namespace nrhi {
 		D3D12_ROOT_SIGNATURE_DESC d3d12_root_signature_desc;
 		d3d12_root_signature_desc.Flags = D3D12_ROOT_SIGNATURE_FLAGS(desc.flags);
 
+		TG_vector<D3D12_DESCRIPTOR_RANGE> d3d12_descriptor_ranges;
+
 		const auto& root_param_descs = desc.param_descs;
 		TG_vector<D3D12_ROOT_PARAMETER> d3d12_root_params(root_param_descs.size());
 		u32 d3d12_root_param_count = d3d12_root_params.size();
@@ -74,12 +76,14 @@ namespace nrhi {
 			{
 			case D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE:
 				{
-					TG_vector<D3D12_DESCRIPTOR_RANGE> d3d12_descriptor_ranges(root_descriptor_table_desc.range_descs.size());
-					u32 j_end = d3d12_descriptor_ranges.size();
+					D3D12_DESCRIPTOR_RANGE* d3d12_descriptor_range_p = d3d12_descriptor_ranges.data() + d3d12_descriptor_ranges.size();
+					d3d12_descriptor_ranges.resize(d3d12_descriptor_ranges.size() + root_descriptor_table_desc.range_descs.size());
+
+					u32 j_end = root_descriptor_table_desc.range_descs.size();
 					for(u32 j = 0; j < j_end; ++j) {
 
 						const auto& range_desc = root_descriptor_table_desc.range_descs[j];
-						auto& d3d12_descriptor_range = d3d12_descriptor_ranges[j];
+						auto& d3d12_descriptor_range = d3d12_descriptor_range_p[j];
 
 						d3d12_descriptor_range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE(range_desc.type);
 						d3d12_descriptor_range.NumDescriptors = range_desc.descriptor_count;
@@ -91,7 +95,7 @@ namespace nrhi {
 					}
 
 					d3d12_root_param.DescriptorTable.NumDescriptorRanges = d3d12_descriptor_ranges.size();
-					d3d12_root_param.DescriptorTable.pDescriptorRanges = d3d12_descriptor_ranges.data();
+					d3d12_root_param.DescriptorTable.pDescriptorRanges = d3d12_descriptor_range_p;
 				}
 				break;
 			case D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS:
