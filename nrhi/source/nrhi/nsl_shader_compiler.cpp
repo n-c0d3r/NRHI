@@ -9731,8 +9731,11 @@ namespace nrhi {
 
 		// bind macros
 		{
+			G_string macros_str;
 			for(auto& macro : macros)
-				compile_result_opt.value().src_content = "#define " + macro.first + " " + macro.second + "\n" + compile_result_opt.value().src_content;
+				macros_str += "#define " + macro.first + " " + macro.second + "\n";
+
+			compile_result_opt.value().src_content = macros_str + compile_result_opt.value().src_content;
 		}
 
 		return compile_result_opt;
