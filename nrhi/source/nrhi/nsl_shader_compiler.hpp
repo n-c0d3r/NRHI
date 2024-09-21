@@ -282,7 +282,15 @@ namespace nrhi {
 		u32 count = 1;
 		b8 is_array = false;
 		F_nsl_data_argument_config_map config_map;
+	};
 
+	enum class E_nsl_data_param_flag
+	{
+		NONE,
+		INDICES,
+		VERTICES,
+		PRIMITIVES,
+		PAYLOAD
 	};
 	struct F_nsl_data_param {
 
@@ -290,12 +298,13 @@ namespace nrhi {
 		b8 is_in = false;
 		b8 is_out = false;
 
+		E_nsl_data_param_flag flags = E_nsl_data_param_flag::NONE;
 	};
+
 	struct F_nsl_data_argument_member {
 
 		F_nsl_data_argument argument;
 		u32 offset;
-
 	};
 
 	using F_nsl_structure_config_map = TG_unordered_map<G_string, F_nsl_info_tree_reader>;
@@ -311,7 +320,6 @@ namespace nrhi {
 		u32 begin_location = 0;
 		u32 end_location = 0;
 		TK<F_nsl_translation_unit> translation_unit_p;
-
 	};
 	using F_nsl_structure = eastl::pair<G_string, F_nsl_structure_info>;
 

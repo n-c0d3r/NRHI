@@ -6250,6 +6250,24 @@ namespace nrhi {
 			}
 		}
 
+		//
+		for(auto& data_param : data_params_)
+		{
+			auto& config_map = data_param.argument.config_map;
+
+			if(config_map.find("indices") != config_map.end())
+				data_param.flags = flag_combine(data_param.flags, E_nsl_data_param_flag::INDICES);
+
+			if(config_map.find("vertices") != config_map.end())
+				data_param.flags = flag_combine(data_param.flags, E_nsl_data_param_flag::VERTICES);
+
+			if(config_map.find("primitives") != config_map.end())
+				data_param.flags = flag_combine(data_param.flags, E_nsl_data_param_flag::PRIMITIVES);
+
+			if(config_map.find("payload") != config_map.end())
+				data_param.flags = flag_combine(data_param.flags, E_nsl_data_param_flag::PAYLOAD);
+		}
+
 		return std::move(childs);
 	}
 	eastl::optional<G_string> F_nsl_mesh_shader_object::apply(
@@ -8626,6 +8644,18 @@ namespace nrhi {
 				data_param_declarations += "inout ";
 			if(data_param.is_out && !data_param.is_in)
 				data_param_declarations += "out ";
+
+			if(flag_is_has(data_param.flags, E_nsl_data_param_flag::INDICES))
+				data_param_declarations += "indices";
+
+			if(flag_is_has(data_param.flags, E_nsl_data_param_flag::VERTICES))
+				data_param_declarations += "vertices";
+
+			if(flag_is_has(data_param.flags, E_nsl_data_param_flag::PRIMITIVES))
+				data_param_declarations += "primitives";
+
+			if(flag_is_has(data_param.flags, E_nsl_data_param_flag::PAYLOAD))
+				data_param_declarations += "payload";
 
 			data_param_declarations += (
 				argument_type
