@@ -60,6 +60,18 @@ namespace nrhi {
 		TG_vector<D3D12_ROOT_PARAMETER> d3d12_root_params(root_param_descs.size());
 		u32 d3d12_root_param_count = d3d12_root_params.size();
 		d3d12_root_signature_desc.NumParameters = d3d12_root_param_count;
+
+		for(u32 i = 0; i < d3d12_root_param_count; ++i)
+		{
+			const auto& root_param_desc = root_param_descs[i];
+
+			const auto& root_descriptor_table_desc = root_param_desc.descriptor_table_desc;
+
+			d3d12_descriptor_ranges.resize(d3d12_descriptor_ranges.size() + root_descriptor_table_desc.range_descs.size());
+		}
+
+		D3D12_DESCRIPTOR_RANGE* d3d12_descriptor_range_p = d3d12_descriptor_ranges.data();
+
 		for(u32 i = 0; i < d3d12_root_param_count; ++i) {
 
 			const auto& root_param_desc = root_param_descs[i];
@@ -76,13 +88,6 @@ namespace nrhi {
 			{
 			case D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE:
 				{
-					d3d12_descriptor_ranges.resize(d3d12_descriptor_ranges.size() + root_descriptor_table_desc.range_descs.size());
-					D3D12_DESCRIPTOR_RANGE* d3d12_descriptor_range_p = (
-						d3d12_descriptor_ranges.data()
-						+ d3d12_descriptor_ranges.size()
-						- root_descriptor_table_desc.range_descs.size()
-					);
-
 					u32 j_end = root_descriptor_table_desc.range_descs.size();
 					for(u32 j = 0; j < j_end; ++j) {
 
@@ -100,6 +105,8 @@ namespace nrhi {
 
 					d3d12_root_param.DescriptorTable.NumDescriptorRanges = d3d12_descriptor_ranges.size();
 					d3d12_root_param.DescriptorTable.pDescriptorRanges = d3d12_descriptor_range_p;
+
+					d3d12_descriptor_range_p += d3d12_root_param.DescriptorTable.NumDescriptorRanges;
 				}
 				break;
 			case D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS:
