@@ -2117,6 +2117,35 @@ namespace nrhi {
 
 		return it->second;
 	}
+	eastl::optional<E_nsl_output_topology> F_nsl_info_tree_reader::read_output_topology(u32 index, b8 is_required) const {
+
+		if(!guarantee_index(index, is_required)) {
+
+			return eastl::nullopt;
+		}
+
+		G_string value_str = parse_value_str(info_trees_[index].name);
+
+		if(value_str == "triangle")
+		{
+			return E_nsl_output_topology::TRIANGLE;
+		}
+		if(value_str == "line")
+		{
+			return E_nsl_output_topology::LINE;
+		}
+
+		if(is_required)
+		{
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				error_stack_p_,
+				info_trees_[index].begin_location,
+				"invalid value \"" + value_str + "\""
+			);
+		}
+
+		return eastl::nullopt;
+	}
 
 
 
@@ -6193,6 +6222,20 @@ namespace nrhi {
 			}
 		}
 
+		// @output_topology annotation
+		{
+			auto it = context.current_object_config.find("output_topology");
+			if(it != context.current_object_config.end()) {
+
+				auto value_opt = it->second.read_output_topology(0);
+
+				if(!value_opt)
+					return eastl::nullopt;
+
+				output_topology_ = value_opt.value();
+			}
+		}
+
 		// @default_slot_space annotation
 		{
 			auto it = context.current_object_config.find("default_slot_space");
@@ -6212,6 +6255,12 @@ namespace nrhi {
 	eastl::optional<G_string> F_nsl_mesh_shader_object::apply(
 		const F_nsl_ast_tree& tree
 	) {
+		G_string output_topology_str;
+		if(output_topology_ == E_nsl_output_topology::TRIANGLE)
+			output_topology_str = "triangle";
+		if(output_topology_ == E_nsl_output_topology::LINE)
+			output_topology_str = "line";
+
 		return apply_shader_with_customizations(
 			tree,
 			G_string("NSL_PRE_SHADER_KEYWORDS_NUM_THREADS(")
@@ -6220,6 +6269,9 @@ namespace nrhi {
 			+ G_to_string(thread_group_size_.y)
 			+ ","
 			+ G_to_string(thread_group_size_.z)
+			+ ")\n"
+			+ "NSL_PRE_SHADER_KEYWORDS_OUTPUT_TOPOLOGY("
+			+ output_topology_str
 			+ ")\n"
 		);
 	}
@@ -7715,6 +7767,7 @@ namespace nrhi {
 		result += "#define NSL_HLSL_MINOR " + name_manager_p->target("NSL_HLSL_MINOR") + "\n";
 
 		result += "#define NSL_PRE_SHADER_KEYWORDS_NUM_THREADS(X, Y, Z) [numthreads(X, Y, Z)]\n";
+		result += "#define NSL_PRE_SHADER_KEYWORDS_OUTPUT_TOPOLOGY(X) [outputtopology(X)]\n";
 
 		result += G_string("#define b8 bool\n");
 		result += G_string("#define i32 int\n");
@@ -8485,8 +8538,16 @@ namespace nrhi {
 				+ " "
 				+ argument_member.argument.name
 				+ semantic_option
-				+ ";\n"
 			);
+
+			if(argument_member.argument.is_array)
+			{
+				argument_member_declarations += "[";
+				argument_member_declarations += G_to_string(argument_member.argument.count);
+				argument_member_declarations += "]";
+			}
+
+			argument_member_declarations += ";\n";
 		}
 
 		return (
@@ -8572,6 +8633,13 @@ namespace nrhi {
 				+ data_param.argument.name
 				+ semantic_option
 			);
+
+			if(data_param.argument.is_array)
+			{
+				data_param_declarations += "[";
+				data_param_declarations += G_to_string(data_param.argument.count);
+				data_param_declarations += "]";
+			}
 		}
 
 		return (
@@ -8659,7 +8727,16 @@ namespace nrhi {
 
 			const auto& uniform_info = uniform_manager_p->uniform_info(uniform);
 
-			uniform_declarations += uniform_info.type + " " + uniform + ";\n";
+			uniform_declarations += uniform_info.type + " " + uniform;
+
+			if(uniform_info.is_array)
+			{
+				uniform_declarations += "[";
+				uniform_declarations += G_to_string(uniform_info.count);
+				uniform_declarations += "]";
+			}
+
+			uniform_declarations += ";\n";
 		}
 
 		result += (
@@ -9363,8 +9440,9 @@ namespace nrhi {
 				reflection.shaders[i] = F_nsl_shader_reflection {
 
 					.name = shader_object_p->name(),
-					.type = shader_object_p->type()
+					.type = shader_object_p->type(),
 
+					.thread_group_size = shader_object_p->thread_group_size()
 				};
 
 				++it;

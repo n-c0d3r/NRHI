@@ -181,6 +181,11 @@ namespace nrhi {
 
 	};
 
+	enum class E_nsl_output_topology {
+		TRIANGLE,
+		LINE
+	};
+
 	class NRHI_API F_nsl_info_tree_reader {
 
 	private:
@@ -257,6 +262,7 @@ namespace nrhi {
 		eastl::optional<ED_format> read_format(u32 index, b8 is_required = true) const;
 		eastl::optional<ED_depth_comparison_func> read_depth_comparison_func(u32 index, b8 is_required = true) const;
 		eastl::optional<ED_primitive_topology> read_primitive_topology(u32 index, b8 is_required = true) const;
+		eastl::optional<E_nsl_output_topology> read_output_topology(u32 index, b8 is_required = true) const;
 
 	};
 
@@ -743,6 +749,7 @@ namespace nrhi {
 
 		ED_shader_type type;
 
+		F_vector3_u thread_group_size = F_vector3_u::zero();
 	};
 	struct F_nsl_pipeline_state_reflection {
 
@@ -2019,6 +2026,8 @@ namespace nrhi {
 
 	protected:
 		TG_vector<F_nsl_data_param> data_params_;
+		F_vector3_u thread_group_size_ = F_vector3_u::zero();
+		E_nsl_output_topology output_topology_ = E_nsl_output_topology::TRIANGLE;
 
 	public:
 		u32 index = NCPP_U32_MAX;
@@ -2027,6 +2036,8 @@ namespace nrhi {
 	public:
 		NCPP_FORCE_INLINE const auto& data_params() const noexcept { return data_params_; }
 		NCPP_FORCE_INLINE auto type() const noexcept { return type_; }
+		NCPP_FORCE_INLINE const F_vector3_u& thread_group_size() const noexcept { return thread_group_size_; }
+		NCPP_FORCE_INLINE E_nsl_output_topology output_topology() const noexcept { return output_topology_; }
 
 
 
@@ -2174,14 +2185,6 @@ namespace nrhi {
 
 	class NRHI_API F_nsl_compute_shader_object final : public A_nsl_shader_object {
 
-	private:
-		F_vector3_u thread_group_size_ = F_vector3_u::zero();
-
-	public:
-		NCPP_FORCE_INLINE const F_vector3_u& thread_group_size() const noexcept { return thread_group_size_; }
-
-
-
 	public:
 		F_nsl_compute_shader_object(
 			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
@@ -2233,14 +2236,6 @@ namespace nrhi {
 
 
 	class NRHI_API F_nsl_mesh_shader_object final : public A_nsl_shader_object {
-
-	private:
-		F_vector3_u thread_group_size_ = F_vector3_u::zero();
-
-	public:
-		NCPP_FORCE_INLINE const F_vector3_u& thread_group_size() const noexcept { return thread_group_size_; }
-
-
 
 	public:
 		F_nsl_mesh_shader_object(
