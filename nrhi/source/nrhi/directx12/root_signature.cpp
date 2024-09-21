@@ -103,7 +103,7 @@ namespace nrhi {
 						d3d12_descriptor_range.OffsetInDescriptorsFromTableStart = range_desc.offset_in_descriptors_from_table_start;
 					}
 
-					d3d12_root_param.DescriptorTable.NumDescriptorRanges = d3d12_descriptor_ranges.size();
+					d3d12_root_param.DescriptorTable.NumDescriptorRanges = root_descriptor_table_desc.range_descs.size();
 					d3d12_root_param.DescriptorTable.pDescriptorRanges = d3d12_descriptor_range_p;
 
 					d3d12_descriptor_range_p += d3d12_root_param.DescriptorTable.NumDescriptorRanges;
