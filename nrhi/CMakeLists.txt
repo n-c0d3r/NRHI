@@ -427,7 +427,6 @@ NCPP_ApplyDependencies(
     #    spirv-cross-cpp
         ${NRHI_THIRD_PARTY_TARGETS}
 )
-NCPP_AddTargetFileAsDependency(nrhi dxcompiler)
 foreach(File ${NRHI_THIRD_PARTY_FILES_AS_DEPENDENCIES})
     NCPP_AddFileAsDependency(nrhi "${File}")
 endforeach()
