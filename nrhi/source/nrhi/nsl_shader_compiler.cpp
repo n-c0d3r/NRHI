@@ -6128,6 +6128,139 @@ namespace nrhi {
 
 
 
+	F_nsl_mesh_shader_object::F_nsl_mesh_shader_object(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		TKPA_valid<A_nsl_object_type> type_p,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const G_string& name
+	) :
+		A_nsl_shader_object(
+			shader_compiler_p,
+			type_p,
+			translation_unit_p,
+			ED_shader_type::COMPUTE,
+			name
+		)
+	{
+	}
+	F_nsl_mesh_shader_object::~F_nsl_mesh_shader_object() {
+	}
+
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_mesh_shader_object::recursive_build_ast_tree(
+		F_nsl_context& context,
+		TK_valid<F_nsl_translation_unit> unit_p,
+		TG_vector<F_nsl_ast_tree>& trees,
+		sz index,
+		F_nsl_error_stack* error_stack_p
+	) {
+		auto childs = A_nsl_shader_object::recursive_build_ast_tree(
+			context,
+			unit_p,
+			trees,
+			index,
+			error_stack_p
+		);
+
+		// @thread_group_size annotation
+		{
+			auto it = context.current_object_config.find("thread_group_size");
+			if(it != context.current_object_config.end()) {
+
+				{
+					auto value_opt = it->second.read_u32(0);
+
+					if(!value_opt)
+						return eastl::nullopt;
+
+					thread_group_size_.x = value_opt.value();
+				}
+				{
+					auto value_opt = it->second.read_u32(1);
+
+					if(!value_opt)
+						return eastl::nullopt;
+
+					thread_group_size_.y = value_opt.value();
+				}
+				{
+					auto value_opt = it->second.read_u32(2);
+
+					if(!value_opt)
+						return eastl::nullopt;
+
+					thread_group_size_.z = value_opt.value();
+				}
+			}
+		}
+
+		// @default_slot_space annotation
+		{
+			auto it = context.current_object_config.find("default_slot_space");
+			if(it != context.current_object_config.end()) {
+
+				auto value_opt = it->second.read_u32(0);
+
+				if(!value_opt)
+					return eastl::nullopt;
+
+				default_slot_space = value_opt.value();
+			}
+		}
+
+		return std::move(childs);
+	}
+	eastl::optional<G_string> F_nsl_mesh_shader_object::apply(
+		const F_nsl_ast_tree& tree
+	) {
+		return apply_shader_with_customizations(
+			tree,
+			G_string("NSL_PRE_SHADER_KEYWORDS_NUM_THREADS(")
+			+ G_to_string(thread_group_size_.x)
+			+ ","
+			+ G_to_string(thread_group_size_.y)
+			+ ","
+			+ G_to_string(thread_group_size_.z)
+			+ ")\n"
+		);
+	}
+
+
+
+	F_nsl_mesh_shader_object_type::F_nsl_mesh_shader_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_shader_object_type(
+			shader_compiler_p,
+			"mesh_shader"
+		)
+	{
+	}
+	F_nsl_mesh_shader_object_type::~F_nsl_mesh_shader_object_type() {
+	}
+
+	TK<A_nsl_object> F_nsl_mesh_shader_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	) {
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_mesh_shader_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
 	F_nsl_object_manager::F_nsl_object_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
 		shader_compiler_p_(shader_compiler_p)
 	{
@@ -6160,6 +6293,9 @@ namespace nrhi {
 		);
 		register_type(
 			TU<F_nsl_compute_shader_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_mesh_shader_object_type>()(shader_compiler_p_)
 		);
 		register_type(
 			TU<F_nsl_structure_object_type>()(shader_compiler_p_)
@@ -7681,6 +7817,18 @@ namespace nrhi {
 		result += G_string("#define SV_POSITION SV_Position\n");
 		result += G_string("#define SV_TARGET SV_Target\n");
 
+		result += G_string("#define SV_INSTANCE_ID SV_InstanceID\n");
+		result += G_string("#define SV_PRIMITIVE_ID SV_PrimitiveID\n");
+		result += G_string("#define SV_VERTEX_ID SV_VertexID\n");
+		result += G_string("#define SV_DEPTH SV_Depth\n");
+
+		result += G_string("#define SV_DISPATCH_THREAD_ID SV_DispatchThreadID\n");
+		result += G_string("#define SV_GROUP_THREAD_ID SV_GroupThreadID\n");
+		result += G_string("#define SV_GROUP_INDEX SV_GroupIndex\n");
+		result += G_string("#define SV_GROUP_ID SV_GroupID\n");
+		result += G_string("#define SV_VIEW_ID SV_ViewID\n");
+		result += G_string("#define SV_CULL_PRIMITIVE SV_CullPrimitive\n");
+
 		result += G_string("#define NSL_GLUE_INTERNAL(A, B) A##B\n");
 		result += G_string("#define NSL_GLUE(A, B) NSL_GLUE_INTERNAL(A, B)\n");
 
@@ -8160,8 +8308,32 @@ namespace nrhi {
 		name_manager_p->template T_register_name<FE_nsl_name_types::SEMANTIC>("SV_Position");
 		name_manager_p->template T_register_name<FE_nsl_name_types::SEMANTIC>("SV_Target");
 
+		name_manager_p->template T_register_name<FE_nsl_name_types::SEMANTIC>("SV_InstanceID");
+		name_manager_p->template T_register_name<FE_nsl_name_types::SEMANTIC>("SV_PrimitiveID");
+		name_manager_p->template T_register_name<FE_nsl_name_types::SEMANTIC>("SV_VertexID");
+		name_manager_p->template T_register_name<FE_nsl_name_types::SEMANTIC>("SV_Depth");
+
+		name_manager_p->template T_register_name<FE_nsl_name_types::SEMANTIC>("SV_DispatchThreadID");
+		name_manager_p->template T_register_name<FE_nsl_name_types::SEMANTIC>("SV_GroupThreadID");
+		name_manager_p->template T_register_name<FE_nsl_name_types::SEMANTIC>("SV_GroupIndex");
+		name_manager_p->template T_register_name<FE_nsl_name_types::SEMANTIC>("SV_GroupID");
+		name_manager_p->template T_register_name<FE_nsl_name_types::SEMANTIC>("SV_ViewID");
+		name_manager_p->template T_register_name<FE_nsl_name_types::SEMANTIC>("SV_CullPrimitive");
+
 		name_manager_p->register_name("SV_POSITION", "SV_Position");
 		name_manager_p->register_name("SV_TARGET", "SV_Target");
+
+		name_manager_p->register_name("SV_INSTANCE_ID", "SV_InstanceID");
+		name_manager_p->register_name("SV_PRIMITIVE_ID", "SV_PrimitiveID");
+		name_manager_p->register_name("SV_VERTEX_ID", "SV_VertexID");
+		name_manager_p->register_name("SV_DEPTH", "SV_Depth");
+
+		name_manager_p->register_name("SV_DISPATCH_THREAD_ID", "SV_DispatchThreadID");
+		name_manager_p->register_name("SV_GROUP_THREAD_ID", "SV_GroupThreadID");
+		name_manager_p->register_name("SV_GROUP_INDEX", "SV_GroupIndex");
+		name_manager_p->register_name("SV_GROUP_ID", "SV_GroupID");
+		name_manager_p->register_name("SV_VIEW_ID", "SV_ViewID");
+		name_manager_p->register_name("SV_CULL_PRIMITIVE", "SV_CullPrimitive");
 
 		data_type_manager_p->register_semantic(
 			"SV_Position",
@@ -8170,6 +8342,48 @@ namespace nrhi {
 		data_type_manager_p->register_semantic(
 			"SV_Target",
 			F_nsl_semantic_info("float4")
+		);
+
+		data_type_manager_p->register_semantic(
+			"SV_InstanceID",
+			F_nsl_semantic_info("uint")
+		);
+		data_type_manager_p->register_semantic(
+			"SV_PrimitiveID",
+			F_nsl_semantic_info("uint")
+		);
+		data_type_manager_p->register_semantic(
+			"SV_VertexID",
+			F_nsl_semantic_info("uint")
+		);
+		data_type_manager_p->register_semantic(
+			"SV_Depth",
+			F_nsl_semantic_info("float")
+		);
+
+		data_type_manager_p->register_semantic(
+			"SV_DispatchThreadID",
+			F_nsl_semantic_info("uint3")
+		);
+		data_type_manager_p->register_semantic(
+			"SV_GroupThreadID",
+			F_nsl_semantic_info("uint3")
+		);
+		data_type_manager_p->register_semantic(
+			"SV_GroupIndex",
+			F_nsl_semantic_info("uint")
+		);
+		data_type_manager_p->register_semantic(
+			"SV_GroupID",
+			F_nsl_semantic_info("uint3")
+		);
+		data_type_manager_p->register_semantic(
+			"SV_ViewID",
+			F_nsl_semantic_info("uint3")
+		);
+		data_type_manager_p->register_semantic(
+			"SV_CullPrimitive",
+			F_nsl_semantic_info("bool")
 		);
 	}
 

@@ -2232,6 +2232,66 @@ namespace nrhi {
 
 
 
+	class NRHI_API F_nsl_mesh_shader_object final : public A_nsl_shader_object {
+
+	private:
+		F_vector3_u thread_group_size_ = F_vector3_u::zero();
+
+	public:
+		NCPP_FORCE_INLINE const F_vector3_u& thread_group_size() const noexcept { return thread_group_size_; }
+
+
+
+	public:
+		F_nsl_mesh_shader_object(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			TKPA_valid<A_nsl_object_type> type_p,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			const G_string& name = ""
+		);
+		virtual ~F_nsl_mesh_shader_object();
+
+	public:
+		NCPP_OBJECT(F_nsl_mesh_shader_object);
+
+	public:
+		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
+			F_nsl_context& context,
+			TK_valid<F_nsl_translation_unit> unit_p,
+			TG_vector<F_nsl_ast_tree>& trees,
+			sz index,
+			F_nsl_error_stack* error_stack_p
+		) override;
+		virtual eastl::optional<G_string> apply(
+			const F_nsl_ast_tree& tree
+		) override;
+
+	};
+
+
+
+	class NRHI_API F_nsl_mesh_shader_object_type final : public A_nsl_shader_object_type {
+
+	public:
+		F_nsl_mesh_shader_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_mesh_shader_object_type();
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+
+	public:
+		NCPP_OBJECT(F_nsl_mesh_shader_object_type);
+
+	};
+
+
+
 	class NRHI_API F_nsl_object_manager {
 
 	private:
