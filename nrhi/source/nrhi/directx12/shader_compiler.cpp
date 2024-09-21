@@ -34,6 +34,14 @@ namespace nrhi {
 				ED_shader_type::COMPUTE,
 				model_minor = eastl::min<u32>(model_minor, 6);
 			)
+			NRHI_ENUM_CASE(
+				ED_shader_type::AMPLIFICATION,
+				model_minor = eastl::min<u32>(model_minor, 6);
+			)
+			NRHI_ENUM_CASE(
+				ED_shader_type::MESH,
+				model_minor = eastl::min<u32>(model_minor, 6);
+			)
 		);
 
 		G_string src_name = class_name + "::" + shader_name;
@@ -59,6 +67,16 @@ namespace nrhi {
 				ED_shader_type::COMPUTE,
 				shader_type_name = "compute";
 				wide_model = L"cs_" + wide_model;
+			)
+			NRHI_ENUM_CASE(
+				ED_shader_type::AMPLIFICATION,
+				shader_type_name = "amplification";
+				wide_model = L"as_" + wide_model;
+			)
+			NRHI_ENUM_CASE(
+				ED_shader_type::MESH,
+				shader_type_name = "mesh";
+				wide_model = L"ms_" + wide_model;
 			)
 		);
 

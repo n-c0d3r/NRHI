@@ -259,78 +259,147 @@ namespace nrhi {
 
 		ID3D12PipelineState* d3d12_pipeline_state_p = 0;
 
-		D3D12_GRAPHICS_PIPELINE_STATE_DESC  d3d12_pipeline_state_desc = {};
-		d3d12_pipeline_state_desc.pRootSignature = d3d12_root_signature_p;
+		auto setup_d3d12_pipeline_state_desc = [&](auto& d3d12_pipeline_state_desc)
+		{
+			d3d12_pipeline_state_desc.pRootSignature = d3d12_root_signature_p;
 
-		d3d12_pipeline_state_desc.RasterizerState.DepthClipEnable = true;
-		d3d12_pipeline_state_desc.RasterizerState.CullMode = D3D12_CULL_MODE(options.rasterizer_desc.cull_mode);
-		d3d12_pipeline_state_desc.RasterizerState.FillMode = D3D12_FILL_MODE(options.rasterizer_desc.fill_mode);
-		d3d12_pipeline_state_desc.RasterizerState.FrontCounterClockwise = options.rasterizer_desc.front_counter_clock_wise;
+			d3d12_pipeline_state_desc.RasterizerState.DepthClipEnable = true;
+			d3d12_pipeline_state_desc.RasterizerState.CullMode = D3D12_CULL_MODE(options.rasterizer_desc.cull_mode);
+			d3d12_pipeline_state_desc.RasterizerState.FillMode = D3D12_FILL_MODE(options.rasterizer_desc.fill_mode);
+			d3d12_pipeline_state_desc.RasterizerState.FrontCounterClockwise = options.rasterizer_desc.front_counter_clock_wise;
 
-		d3d12_pipeline_state_desc.DepthStencilState.DepthEnable = options.depth_stencil_desc.enable_depth_test;
-		d3d12_pipeline_state_desc.DSVFormat = DXGI_FORMAT(options.depth_stencil_desc.format);
-		d3d12_pipeline_state_desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC(options.depth_stencil_desc.depth_comparison_func);
-		d3d12_pipeline_state_desc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK(options.depth_stencil_desc.depth_buffer_write);
+			d3d12_pipeline_state_desc.DepthStencilState.DepthEnable = options.depth_stencil_desc.enable_depth_test;
+			d3d12_pipeline_state_desc.DSVFormat = DXGI_FORMAT(options.depth_stencil_desc.format);
+			d3d12_pipeline_state_desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC(options.depth_stencil_desc.depth_comparison_func);
+			d3d12_pipeline_state_desc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK(options.depth_stencil_desc.depth_buffer_write);
 
-		d3d12_pipeline_state_desc.BlendState.AlphaToCoverageEnable = options.blend_desc.enable_alpha_to_coverage;
-		d3d12_pipeline_state_desc.BlendState.IndependentBlendEnable = DXGI_FORMAT(options.blend_desc.enable_independent_blend);
-		for(u32 i = 0; i < 8; ++i) {
+			d3d12_pipeline_state_desc.BlendState.AlphaToCoverageEnable = options.blend_desc.enable_alpha_to_coverage;
+			d3d12_pipeline_state_desc.BlendState.IndependentBlendEnable = DXGI_FORMAT(options.blend_desc.enable_independent_blend);
+			for(u32 i = 0; i < 8; ++i) {
 
-			auto& d3d12_blend_rt = d3d12_pipeline_state_desc.BlendState.RenderTarget[i];
-			const auto& blend_rt = options.blend_desc.render_targets[i];
-			d3d12_blend_rt.BlendEnable = blend_rt.enable_blend;
+				auto& d3d12_blend_rt = d3d12_pipeline_state_desc.BlendState.RenderTarget[i];
+				const auto& blend_rt = options.blend_desc.render_targets[i];
+				d3d12_blend_rt.BlendEnable = blend_rt.enable_blend;
 
-			d3d12_blend_rt.LogicOpEnable = blend_rt.enable_logic_operation;
+				d3d12_blend_rt.LogicOpEnable = blend_rt.enable_logic_operation;
 
-			d3d12_blend_rt.SrcBlend = D3D12_BLEND(blend_rt.src_blend_factor);
-			d3d12_blend_rt.DestBlend = D3D12_BLEND(blend_rt.dst_blend_factor);
-			d3d12_blend_rt.BlendOp = D3D12_BLEND_OP(blend_rt.blend_operation);
+				d3d12_blend_rt.SrcBlend = D3D12_BLEND(blend_rt.src_blend_factor);
+				d3d12_blend_rt.DestBlend = D3D12_BLEND(blend_rt.dst_blend_factor);
+				d3d12_blend_rt.BlendOp = D3D12_BLEND_OP(blend_rt.blend_operation);
 
-			d3d12_blend_rt.SrcBlendAlpha = D3D12_BLEND(blend_rt.src_alpha_blend_factor);
-			d3d12_blend_rt.DestBlendAlpha = D3D12_BLEND(blend_rt.dst_alpha_blend_factor);
-			d3d12_blend_rt.BlendOpAlpha = D3D12_BLEND_OP(blend_rt.alpha_blend_operation);
+				d3d12_blend_rt.SrcBlendAlpha = D3D12_BLEND(blend_rt.src_alpha_blend_factor);
+				d3d12_blend_rt.DestBlendAlpha = D3D12_BLEND(blend_rt.dst_alpha_blend_factor);
+				d3d12_blend_rt.BlendOpAlpha = D3D12_BLEND_OP(blend_rt.alpha_blend_operation);
 
-			d3d12_blend_rt.LogicOp = D3D12_LOGIC_OP(blend_rt.logic_operation);
+				d3d12_blend_rt.LogicOp = D3D12_LOGIC_OP(blend_rt.logic_operation);
 
-			d3d12_blend_rt.RenderTargetWriteMask = u8(blend_rt.write_mode);
-		}
+				d3d12_blend_rt.RenderTargetWriteMask = u8(blend_rt.write_mode);
+			}
+		};
 
 		const auto& shader_binaries = options.shader_binaries;
 
-		const auto& vertex_shader_binary = options.shader_binaries.vertex;
-		d3d12_pipeline_state_desc.VS = { vertex_shader_binary.data(), vertex_shader_binary.size() };
-
-		TG_vector<D3D12_INPUT_ELEMENT_DESC> d3d12_input_element_descs = input_assembler_desc_desc_to_d3d12_input_element_descs(
-			options.input_assembler_desc
-		);
-		d3d12_pipeline_state_desc.InputLayout.NumElements = d3d12_input_element_descs.size();
-		d3d12_pipeline_state_desc.InputLayout.pInputElementDescs = d3d12_input_element_descs.data();
-
-		if(shader_binaries.pixel)
+		// mesh shader pipeline state
+		if(shader_binaries.amplification || shader_binaries.mesh)
 		{
-			const auto& pixel_shader_binary = shader_binaries.pixel.value();
-			d3d12_pipeline_state_desc.PS = { pixel_shader_binary.data(), pixel_shader_binary.size() };
+			D3DX12_MESH_SHADER_PIPELINE_STATE_DESC d3d12_pipeline_state_desc = {};
+
+			setup_d3d12_pipeline_state_desc(d3d12_pipeline_state_desc);
+
+			NCPP_ASSERT(!shader_binaries.vertex) << "vertex shader is not allowed for mesh shader pipeline state";
+
+			if(shader_binaries.amplification)
+			{
+				const auto& shader_binary = options.shader_binaries.amplification.value();
+				d3d12_pipeline_state_desc.AS = { shader_binary.data(), shader_binary.size() };
+			}
+			if(shader_binaries.mesh)
+			{
+				const auto& shader_binary = options.shader_binaries.mesh.value();
+				d3d12_pipeline_state_desc.MS = { shader_binary.data(), shader_binary.size() };
+			}
+			if(shader_binaries.pixel)
+			{
+				const auto& shader_binary = shader_binaries.pixel.value();
+				d3d12_pipeline_state_desc.PS = { shader_binary.data(), shader_binary.size() };
+			}
+
+			d3d12_pipeline_state_desc.NumRenderTargets = options.color_formats.size();
+			memcpy(
+				d3d12_pipeline_state_desc.RTVFormats,
+				options.color_formats.data(),
+				options.color_formats.size() * sizeof(DXGI_FORMAT)
+			);
+
+			d3d12_pipeline_state_desc.PrimitiveTopologyType = directx12_primitive_topology_type_table[u32(options.primitive_topology)];
+
+			d3d12_pipeline_state_desc.SampleMask = UINT_MAX;
+			d3d12_pipeline_state_desc.SampleDesc.Count = 1;
+
+			auto d3d12_pipeline_state_stream = CD3DX12_PIPELINE_MESH_STATE_STREAM(d3d12_pipeline_state_desc);
+
+			D3D12_PIPELINE_STATE_STREAM_DESC d3d12_pipeline_state_stream_desc;
+			d3d12_pipeline_state_stream_desc.pPipelineStateSubobjectStream = &d3d12_pipeline_state_stream;
+			d3d12_pipeline_state_stream_desc.SizeInBytes                   = sizeof(d3d12_pipeline_state_stream);
+
+			ID3D12Device2* d3d12_device2_p = 0;
+			d3d12_device_p->QueryInterface(
+				IID_PPV_ARGS(&d3d12_device2_p)
+			);
+			NCPP_ASSERT(d3d12_device2_p) << "not supported";
+
+			d3d12_device2_p->CreatePipelineState(
+				&d3d12_pipeline_state_stream_desc,
+				IID_PPV_ARGS(&d3d12_pipeline_state_p)
+			);
+			NCPP_ASSERT(d3d12_pipeline_state_p) << "can't create d3d12 pipeline state";
+
+			return d3d12_pipeline_state_p;
 		}
 
-		d3d12_pipeline_state_desc.NumRenderTargets = options.color_formats.size();
-		memcpy(
-			d3d12_pipeline_state_desc.RTVFormats,
-			options.color_formats.data(),
-			options.color_formats.size() * sizeof(DXGI_FORMAT)
-		);
+		// traditional graphics pipeline state
+		{
+			D3D12_GRAPHICS_PIPELINE_STATE_DESC  d3d12_pipeline_state_desc = {};
 
-		d3d12_pipeline_state_desc.PrimitiveTopologyType = directx12_primitive_topology_type_table[u32(options.primitive_topology)];
+			setup_d3d12_pipeline_state_desc(d3d12_pipeline_state_desc);
 
-		d3d12_pipeline_state_desc.SampleMask = UINT_MAX;
-		d3d12_pipeline_state_desc.SampleDesc.Count = 1;
+			if(shader_binaries.vertex)
+			{
+				const auto& shader_binary = options.shader_binaries.vertex.value();
+				d3d12_pipeline_state_desc.VS = { shader_binary.data(), shader_binary.size() };
+			}
+			if(shader_binaries.pixel)
+			{
+				const auto& shader_binary = shader_binaries.pixel.value();
+				d3d12_pipeline_state_desc.PS = { shader_binary.data(), shader_binary.size() };
+			}
 
-		d3d12_device_p->CreateGraphicsPipelineState(
-			&d3d12_pipeline_state_desc,
-			IID_PPV_ARGS(&d3d12_pipeline_state_p)
-		);
-		NCPP_ASSERT(d3d12_pipeline_state_p) << "can't create d3d12 pipeline state";
+			TG_vector<D3D12_INPUT_ELEMENT_DESC> d3d12_input_element_descs = input_assembler_desc_desc_to_d3d12_input_element_descs(
+				options.input_assembler_desc
+			);
+			d3d12_pipeline_state_desc.InputLayout.NumElements = d3d12_input_element_descs.size();
+			d3d12_pipeline_state_desc.InputLayout.pInputElementDescs = d3d12_input_element_descs.data();
 
-		return d3d12_pipeline_state_p;
+			d3d12_pipeline_state_desc.NumRenderTargets = options.color_formats.size();
+			memcpy(
+				d3d12_pipeline_state_desc.RTVFormats,
+				options.color_formats.data(),
+				options.color_formats.size() * sizeof(DXGI_FORMAT)
+			);
+
+			d3d12_pipeline_state_desc.PrimitiveTopologyType = directx12_primitive_topology_type_table[u32(options.primitive_topology)];
+
+			d3d12_pipeline_state_desc.SampleMask = UINT_MAX;
+			d3d12_pipeline_state_desc.SampleDesc.Count = 1;
+
+			d3d12_device_p->CreateGraphicsPipelineState(
+				&d3d12_pipeline_state_desc,
+				IID_PPV_ARGS(&d3d12_pipeline_state_p)
+			);
+			NCPP_ASSERT(d3d12_pipeline_state_p) << "can't create d3d12 pipeline state";
+
+			return d3d12_pipeline_state_p;
+		}
 	}
 
 }

@@ -70,6 +70,13 @@ if(NOT TARGET dxc)
     add_subdirectory("${NRHI_DEPENDENCIES_DIR}/DirectXShaderCompiler" "${NRHI_DEPENDENCIES_DIR}/DirectXShaderCompiler/build")
 endif()
 
+#####################################################################################
+#   Add DirectX-Headers subdirectory
+#####################################################################################
+if(NOT TARGET DirectX-Headers)
+    add_subdirectory("${NRHI_DEPENDENCIES_DIR}/DirectX-Headers" "${NRHI_DEPENDENCIES_DIR}/DirectX-Headers/build")
+endif()
+
 
 
 message(STATUS "<NRHI::ConfigureDependencies> Configure dependencies done")

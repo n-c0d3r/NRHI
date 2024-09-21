@@ -21,6 +21,8 @@ NRHI_EnumHelper_CreateEnum(
         VERTEX 1
         PIXEL 2
         COMPUTE 3
+        AMPLIFICATION 4
+        MESH 5
 )
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement shader type done")

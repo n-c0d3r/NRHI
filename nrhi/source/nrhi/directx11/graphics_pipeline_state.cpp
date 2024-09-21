@@ -120,8 +120,9 @@ namespace nrhi {
 		const auto& shader_binaries = options.shader_binaries;
 
 		// create vertex shader
+		if(shader_binaries.vertex) {
 		{
-			const auto& shader_binary = options.shader_binaries.vertex;
+			const auto& shader_binary = options.shader_binaries.vertex.value();
 
 			HRESULT hr = d3d11_device_p->CreateVertexShader(
 				shader_binary.data(),
@@ -149,8 +150,9 @@ namespace nrhi {
 		}
 
 		// create input layout
+		if(shader_binaries.vertex) {
 		{
-			const auto& shader_binary = shader_binaries.vertex;
+			const auto& shader_binary = shader_binaries.vertex.value();
 			const auto& input_assembler_desc = options.input_assembler_desc;
 
 			u32 input_attribute_group_count = (u32)(input_assembler_desc.attribute_groups.size());

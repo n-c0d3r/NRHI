@@ -349,6 +349,7 @@ if(NRHI_DRIVER_DIRECTX_12)
     target_link_libraries(nrhi
         PUBLIC
             d3d12.lib
+            DirectX-Headers
     )
 endif()
 if(NRHI_DRIVER_DIRECTX_11)
@@ -416,6 +417,10 @@ target_link_options(nrhi
 #####################################################################################
 #   Dependencies
 #####################################################################################
+set(DriverSpecificDependentTargets "")
+if(NRHI_DRIVER_DIRECTX_12)
+    list(APPEND DriverSpecificDependentTargets DirectX-Headers)
+endif()
 NCPP_ApplyDependencies(
     TARGET nrhi
     DEPENDENT_TARGETS
@@ -426,6 +431,7 @@ NCPP_ApplyDependencies(
         dxcompiler
     #    spirv-cross-cpp
         ${NRHI_THIRD_PARTY_TARGETS}
+        ${DriverSpecificDependentTargets}
 )
 foreach(File ${NRHI_THIRD_PARTY_FILES_AS_DEPENDENCIES})
     NCPP_AddFileAsDependency(nrhi "${File}")

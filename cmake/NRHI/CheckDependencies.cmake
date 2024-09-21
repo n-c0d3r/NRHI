@@ -77,6 +77,22 @@ if(NOT TARGET dxc)
     endif()
 endif()
 
+#####################################################################################
+#   DirectX-Headers checking
+#####################################################################################
+if(NOT TARGET DirectX-Headers)
+    if(NOT EXISTS "${NRHI_DEPENDENCIES_DIR}/DirectX-Headers")
+        file(MAKE_DIRECTORY "${NRHI_DEPENDENCIES_DIR}/DirectX-Headers")
+        NCPP_GitHelper_Clone(
+            PROJECT_NAME "DirectX-Headers"
+            GIT_URL "https://github.com/microsoft/DirectX-Headers"
+            GIT_COMMIT "48a762973271c5a75869946bf1fdbc489a628a5c"
+            GIT_BRANCH "main"
+            DIRECTORY "${NRHI_DEPENDENCIES_DIR}"
+        )
+    endif()
+endif()
+
 
 
 message(STATUS "<NRHI::CheckDependencies> Check dependencies done")

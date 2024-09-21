@@ -55,7 +55,7 @@ namespace nrhi {
 							nsl_shader_reflection.type,
 							NRHI_ENUM_CASE(
 								ED_shader_type::VERTEX,
-								options.shader_binaries.vertex = (F_shader_binary&)shader_binary;
+								options.shader_binaries.vertex = (F_shader_binary_temp)(F_shader_binary&)shader_binary;
 							)
 							NRHI_ENUM_CASE(
 								ED_shader_type::PIXEL,
@@ -138,7 +138,7 @@ namespace nrhi {
 							nsl_shader_reflection.type,
 							NRHI_ENUM_CASE(
 								ED_shader_type::VERTEX,
-								options.shader_binaries.vertex = (F_shader_binary&)shader_binary;
+								options.shader_binaries.vertex = (F_shader_binary_temp)(F_shader_binary&)shader_binary;
 							)
 							NRHI_ENUM_CASE(
 								ED_shader_type::PIXEL,
