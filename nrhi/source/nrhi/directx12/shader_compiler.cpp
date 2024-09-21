@@ -20,6 +20,22 @@ namespace nrhi {
 		NCPP_ASSERT(model_major >= 6);
 		NCPP_ASSERT(type != ED_shader_type::NONE);
 
+		NRHI_ENUM_SWITCH(
+			type,
+			NRHI_ENUM_CASE(
+				ED_shader_type::VERTEX,
+				model_minor = eastl::min<u32>(model_minor, 6);
+			)
+			NRHI_ENUM_CASE(
+				ED_shader_type::PIXEL,
+				model_minor = eastl::min<u32>(model_minor, 6);
+			)
+			NRHI_ENUM_CASE(
+				ED_shader_type::COMPUTE,
+				model_minor = eastl::min<u32>(model_minor, 6);
+			)
+		);
+
 		G_string src_name = class_name + "::" + shader_name;
 
 		G_wstring wide_model = G_to_wstring(model_major) + L"_" + G_to_wstring(model_minor);
@@ -333,9 +349,37 @@ namespace nrhi {
 			model_major = 5;
 			model_minor = 1;
 			break;
+		case E_nsl_output_language::HLSL_6_0:
+			model_major = 6;
+			model_minor = 0;
+			break;
+		case E_nsl_output_language::HLSL_6_1:
+			model_major = 6;
+			model_minor = 1;
+			break;
+		case E_nsl_output_language::HLSL_6_2:
+			model_major = 6;
+			model_minor = 2;
+			break;
+		case E_nsl_output_language::HLSL_6_3:
+			model_major = 6;
+			model_minor = 3;
+			break;
+		case E_nsl_output_language::HLSL_6_4:
+			model_major = 6;
+			model_minor = 4;
+			break;
 		case E_nsl_output_language::HLSL_6_5:
 			model_major = 6;
 			model_minor = 5;
+			break;
+		case E_nsl_output_language::HLSL_6_6:
+			model_major = 6;
+			model_minor = 6;
+			break;
+		case E_nsl_output_language::HLSL_6_7:
+			model_major = 6;
+			model_minor = 7;
 			break;
 		}
 
