@@ -98,6 +98,7 @@ namespace nrhi {
 				d3d12_srv_desc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
 				d3d12_srv_desc.Buffer.FirstElement = desc.mem_offset / resource_desc.stride;
 				d3d12_srv_desc.Buffer.NumElements = resource_desc.size / resource_desc.stride;
+				d3d12_srv_desc.Buffer.StructureByteStride = resource_desc.stride;
 				NRHI_ENUM_BREAK;
 			)
 			NRHI_ENUM_CASE(
@@ -205,6 +206,7 @@ namespace nrhi {
 				d3d12_uav_desc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
 				d3d12_uav_desc.Buffer.FirstElement = desc.mem_offset / resource_desc.stride;
 				d3d12_uav_desc.Buffer.NumElements = resource_desc.size / resource_desc.stride;
+				d3d12_uav_desc.Buffer.StructureByteStride = resource_desc.stride;
 				NRHI_ENUM_BREAK;
 			)
 			NRHI_ENUM_CASE(
