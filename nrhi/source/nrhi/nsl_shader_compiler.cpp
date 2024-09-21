@@ -9729,6 +9729,12 @@ namespace nrhi {
 		is_compiled_ = true;
 		is_compile_success_ = static_cast<b8>(compile_result_opt);
 
+		// bind macros
+		{
+			for(auto& macro : macros)
+				compile_result_opt.value().src_content = "#define " + macro.first + " " + macro.second + "\n" + compile_result_opt.value().src_content;
+		}
+
 		return compile_result_opt;
 	}
 
