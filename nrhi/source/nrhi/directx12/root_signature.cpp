@@ -77,7 +77,11 @@ namespace nrhi {
 			case D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE:
 				{
 					d3d12_descriptor_ranges.resize(d3d12_descriptor_ranges.size() + root_descriptor_table_desc.range_descs.size());
-					D3D12_DESCRIPTOR_RANGE* d3d12_descriptor_range_p = d3d12_descriptor_ranges.data() - root_descriptor_table_desc.range_descs.size();
+					D3D12_DESCRIPTOR_RANGE* d3d12_descriptor_range_p = (
+						d3d12_descriptor_ranges.data()
+						+ d3d12_descriptor_ranges.size()
+						- root_descriptor_table_desc.range_descs.size()
+					);
 
 					u32 j_end = root_descriptor_table_desc.range_descs.size();
 					for(u32 j = 0; j < j_end; ++j) {
