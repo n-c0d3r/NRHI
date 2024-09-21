@@ -64,8 +64,10 @@ namespace nrhi {
 		NCPP_ASSERT(resource_desc.can_create_view) << "resource can't be used to create view";
 
 		NCPP_ASSERT(
-			u32(resource_desc.flags)
-			& u32(ED_resource_flag::SHADER_RESOURCE)
+			flag_is_has(
+				resource_desc.flags,
+				ED_resource_flag::SHADER_RESOURCE
+			)
 		) << "resource bind flag is not conpatible";
 
 		ID3D12Resource* d3d12_resource_p = resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p();
@@ -170,8 +172,10 @@ namespace nrhi {
 		NCPP_ASSERT(resource_desc.can_create_view) << "resource can't be used to create view";
 
 		NCPP_ASSERT(
-			u32(resource_desc.flags)
-				& u32(ED_resource_flag::UNORDERED_ACCESS)
+			flag_is_has(
+				resource_desc.flags,
+				ED_resource_flag::UNORDERED_ACCESS
+			)
 		) << "resource bind flag is not conpatible";
 
 		ID3D12Resource* d3d12_resource_p = resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p();
@@ -260,8 +264,10 @@ namespace nrhi {
 		NCPP_ASSERT(resource_desc.can_create_view) << "resource can't be used to create view";
 
 		NCPP_ASSERT(
-			u32(resource_desc.flags)
-				& u32(ED_resource_flag::RENDER_TARGET)
+			flag_is_has(
+				resource_desc.flags,
+				ED_resource_flag::RENDER_TARGET
+			)
 		) << "resource bind flag is not conpatible";
 
 		ID3D12Resource* d3d12_resource_p = resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p();
@@ -330,8 +336,10 @@ namespace nrhi {
 		NCPP_ASSERT(resource_desc.can_create_view) << "resource can't be used to create view";
 
 		NCPP_ASSERT(
-			u32(resource_desc.flags)
-				& u32(ED_resource_flag::DEPTH_STENCIL)
+			flag_is_has(
+				resource_desc.flags,
+				ED_resource_flag::DEPTH_STENCIL
+			)
 		) << "resource bind flag is not conpatible";
 
 		ID3D12Resource* d3d12_resource_p = resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p();
