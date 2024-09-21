@@ -65,11 +65,18 @@ namespace nrhi {
 
 	enum class E_nsl_output_language {
 
-		NONE = 0,
-		HLSL_4 = 1,
-		HLSL_5 = 2,
-		HLSL_5_1 = 3,
-		HLSL_6_5 = 4
+		NONE,
+		HLSL_4,
+		HLSL_5,
+		HLSL_5_1,
+		HLSL_6_0,
+		HLSL_6_1,
+		HLSL_6_2,
+		HLSL_6_3,
+		HLSL_6_4,
+		HLSL_6_5,
+		HLSL_6_6,
+		HLSL_6_7,
 
 	};
 
@@ -3172,14 +3179,28 @@ namespace nrhi {
 			{
 				auto highest_shader_model = HD_directx12_device::hlsl_highest_shader_model(device_p);
 
-				if(
-					(highest_shader_model.first > 6)
-					|| (
-						(highest_shader_model.first == 6)
-						&& (highest_shader_model.second >= 5)
-					)
-				)
-					return E_nsl_output_language::HLSL_6_5;
+				if(highest_shader_model.first > 6)
+					return E_nsl_output_language::HLSL_6_7;
+
+				if(highest_shader_model.first == 6)
+				{
+					if(highest_shader_model.second == 0)
+						return E_nsl_output_language::HLSL_6_0;
+					if(highest_shader_model.second == 1)
+						return E_nsl_output_language::HLSL_6_1;
+					if(highest_shader_model.second == 2)
+						return E_nsl_output_language::HLSL_6_2;
+					if(highest_shader_model.second == 3)
+						return E_nsl_output_language::HLSL_6_3;
+					if(highest_shader_model.second == 4)
+						return E_nsl_output_language::HLSL_6_4;
+					if(highest_shader_model.second == 5)
+						return E_nsl_output_language::HLSL_6_5;
+					if(highest_shader_model.second == 6)
+						return E_nsl_output_language::HLSL_6_6;
+					if(highest_shader_model.second == 7)
+						return E_nsl_output_language::HLSL_6_7;
+				}
 
 				return E_nsl_output_language::HLSL_5_1;
 			}
@@ -3339,7 +3360,97 @@ namespace nrhi {
 
 
 
-	class NRHI_API F_nsl_output_hlsl_6_5 : public F_nsl_output_hlsl_5_1 {
+	class NRHI_API F_nsl_output_hlsl_6_0 : public F_nsl_output_hlsl_5_1 {
+
+	public:
+		F_nsl_output_hlsl_6_0(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			E_nsl_output_language output_language_as_enum = E_nsl_output_language::HLSL_6_0
+		);
+		virtual ~F_nsl_output_hlsl_6_0();
+
+	public:
+		NCPP_OBJECT(F_nsl_output_hlsl_6_0);
+
+	private:
+		void register_data_types_internal();
+	};
+
+
+
+	class NRHI_API F_nsl_output_hlsl_6_1 : public F_nsl_output_hlsl_6_0 {
+
+	public:
+		F_nsl_output_hlsl_6_1(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			E_nsl_output_language output_language_as_enum = E_nsl_output_language::HLSL_6_1
+		);
+		virtual ~F_nsl_output_hlsl_6_1();
+
+	public:
+		NCPP_OBJECT(F_nsl_output_hlsl_6_1);
+
+	private:
+		void register_data_types_internal();
+	};
+
+
+
+	class NRHI_API F_nsl_output_hlsl_6_2 : public F_nsl_output_hlsl_6_1 {
+
+	public:
+		F_nsl_output_hlsl_6_2(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			E_nsl_output_language output_language_as_enum = E_nsl_output_language::HLSL_6_2
+		);
+		virtual ~F_nsl_output_hlsl_6_2();
+
+	public:
+		NCPP_OBJECT(F_nsl_output_hlsl_6_2);
+
+	private:
+		void register_data_types_internal();
+	};
+
+
+
+	class NRHI_API F_nsl_output_hlsl_6_3 : public F_nsl_output_hlsl_6_2 {
+
+	public:
+		F_nsl_output_hlsl_6_3(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			E_nsl_output_language output_language_as_enum = E_nsl_output_language::HLSL_6_3
+		);
+		virtual ~F_nsl_output_hlsl_6_3();
+
+	public:
+		NCPP_OBJECT(F_nsl_output_hlsl_6_3);
+
+	private:
+		void register_data_types_internal();
+	};
+
+
+
+	class NRHI_API F_nsl_output_hlsl_6_4 : public F_nsl_output_hlsl_6_3 {
+
+	public:
+		F_nsl_output_hlsl_6_4(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			E_nsl_output_language output_language_as_enum = E_nsl_output_language::HLSL_6_4
+		);
+		virtual ~F_nsl_output_hlsl_6_4();
+
+	public:
+		NCPP_OBJECT(F_nsl_output_hlsl_6_4);
+
+	private:
+		void register_data_types_internal();
+	};
+
+
+
+	class NRHI_API F_nsl_output_hlsl_6_5 : public F_nsl_output_hlsl_6_4 {
 
 	public:
 		F_nsl_output_hlsl_6_5(
@@ -3350,6 +3461,42 @@ namespace nrhi {
 
 	public:
 		NCPP_OBJECT(F_nsl_output_hlsl_6_5);
+
+	private:
+		void register_data_types_internal();
+	};
+
+
+
+	class NRHI_API F_nsl_output_hlsl_6_6 : public F_nsl_output_hlsl_6_5 {
+
+	public:
+		F_nsl_output_hlsl_6_6(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			E_nsl_output_language output_language_as_enum = E_nsl_output_language::HLSL_6_6
+		);
+		virtual ~F_nsl_output_hlsl_6_6();
+
+	public:
+		NCPP_OBJECT(F_nsl_output_hlsl_6_6);
+
+	private:
+		void register_data_types_internal();
+	};
+
+
+
+	class NRHI_API F_nsl_output_hlsl_6_7 : public F_nsl_output_hlsl_6_6 {
+
+	public:
+		F_nsl_output_hlsl_6_7(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			E_nsl_output_language output_language_as_enum = E_nsl_output_language::HLSL_6_7
+		);
+		virtual ~F_nsl_output_hlsl_6_7();
+
+	public:
+		NCPP_OBJECT(F_nsl_output_hlsl_6_7);
 
 	private:
 		void register_data_types_internal();

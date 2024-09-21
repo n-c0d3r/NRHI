@@ -8634,11 +8634,136 @@ namespace nrhi {
 
 
 
-	F_nsl_output_hlsl_6_5::F_nsl_output_hlsl_6_5(
+	F_nsl_output_hlsl_6_0::F_nsl_output_hlsl_6_0(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 		E_nsl_output_language output_language_as_enum
 	) :
 		F_nsl_output_hlsl_5_1(shader_compiler_p, output_language_as_enum)
+	{
+		register_data_types_internal();
+	}
+	F_nsl_output_hlsl_6_0::~F_nsl_output_hlsl_6_0() {
+	}
+
+	void F_nsl_output_hlsl_6_0::register_data_types_internal() {
+
+		auto name_manager_p = shader_compiler_p()->name_manager_p();
+		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
+
+		name_manager_p->deregister_name("NSL_HLSL_MAJOR");
+		name_manager_p->register_name("NSL_HLSL_MAJOR", "6");
+
+		name_manager_p->deregister_name("NSL_HLSL_MINOR");
+		name_manager_p->register_name("NSL_HLSL_MINOR", "0");
+	}
+
+
+
+	F_nsl_output_hlsl_6_1::F_nsl_output_hlsl_6_1(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		E_nsl_output_language output_language_as_enum
+	) :
+		F_nsl_output_hlsl_6_0(shader_compiler_p, output_language_as_enum)
+	{
+		register_data_types_internal();
+	}
+	F_nsl_output_hlsl_6_1::~F_nsl_output_hlsl_6_1() {
+	}
+
+	void F_nsl_output_hlsl_6_1::register_data_types_internal() {
+
+		auto name_manager_p = shader_compiler_p()->name_manager_p();
+		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
+
+		name_manager_p->deregister_name("NSL_HLSL_MAJOR");
+		name_manager_p->register_name("NSL_HLSL_MAJOR", "6");
+
+		name_manager_p->deregister_name("NSL_HLSL_MINOR");
+		name_manager_p->register_name("NSL_HLSL_MINOR", "1");
+	}
+
+
+
+	F_nsl_output_hlsl_6_2::F_nsl_output_hlsl_6_2(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		E_nsl_output_language output_language_as_enum
+	) :
+		F_nsl_output_hlsl_6_1(shader_compiler_p, output_language_as_enum)
+	{
+		register_data_types_internal();
+	}
+	F_nsl_output_hlsl_6_2::~F_nsl_output_hlsl_6_2() {
+	}
+
+	void F_nsl_output_hlsl_6_2::register_data_types_internal() {
+
+		auto name_manager_p = shader_compiler_p()->name_manager_p();
+		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
+
+		name_manager_p->deregister_name("NSL_HLSL_MAJOR");
+		name_manager_p->register_name("NSL_HLSL_MAJOR", "6");
+
+		name_manager_p->deregister_name("NSL_HLSL_MINOR");
+		name_manager_p->register_name("NSL_HLSL_MINOR", "2");
+	}
+
+
+
+	F_nsl_output_hlsl_6_3::F_nsl_output_hlsl_6_3(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		E_nsl_output_language output_language_as_enum
+	) :
+		F_nsl_output_hlsl_6_2(shader_compiler_p, output_language_as_enum)
+	{
+		register_data_types_internal();
+	}
+	F_nsl_output_hlsl_6_3::~F_nsl_output_hlsl_6_3() {
+	}
+
+	void F_nsl_output_hlsl_6_3::register_data_types_internal() {
+
+		auto name_manager_p = shader_compiler_p()->name_manager_p();
+		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
+
+		name_manager_p->deregister_name("NSL_HLSL_MAJOR");
+		name_manager_p->register_name("NSL_HLSL_MAJOR", "6");
+
+		name_manager_p->deregister_name("NSL_HLSL_MINOR");
+		name_manager_p->register_name("NSL_HLSL_MINOR", "3");
+	}
+
+
+
+	F_nsl_output_hlsl_6_4::F_nsl_output_hlsl_6_4(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		E_nsl_output_language output_language_as_enum
+	) :
+		F_nsl_output_hlsl_6_3(shader_compiler_p, output_language_as_enum)
+	{
+		register_data_types_internal();
+	}
+	F_nsl_output_hlsl_6_4::~F_nsl_output_hlsl_6_4() {
+	}
+
+	void F_nsl_output_hlsl_6_4::register_data_types_internal() {
+
+		auto name_manager_p = shader_compiler_p()->name_manager_p();
+		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
+
+		name_manager_p->deregister_name("NSL_HLSL_MAJOR");
+		name_manager_p->register_name("NSL_HLSL_MAJOR", "6");
+
+		name_manager_p->deregister_name("NSL_HLSL_MINOR");
+		name_manager_p->register_name("NSL_HLSL_MINOR", "4");
+	}
+
+
+
+	F_nsl_output_hlsl_6_5::F_nsl_output_hlsl_6_5(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		E_nsl_output_language output_language_as_enum
+	) :
+		F_nsl_output_hlsl_6_4(shader_compiler_p, output_language_as_enum)
 	{
 		register_data_types_internal();
 	}
@@ -8655,6 +8780,56 @@ namespace nrhi {
 
 		name_manager_p->deregister_name("NSL_HLSL_MINOR");
 		name_manager_p->register_name("NSL_HLSL_MINOR", "5");
+	}
+
+
+
+	F_nsl_output_hlsl_6_6::F_nsl_output_hlsl_6_6(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		E_nsl_output_language output_language_as_enum
+	) :
+		F_nsl_output_hlsl_6_5(shader_compiler_p, output_language_as_enum)
+	{
+		register_data_types_internal();
+	}
+	F_nsl_output_hlsl_6_6::~F_nsl_output_hlsl_6_6() {
+	}
+
+	void F_nsl_output_hlsl_6_6::register_data_types_internal() {
+
+		auto name_manager_p = shader_compiler_p()->name_manager_p();
+		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
+
+		name_manager_p->deregister_name("NSL_HLSL_MAJOR");
+		name_manager_p->register_name("NSL_HLSL_MAJOR", "6");
+
+		name_manager_p->deregister_name("NSL_HLSL_MINOR");
+		name_manager_p->register_name("NSL_HLSL_MINOR", "6");
+	}
+
+
+
+	F_nsl_output_hlsl_6_7::F_nsl_output_hlsl_6_7(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		E_nsl_output_language output_language_as_enum
+	) :
+		F_nsl_output_hlsl_6_6(shader_compiler_p, output_language_as_enum)
+	{
+		register_data_types_internal();
+	}
+	F_nsl_output_hlsl_6_7::~F_nsl_output_hlsl_6_7() {
+	}
+
+	void F_nsl_output_hlsl_6_7::register_data_types_internal() {
+
+		auto name_manager_p = shader_compiler_p()->name_manager_p();
+		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
+
+		name_manager_p->deregister_name("NSL_HLSL_MAJOR");
+		name_manager_p->register_name("NSL_HLSL_MAJOR", "6");
+
+		name_manager_p->deregister_name("NSL_HLSL_MINOR");
+		name_manager_p->register_name("NSL_HLSL_MINOR", "7");
 	}
 
 
@@ -9157,8 +9332,36 @@ namespace nrhi {
 			return TU<F_nsl_output_hlsl_5_1>()(
 				NCPP_KTHIS()
 			);
+		case E_nsl_output_language::HLSL_6_0:
+			return TU<F_nsl_output_hlsl_6_0>()(
+				NCPP_KTHIS()
+			);
+		case E_nsl_output_language::HLSL_6_1:
+			return TU<F_nsl_output_hlsl_6_1>()(
+				NCPP_KTHIS()
+			);
+		case E_nsl_output_language::HLSL_6_2:
+			return TU<F_nsl_output_hlsl_6_2>()(
+				NCPP_KTHIS()
+			);
+		case E_nsl_output_language::HLSL_6_3:
+			return TU<F_nsl_output_hlsl_6_3>()(
+				NCPP_KTHIS()
+			);
+		case E_nsl_output_language::HLSL_6_4:
+			return TU<F_nsl_output_hlsl_6_4>()(
+				NCPP_KTHIS()
+			);
 		case E_nsl_output_language::HLSL_6_5:
 			return TU<F_nsl_output_hlsl_6_5>()(
+				NCPP_KTHIS()
+			);
+		case E_nsl_output_language::HLSL_6_6:
+			return TU<F_nsl_output_hlsl_6_6>()(
+				NCPP_KTHIS()
+			);
+		case E_nsl_output_language::HLSL_6_7:
+			return TU<F_nsl_output_hlsl_6_7>()(
 				NCPP_KTHIS()
 			);
 		default:
