@@ -58,7 +58,9 @@ namespace nrhi {
 	private:
 		F_frame_buffer_desc desc_;
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 		E_frame_buffer_management_type management_type_ = E_frame_buffer_management_type::MANAGED;
+#endif
 
 		b8 is_has_dsv_;
 
@@ -74,7 +76,9 @@ namespace nrhi {
 	public:
 		NCPP_FORCE_INLINE const F_frame_buffer_desc& desc() const noexcept { return desc_; }
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 		NCPP_FORCE_INLINE E_frame_buffer_management_type management_type() const noexcept { return management_type_; }
+#endif
 
 		NCPP_FORCE_INLINE b8 is_has_dsv() const noexcept { return is_has_dsv_; }
 
