@@ -1163,7 +1163,7 @@ namespace nrhi {
 		TKPA_valid<A_command_list> command_list_p,
 		TKPA_valid<A_command_signature> command_signature_p,
 		u32 max_command_count,
-		KPA_buffer_handle argument_buffer_p,
+		KPA_valid_buffer_handle argument_buffer_p,
 		u64 argument_buffer_offset_in_bytes,
 		KPA_buffer_handle count_buffer_p,
 		u64 count_buffer_offset_in_bytes
@@ -1537,7 +1537,7 @@ namespace nrhi {
 
 	void HD_directx12_command_list::draw_instanced_indirect(
 		TKPA_valid<A_command_list> command_list_p,
-		KPA_buffer_handle buffer_p,
+		KPA_valid_buffer_handle buffer_p,
 		u32 buffer_offset
 	) {
 		H_command_list::ALTERNATIVE::draw_instanced_indirect(
@@ -1548,7 +1548,7 @@ namespace nrhi {
 	}
 	void HD_directx12_command_list::draw_indexed_instanced_indirect(
 		TKPA_valid<A_command_list> command_list_p,
-		KPA_buffer_handle buffer_p,
+		KPA_valid_buffer_handle buffer_p,
 		u32 buffer_offset
 	) {
 		H_command_list::ALTERNATIVE::draw_indexed_instanced_indirect(
@@ -1560,7 +1560,7 @@ namespace nrhi {
 
 	void HD_directx12_command_list::dispatch_indirect(
 		TKPA_valid<A_command_list> command_list_p,
-		KPA_buffer_handle buffer_p,
+		KPA_valid_buffer_handle buffer_p,
 		u32 buffer_offset
 	) {
 		H_command_list::ALTERNATIVE::dispatch_indirect(

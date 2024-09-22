@@ -1087,7 +1087,7 @@ namespace nrhi {
 
 	void HD_directx11_command_list::draw_instanced_indirect(
 		TKPA_valid<A_command_list> command_list_p,
-		KPA_buffer_handle buffer_p,
+		KPA_valid_buffer_handle buffer_p,
 		u32 buffer_offset
 	) {
 		NCPP_ASSERT(command_list_p.T_cast<F_directx11_command_list>()->is_in_record_) << "not in record";
@@ -1104,7 +1104,7 @@ namespace nrhi {
 	}
 	void HD_directx11_command_list::draw_indexed_instanced_indirect(
 		TKPA_valid<A_command_list> command_list_p,
-		KPA_buffer_handle buffer_p,
+		KPA_valid_buffer_handle buffer_p,
 		u32 buffer_offset
 	) {
 		NCPP_ASSERT(command_list_p.T_cast<F_directx11_command_list>()->is_in_record_) << "not in record";
@@ -1122,7 +1122,7 @@ namespace nrhi {
 
 	void HD_directx11_command_list::dispatch_indirect(
 		TKPA_valid<A_command_list> command_list_p,
-		KPA_buffer_handle buffer_p,
+		KPA_valid_buffer_handle buffer_p,
 		u32 buffer_offset
 	) {
 		NCPP_ASSERT(command_list_p.T_cast<F_directx11_command_list>()->is_in_record_) << "not in record";

@@ -215,17 +215,17 @@ NRHI_FunctionHelper_CreateFunctionClass(
         )"
         "draw_instanced_indirect" "void(
             TKPA_valid<A_command_list> command_list_p,
-            KPA_buffer_handle buffer_p,
+            KPA_valid_buffer_handle buffer_p,
             u32 buffer_offset
         )"
         "draw_indexed_instanced_indirect" "void(
             TKPA_valid<A_command_list> command_list_p,
-            KPA_buffer_handle buffer_p,
+            KPA_valid_buffer_handle buffer_p,
             u32 buffer_offset
         )"
         "dispatch_indirect" "void(
             TKPA_valid<A_command_list> command_list_p,
-            KPA_buffer_handle buffer_p,
+            KPA_valid_buffer_handle buffer_p,
             u32 buffer_offset
         )"
         "update_resource_data" "void(

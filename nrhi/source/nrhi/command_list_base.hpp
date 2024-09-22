@@ -286,17 +286,17 @@ namespace nrhi {
 
 	public:
 		void draw_instanced_indirect(
-			KPA_buffer_handle buffer_p,
+			KPA_valid_buffer_handle buffer_p,
 			u32 buffer_offset
 		);
 		void draw_indexed_instanced_indirect(
-			KPA_buffer_handle buffer_p,
+			KPA_valid_buffer_handle buffer_p,
 			u32 buffer_offset
 		);
 
 	public:
 		void dispatch_indirect(
-			KPA_buffer_handle buffer_p,
+			KPA_valid_buffer_handle buffer_p,
 			u32 buffer_offset
 		);
 
@@ -546,7 +546,7 @@ namespace nrhi {
 		void async_execute_indirect(
 			TKPA_valid<A_command_signature> command_signature_p,
 			u32 max_command_count,
-			KPA_buffer_handle argument_buffer_p,
+			KPA_valid_buffer_handle argument_buffer_p,
 			u64 argument_buffer_offset_in_bytes,
 			KPA_buffer_handle count_buffer_p,
 			u64 count_buffer_offset_in_bytes
