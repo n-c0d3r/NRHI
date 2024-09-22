@@ -10,7 +10,9 @@ namespace nrhi {
 	) :
 		A_device_child(device_p),
 		desc_(desc),
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 		management_type_(E_frame_buffer_management_type::MANAGED),
+#endif
 		is_has_dsv_(desc.depth_stencil_attachment.is_valid())
 	{
 
