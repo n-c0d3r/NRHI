@@ -414,7 +414,7 @@ namespace nrhi {
 			KPA_valid_buffer_handle argument_buffer_p,
 			u64 argument_buffer_offset_in_bytes
 		);
-		void async_execute_indirect_with_dynamic_count(
+		static void async_execute_indirect_with_dynamic_count(
 			TKPA_valid<A_command_list> command_list_p,
 			TKPA_valid<A_command_signature> command_signature_p,
 			u32 max_command_count,
