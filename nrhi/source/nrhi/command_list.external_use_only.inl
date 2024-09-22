@@ -1079,14 +1079,30 @@ namespace nrhi {
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_INDIRECT_COMMANDS
 	NCPP_FORCE_INLINE void A_command_list::async_execute_indirect(
 		TKPA_valid<A_command_signature> command_signature_p,
-		u32 max_command_count,
+		u32 command_count,
 		KPA_valid_buffer_handle argument_buffer_p,
-		u64 argument_buffer_offset_in_bytes,
-		KPA_buffer_handle count_buffer_p,
-		u64 count_buffer_offset_in_bytes
+		u64 argument_buffer_offset_in_bytes
 	) {
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_INDIRECT_COMMANDS(
 			H_command_list::async_execute_indirect(
+				NCPP_KTHIS(),
+				command_signature_p,
+				command_count,
+				argument_buffer_p,
+				argument_buffer_offset_in_bytes
+			);
+		);
+	}
+	NCPP_FORCE_INLINE void A_command_list::async_execute_indirect_with_dynamic_count(
+		TKPA_valid<A_command_signature> command_signature_p,
+		u32 max_command_count,
+		KPA_valid_buffer_handle argument_buffer_p,
+		u64 argument_buffer_offset_in_bytes,
+		KPA_valid_buffer_handle count_buffer_p,
+		u64 count_buffer_offset_in_bytes
+	) {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_INDIRECT_COMMANDS(
+			H_command_list::async_execute_indirect_with_dynamic_count(
 				NCPP_KTHIS(),
 				command_signature_p,
 				max_command_count,

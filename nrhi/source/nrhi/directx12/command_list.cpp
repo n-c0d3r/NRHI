@@ -1162,10 +1162,39 @@ namespace nrhi {
 	void HD_directx12_command_list::async_execute_indirect(
 		TKPA_valid<A_command_list> command_list_p,
 		TKPA_valid<A_command_signature> command_signature_p,
+		u32 command_count,
+		KPA_valid_buffer_handle argument_buffer_p,
+		u64 argument_buffer_offset_in_bytes
+	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
+
+		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
+
+		NCPP_ASSERT(
+			flag_is_has(
+				argument_buffer_p->desc().flags,
+				ED_resource_flag::INDIRECT_ARGUMENT_BUFFER
+			)
+		) << "invalid argument buffer's flags";
+
+		ID3D12GraphicsCommandList* d3d12_command_list_p = dx12_command_list_p->d3d12_command_list_p();
+
+		d3d12_command_list_p->ExecuteIndirect(
+			command_signature_p.T_cast<F_directx12_command_signature>()->d3d12_command_signature_p(),
+			command_count,
+			argument_buffer_p.T_cast<F_directx12_resource>()->d3d12_resource_p(),
+			argument_buffer_offset_in_bytes,
+			0,
+			0
+		);
+	}
+	void HD_directx12_command_list::async_execute_indirect_with_dynamic_count(
+		TKPA_valid<A_command_list> command_list_p,
+		TKPA_valid<A_command_signature> command_signature_p,
 		u32 max_command_count,
 		KPA_valid_buffer_handle argument_buffer_p,
 		u64 argument_buffer_offset_in_bytes,
-		KPA_buffer_handle count_buffer_p,
+		KPA_valid_buffer_handle count_buffer_p,
 		u64 count_buffer_offset_in_bytes
 	) {
 		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
