@@ -34,6 +34,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/indirect_argument_base.hpp>
+#include <nrhi/descriptor_base.hpp>
 
 #pragma endregion
 
@@ -47,6 +48,70 @@ namespace nrhi {
 		static u32 size(const F_indirect_argument_desc& desc);
 		static u32 alignment(ED_indirect_argument_type type);
 
+	public:
+		static void draw(
+			void* data_p,
+			u32 vertex_count,
+			u32 vertex_offset
+		);
+		static void draw_indexed(
+			void* data_p,
+			u32 index_count,
+			u32 index_offset,
+			u32 vertex_offset
+		);
+		static void draw_instanced(
+			void* data_p,
+			u32 vertex_count_per_instance,
+			u32 instance_count,
+			u32 vertex_offset,
+			u32 instance_offset
+		);
+		static void draw_indexed_instanced(
+			void* data_p,
+			u32 index_count_per_instance,
+			u32 instance_count,
+			u32 index_offset,
+			u32 vertex_offset,
+			u32 instance_offset
+		);
+		static void dispatch(
+			void* data_p,
+			F_vector3_u32 thread_group_counts
+		);
+		static void input_buffer(
+			void* data_p,
+			F_resource_gpu_virtual_address gpu_virtual_address,
+			u32 size,
+			u32 stride
+		);
+		static void index_buffer(
+			void* data_p,
+			F_resource_gpu_virtual_address gpu_virtual_address,
+			u32 size,
+			ED_format format
+		);
+		static void constants(
+			void* data_p,
+			const TG_span<u32>& values
+		);
+		static void constant_buffer(
+			void* data_p,
+			F_resource_gpu_virtual_address gpu_virtual_address,
+			u32 size
+		);
+		static void srv(
+			void* data_p,
+			F_descriptor_gpu_address gpu_virtual_address
+		);
+		static void uav(
+			void* data_p,
+			F_descriptor_gpu_address gpu_virtual_address
+		);
+		static void dispatch_mesh(
+			void* data_p,
+			F_vector3_u32 thread_group_counts
+		);
 	};
 
 }

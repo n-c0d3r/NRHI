@@ -29,6 +29,70 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "alignment" "u32(
             ED_indirect_argument_type type
         )"
+
+        "draw" "void(
+			void* data_p,
+			u32 vertex_count,
+			u32 vertex_offset
+		)"
+        "draw_indexed" "void(
+			void* data_p,
+			u32 index_count,
+			u32 index_offset,
+			u32 vertex_offset
+		)"
+        "draw_instanced" "void(
+			void* data_p,
+			u32 vertex_count_per_instance,
+			u32 instance_count,
+			u32 vertex_offset,
+			u32 instance_offset
+		)"
+        "draw_indexed_instanced" "void(
+			void* data_p,
+			u32 index_count_per_instance,
+			u32 instance_count,
+			u32 index_offset,
+			u32 vertex_offset,
+			u32 instance_offset
+		)"
+        "dispatch" "void(
+			void* data_p,
+			F_vector3_u32 thread_group_counts
+		)"
+        "input_buffer" "void(
+			void* data_p,
+			F_resource_gpu_virtual_address gpu_virtual_address,
+			u32 size,
+			u32 stride
+		)"
+        "index_buffer" "void(
+			void* data_p,
+			F_resource_gpu_virtual_address gpu_virtual_address,
+			u32 size,
+			ED_format format
+		)"
+        "constants" "void(
+			void* data_p,
+			const TG_span<u32>& values
+		)"
+        "constant_buffer" "void(
+			void* data_p,
+			F_resource_gpu_virtual_address gpu_virtual_address,
+			u32 size
+		)"
+        "srv" "void(
+			void* data_p,
+			F_descriptor_gpu_address gpu_virtual_address
+		)"
+        "uav" "void(
+			void* data_p,
+			F_descriptor_gpu_address gpu_virtual_address
+		)"
+        "dispatch_mesh" "void(
+			void* data_p,
+			F_vector3_u32 thread_group_counts
+		)"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement indirect argument done")
