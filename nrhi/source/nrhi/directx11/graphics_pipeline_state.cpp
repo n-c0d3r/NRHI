@@ -120,7 +120,7 @@ namespace nrhi {
 		const auto& shader_binaries = options.shader_binaries;
 
 		// create vertex shader
-		if(shader_binaries.vertex) {
+		if(shader_binaries.vertex)
 		{
 			const auto& shader_binary = options.shader_binaries.vertex.value();
 
@@ -135,8 +135,8 @@ namespace nrhi {
 		}
 
 		// create pixel shader
-		if(shader_binaries.pixel) {
-
+		if(shader_binaries.pixel)
+		{
 			const auto& shader_binary = options.shader_binaries.pixel.value();
 
 			HRESULT hr = d3d11_device_p->CreatePixelShader(
@@ -150,7 +150,7 @@ namespace nrhi {
 		}
 
 		// create input layout
-		if(shader_binaries.vertex) {
+		if(shader_binaries.vertex)
 		{
 			const auto& shader_binary = shader_binaries.vertex.value();
 			const auto& input_assembler_desc = options.input_assembler_desc;
