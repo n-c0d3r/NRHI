@@ -34,7 +34,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_INDIRECT_COMMANDS
-#include <nrhi/root_signature_child.hpp>
+#include <nrhi/device_child.hpp>
 #include <nrhi/command_signature_desc.hpp>
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_INDIRECT_COMMANDS
 
@@ -45,7 +45,7 @@
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_INDIRECT_COMMANDS
 namespace nrhi {
 
-	class NRHI_API A_command_signature : public A_root_signature_child {
+	class NRHI_API A_command_signature : public A_device_child {
 
 	private:
 		F_command_signature_desc desc_;
@@ -58,8 +58,7 @@ namespace nrhi {
 	protected:
 		A_command_signature(
 			TKPA_valid<A_device> device_p,
-			const F_command_signature_desc& desc,
-			TKPA_valid<A_root_signature> root_signature_p
+			const F_command_signature_desc& desc
 		);
 
 	public:

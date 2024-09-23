@@ -25,8 +25,7 @@ NRHI_FunctionHelper_CreateFunctionClass(
     VALUES
         "create" "TU<A_command_signature>(
             TKPA_valid<A_device> device_p,
-            const F_command_signature_desc& desc,
-			TKPA_valid<A_root_signature> root_signature_p
+            const F_command_signature_desc& desc
         )"
 )
 

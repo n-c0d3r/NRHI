@@ -7,10 +7,9 @@ namespace nrhi {
 
 	A_command_signature::A_command_signature(
 		TKPA_valid<A_device> device_p,
-		const F_command_signature_desc& desc,
-		TKPA_valid<A_root_signature> root_signature_p
+		const F_command_signature_desc& desc
 	) :
-		A_root_signature_child(device_p, root_signature_p),
+		A_device_child(device_p),
 		desc_(desc)
 	{
 	}

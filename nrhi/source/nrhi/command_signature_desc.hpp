@@ -44,12 +44,17 @@
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_INDIRECT_COMMANDS
 namespace nrhi {
 
+	class A_root_signature;
+
+
+
 	struct F_command_signature_desc {
 
 		u32 stride = 0;
 
 		TG_vector<F_indirect_argument_desc> indirect_argument_descs;
 
+		TK<A_root_signature> root_signature_p;
 	};
 
 }

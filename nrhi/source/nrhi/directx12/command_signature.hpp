@@ -59,13 +59,11 @@ namespace nrhi {
 	public:
 		F_directx12_command_signature(
 			TKPA_valid<A_device> device_p,
-			const F_command_signature_desc& desc,
-			TKPA_valid<A_root_signature> root_signature_p
+			const F_command_signature_desc& desc
 		);
 		F_directx12_command_signature(
 			TKPA_valid<A_device> device_p,
 			const F_command_signature_desc& desc,
-			TKPA_valid<A_root_signature> root_signature_p,
 			ID3D12CommandSignature* d3d12_command_signature_p
 		);
 		virtual ~F_directx12_command_signature();
@@ -76,8 +74,7 @@ namespace nrhi {
 	private:
 		static ID3D12CommandSignature* create_d3d12_command_signature(
 			TKPA_valid<A_device> device_p,
-			const F_command_signature_desc& desc,
-			TKPA_valid<A_root_signature> root_signature_p
+			const F_command_signature_desc& desc
 		);
 
 	public:
@@ -94,8 +91,7 @@ namespace nrhi {
 	public:
 		static TU<A_command_signature> create(
 			TKPA_valid<A_device> device_p,
-			const F_command_signature_desc& desc,
-			TKPA_valid<A_root_signature> root_signature_p
+			const F_command_signature_desc& desc
 		);
 
 	};

@@ -20,15 +20,13 @@ namespace nrhi {
 
 	F_directx12_command_signature::F_directx12_command_signature(
 		TKPA_valid<A_device> device_p,
-		const F_command_signature_desc& desc,
-		TKPA_valid<A_root_signature> root_signature_p
+		const F_command_signature_desc& desc
 	) :
-		A_command_signature(device_p, desc, root_signature_p),
+		A_command_signature(device_p, desc),
 		d3d12_command_signature_p_(
 			create_d3d12_command_signature(
 				device_p,
-				desc,
-				root_signature_p
+				desc
 			)
 		)
 	{
@@ -36,10 +34,9 @@ namespace nrhi {
 	F_directx12_command_signature::F_directx12_command_signature(
 		TKPA_valid<A_device> device_p,
 		const F_command_signature_desc& desc,
-		TKPA_valid<A_root_signature> root_signature_p,
 		ID3D12CommandSignature* d3d12_command_signature_p
 	) :
-		A_command_signature(device_p, desc, root_signature_p),
+		A_command_signature(device_p, desc),
 		d3d12_command_signature_p_(d3d12_command_signature_p)
 	{
 	}
@@ -48,12 +45,16 @@ namespace nrhi {
 
 	ID3D12CommandSignature* F_directx12_command_signature::create_d3d12_command_signature(
 		TKPA_valid<A_device> device_p,
-		const F_command_signature_desc& desc,
-		TKPA_valid<A_root_signature> root_signature_p
+		const F_command_signature_desc& desc
 	) {
 		ID3D12Device* d3d12_device_p = device_p.T_cast<F_directx12_device>()->d3d12_device_p();
-		ID3D12RootSignature* d3d12_root_signature_p = root_signature_p.T_cast<F_directx12_root_signature>()->d3d12_root_signature_p();
+		ID3D12RootSignature* d3d12_root_signature_p = 0;
 		ID3D12CommandSignature* d3d12_command_signature_p = 0;
+
+		if(desc.root_signature_p)
+		{
+			d3d12_root_signature_p = desc.root_signature_p.T_cast<F_directx12_root_signature>()->d3d12_root_signature_p();
+		}
 
 		D3D12_COMMAND_SIGNATURE_DESC d3d12_command_signature_desc = {};
 		d3d12_command_signature_desc.ByteStride = desc.stride;
@@ -115,13 +116,11 @@ namespace nrhi {
 
 	TU<A_command_signature> HD_directx12_command_signature::create(
 		TKPA_valid<A_device> device_p,
-		const F_command_signature_desc& desc,
-		TKPA_valid<A_root_signature> root_signature_p
+		const F_command_signature_desc& desc
 	) {
 		return TU<F_directx12_command_signature>()(
 			device_p,
-			desc,
-			root_signature_p
+			desc
 		);
 	}
 
