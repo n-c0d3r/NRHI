@@ -113,7 +113,7 @@ namespace nrhi {
 	}
 	u32 HD_directx12_indirect_argument::alignment(ED_indirect_argument_type type) {
 
-		return directx12_indirect_argument_stride_table[
+		return directx12_indirect_argument_alignment_table[
 			u32(type)
 		];
 	}
