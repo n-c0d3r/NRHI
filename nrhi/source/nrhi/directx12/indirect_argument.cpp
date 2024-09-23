@@ -62,37 +62,37 @@ namespace nrhi {
 
 			directx12_indirect_argument_alignment_table[
 				u32(ED_indirect_argument_type::DRAW_INSTANCED)
-			] = sizeof(D3D12_DRAW_ARGUMENTS);
+			] = NCPP_ALIGNOF(D3D12_DRAW_ARGUMENTS);
 			directx12_indirect_argument_alignment_table[
 				u32(ED_indirect_argument_type::DRAW_INDEXED_INSTANCED)
-			] = sizeof(D3D12_DRAW_INDEXED_ARGUMENTS);
+			] = NCPP_ALIGNOF(D3D12_DRAW_INDEXED_ARGUMENTS);
 			directx12_indirect_argument_alignment_table[
 				u32(ED_indirect_argument_type::DISPATCH)
-			] = sizeof(D3D12_DISPATCH_ARGUMENTS);
+			] = NCPP_ALIGNOF(D3D12_DISPATCH_ARGUMENTS);
 			directx12_indirect_argument_alignment_table[
 				u32(ED_indirect_argument_type::INPUT_BUFFER)
-			] = sizeof(D3D12_VERTEX_BUFFER_VIEW);
+			] = NCPP_ALIGNOF(D3D12_VERTEX_BUFFER_VIEW);
 			directx12_indirect_argument_alignment_table[
 				u32(ED_indirect_argument_type::INDEX_BUFFER)
-			] = sizeof(D3D12_INDEX_BUFFER_VIEW);
+			] = NCPP_ALIGNOF(D3D12_INDEX_BUFFER_VIEW);
 			directx12_indirect_argument_alignment_table[
 				u32(ED_indirect_argument_type::CONSTANTS)
-			] = sizeof(u32);
+			] = NCPP_ALIGNOF(u32);
 			directx12_indirect_argument_alignment_table[
 				u32(ED_indirect_argument_type::CONSTANT_BUFFER)
-			] = sizeof(D3D12_CONSTANT_BUFFER_VIEW_DESC);
+			] = NCPP_ALIGNOF(D3D12_CONSTANT_BUFFER_VIEW_DESC);
 			directx12_indirect_argument_alignment_table[
 				u32(ED_indirect_argument_type::SHADER_RESOURCE)
-			] = sizeof(F_resource_gpu_virtual_address);
+			] = NCPP_ALIGNOF(F_resource_gpu_virtual_address);
 			directx12_indirect_argument_alignment_table[
 				u32(ED_indirect_argument_type::UNORDERED_ACCESS)
-			] = sizeof(F_resource_gpu_virtual_address);
+			] = NCPP_ALIGNOF(F_resource_gpu_virtual_address);
 			directx12_indirect_argument_alignment_table[
 				u32(ED_indirect_argument_type::DISPATCH_RAYS)
-			] = sizeof(D3D12_DISPATCH_RAYS_DESC);
+			] = NCPP_ALIGNOF(D3D12_DISPATCH_RAYS_DESC);
 			directx12_indirect_argument_alignment_table[
 				u32(ED_indirect_argument_type::DISPATCH_MESH)
-			] = sizeof(D3D12_DISPATCH_MESH_ARGUMENTS);
+			] = NCPP_ALIGNOF(D3D12_DISPATCH_MESH_ARGUMENTS);
 		}
 	};
 
