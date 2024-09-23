@@ -217,17 +217,19 @@ namespace nrhi {
 	struct F_graphics_pipeline_state_shader_binaries_temp {
 
 		eastl::optional<F_shader_binary_temp> vertex;
+		eastl::optional<F_shader_binary_temp> pixel;
+
 		eastl::optional<F_shader_binary_temp> amplification;
 		eastl::optional<F_shader_binary_temp> mesh;
-		eastl::optional<F_shader_binary_temp> pixel;
 
 	};
 	struct F_graphics_pipeline_state_shader_binaries {
 
 		eastl::optional<F_shader_binary> vertex;
+		eastl::optional<F_shader_binary> pixel;
+
 		eastl::optional<F_shader_binary> amplification;
 		eastl::optional<F_shader_binary> mesh;
-		eastl::optional<F_shader_binary> pixel;
 
 		NCPP_FORCE_INLINE operator F_graphics_pipeline_state_shader_binaries_temp () const noexcept {
 
