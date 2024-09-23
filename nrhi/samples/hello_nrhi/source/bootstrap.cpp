@@ -273,7 +273,7 @@ int main() {
 		{
 			.input_assembler_desc = input_assembler_desc,
 			.shader_binaries = {
-				.vertex = vshader_binary,
+				.vertex = (F_shader_binary_temp)vshader_binary,
 				.pixel = eastl::optional<F_shader_binary_temp>(pshader_binary)
 			}
 		}
