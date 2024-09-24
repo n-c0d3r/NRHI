@@ -6109,6 +6109,13 @@ namespace nrhi {
 			}
 		}
 
+		//
+		NCPP_ASSERT(
+			(thread_group_size_.x != 0)
+			&& (thread_group_size_.y != 0)
+			&& (thread_group_size_.z != 0)
+		);
+
 		return std::move(childs);
 	}
 	eastl::optional<G_string> F_nsl_compute_shader_object::apply(
@@ -6241,6 +6248,13 @@ namespace nrhi {
 				default_slot_space = value_opt.value();
 			}
 		}
+
+		//
+		NCPP_ASSERT(
+			(thread_group_size_.x != 0)
+			&& (thread_group_size_.y != 0)
+			&& (thread_group_size_.z != 0)
+		);
 
 		return std::move(childs);
 	}
@@ -6406,6 +6420,13 @@ namespace nrhi {
 			if(config_map.find("payload") != config_map.end())
 				data_param.flags = flag_combine(data_param.flags, E_nsl_data_param_flag::PAYLOAD);
 		}
+
+		//
+		NCPP_ASSERT(
+			(thread_group_size_.x != 0)
+			&& (thread_group_size_.y != 0)
+			&& (thread_group_size_.z != 0)
+		);
 
 		return std::move(childs);
 	}
