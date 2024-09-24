@@ -6972,18 +6972,25 @@ namespace nrhi {
 				}
 			}
 
-			// bind actual slot spaces
+			// bind actual slots
 			for(u32 i = 0; i < sampler_state_iterator_size; ++i) {
 
 				auto& sampler_state_it = sampler_state_iterators[i];
 				auto& sampler_state = *sampler_state_it;
 
-				sampler_state.second.actual_slots[shader_index] = i;
+				if(sampler_state.second.slot == -1)
+					sampler_state.second.actual_slots[shader_index] = i;
+				else
+					sampler_state.second.actual_slots[shader_index] = sampler_state.second.slot;
 
 				auto& actual_slot_space = sampler_state.second.actual_slot_spaces[shader_index];
 				if(actual_slot_space == -1)
 				{
 					actual_slot_space = shader_object_p->default_slot_space;
+				}
+				else
+				{
+					actual_slot_space = sampler_state.second.slot_space;
 				}
 			}
 		}
@@ -7107,18 +7114,25 @@ namespace nrhi {
 				}
 			}
 
-			// bind actual slot spaces
+			// bind actual slots
 			for(u32 i = 0; i < resource_iterator_size; ++i) {
 
 				auto& resource_it = resource_iterators[i];
 				auto& resource = *resource_it;
 
-				resource.second.actual_slots[shader_index] = i;
+				if(resource.second.slot == -1)
+					resource.second.actual_slots[shader_index] = i;
+				else
+					resource.second.actual_slots[shader_index] = resource.second.slot;
 
 				auto& actual_slot_space = resource.second.actual_slot_spaces[shader_index];
 				if(actual_slot_space == -1)
 				{
 					actual_slot_space = shader_object_p->default_slot_space;
+				}
+				else
+				{
+					actual_slot_space = resource.second.slot_space;
 				}
 			}
 		}
@@ -7242,18 +7256,25 @@ namespace nrhi {
 				}
 			}
 
-			// bind actual slot spaces
+			// bind actual slots
 			for(u32 i = 0; i < resource_iterator_size; ++i) {
 
 				auto& resource_it = resource_iterators[i];
 				auto& resource = *resource_it;
 
-				resource.second.actual_slots[shader_index] = i;
+				if(resource.second.slot == -1)
+					resource.second.actual_slots[shader_index] = i;
+				else
+					resource.second.actual_slots[shader_index] = resource.second.slot;
 
 				auto& actual_slot_space = resource.second.actual_slot_spaces[shader_index];
 				if(actual_slot_space == -1)
 				{
 					actual_slot_space = shader_object_p->default_slot_space;
+				}
+				else
+				{
+					actual_slot_space = resource.second.slot_space;
 				}
 			}
 		}
@@ -7377,18 +7398,25 @@ namespace nrhi {
 				}
 			}
 
-			// bind actual slot space
+			// bind actual slots
 			for(u32 i = 0; i < resource_iterator_size; ++i) {
 
 				auto& resource_it = resource_iterators[i];
 				auto& resource = *resource_it;
 
-				resource.second.actual_slots[shader_index] = i;
+				if(resource.second.slot == -1)
+					resource.second.actual_slots[shader_index] = i;
+				else
+					resource.second.actual_slots[shader_index] = resource.second.slot;
 
 				auto& actual_slot_space = resource.second.actual_slot_spaces[shader_index];
 				if(actual_slot_space == -1)
 				{
 					actual_slot_space = shader_object_p->default_slot_space;
+				}
+				else
+				{
+					actual_slot_space = resource.second.slot_space;
 				}
 			}
 		}
