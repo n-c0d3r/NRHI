@@ -52,7 +52,7 @@ namespace nrhi {
 		NCPP_ASSERT(managed_descriptor()) << "invalid descriptor";
 
 		HD_directx12_descriptor::initialize_sampler_state(
-			NCPP_FOH_VALID(managed_descriptor().heap_p),
+			device_p(),
 			managed_descriptor().handle.cpu_address,
 			desc
 		);
@@ -71,7 +71,7 @@ namespace nrhi {
 		NCPP_ASSERT(descriptor) << "invalid descriptor";
 
 		HD_directx12_descriptor::initialize_sampler_state(
-			NCPP_FOH_VALID(descriptor.heap_p),
+			device_p(),
 			descriptor.handle.cpu_address,
 			desc
 		);
