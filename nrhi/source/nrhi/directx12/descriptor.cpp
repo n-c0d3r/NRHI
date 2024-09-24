@@ -8,7 +8,7 @@
 namespace nrhi {
 
 	void HD_directx12_descriptor::initialize_resource_view(
-		TKPA_valid<A_descriptor_heap> heap_p,
+		TKPA_valid<A_device> device_p,
 		F_descriptor_cpu_address cpu_address,
 		const F_resource_view_desc& desc
 	) {
@@ -17,7 +17,7 @@ namespace nrhi {
 			NRHI_ENUM_CASE(
 				ED_resource_view_type::SHADER_RESOURCE,
 				initialize_srv(
-					heap_p,
+					device_p,
 					cpu_address,
 					desc
 				);
@@ -25,7 +25,7 @@ namespace nrhi {
 			NRHI_ENUM_CASE(
 				ED_resource_view_type::UNORDERED_ACCESS,
 				initialize_uav(
-					heap_p,
+					device_p,
 					cpu_address,
 					desc
 				);
@@ -33,7 +33,7 @@ namespace nrhi {
 			NRHI_ENUM_CASE(
 				ED_resource_view_type::RENDER_TARGET,
 				initialize_rtv(
-					heap_p,
+					device_p,
 					cpu_address,
 					desc
 				);
@@ -41,7 +41,15 @@ namespace nrhi {
 			NRHI_ENUM_CASE(
 				ED_resource_view_type::DEPTH_STENCIL,
 				initialize_dsv(
-					heap_p,
+					device_p,
+					cpu_address,
+					desc
+				);
+			)
+			NRHI_ENUM_CASE(
+				ED_resource_view_type::CONSTANT_BUFFER,
+				initialize_cbv(
+					device_p,
 					cpu_address,
 					desc
 				);
@@ -49,13 +57,51 @@ namespace nrhi {
 		);
 	}
 
-	void HD_directx12_descriptor::initialize_srv(
-		TKPA_valid<A_descriptor_heap> heap_p,
+	void HD_directx12_descriptor::initialize_cbv(
+		TKPA_valid<A_device> device_p,
 		F_descriptor_cpu_address cpu_address,
 		const F_resource_view_desc& desc
 	) {
-		auto d3d12_descriptor_heap_p = heap_p.T_cast<F_directx12_descriptor_heap>()->d3d12_descriptor_heap_p();
-		auto d3d12_device_p = heap_p->device_p().T_cast<F_directx12_device>()->d3d12_device_p();
+		auto d3d12_device_p = device_p.T_cast<F_directx12_device>()->d3d12_device_p();
+
+		auto resource_p = desc.resource_p;
+
+		const auto& resource_desc = resource_p->desc();
+
+		NCPP_ASSERT(resource_desc.can_create_view) << "resource can't be used to create view";
+
+		NCPP_ASSERT(
+			flag_is_has(
+				resource_desc.flags,
+				ED_resource_flag::CONSTANT_BUFFER
+			)
+		) << "resource bind flag is not conpatible";
+
+		ID3D12Resource* d3d12_resource_p = resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p();
+
+		NCPP_ASSERT(resource_desc.type == ED_resource_type::BUFFER) << "invalid resource type";
+
+		sz target_size = desc.overrided_size;
+		if(target_size == 0)
+			target_size = resource_desc.size;
+
+		D3D12_CONSTANT_BUFFER_VIEW_DESC d3d12_cbv_desc = {};
+		d3d12_cbv_desc.BufferLocation = d3d12_resource_p->GetGPUVirtualAddress() + desc.mem_offset;
+		d3d12_cbv_desc.SizeInBytes = target_size;
+
+		d3d12_device_p->CreateConstantBufferView(
+			&d3d12_cbv_desc,
+			D3D12_CPU_DESCRIPTOR_HANDLE(cpu_address)
+		);
+		HRESULT hr = d3d12_device_p->GetDeviceRemovedReason();
+		NCPP_ASSERT(!FAILED(hr)) << "can't initialize cbv descriptor";
+	}
+	void HD_directx12_descriptor::initialize_srv(
+		TKPA_valid<A_device> device_p,
+		F_descriptor_cpu_address cpu_address,
+		const F_resource_view_desc& desc
+	) {
+		auto d3d12_device_p = device_p.T_cast<F_directx12_device>()->d3d12_device_p();
 
 		auto resource_p = desc.resource_p;
 
@@ -88,6 +134,10 @@ namespace nrhi {
 		if(target_format == ED_format::NONE)
 			target_format = resource_desc.format;
 
+		sz target_size = desc.overrided_size;
+		if(target_size == 0)
+			target_size = resource_desc.size;
+
 		D3D12_SHADER_RESOURCE_VIEW_DESC d3d12_srv_desc = {};
 		d3d12_srv_desc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 		d3d12_srv_desc.Format = DXGI_FORMAT(target_format);
@@ -97,7 +147,7 @@ namespace nrhi {
 				ED_resource_type::BUFFER,
 				d3d12_srv_desc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
 				d3d12_srv_desc.Buffer.FirstElement = desc.mem_offset / resource_desc.stride;
-				d3d12_srv_desc.Buffer.NumElements = resource_desc.size / resource_desc.stride;
+				d3d12_srv_desc.Buffer.NumElements = target_size / resource_desc.stride;
 				if(d3d12_srv_desc.Format == DXGI_FORMAT_UNKNOWN)
 					d3d12_srv_desc.Buffer.StructureByteStride = resource_desc.stride;
 				NRHI_ENUM_BREAK;
@@ -160,12 +210,11 @@ namespace nrhi {
 		NCPP_ASSERT(!FAILED(hr)) << "can't initialize srv descriptor";
 	}
 	void HD_directx12_descriptor::initialize_uav(
-		TKPA_valid<A_descriptor_heap> heap_p,
+		TKPA_valid<A_device> device_p,
 		F_descriptor_cpu_address cpu_address,
 		const F_resource_view_desc& desc
 	) {
-		auto d3d12_descriptor_heap_p = heap_p.T_cast<F_directx12_descriptor_heap>()->d3d12_descriptor_heap_p();
-		auto d3d12_device_p = heap_p->device_p().T_cast<F_directx12_device>()->d3d12_device_p();
+		auto d3d12_device_p = device_p.T_cast<F_directx12_device>()->d3d12_device_p();
 
 		auto resource_p = desc.resource_p;
 
@@ -198,6 +247,10 @@ namespace nrhi {
 		if(target_format == ED_format::NONE)
 			target_format = resource_desc.format;
 
+		sz target_size = desc.overrided_size;
+		if(target_size == 0)
+			target_size = resource_desc.size;
+
 		D3D12_UNORDERED_ACCESS_VIEW_DESC d3d12_uav_desc = {};
 		d3d12_uav_desc.Format = DXGI_FORMAT(target_format);
 		NRHI_ENUM_SWITCH(
@@ -206,7 +259,7 @@ namespace nrhi {
 				ED_resource_type::BUFFER,
 				d3d12_uav_desc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
 				d3d12_uav_desc.Buffer.FirstElement = desc.mem_offset / resource_desc.stride;
-				d3d12_uav_desc.Buffer.NumElements = resource_desc.size / resource_desc.stride;
+				d3d12_uav_desc.Buffer.NumElements = target_size / resource_desc.stride;
 				if(d3d12_uav_desc.Format == DXGI_FORMAT_UNKNOWN)
 					d3d12_uav_desc.Buffer.StructureByteStride = resource_desc.stride;
 				NRHI_ENUM_BREAK;
@@ -254,12 +307,11 @@ namespace nrhi {
 		NCPP_ASSERT(!FAILED(hr)) << "can't initialize uav descriptor";
 	}
 	void HD_directx12_descriptor::initialize_rtv(
-		TKPA_valid<A_descriptor_heap> heap_p,
+		TKPA_valid<A_device> device_p,
 		F_descriptor_cpu_address cpu_address,
 		const F_resource_view_desc& desc
 	) {
-		auto d3d12_descriptor_heap_p = heap_p.T_cast<F_directx12_descriptor_heap>()->d3d12_descriptor_heap_p();
-		auto d3d12_device_p = heap_p->device_p().T_cast<F_directx12_device>()->d3d12_device_p();
+		auto d3d12_device_p = device_p.T_cast<F_directx12_device>()->d3d12_device_p();
 
 		auto resource_p = desc.resource_p;
 
@@ -326,12 +378,11 @@ namespace nrhi {
 		NCPP_ASSERT(!FAILED(hr)) << "can't initialize rtv descriptor";
 	}
 	void HD_directx12_descriptor::initialize_dsv(
-		TKPA_valid<A_descriptor_heap> heap_p,
+		TKPA_valid<A_device> device_p,
 		F_descriptor_cpu_address cpu_address,
 		const F_resource_view_desc& desc
 	) {
-		auto d3d12_descriptor_heap_p = heap_p.T_cast<F_directx12_descriptor_heap>()->d3d12_descriptor_heap_p();
-		auto d3d12_device_p = heap_p->device_p().T_cast<F_directx12_device>()->d3d12_device_p();
+		auto d3d12_device_p = device_p.T_cast<F_directx12_device>()->d3d12_device_p();
 
 		auto resource_p = desc.resource_p;
 
@@ -399,12 +450,11 @@ namespace nrhi {
 	}
 
 	void HD_directx12_descriptor::initialize_sampler_state(
-		TKPA_valid<A_descriptor_heap> heap_p,
+		TKPA_valid<A_device> device_p,
 		F_descriptor_cpu_address cpu_address,
 		const F_sampler_state_desc& desc
 	) {
-		auto d3d12_descriptor_heap_p = heap_p.T_cast<F_directx12_descriptor_heap>()->d3d12_descriptor_heap_p();
-		auto d3d12_device_p = heap_p->device_p().T_cast<F_directx12_device>()->d3d12_device_p();
+		auto d3d12_device_p = device_p.T_cast<F_directx12_device>()->d3d12_device_p();
 
 		D3D12_SAMPLER_DESC d3d12_sampler_state_desc;
 		memset(&d3d12_sampler_state_desc, 0, sizeof(D3D12_SAMPLER_DESC));

@@ -23,6 +23,7 @@ NRHI_EnumHelper_CreateEnum(
         RENDER_TARGET 3
         DEPTH_STENCIL 4
         SAMPLER 5
+        CONSTANT_BUFFER 6
 )
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement resource view type done")

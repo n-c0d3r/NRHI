@@ -52,36 +52,41 @@ namespace nrhi {
 
 	public:
 		static void initialize_resource_view(
-			TKPA_valid<A_descriptor_heap> heap_p,
+			TKPA_valid<A_device> device_p,
 			F_descriptor_cpu_address cpu_address,
 			const F_resource_view_desc& desc
 		);
 
 	public:
+		static void initialize_cbv(
+			TKPA_valid<A_device> device_p,
+			F_descriptor_cpu_address cpu_address,
+			const F_resource_view_desc& desc
+		);
 		static void initialize_srv(
-			TKPA_valid<A_descriptor_heap> heap_p,
+			TKPA_valid<A_device> device_p,
 			F_descriptor_cpu_address cpu_address,
 			const F_resource_view_desc& desc
 		);
 		static void initialize_uav(
-			TKPA_valid<A_descriptor_heap> heap_p,
+			TKPA_valid<A_device> device_p,
 			F_descriptor_cpu_address cpu_address,
 			const F_resource_view_desc& desc
 		);
 		static void initialize_rtv(
-			TKPA_valid<A_descriptor_heap> heap_p,
+		TKPA_valid<A_device> device_p,
 			F_descriptor_cpu_address cpu_address,
 			const F_resource_view_desc& desc
 		);
 		static void initialize_dsv(
-			TKPA_valid<A_descriptor_heap> heap_p,
+			TKPA_valid<A_device> device_p,
 			F_descriptor_cpu_address cpu_address,
 			const F_resource_view_desc& desc
 		);
 
 	public:
 		static void initialize_sampler_state(
-			TKPA_valid<A_descriptor_heap> heap_p,
+			TKPA_valid<A_device> device_p,
 			F_descriptor_cpu_address cpu_address,
 			const F_sampler_state_desc& desc
 		);

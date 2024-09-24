@@ -41,10 +41,10 @@ int main() {
 
 	// create descriptor
 	H_descriptor::initialize_srv(
-		NCPP_FOH_VALID(descriptor_heap_1_p),
+		NCPP_FOH_VALID(device_p),
 		base_cpu_address_1,
 		{
-			.resource_p = buffer_p
+			.resource_p = buffer_p.oref
 		}
 	);
 
@@ -62,7 +62,7 @@ int main() {
 
 	// create sampler state
 	H_descriptor::initialize_sampler_state(
-		NCPP_FOH_VALID(descriptor_heap_2_p),
+		NCPP_FOH_VALID(device_p),
 		base_cpu_address_2,
 		{}
 	);

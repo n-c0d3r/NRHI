@@ -72,7 +72,6 @@ namespace nrhi {
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 	void H_texture_2d_array::initialize_sub_array_srv_with_descriptor_cpu_address(
 		KPA_valid_texture_2d_array_handle texture_2d_array_p,
-		TKPA_valid<A_descriptor_heap> descriptor_heap_p,
 		F_descriptor_cpu_address descriptor_cpu_address,
 		u32 index,
 		u32 array_size,
@@ -80,7 +79,7 @@ namespace nrhi {
 		ED_resource_flag resource_flags
 	) {
 		H_descriptor::initialize_srv(
-			descriptor_heap_p,
+			texture_2d_array_p->device_p(),
 			descriptor_cpu_address,
 			{
 				.overrided_resource_type = ED_resource_type::TEXTURE_2D_ARRAY,
@@ -94,7 +93,6 @@ namespace nrhi {
 	}
 	void H_texture_2d_array::initialize_sub_array_uav_with_descriptor_cpu_address(
 		KPA_valid_texture_2d_array_handle texture_2d_array_p,
-		TKPA_valid<A_descriptor_heap> descriptor_heap_p,
 		F_descriptor_cpu_address descriptor_cpu_address,
 		u32 index,
 		u32 array_size,
@@ -102,7 +100,7 @@ namespace nrhi {
 		ED_resource_flag resource_flags
 	) {
 		H_descriptor::initialize_uav(
-			descriptor_heap_p,
+			texture_2d_array_p->device_p(),
 			descriptor_cpu_address,
 			{
 				.overrided_resource_type = ED_resource_type::TEXTURE_2D_ARRAY,
@@ -116,14 +114,13 @@ namespace nrhi {
 	}
 	void H_texture_2d_array::initialize_element_rtv_with_descriptor_cpu_address(
 		KPA_valid_texture_2d_array_handle texture_2d_array_p,
-		TKPA_valid<A_descriptor_heap> descriptor_heap_p,
 		F_descriptor_cpu_address descriptor_cpu_address,
 		u32 index,
 		u32 target_mip_level,
 		ED_resource_flag resource_flags
 	) {
 		H_descriptor::initialize_rtv(
-			descriptor_heap_p,
+			texture_2d_array_p->device_p(),
 			descriptor_cpu_address,
 			{
 				.overrided_resource_type = ED_resource_type::TEXTURE_2D_ARRAY,

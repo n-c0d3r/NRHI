@@ -94,7 +94,6 @@ namespace nrhi
 	public:
 		static NCPP_FORCE_INLINE void initialize_face_srv_with_descriptor_cpu_address(
 			KPA_valid_texture_2d_array_handle texture_2d_array_p,
-			TKPA_valid<A_descriptor_heap> descriptor_heap_p,
 			F_descriptor_cpu_address descriptor_cpu_address,
 			ED_texture_cube_face face,
 			u32 base_mip_level = 0,
@@ -102,7 +101,6 @@ namespace nrhi
 		) {
 			H_texture_2d_array::initialize_sub_array_srv_with_descriptor_cpu_address(
 				texture_2d_array_p,
-				descriptor_heap_p,
 				descriptor_cpu_address,
 				(u32)face,
 				1,
@@ -112,7 +110,6 @@ namespace nrhi
 		}
 		static NCPP_FORCE_INLINE void initialize_face_uav_with_descriptor_cpu_address(
 			KPA_valid_texture_2d_array_handle texture_2d_array_p,
-			TKPA_valid<A_descriptor_heap> descriptor_heap_p,
 			F_descriptor_cpu_address descriptor_cpu_address,
 			ED_texture_cube_face face,
 			u32 base_mip_level = 0,
@@ -120,7 +117,6 @@ namespace nrhi
 		) {
 			H_texture_2d_array::initialize_sub_array_uav_with_descriptor_cpu_address(
 				texture_2d_array_p,
-				descriptor_heap_p,
 				descriptor_cpu_address,
 				(u32)face,
 				1,
@@ -130,7 +126,6 @@ namespace nrhi
 		}
 		static NCPP_FORCE_INLINE void initialize_face_rtv_with_descriptor_cpu_address(
 			KPA_valid_texture_2d_array_handle texture_2d_array_p,
-			TKPA_valid<A_descriptor_heap> descriptor_heap_p,
 			F_descriptor_cpu_address descriptor_cpu_address,
 			ED_texture_cube_face face,
 			u32 target_mip_level = 0,
@@ -138,7 +133,6 @@ namespace nrhi
 		) {
 			H_texture_2d_array::initialize_element_rtv_with_descriptor_cpu_address(
 				texture_2d_array_p,
-				descriptor_heap_p,
 				descriptor_cpu_address,
 				(u32)face,
 				target_mip_level,

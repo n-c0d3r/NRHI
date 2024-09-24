@@ -45,6 +45,9 @@
 
 namespace nrhi
 {
+	class A_device;
+
+
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 	class A_descriptor_heap;
@@ -80,7 +83,6 @@ namespace nrhi
 	public:
 		static void initialize_sub_array_srv_with_descriptor_cpu_address(
 			KPA_valid_texture_2d_array_handle texture_2d_array_p,
-			TKPA_valid<A_descriptor_heap> descriptor_heap_p,
 			F_descriptor_cpu_address descriptor_cpu_address,
 			u32 index,
 			u32 array_size,
@@ -89,7 +91,6 @@ namespace nrhi
 		);
 		static void initialize_sub_array_uav_with_descriptor_cpu_address(
 			KPA_valid_texture_2d_array_handle texture_2d_array_p,
-			TKPA_valid<A_descriptor_heap> descriptor_heap_p,
 			F_descriptor_cpu_address descriptor_cpu_address,
 			u32 index,
 			u32 array_size,
@@ -98,7 +99,6 @@ namespace nrhi
 		);
 		static void initialize_element_rtv_with_descriptor_cpu_address(
 			KPA_valid_texture_2d_array_handle texture_2d_array_p,
-			TKPA_valid<A_descriptor_heap> descriptor_heap_p,
 			F_descriptor_cpu_address descriptor_cpu_address,
 			u32 index,
 			u32 target_mip_level = 0,
