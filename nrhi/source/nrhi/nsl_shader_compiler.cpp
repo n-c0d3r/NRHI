@@ -2516,7 +2516,7 @@ namespace nrhi {
 		NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 			&(from_unit_p->error_group_p()->stack()),
 			tree.begin_location,
-			"can't not load shader module at path \"" + path + "\""
+			"can't load shader module at path \"" + path + "\""
 		);
 		return null;
 	}
@@ -2749,7 +2749,7 @@ namespace nrhi {
 				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 					&(unit_p->error_group_p()->stack()),
 					body_content_body.begin_location,
-					"can't not parse require body"
+					"can't parse require body"
 				);
 				return eastl::nullopt;
 			}
@@ -3149,7 +3149,7 @@ namespace nrhi {
 				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 					&(unit_p->error_group_p()->stack()),
 					body_content_body.begin_location,
-					"can't not parse require body"
+					"can't parse require body"
 				);
 				return eastl::nullopt;
 			}
@@ -3242,7 +3242,7 @@ namespace nrhi {
 				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 					&(unit_p->error_group_p()->stack()),
 					object_implementation.bodies[0].begin_location,
-					"can't not parse annotation info trees"
+					"can't parse annotation info trees"
 				);
 				return eastl::nullopt;
 			}
@@ -3495,7 +3495,7 @@ namespace nrhi {
 			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 				&(unit_p->error_group_p()->stack()),
 				object_implementation.bodies[0].begin_location,
-				"can't not parse struct arguments"
+				"can't parse struct arguments"
 			);
 			return eastl::nullopt;
 		}
@@ -3711,7 +3711,7 @@ namespace nrhi {
 			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 				&(unit_p->error_group_p()->stack()),
 				object_implementation.bodies[0].begin_location,
-				"can't not parse enum values"
+				"can't parse enum values"
 			);
 			return eastl::nullopt;
 		}
@@ -3890,7 +3890,7 @@ namespace nrhi {
 			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 				&(unit_p->error_group_p()->stack()),
 				object_implementation.bodies[0].begin_location,
-				"can't not parse resource type"
+				"can't parse resource type"
 			);
 			return eastl::nullopt;
 		}
@@ -4182,7 +4182,7 @@ namespace nrhi {
 			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 				&(unit_p->error_group_p()->stack()),
 				object_implementation.bodies[0].begin_location,
-				"can't not parse uniform type"
+				"can't parse uniform type"
 			);
 			return eastl::nullopt;
 		}
@@ -4703,7 +4703,7 @@ namespace nrhi {
 			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 				&(unit_p->error_group_p()->stack()),
 				object_implementation.bodies[0].begin_location,
-				"can't not parse pipeline_state shaders"
+				"can't parse pipeline_state shaders"
 			);
 			return eastl::nullopt;
 		}
@@ -5726,7 +5726,7 @@ namespace nrhi {
 			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 				&(unit_p->error_group_p()->stack()),
 				object_implementation.bodies[0].begin_location,
-				"can't not parse shader params"
+				"can't parse shader params"
 			);
 			return eastl::nullopt;
 		}
@@ -5845,7 +5845,7 @@ namespace nrhi {
 			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 				&(unit_p->error_group_p()->stack()),
 				object_implementation.bodies[1].begin_location,
-				"can't not parse shader body"
+				"can't parse shader body"
 			);
 			return eastl::nullopt;
 		}
