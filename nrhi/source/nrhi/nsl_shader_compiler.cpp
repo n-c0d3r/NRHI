@@ -2524,7 +2524,7 @@ namespace nrhi {
 	void F_nsl_shader_module_manager::register_translation_unit(const G_string& abs_path, TKPA_valid<F_nsl_translation_unit> translation_unit_p)
 	{
 		NCPP_ASSERT(abs_path_to_translation_unit_p_.find(abs_path) == abs_path_to_translation_unit_p_.end());
-		abs_path_to_translation_unit_p_.insert({ abs_path, translation_unit_p.no_requirements() });
+		abs_path_to_translation_unit_p_[abs_path] = translation_unit_p.no_requirements();
 	}
 
 
