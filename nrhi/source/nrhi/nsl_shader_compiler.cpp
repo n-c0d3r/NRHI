@@ -6800,6 +6800,8 @@ namespace nrhi {
 		auto& name_to_shader_object_p_map = shader_manager_p->name_to_shader_object_p_map();
 		auto& name_to_sampler_state_info_map = sampler_state_manager_p->name_to_sampler_state_info_map();
 
+		b8 auto_bind_slot = !(shader_compiler_p()->name_manager_p()->is_name_registered("NSL_DISABLE_AUTO_SLOTS"));
+
 		u32 shader_count = name_to_shader_object_p_map.size();
 
 		for(auto& sampler_state : name_to_sampler_state_info_map) {
@@ -6862,43 +6864,46 @@ namespace nrhi {
 			u32 sampler_state_iterator_size = sampler_state_iterators.size();
 
 			// sort sampler state iterators (to let manual slot sampler state iterators are on correct slot)
-			for(u32 i = 0; i < sampler_state_iterator_size; ++i) {
+			if(auto_bind_slot)
+			{
+				for(u32 i = 0; i < sampler_state_iterator_size; ++i) {
 
-				auto& sampler_state_it = sampler_state_iterators[i];
-				auto& sampler_state = *sampler_state_it;
+					auto& sampler_state_it = sampler_state_iterators[i];
+					auto& sampler_state = *sampler_state_it;
 
-				if(
-					(sampler_state.second.slot != -1)
-					&& (sampler_state.second.slot != i)
-				) {
-					if(sampler_state.second.slot >= sampler_state_iterator_size) {
+					if(
+						(sampler_state.second.slot != -1)
+						&& (sampler_state.second.slot != i)
+					) {
+						if(sampler_state.second.slot >= sampler_state_iterator_size) {
 
-						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-							&(sampler_state.second.translation_unit_p->error_group_p()->stack()),
-							sampler_state.second.begin_location,
-							"slot \"" + G_to_string(sampler_state.second.slot) + "\" out of bound"
-						);
-						return false;
+							NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+								&(sampler_state.second.translation_unit_p->error_group_p()->stack()),
+								sampler_state.second.begin_location,
+								"slot \"" + G_to_string(sampler_state.second.slot) + "\" out of bound"
+							);
+							return false;
+						}
+
+						auto& current_on_slot_sampler_state_it = sampler_state_iterators[sampler_state.second.slot];
+						auto& current_on_slot_sampler_state = *current_on_slot_sampler_state_it;
+
+						if(current_on_slot_sampler_state.second.slot == sampler_state.second.slot) {
+
+							NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+								&(sampler_state.second.translation_unit_p->error_group_p()->stack()),
+								sampler_state.second.begin_location,
+								"sampler states \"" + sampler_state.first + "\" and \"" + current_on_slot_sampler_state.first + "\" have the same slot"
+							);
+							return false;
+						}
+
+						std::swap(current_on_slot_sampler_state_it, sampler_state_it);
 					}
-
-					auto& current_on_slot_sampler_state_it = sampler_state_iterators[sampler_state.second.slot];
-					auto& current_on_slot_sampler_state = *current_on_slot_sampler_state_it;
-
-					if(current_on_slot_sampler_state.second.slot == sampler_state.second.slot) {
-
-						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-							&(sampler_state.second.translation_unit_p->error_group_p()->stack()),
-							sampler_state.second.begin_location,
-							"sampler states \"" + sampler_state.first + "\" and \"" + current_on_slot_sampler_state.first + "\" have the same slot"
-						);
-						return false;
-					}
-
-					std::swap(current_on_slot_sampler_state_it, sampler_state_it);
 				}
 			}
 
-			// bind actual slots
+			// bind actual slot spaces
 			for(u32 i = 0; i < sampler_state_iterator_size; ++i) {
 
 				auto& sampler_state_it = sampler_state_iterators[i];
@@ -6924,6 +6929,8 @@ namespace nrhi {
 		auto& name_to_shader_object_p_map = shader_manager_p->name_to_shader_object_p_map();
 		auto& name_to_resource_info_map = resource_manager_p->name_to_resource_info_map();
 
+		b8 auto_bind_slot = !(shader_compiler_p()->name_manager_p()->is_name_registered("NSL_DISABLE_AUTO_SLOTS"));
+
 		u32 shader_count = name_to_shader_object_p_map.size();
 
 		for(auto& resource : name_to_resource_info_map) {
@@ -6992,43 +6999,46 @@ namespace nrhi {
 			u32 resource_iterator_size = resource_iterators.size();
 
 			// sort resource iterators (to let manual slot resource iterators are on correct slot)
-			for(u32 i = 0; i < resource_iterator_size; ++i) {
+			if(auto_bind_slot)
+			{
+				for(u32 i = 0; i < resource_iterator_size; ++i) {
 
-				auto& resource_it = resource_iterators[i];
-				auto& resource = *resource_it;
+					auto& resource_it = resource_iterators[i];
+					auto& resource = *resource_it;
 
-				if(
-					(resource.second.slot != -1)
-					&& (resource.second.slot != i)
-				) {
-					if(resource.second.slot >= resource_iterator_size) {
+					if(
+						(resource.second.slot != -1)
+						&& (resource.second.slot != i)
+					) {
+						if(resource.second.slot >= resource_iterator_size) {
 
-						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-							&(resource.second.translation_unit_p->error_group_p()->stack()),
-							resource.second.begin_location,
-							"slot \"" + G_to_string(resource.second.slot) + "\" out of bound"
-						);
-						return false;
+							NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+								&(resource.second.translation_unit_p->error_group_p()->stack()),
+								resource.second.begin_location,
+								"slot \"" + G_to_string(resource.second.slot) + "\" out of bound"
+							);
+							return false;
+						}
+
+						auto& current_on_slot_resource_it = resource_iterators[resource.second.slot];
+						auto& current_on_slot_resource = *current_on_slot_resource_it;
+
+						if(current_on_slot_resource.second.slot == resource.second.slot) {
+
+							NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+								&(resource.second.translation_unit_p->error_group_p()->stack()),
+								resource.second.begin_location,
+								"resources \"" + resource.first + "\" and \"" + current_on_slot_resource.first + "\" have the same slot"
+							);
+							return false;
+						}
+
+						std::swap(current_on_slot_resource_it, resource_it);
 					}
-
-					auto& current_on_slot_resource_it = resource_iterators[resource.second.slot];
-					auto& current_on_slot_resource = *current_on_slot_resource_it;
-
-					if(current_on_slot_resource.second.slot == resource.second.slot) {
-
-						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-							&(resource.second.translation_unit_p->error_group_p()->stack()),
-							resource.second.begin_location,
-							"resources \"" + resource.first + "\" and \"" + current_on_slot_resource.first + "\" have the same slot"
-						);
-						return false;
-					}
-
-					std::swap(current_on_slot_resource_it, resource_it);
 				}
 			}
 
-			// bind actual slots
+			// bind actual slot spaces
 			for(u32 i = 0; i < resource_iterator_size; ++i) {
 
 				auto& resource_it = resource_iterators[i];
@@ -7054,6 +7064,8 @@ namespace nrhi {
 		auto& name_to_shader_object_p_map = shader_manager_p->name_to_shader_object_p_map();
 		auto& name_to_resource_info_map = resource_manager_p->name_to_resource_info_map();
 
+		b8 auto_bind_slot = !(shader_compiler_p()->name_manager_p()->is_name_registered("NSL_DISABLE_AUTO_SLOTS"));
+
 		u32 shader_count = name_to_shader_object_p_map.size();
 
 		for(auto& resource : name_to_resource_info_map) {
@@ -7122,43 +7134,46 @@ namespace nrhi {
 			u32 resource_iterator_size = resource_iterators.size();
 
 			// sort resource iterators (to let manual slot resource iterators are on correct slot)
-			for(u32 i = 0; i < resource_iterator_size; ++i) {
+			if(auto_bind_slot)
+			{
+				for(u32 i = 0; i < resource_iterator_size; ++i) {
 
-				auto& resource_it = resource_iterators[i];
-				auto& resource = *resource_it;
+					auto& resource_it = resource_iterators[i];
+					auto& resource = *resource_it;
 
-				if(
-					(resource.second.slot != -1)
-					&& (resource.second.slot != i)
-				) {
-					if(resource.second.slot >= resource_iterator_size) {
+					if(
+						(resource.second.slot != -1)
+						&& (resource.second.slot != i)
+					) {
+						if(resource.second.slot >= resource_iterator_size) {
 
-						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-							&(resource.second.translation_unit_p->error_group_p()->stack()),
-							resource.second.begin_location,
-							"slot \"" + G_to_string(resource.second.slot) + "\" out of bound"
-						);
-						return false;
+							NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+								&(resource.second.translation_unit_p->error_group_p()->stack()),
+								resource.second.begin_location,
+								"slot \"" + G_to_string(resource.second.slot) + "\" out of bound"
+							);
+							return false;
+						}
+
+						auto& current_on_slot_resource_it = resource_iterators[resource.second.slot];
+						auto& current_on_slot_resource = *current_on_slot_resource_it;
+
+						if(current_on_slot_resource.second.slot == resource.second.slot) {
+
+							NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+								&(resource.second.translation_unit_p->error_group_p()->stack()),
+								resource.second.begin_location,
+								"resources \"" + resource.first + "\" and \"" + current_on_slot_resource.first + "\" have the same slot"
+							);
+							return false;
+						}
+
+						std::swap(current_on_slot_resource_it, resource_it);
 					}
-
-					auto& current_on_slot_resource_it = resource_iterators[resource.second.slot];
-					auto& current_on_slot_resource = *current_on_slot_resource_it;
-
-					if(current_on_slot_resource.second.slot == resource.second.slot) {
-
-						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-							&(resource.second.translation_unit_p->error_group_p()->stack()),
-							resource.second.begin_location,
-							"resources \"" + resource.first + "\" and \"" + current_on_slot_resource.first + "\" have the same slot"
-						);
-						return false;
-					}
-
-					std::swap(current_on_slot_resource_it, resource_it);
 				}
 			}
 
-			// bind actual slots
+			// bind actual slot spaces
 			for(u32 i = 0; i < resource_iterator_size; ++i) {
 
 				auto& resource_it = resource_iterators[i];
@@ -7184,6 +7199,8 @@ namespace nrhi {
 		auto& name_to_shader_object_p_map = shader_manager_p->name_to_shader_object_p_map();
 		auto& name_to_resource_info_map = resource_manager_p->name_to_resource_info_map();
 
+		b8 auto_bind_slot = !(shader_compiler_p()->name_manager_p()->is_name_registered("NSL_DISABLE_AUTO_SLOTS"));
+
 		u32 shader_count = name_to_shader_object_p_map.size();
 
 		for(auto& resource : name_to_resource_info_map) {
@@ -7252,43 +7269,46 @@ namespace nrhi {
 			u32 resource_iterator_size = resource_iterators.size();
 
 			// sort resource iterators (to let manual slot resource iterators are on correct slot)
-			for(u32 i = 0; i < resource_iterator_size; ++i) {
+			if(auto_bind_slot)
+			{
+				for(u32 i = 0; i < resource_iterator_size; ++i) {
 
-				auto& resource_it = resource_iterators[i];
-				auto& resource = *resource_it;
+					auto& resource_it = resource_iterators[i];
+					auto& resource = *resource_it;
 
-				if(
-					(resource.second.slot != -1)
-					&& (resource.second.slot != i)
-				) {
-					if(resource.second.slot >= resource_iterator_size) {
+					if(
+						(resource.second.slot != -1)
+						&& (resource.second.slot != i)
+					) {
+						if(resource.second.slot >= resource_iterator_size) {
 
-						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-							&(resource.second.translation_unit_p->error_group_p()->stack()),
-							resource.second.begin_location,
-							"slot \"" + G_to_string(resource.second.slot) + "\" out of bound"
-						);
-						return false;
+							NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+								&(resource.second.translation_unit_p->error_group_p()->stack()),
+								resource.second.begin_location,
+								"slot \"" + G_to_string(resource.second.slot) + "\" out of bound"
+							);
+							return false;
+						}
+
+						auto& current_on_slot_resource_it = resource_iterators[resource.second.slot];
+						auto& current_on_slot_resource = *current_on_slot_resource_it;
+
+						if(current_on_slot_resource.second.slot == resource.second.slot) {
+
+							NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+								&(resource.second.translation_unit_p->error_group_p()->stack()),
+								resource.second.begin_location,
+								"resources \"" + resource.first + "\" and \"" + current_on_slot_resource.first + "\" have the same slot"
+							);
+							return false;
+						}
+
+						std::swap(current_on_slot_resource_it, resource_it);
 					}
-
-					auto& current_on_slot_resource_it = resource_iterators[resource.second.slot];
-					auto& current_on_slot_resource = *current_on_slot_resource_it;
-
-					if(current_on_slot_resource.second.slot == resource.second.slot) {
-
-						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-							&(resource.second.translation_unit_p->error_group_p()->stack()),
-							resource.second.begin_location,
-							"resources \"" + resource.first + "\" and \"" + current_on_slot_resource.first + "\" have the same slot"
-						);
-						return false;
-					}
-
-					std::swap(current_on_slot_resource_it, resource_it);
 				}
 			}
 
-			// bind actual slots
+			// bind actual slot space
 			for(u32 i = 0; i < resource_iterator_size; ++i) {
 
 				auto& resource_it = resource_iterators[i];
