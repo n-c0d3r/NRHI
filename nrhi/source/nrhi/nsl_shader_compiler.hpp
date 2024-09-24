@@ -1130,6 +1130,8 @@ namespace nrhi {
 			const F_nsl_ast_tree& tree
 		);
 
+	public:
+		void register_translation_unit(const G_string& abs_path, TKPA_valid<F_nsl_translation_unit> translation_unit_p);
 	};
 
 

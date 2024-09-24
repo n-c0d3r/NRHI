@@ -2521,6 +2521,12 @@ namespace nrhi {
 		return null;
 	}
 
+	void F_nsl_shader_module_manager::register_translation_unit(const G_string& abs_path, TKPA_valid<F_nsl_translation_unit> translation_unit_p)
+	{
+		NCPP_ASSERT(abs_path_to_translation_unit_p_.find(abs_path) == abs_path_to_translation_unit_p_.end());
+		abs_path_to_translation_unit_p_.insert({ abs_path, translation_unit_p.no_requirements() });
+	}
+
 
 
 	A_nsl_object::A_nsl_object(
@@ -7503,6 +7509,10 @@ namespace nrhi {
 		main_unit_p_ = shader_compiler_p_->translation_unit_manager_p()->create_unit(
 			raw_src_content,
 			abs_path
+		);
+		shader_compiler_p()->shader_module_manager_p()->register_translation_unit(
+			abs_path,
+			NCPP_FOH_VALID(main_unit_p_)
 		);
 
 		compiled_result_.output_language_enum = shader_compiler_p_->output_language_p()->as_enum();
