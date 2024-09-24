@@ -6978,7 +6978,7 @@ namespace nrhi {
 				auto& sampler_state_it = sampler_state_iterators[i];
 				auto& sampler_state = *sampler_state_it;
 
-				if(sampler_state.second.slot == -1)
+				if(auto_bind_slot)
 					sampler_state.second.actual_slots[shader_index] = i;
 				else
 					sampler_state.second.actual_slots[shader_index] = sampler_state.second.slot;
@@ -7120,7 +7120,7 @@ namespace nrhi {
 				auto& resource_it = resource_iterators[i];
 				auto& resource = *resource_it;
 
-				if(resource.second.slot == -1)
+				if(auto_bind_slot)
 					resource.second.actual_slots[shader_index] = i;
 				else
 					resource.second.actual_slots[shader_index] = resource.second.slot;
@@ -7262,7 +7262,7 @@ namespace nrhi {
 				auto& resource_it = resource_iterators[i];
 				auto& resource = *resource_it;
 
-				if(resource.second.slot == -1)
+				if(auto_bind_slot)
 					resource.second.actual_slots[shader_index] = i;
 				else
 					resource.second.actual_slots[shader_index] = resource.second.slot;
@@ -7404,7 +7404,7 @@ namespace nrhi {
 				auto& resource_it = resource_iterators[i];
 				auto& resource = *resource_it;
 
-				if(resource.second.slot == -1)
+				if(auto_bind_slot)
 					resource.second.actual_slots[shader_index] = i;
 				else
 					resource.second.actual_slots[shader_index] = resource.second.slot;
