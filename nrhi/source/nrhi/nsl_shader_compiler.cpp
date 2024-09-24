@@ -9858,7 +9858,14 @@ namespace nrhi {
 			return eastl::nullopt;
 		}
 
+		//
 		auto compile_result_opt = translation_unit_compiler_p_->compile();
+		if(!compile_result_opt)
+		{
+			is_compiled_ = true;
+			is_compile_success_ = false;
+			return eastl::nullopt;
+		}
 
 		compile_result_opt.value().class_name = class_name;
 
