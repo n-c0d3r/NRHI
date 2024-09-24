@@ -6110,11 +6110,25 @@ namespace nrhi {
 		}
 
 		//
-		NCPP_ASSERT(
-			(thread_group_size_.x != 0)
-			&& (thread_group_size_.y != 0)
-			&& (thread_group_size_.z != 0)
-		);
+		if(
+			(thread_group_size_.x == 0)
+			|| (thread_group_size_.y == 0)
+			|| (thread_group_size_.z == 0)
+		)
+		{
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				&(unit_p->error_group_p()->stack()),
+				trees[index].begin_location,
+				"invalid thread group size: ["
+				+ G_to_string(thread_group_size_.x)
+				+ ", "
+				+ G_to_string(thread_group_size_.y)
+				+ ", "
+				+ G_to_string(thread_group_size_.z)
+				+ "]"
+			);
+			return eastl::nullopt;
+		}
 
 		return std::move(childs);
 	}
@@ -6250,11 +6264,28 @@ namespace nrhi {
 		}
 
 		//
-		NCPP_ASSERT(
-			(thread_group_size_.x != 0)
-			&& (thread_group_size_.y != 0)
-			&& (thread_group_size_.z != 0)
-		);
+
+
+		//
+		if(
+			(thread_group_size_.x == 0)
+			|| (thread_group_size_.y == 0)
+			|| (thread_group_size_.z == 0)
+		)
+		{
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				&(unit_p->error_group_p()->stack()),
+				trees[index].begin_location,
+				"invalid thread group size: ["
+				+ G_to_string(thread_group_size_.x)
+				+ ", "
+				+ G_to_string(thread_group_size_.y)
+				+ ", "
+				+ G_to_string(thread_group_size_.z)
+				+ "]"
+			);
+			return eastl::nullopt;
+		}
 
 		return std::move(childs);
 	}
@@ -6422,11 +6453,28 @@ namespace nrhi {
 		}
 
 		//
-		NCPP_ASSERT(
-			(thread_group_size_.x != 0)
-			&& (thread_group_size_.y != 0)
-			&& (thread_group_size_.z != 0)
-		);
+
+
+		//
+		if(
+			(thread_group_size_.x == 0)
+			|| (thread_group_size_.y == 0)
+			|| (thread_group_size_.z == 0)
+		)
+		{
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				&(unit_p->error_group_p()->stack()),
+				trees[index].begin_location,
+				"invalid thread group size: ["
+				+ G_to_string(thread_group_size_.x)
+				+ ", "
+				+ G_to_string(thread_group_size_.y)
+				+ ", "
+				+ G_to_string(thread_group_size_.z)
+				+ "]"
+			);
+			return eastl::nullopt;
+		}
 
 		return std::move(childs);
 	}
