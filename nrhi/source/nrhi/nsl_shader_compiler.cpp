@@ -2464,9 +2464,7 @@ namespace nrhi {
 	{
 		auto it = system_source_map_.find(path);
 
-		if(it == system_source_map_.end())
-			return eastl::nullopt;
-		else
+		if(it != system_source_map_.end())
 		{
 			out_src_content = it->second;
 
@@ -2474,6 +2472,8 @@ namespace nrhi {
 				.abs_path = path
 			};
 		}
+
+		return eastl::nullopt;
 	}
 	TK<F_nsl_translation_unit> F_nsl_shader_module_manager::load(
 		TKPA_valid<F_nsl_translation_unit> from_unit_p,
@@ -2503,10 +2503,14 @@ namespace nrhi {
 
 				if(it == abs_path_to_translation_unit_p_.end())
 				{
-					return shader_compiler_p_->translation_unit_manager_p()->create_unit(
+					auto unit_p = shader_compiler_p_->translation_unit_manager_p()->create_unit(
 						src_content,
 						abs_path
 					).no_requirements();
+
+					abs_path_to_translation_unit_p_[abs_path] = unit_p;
+
+					return unit_p;
 				}
 				else return it->second;
 			}
