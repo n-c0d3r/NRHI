@@ -6814,17 +6814,25 @@ namespace nrhi {
 				{
 					TK <F_nsl_translation_unit> unit_p = temp_unit_p_queue.back();
 
-					processed_unit_p_set.insert(unit_p.object_p());
-					sorted_unit_p_vector_.push_back(unit_p);
+					if(!(unit_p->is_sorted_))
+					{
+						processed_unit_p_set.insert(unit_p.object_p());
+						sorted_unit_p_vector_.push_back(unit_p);
+					}
 
 					temp_unit_p_queue.pop();
 
-					// enqueue dependencies
-					for (auto dependency_p : unit_p->dependency_p_vector())
+					if(!(unit_p->is_sorted_))
 					{
-						if (processed_unit_p_set.find(dependency_p.object_p()) == processed_unit_p_set.end())
-							unit_p_queue.push(dependency_p.no_requirements());
+						// enqueue dependencies
+						for (auto dependency_p : unit_p->dependency_p_vector())
+						{
+							if (processed_unit_p_set.find(dependency_p.object_p()) == processed_unit_p_set.end())
+								unit_p_queue.push(dependency_p.no_requirements());
+						}
 					}
+
+					unit_p->is_sorted_ = true;
 				}
 			}
 		}

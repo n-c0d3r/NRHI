@@ -2475,6 +2475,7 @@ namespace nrhi {
 		TU<A_nsl_section_storage> section_storage_p_;
 
 		b8 is_prepared_ = false;
+		b8 is_sorted_ = false;
 
 	public:
 		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
