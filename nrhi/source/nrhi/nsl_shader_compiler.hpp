@@ -1269,7 +1269,9 @@ namespace nrhi {
 			sz index,
 			F_nsl_error_stack* error_stack_p
 		) override;
-
+		virtual eastl::optional<G_string> apply(
+			const F_nsl_ast_tree& tree
+		);
 	};
 
 
@@ -2475,7 +2477,7 @@ namespace nrhi {
 		TU<A_nsl_section_storage> section_storage_p_;
 
 		b8 is_prepared_ = false;
-		b8 is_sorted_ = false;
+		b8 is_compiled_ = false;
 
 	public:
 		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
@@ -2499,6 +2501,7 @@ namespace nrhi {
 		}
 
 		NCPP_FORCE_INLINE b8 is_prepared() const noexcept { return is_prepared_; }
+		NCPP_FORCE_INLINE b8 is_compiled() const noexcept { return is_compiled_; }
 
 
 
@@ -2608,6 +2611,9 @@ namespace nrhi {
 		b8 bind_uniforms_to_constant_buffers_internal();
 		b8 setup_constant_buffers_internal();
 		b8 apply_internal();
+
+	public:
+		eastl::optional<G_string> compile_unit(TKPA_valid<F_nsl_translation_unit> unit_p);
 
 	protected:
 		b8 compile_minimal();
