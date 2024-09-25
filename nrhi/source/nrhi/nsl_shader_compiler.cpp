@@ -3976,7 +3976,7 @@ namespace nrhi {
 
 				const auto& info_tree_reader = it->second;
 
-				auto value_opt = info_tree_reader.read_u32(0);
+				auto value_opt = info_tree_reader.read_i32(0);
 
 				if(!value_opt)
 					return eastl::nullopt;
