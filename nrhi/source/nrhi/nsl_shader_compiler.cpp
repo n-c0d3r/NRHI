@@ -7601,6 +7601,11 @@ namespace nrhi {
 
 	b8 F_nsl_translation_unit_compiler::prepare_unit(TK_valid<F_nsl_translation_unit> unit_p, F_nsl_context& context) {
 
+		if(unit_p->is_prepared())
+			return true;
+
+		unit_p->is_prepared_ = true;
+
 		auto ast_trees_opt = parse(
 			unit_p,
 			unit_p->preprocessed_src().content,

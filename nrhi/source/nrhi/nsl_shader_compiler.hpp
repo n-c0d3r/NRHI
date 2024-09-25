@@ -2457,6 +2457,9 @@ namespace nrhi {
 
 	class NRHI_API F_nsl_translation_unit {
 
+	public:
+		friend class F_nsl_translation_unit_compiler;
+
 	private:
 		TK_valid<F_nsl_shader_compiler> shader_compiler_p_;
 
@@ -2470,6 +2473,8 @@ namespace nrhi {
 
 		TG_vector<F_nsl_ast_tree> ast_trees_;
 		TU<A_nsl_section_storage> section_storage_p_;
+
+		b8 is_prepared_ = false;
 
 	public:
 		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
@@ -2491,6 +2496,8 @@ namespace nrhi {
 				section_storage_p_ = create_section_storage();
 			return NCPP_FOH_VALID(section_storage_p_);
 		}
+
+		NCPP_FORCE_INLINE b8 is_prepared() const noexcept { return is_prepared_; }
 
 
 
