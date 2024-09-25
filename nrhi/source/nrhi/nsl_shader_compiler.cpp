@@ -6934,7 +6934,7 @@ namespace nrhi {
 					sampler_state.second.actual_slots[shader_index] = sampler_state.second.slot;
 
 				auto& actual_slot_space = sampler_state.second.actual_slot_spaces[shader_index];
-				if(actual_slot_space == -1)
+				if(sampler_state.second.slot_space == -1)
 				{
 					actual_slot_space = shader_object_p->default_slot_space;
 				}
@@ -7076,7 +7076,7 @@ namespace nrhi {
 					resource.second.actual_slots[shader_index] = resource.second.slot;
 
 				auto& actual_slot_space = resource.second.actual_slot_spaces[shader_index];
-				if(actual_slot_space == -1)
+				if(resource.second.slot_space == -1)
 				{
 					actual_slot_space = shader_object_p->default_slot_space;
 				}
@@ -7218,7 +7218,7 @@ namespace nrhi {
 					resource.second.actual_slots[shader_index] = resource.second.slot;
 
 				auto& actual_slot_space = resource.second.actual_slot_spaces[shader_index];
-				if(actual_slot_space == -1)
+				if(resource.second.slot_space == -1)
 				{
 					actual_slot_space = shader_object_p->default_slot_space;
 				}
@@ -7360,7 +7360,7 @@ namespace nrhi {
 					resource.second.actual_slots[shader_index] = resource.second.slot;
 
 				auto& actual_slot_space = resource.second.actual_slot_spaces[shader_index];
-				if(actual_slot_space == -1)
+				if(resource.second.slot_space == -1)
 				{
 					actual_slot_space = shader_object_p->default_slot_space;
 				}
