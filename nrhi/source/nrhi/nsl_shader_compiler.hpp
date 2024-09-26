@@ -312,7 +312,7 @@ namespace nrhi {
 
 		TG_vector<F_nsl_data_argument_member> argument_members;
 
-		u32 alignment = 16;
+		u32 alignment = 1;
 		u32 size = 0;
 
 		F_nsl_structure_config_map config_map;

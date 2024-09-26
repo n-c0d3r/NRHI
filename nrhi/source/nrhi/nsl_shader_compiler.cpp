@@ -7927,12 +7927,14 @@ namespace nrhi {
 
 			offset = align_size(offset, member_alignment);
 
+			result.alignment = align_size(result.alignment, member_alignment);
+
 			argument_member.offset = offset;
 
 			offset += member_size;
 		}
 
-		result.size = align_size(offset, structure_info.alignment);
+		result.size = align_size(offset, result.alignment);
 
 		register_size(
 			name,
@@ -7940,7 +7942,7 @@ namespace nrhi {
 		);
 		register_alignment(
 			name,
-			structure_info.alignment
+			result.alignment
 		);
 		register_type_class(
 			name,
