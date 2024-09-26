@@ -592,6 +592,7 @@ namespace nrhi {
 		B8,
 		I32,
 		U32,
+		U64,
 		F16,
 		F32,
 		F64,
