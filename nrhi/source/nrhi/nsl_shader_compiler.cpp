@@ -7449,7 +7449,7 @@ namespace nrhi {
 
 				// calculate buffer size and uniform offset
 				{
-					constexpr u32 buffer_alignment = 256;
+					u32 buffer_alignment = 1;
 					constexpr u32 min_pack_alignment = 16;
 
 					u32 offset = 0;
@@ -7464,25 +7464,12 @@ namespace nrhi {
 						u32 member_single_element_size = data_type_manager_p->size(uniform_iterator->second.type);
 						u32 aligned_member_single_element_size = align_size(member_single_element_size, member_alignment);
 
-						E_nsl_element_format member_type_element_format = data_type_manager_p->element_format(uniform_iterator->second.type);
-						u32 member_type_element_count = data_type_manager_p->element_count(uniform_iterator->second.type);
-
 						u32 member_size = (
-							(member_element_count - 1) * eastl::max<u32>(aligned_member_single_element_size, min_pack_alignment)
-							+ (
-								(
-									(member_type_element_count == 3)
-									&& (
-										(member_type_element_format != E_nsl_element_format::FLOAT_32)
-										&& (member_type_element_format != E_nsl_element_format::UINT_32)
-										&& (member_type_element_format != E_nsl_element_format::SINT_32)
-										&& (member_type_element_format != E_nsl_element_format::TYPELESS_32)
-									)
-								)
-								? aligned_member_single_element_size
-								: member_single_element_size
-							)
+							(member_element_count - 1) * align_size(aligned_member_single_element_size, min_pack_alignment)
+							+ member_single_element_size
 						);
+
+						buffer_alignment = align_size(buffer_alignment, member_alignment);
 
 						offset = align_size(offset, member_alignment);
 
@@ -7492,6 +7479,7 @@ namespace nrhi {
 					}
 
 					resource.second.constant_size = align_size(offset, buffer_alignment);
+					resource.second.constant_alignment = buffer_alignment;
 				}
 			}
 		}
@@ -7905,24 +7893,9 @@ namespace nrhi {
 			u32 member_single_element_size = size(argument.type);
 			u32 aligned_member_single_element_size = align_size(member_single_element_size, member_alignment);
 
-			E_nsl_element_format member_type_element_format = element_format(argument.type);
-			u32 member_type_element_count = element_count(argument.type);
-
 			u32 member_size = (
-				(member_element_count - 1) * eastl::max<u32>(aligned_member_single_element_size, min_pack_alignment)
-				+ (
-					(
-						(member_type_element_count == 3)
-						&& (
-							(member_type_element_format != E_nsl_element_format::FLOAT_32)
-							&& (member_type_element_format != E_nsl_element_format::UINT_32)
-							&& (member_type_element_format != E_nsl_element_format::SINT_32)
-							&& (member_type_element_format != E_nsl_element_format::TYPELESS_32)
-						)
-					)
-					? aligned_member_single_element_size
-					: member_single_element_size
-				)
+				(member_element_count - 1) * align_size(aligned_member_single_element_size, min_pack_alignment)
+				+ member_single_element_size
 			);
 
 			offset = align_size(offset, member_alignment);
@@ -7947,6 +7920,14 @@ namespace nrhi {
 		register_type_class(
 			name,
 			E_nsl_type_class::STRUCTURE
+		);
+		register_element_count(
+			name,
+			1
+		);
+		register_element_format(
+			name,
+			E_nsl_element_format::NONE
 		);
 
 		return std::move(result);
@@ -9855,7 +9836,8 @@ namespace nrhi {
 					.actual_slot_spaces = resource_info.actual_slot_spaces,
 					.data_arguments = std::move(data_arguments),
 					.sort_uniforms = resource_info.sort_uniforms,
-					.constant_size = resource_info.constant_size
+					.constant_size = resource_info.constant_size,
+					.constant_alignment = resource_info.constant_alignment
 
 				};
 
