@@ -3950,7 +3950,12 @@ namespace nrhi {
 
 		if(name_manager_p->is_name_registered(type_child_info_tree.name))
 		{
-			if(name_manager_p->name_type(type_child_info_tree.name) != T_type_hash_code<FE_nsl_name_types::RESOURCE>)
+			if(
+				name_manager_p->name_type(
+					name_manager_p->target(type_child_info_tree.name)
+				)
+				!= T_type_hash_code<FE_nsl_name_types::RESOURCE_TYPE>
+			)
 			{
 				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
 					&(unit_p->error_group_p()->stack()),
