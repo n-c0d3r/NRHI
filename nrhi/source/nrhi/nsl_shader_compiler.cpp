@@ -4102,6 +4102,8 @@ namespace nrhi {
 			}
 		}
 
+		context.default_constant_buffer = tree.object_implementation.name;
+
 		// register resource
 		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE>(tree.object_implementation.name);
 		resource_manager_p->register_resource(
