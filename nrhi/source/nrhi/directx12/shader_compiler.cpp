@@ -93,16 +93,27 @@ namespace nrhi {
 		sourceBuffer.Size = src_content.length() * sizeof(char);
 		sourceBuffer.Encoding = DXC_CP_UTF8;
 
-		const wchar_t* args[] = {
+		TG_vector<const wchar_t*> args = {
 			L"-T", wide_model.c_str(), // Target profile
 			L"-E", wide_entry_point_name.c_str(), // Entry point
 		};
 
+		if(
+			(model_major > 6)
+			|| (
+				(model_major == 6)
+				&& (model_major >= 2)
+			)
+		)
+		{
+			args.push_back(L"-enable-16bit-types");
+		}
+
 		Microsoft::WRL::ComPtr<IDxcResult> pResults;
 		pCompiler->Compile(
 			&sourceBuffer,
-			args,
-			_countof(args),
+			args.data(),
+			args.size(),
 			0,
 			IID_PPV_ARGS(pResults.GetAddressOf())
 		);
