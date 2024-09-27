@@ -9244,19 +9244,12 @@ namespace nrhi {
 		name_manager_p->register_name("NSL_HLSL_MINOR", "0");
 
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("uint64_t");
-
 		name_manager_p->register_name("u64", "uint64_t");
-
 		data_type_manager_p->register_size("uint64_t", 8);
-
 		data_type_manager_p->register_alignment("uint64_t", 8);
-
 		data_type_manager_p->register_primitive_data_type("uint64_t", E_nsl_primitive_data_type::U64);
-
 		data_type_manager_p->register_type_class("uint64_t", E_nsl_type_class::PRIMITIVE);
-
 		data_type_manager_p->register_element_format("uint64_t", E_nsl_element_format::UINT_64);
-
 		data_type_manager_p->register_element_count("uint64_t", 1);
 	}
 
@@ -9308,6 +9301,15 @@ namespace nrhi {
 
 		name_manager_p->deregister_name("NSL_HLSL_MINOR");
 		name_manager_p->register_name("NSL_HLSL_MINOR", "2");
+
+		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("uint16_t");
+		name_manager_p->register_name("u16", "uint16_t");
+		data_type_manager_p->register_size("uint16_t", 2);
+		data_type_manager_p->register_alignment("uint16_t", 2);
+		data_type_manager_p->register_primitive_data_type("uint16_t", E_nsl_primitive_data_type::U16);
+		data_type_manager_p->register_type_class("uint16_t", E_nsl_type_class::PRIMITIVE);
+		data_type_manager_p->register_element_format("uint16_t", E_nsl_element_format::UINT_16);
+		data_type_manager_p->register_element_count("uint16_t", 1);
 	}
 
 
