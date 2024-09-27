@@ -3948,6 +3948,28 @@ namespace nrhi {
 			else type_args[i] = type_arg;
 		}
 
+		if(name_manager_p->is_name_registered(type_child_info_tree.name))
+		{
+			if(name_manager_p->name_type(type_child_info_tree.name) != T_type_hash_code<FE_nsl_name_types::RESOURCE>)
+			{
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					&(unit_p->error_group_p()->stack()),
+					object_implementation.bodies[0].begin_location,
+					"\"" + type_child_info_tree.name + "\" is not a resource type"
+				);
+				return eastl::nullopt;
+			}
+		}
+		else
+		{
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				&(unit_p->error_group_p()->stack()),
+				object_implementation.bodies[0].begin_location,
+				"unknown resource type \"" + type_child_info_tree.name + "\""
+			);
+			return eastl::nullopt;
+		}
+
 		resource_info.type = name_manager_p->target(type_child_info_tree.name);
 		resource_info.type_args = type_args;
 
@@ -8933,6 +8955,17 @@ namespace nrhi {
 		// if type has template args
 		{
 			u32 type_arg_count = resource.second.type_args.size();
+
+			if(type_arg_count)
+			{
+				if(
+					(resource.second.type_args[0] == "StructuredBuffer")
+					|| (resource.second.type_args[0] == "RWStructuredBuffer")
+				)
+				{
+
+				}
+			}
 
 			if (type_arg_count)
 				parsed_type += "<";
