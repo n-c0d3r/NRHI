@@ -104,12 +104,12 @@ namespace nrhi {
 		)
 		{
 			d3d12_clear_value.Format = d3d12_resource_desc.Format;
-			d3d12_clear_value.Color[0] = 0.0f;
-			d3d12_clear_value.Color[1] = 0.0f;
-			d3d12_clear_value.Color[2] = 0.0f;
-			d3d12_clear_value.Color[3] = 0.0f;
-			d3d12_clear_value.DepthStencil.Depth = 1.0f;
-			d3d12_clear_value.DepthStencil.Stencil = 0;
+			d3d12_clear_value.Color[0] = desc.clear_value.color.x;
+			d3d12_clear_value.Color[1] = desc.clear_value.color.y;
+			d3d12_clear_value.Color[2] = desc.clear_value.color.z;
+			d3d12_clear_value.Color[3] = desc.clear_value.color.w;
+			d3d12_clear_value.DepthStencil.Depth = desc.clear_value.depth;
+			d3d12_clear_value.DepthStencil.Stencil = desc.clear_value.stencil;
 
 			d3d12_clear_value_p = &d3d12_clear_value;
 		}

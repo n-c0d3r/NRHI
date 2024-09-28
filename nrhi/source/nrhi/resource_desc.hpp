@@ -106,6 +106,15 @@ namespace nrhi {
 
 
 
+	struct F_resource_clear_value
+	{
+		F_vector4_f32 color;
+		f32 depth = 0.0f;
+		u8 stencil = 0;
+	};
+
+
+
     struct F_resource_desc {
 
 		union {
@@ -142,8 +151,8 @@ namespace nrhi {
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		ED_resource_layout layout = ED_resource_layout::UNKNOWN;
 		u64 alignment = u64(ED_resource_placement_alignment::DEFAULT);
+		F_resource_clear_value clear_value;
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-
     };
 
     class NRHI_API H_resource_desc {
@@ -161,7 +170,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
-			u64 alignment = u64(ED_resource_placement_alignment::DEFAULT)
+			u64 alignment = u64(ED_resource_placement_alignment::DEFAULT),
+			const F_resource_clear_value& clear_value = {}
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
         );
 
@@ -178,7 +188,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
-			u64 alignment = u64(ED_resource_placement_alignment::DEFAULT)
+			u64 alignment = u64(ED_resource_placement_alignment::DEFAULT),
+			const F_resource_clear_value& clear_value = {}
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
         );
 
@@ -195,7 +206,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			, ED_resource_layout layout = ED_resource_layout::ROW_MAJOR,
-			u64 alignment = u64(ED_resource_placement_alignment::DEFAULT)
+			u64 alignment = u64(ED_resource_placement_alignment::DEFAULT),
+			const F_resource_clear_value& clear_value = {}
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
         ) {
             return create_buffer_desc(
@@ -209,7 +221,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
             );
         }
@@ -228,7 +241,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			, ED_resource_layout layout = ED_resource_layout::UNKNOWN,
-			u64 alignment = u64(ED_resource_placement_alignment::DEFAULT)
+			u64 alignment = u64(ED_resource_placement_alignment::DEFAULT),
+			const F_resource_clear_value& clear_value = {}
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
         );
 
@@ -248,7 +262,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			, ED_resource_layout layout = ED_resource_layout::UNKNOWN,
-			u64 alignment = u64(ED_resource_placement_alignment::DEFAULT)
+			u64 alignment = u64(ED_resource_placement_alignment::DEFAULT),
+			const F_resource_clear_value& clear_value = {}
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
         );
 
@@ -268,7 +283,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			, ED_resource_layout layout = ED_resource_layout::UNKNOWN,
-			u64 alignment = u64(ED_resource_placement_alignment::DEFAULT)
+			u64 alignment = u64(ED_resource_placement_alignment::DEFAULT),
+			const F_resource_clear_value& clear_value = {}
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
         );
 
@@ -289,7 +305,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			, ED_resource_layout layout = ED_resource_layout::UNKNOWN,
-			u64 alignment = u64(ED_resource_placement_alignment::DEFAULT)
+			u64 alignment = u64(ED_resource_placement_alignment::DEFAULT),
+			const F_resource_clear_value& clear_value = {}
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		);
 

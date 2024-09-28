@@ -107,7 +107,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		return H_resource::create_committed_buffer(
@@ -124,7 +125,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			)
 		);
@@ -142,7 +144,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		return H_resource::create_committed_buffer(
@@ -159,7 +162,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			)
 		);
@@ -180,7 +184,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		buffer_p->rebuild_committed(
@@ -196,7 +201,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			)
 		);
@@ -214,7 +220,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		buffer_p->rebuild_committed(
@@ -230,7 +237,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			)
 		);
@@ -254,7 +262,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		return H_resource::create_placed_buffer(
@@ -271,7 +280,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			),
 			heap_p,
@@ -292,7 +302,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		return H_resource::create_placed_buffer(
@@ -309,7 +320,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			),
 			heap_p,
@@ -333,7 +345,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		buffer_p->rebuild_placed(
@@ -349,7 +362,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			),
 			heap_p,
@@ -370,7 +384,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		buffer_p->rebuild_placed(
@@ -386,7 +401,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			),
 			heap_p,
@@ -410,7 +426,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		return H_resource::create_reserved_buffer(
@@ -427,7 +444,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			)
 		);
@@ -444,7 +462,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		return H_resource::create_reserved_buffer(
@@ -461,7 +480,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			)
 		);
@@ -481,7 +501,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		buffer_p->rebuild_reserved(
@@ -497,7 +518,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			)
 		);
@@ -514,7 +536,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		buffer_p->rebuild_reserved(
@@ -530,7 +553,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			)
 		);

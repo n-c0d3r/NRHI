@@ -237,7 +237,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		return H_resource::create_committed_texture_1d(
@@ -255,7 +256,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			)
 		);
@@ -277,7 +279,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		return H_resource::create_committed_texture_2d(
@@ -297,7 +300,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			)
 		);
@@ -319,7 +323,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		return H_resource::create_committed_texture_3d(
@@ -339,7 +344,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			)
 		);
@@ -362,7 +368,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		return H_resource::create_committed_texture_2d_array(
@@ -383,7 +390,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			)
 		);
@@ -405,7 +413,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		texture_1d_p->rebuild_committed(
@@ -422,7 +431,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			)
 		);
@@ -444,7 +454,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		texture_2d_p->rebuild_committed(
@@ -463,7 +474,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			)
 		);
@@ -485,7 +497,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		texture_3d_p->rebuild_committed(
@@ -504,7 +517,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			)
 		);
@@ -527,7 +541,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		texture_2d_array_p->rebuild_committed(
@@ -547,7 +562,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			)
 		);
@@ -572,7 +588,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		return H_resource::create_placed_texture_1d(
@@ -590,7 +607,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			),
 			heap_p,
@@ -615,7 +633,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		return H_resource::create_placed_texture_2d(
@@ -635,7 +654,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			),
 			heap_p,
@@ -660,7 +680,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		return H_resource::create_placed_texture_3d(
@@ -680,7 +701,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			),
 			heap_p,
@@ -706,7 +728,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		return H_resource::create_placed_texture_2d_array(
@@ -727,7 +750,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			),
 			heap_p,
@@ -752,7 +776,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		texture_1d_p->rebuild_placed(
@@ -769,7 +794,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			),
 			heap_p,
@@ -794,7 +820,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		texture_2d_p->rebuild_placed(
@@ -813,7 +840,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			),
 			heap_p,
@@ -838,7 +866,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		texture_3d_p->rebuild_placed(
@@ -857,7 +886,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			),
 			heap_p,
@@ -883,7 +913,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		texture_2d_array_p->rebuild_placed(
@@ -903,7 +934,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			),
 			heap_p,
@@ -928,7 +960,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		return H_resource::create_reserved_texture_1d(
@@ -946,7 +979,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			)
 		);
@@ -967,7 +1001,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		return H_resource::create_reserved_texture_2d(
@@ -987,7 +1022,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			)
 		);
@@ -1008,7 +1044,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		return H_resource::create_reserved_texture_3d(
@@ -1028,7 +1065,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			)
 		);
@@ -1050,7 +1088,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		return H_resource::create_reserved_texture_2d_array(
@@ -1071,7 +1110,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			)
 		);
@@ -1092,7 +1132,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		texture_1d_p->rebuild_reserved(
@@ -1109,7 +1150,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			)
 		);
@@ -1130,7 +1172,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		texture_2d_p->rebuild_reserved(
@@ -1149,7 +1192,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			)
 		);
@@ -1170,7 +1214,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		texture_3d_p->rebuild_reserved(
@@ -1189,7 +1234,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			)
 		);
@@ -1211,7 +1257,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
 		texture_2d_array_p->rebuild_reserved(
@@ -1231,7 +1278,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 				, layout,
-				alignment
+				alignment,
+				clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			)
 		);

@@ -18,7 +18,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
     ) {
     	sz size = count * stride;
@@ -49,7 +50,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			, .layout = layout,
-			.alignment = alignment
+			.alignment = alignment,
+			.clear_value = clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
         };
@@ -67,7 +69,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
     ) {
 
@@ -100,7 +103,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			, .layout = layout,
-			.alignment = alignment
+			.alignment = alignment,
+			.clear_value = clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
         };
@@ -119,7 +123,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
     ) {
 		u32 stride = H_format::stride(format);
@@ -178,7 +183,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			, .layout = layout,
-			.alignment = alignment
+        	.alignment = alignment,
+			.clear_value = clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
         };
@@ -199,7 +205,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
     ) {
 		u32 stride = H_format::stride(format);
@@ -269,7 +276,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			, .layout = layout,
-			.alignment = alignment
+        	.alignment = alignment,
+			.clear_value = clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
         };
@@ -290,7 +298,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
     ) {
 		u32 stride = H_format::stride(format);
@@ -368,7 +377,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			, .layout = layout,
-			.alignment = alignment
+        	.alignment = alignment,
+			.clear_value = clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
         };
@@ -390,7 +400,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		, ED_resource_layout layout,
-		u64 alignment
+		u64 alignment,
+		const F_resource_clear_value& clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	) {
     	u32 stride = H_format::stride(format);
@@ -468,7 +479,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 			, .layout = layout,
-			.alignment = alignment
+			.alignment = alignment,
+			.clear_value = clear_value
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
 		};
