@@ -390,7 +390,6 @@ namespace nrhi {
 		TG_vector<G_string> uniforms;
 		u32 sort_uniforms = false;
 		u32 constant_size = NCPP_U32_MAX;
-		sz constant_alignment = 1;
 
 		F_resource_dimension_sizes dimension_sizes = { 1 };
 		u32 dimension_count = 1;
@@ -835,7 +834,6 @@ namespace nrhi {
 		u32 sort_uniforms = true;
 
 		sz constant_size = 0;
-		sz constant_alignment = 1;
 
 	public:
 		NCPP_FORCE_INLINE TG_vector<u32> shader_indices() const {

@@ -7488,7 +7488,6 @@ namespace nrhi {
 
 				// calculate buffer size and uniform offset
 				{
-					u32 buffer_alignment = 1;
 					constexpr u32 min_pack_alignment = 16;
 
 					u32 offset = 0;
@@ -7508,8 +7507,6 @@ namespace nrhi {
 							+ member_single_element_size
 						);
 
-						buffer_alignment = align_size(buffer_alignment, member_alignment);
-
 						offset = align_size(offset, member_alignment);
 
 						uniform_iterator->second.offset = offset;
@@ -7517,8 +7514,7 @@ namespace nrhi {
 						offset += member_size;
 					}
 
-					resource.second.constant_size = align_size(offset, buffer_alignment);
-					resource.second.constant_alignment = buffer_alignment;
+					resource.second.constant_size = align_size(offset, NRHI_CONSTANT_BUFFER_ALIGNMENT);
 				}
 			}
 		}
@@ -9906,8 +9902,7 @@ namespace nrhi {
 					.actual_slot_spaces = resource_info.actual_slot_spaces,
 					.data_arguments = std::move(data_arguments),
 					.sort_uniforms = resource_info.sort_uniforms,
-					.constant_size = resource_info.constant_size,
-					.constant_alignment = resource_info.constant_alignment
+					.constant_size = resource_info.constant_size
 
 				};
 
