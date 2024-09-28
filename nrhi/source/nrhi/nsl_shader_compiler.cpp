@@ -7514,7 +7514,7 @@ namespace nrhi {
 						offset += member_size;
 					}
 
-					resource.second.constant_size = align_size(offset, NRHI_CONSTANT_BUFFER_ALIGNMENT);
+					resource.second.constant_size = align_size(offset, NRHI_CONSTANT_BUFFER_MIN_ALIGNMENT);
 				}
 			}
 		}
