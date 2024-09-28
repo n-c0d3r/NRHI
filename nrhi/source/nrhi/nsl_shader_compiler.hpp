@@ -3511,6 +3511,9 @@ namespace nrhi {
 
 	private:
 		void register_data_types_internal();
+
+	public:
+		virtual eastl::optional<G_string> src_header() override;
 	};
 
 
@@ -3547,6 +3550,9 @@ namespace nrhi {
 
 	private:
 		void register_data_types_internal();
+
+	public:
+		virtual eastl::optional<G_string> src_header() override;
 	};
 
 

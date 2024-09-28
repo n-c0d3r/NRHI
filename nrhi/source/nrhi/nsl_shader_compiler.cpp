@@ -9253,6 +9253,15 @@ namespace nrhi {
 		data_type_manager_p->register_element_count("uint64_t", 1);
 	}
 
+	eastl::optional<G_string> F_nsl_output_hlsl_6_0::src_header()
+	{
+		auto result = F_nsl_output_hlsl_5_1::src_header().value();
+
+		result += "#define u64 uint64_t\n";
+
+		return eastl::move(result);
+	}
+
 
 
 	F_nsl_output_hlsl_6_1::F_nsl_output_hlsl_6_1(
@@ -9310,6 +9319,15 @@ namespace nrhi {
 		data_type_manager_p->register_type_class("uint16_t", E_nsl_type_class::PRIMITIVE);
 		data_type_manager_p->register_element_format("uint16_t", E_nsl_element_format::UINT_16);
 		data_type_manager_p->register_element_count("uint16_t", 1);
+	}
+
+	eastl::optional<G_string> F_nsl_output_hlsl_6_2::src_header()
+	{
+		auto result = F_nsl_output_hlsl_6_1::src_header().value();
+
+		result += "#define u16 uint16_t\n";
+
+		return eastl::move(result);
 	}
 
 
