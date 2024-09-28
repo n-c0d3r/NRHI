@@ -81,6 +81,7 @@ namespace nrhi {
 		};
 
         sz overrided_size = 0;
+        u32 overrided_stride = 0;
 
 		u32 overrided_array_size = 0;
 		ED_format overrided_format = ED_format::NONE;

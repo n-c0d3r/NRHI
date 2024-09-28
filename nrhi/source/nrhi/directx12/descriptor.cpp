@@ -138,6 +138,10 @@ namespace nrhi {
 		if(target_size == 0)
 			target_size = resource_desc.size;
 
+		sz target_stride = desc.overrided_stride;
+		if(target_stride == 0)
+			target_stride = resource_desc.stride;
+
 		D3D12_SHADER_RESOURCE_VIEW_DESC d3d12_srv_desc = {};
 		d3d12_srv_desc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 		d3d12_srv_desc.Format = DXGI_FORMAT(target_format);
@@ -146,10 +150,10 @@ namespace nrhi {
 			NRHI_ENUM_CASE(
 				ED_resource_type::BUFFER,
 				d3d12_srv_desc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
-				d3d12_srv_desc.Buffer.FirstElement = desc.mem_offset / resource_desc.stride;
-				d3d12_srv_desc.Buffer.NumElements = target_size / resource_desc.stride;
+				d3d12_srv_desc.Buffer.FirstElement = desc.mem_offset / target_stride;
+				d3d12_srv_desc.Buffer.NumElements = target_size / target_stride;
 				if(d3d12_srv_desc.Format == DXGI_FORMAT_UNKNOWN)
-					d3d12_srv_desc.Buffer.StructureByteStride = resource_desc.stride;
+					d3d12_srv_desc.Buffer.StructureByteStride = target_stride;
 				NRHI_ENUM_BREAK;
 			)
 			NRHI_ENUM_CASE(
@@ -251,6 +255,10 @@ namespace nrhi {
 		if(target_size == 0)
 			target_size = resource_desc.size;
 
+		sz target_stride = desc.overrided_stride;
+		if(target_stride == 0)
+			target_stride = resource_desc.stride;
+
 		D3D12_UNORDERED_ACCESS_VIEW_DESC d3d12_uav_desc = {};
 		d3d12_uav_desc.Format = DXGI_FORMAT(target_format);
 		NRHI_ENUM_SWITCH(
@@ -258,10 +266,10 @@ namespace nrhi {
 			NRHI_ENUM_CASE(
 				ED_resource_type::BUFFER,
 				d3d12_uav_desc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
-				d3d12_uav_desc.Buffer.FirstElement = desc.mem_offset / resource_desc.stride;
-				d3d12_uav_desc.Buffer.NumElements = target_size / resource_desc.stride;
+				d3d12_uav_desc.Buffer.FirstElement = desc.mem_offset / target_stride;
+				d3d12_uav_desc.Buffer.NumElements = target_size / target_stride;
 				if(d3d12_uav_desc.Format == DXGI_FORMAT_UNKNOWN)
-					d3d12_uav_desc.Buffer.StructureByteStride = resource_desc.stride;
+					d3d12_uav_desc.Buffer.StructureByteStride = target_stride;
 				NRHI_ENUM_BREAK;
 			)
 			NRHI_ENUM_CASE(
