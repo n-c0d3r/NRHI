@@ -4976,16 +4976,6 @@ namespace nrhi {
 
 				auto& input_child_info_trees = it->second.info_trees();
 
-				if(input_child_info_trees.size() == 0) {
-
-					NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-						&(unit_p->error_group_p()->stack()),
-						object_implementation.bodies[0].begin_location,
-						"require input_assembler shaders"
-					);
-					return eastl::nullopt;
-				}
-
 				F_nsl_input_assembler_info input_assembler_info;
 
 				u32 child_info_tree_count = input_child_info_trees.size();
