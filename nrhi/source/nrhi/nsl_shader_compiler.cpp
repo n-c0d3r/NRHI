@@ -4256,8 +4256,6 @@ namespace nrhi {
 		}
 
 		// check for count
-		u32 count = 1;
-		b8 is_array = false;
 		if(info_tree_reader.info_trees().size() >= 2) {
 
 			auto value_opt = info_tree_reader.read_u32(1);
@@ -4265,8 +4263,8 @@ namespace nrhi {
 			if(!value_opt)
 				return eastl::nullopt;
 
-			count = value_opt.value();
-			is_array = true;
+			uniform_info.count = value_opt.value();
+			uniform_info.is_array = true;
 		}
 
 		// check for buffer annotation
