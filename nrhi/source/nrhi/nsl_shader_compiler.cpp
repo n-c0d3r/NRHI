@@ -8785,7 +8785,6 @@ namespace nrhi {
 				argument_type
 				+ " "
 				+ argument_member.argument.name
-				+ semantic_option
 			);
 
 			if(argument_member.argument.is_array)
@@ -8794,6 +8793,8 @@ namespace nrhi {
 				argument_member_declarations += G_to_string(argument_member.argument.count);
 				argument_member_declarations += "]";
 			}
+
+			argument_member_declarations += semantic_option;
 
 			argument_member_declarations += ";\n";
 		}
@@ -8891,7 +8892,6 @@ namespace nrhi {
 				argument_type
 				+ " "
 				+ data_param.argument.name
-				+ semantic_option
 			);
 
 			if(data_param.argument.is_array)
@@ -8900,6 +8900,8 @@ namespace nrhi {
 				data_param_declarations += G_to_string(data_param.argument.count);
 				data_param_declarations += "]";
 			}
+
+			data_param_declarations += semantic_option;
 		}
 
 		return (
