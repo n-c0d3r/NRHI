@@ -6226,7 +6226,7 @@ namespace nrhi {
 			shader_compiler_p,
 			type_p,
 			translation_unit_p,
-			ED_shader_type::COMPUTE,
+			ED_shader_type::AMPLIFICATION,
 			name
 		)
 	{
@@ -6383,7 +6383,7 @@ namespace nrhi {
 			shader_compiler_p,
 			type_p,
 			translation_unit_p,
-			ED_shader_type::COMPUTE,
+			ED_shader_type::MESH,
 			name
 		)
 	{
