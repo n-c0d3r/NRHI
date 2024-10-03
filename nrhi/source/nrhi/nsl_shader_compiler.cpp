@@ -5859,8 +5859,6 @@ namespace nrhi {
 				.begin_location = param_child_info_tree.begin_location,
 				.end_location = param_child_info_tree.end_location
 			};
-
-			data_argument_config_map = {};
 		}
 
 		// parse body
