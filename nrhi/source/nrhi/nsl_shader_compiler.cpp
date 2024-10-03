@@ -6528,9 +6528,9 @@ namespace nrhi {
 			+ ","
 			+ G_to_string(thread_group_size_.z)
 			+ ")\n"
-			+ "NSL_PRE_SHADER_KEYWORDS_OUTPUT_TOPOLOGY("
+			+ "NSL_PRE_SHADER_KEYWORDS_OUTPUT_TOPOLOGY(\""
 			+ output_topology_str
-			+ ")\n"
+			+ "\")\n"
 		);
 	}
 
