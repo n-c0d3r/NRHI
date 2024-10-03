@@ -144,6 +144,14 @@ namespace nrhi {
 								ED_shader_type::PIXEL,
 								options.shader_binaries.pixel = (F_shader_binary_temp)(F_shader_binary&)shader_binary;
 							)
+							NRHI_ENUM_CASE(
+								ED_shader_type::AMPLIFICATION,
+								options.shader_binaries.amplification = (F_shader_binary_temp)(F_shader_binary&)shader_binary;
+							)
+							NRHI_ENUM_CASE(
+								ED_shader_type::MESH,
+								options.shader_binaries.mesh = (F_shader_binary_temp)(F_shader_binary&)shader_binary;
+							)
 						);
 					}
 

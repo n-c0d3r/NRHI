@@ -9586,13 +9586,17 @@ namespace nrhi {
 		// check pipeline state type
 		for(const auto& shader_object_p : shader_object_p_vector) {
 
-			if(shader_object_p->type() == ED_shader_type::COMPUTE) {
-
+			if(shader_object_p->type() == ED_shader_type::COMPUTE)
+		    {
 				result.type = ED_pipeline_state_type::COMPUTE;
 				break;
 			}
-			if(shader_object_p->type() == ED_shader_type::VERTEX) {
-
+			if(
+				(shader_object_p->type() == ED_shader_type::VERTEX)
+				|| (shader_object_p->type() == ED_shader_type::MESH)
+				|| (shader_object_p->type() == ED_shader_type::AMPLIFICATION)
+			)
+			{
 				result.type = ED_pipeline_state_type::GRAPHICS;
 				break;
 			}
