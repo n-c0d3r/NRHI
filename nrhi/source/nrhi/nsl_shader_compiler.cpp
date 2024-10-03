@@ -1085,69 +1085,62 @@ namespace nrhi {
 		TG_vector<sz> raw_locations;
 		raw_locations.reserve(src_length);
 
-		b8 is_in_comment_1 = false;
-		b8 is_in_comment_2 = false;
-		b8 is_in_comment = false;
-		for(ptrdiff_t i = 0; i < src_length; ++i) {
-
-			if(!is_in_comment) {
-
-				if(i + 1 < src_length) {
-
-					if(
-						(src_content[i] == '/')
-						&& (src_content[i + 1] == '/')
-					)
-						is_in_comment_1 = true;
+		for(ptrdiff_t i = 0; i < src_length; ++i)
+		{
+			if((i + 1) < src_length)
+			{
+				if(
+					(src_content[i] == '/')
+					&& (src_content[i + 1] == '/')
+				)
+				{
+					i += 2;
+					for(; i < src_length; ++i)
+					{
+						if(src_content[i] == '\n')
+						{
+							break;
+						}
+					}
 				}
 
-				if(i + 1 < src_length) {
+				if(
+					(src_content[i] == '/')
+					&& (src_content[i + 1] == '*')
+				)
+				{
+					i += 2;
+					b8 is_end = false;
+					for(; (i + 1) < src_length; ++i)
+					{
+						if(
+							(src_content[i] == '*')
+							&& (src_content[i + 1] == '/')
+						)
+						{
+							i += 2;
+							break;
+						}
+					}
+					if(!is_end)
+					{
+						if(error_stack_p)
+							error_stack_p->push({
+								"multi-line comment is not closed"
+								-1,
+								src_length,
+							});
 
-					if(
-						(src_content[i] == '/')
-						&& (src_content[i + 1] == '*')
-					)
-						is_in_comment_2 = true;
+						return eastl::nullopt;
+					}
 				}
 			}
-			is_in_comment = (is_in_comment_1 || is_in_comment_2);
 
-			if(!is_in_comment)
+			if(i < src_length)
 			{
 				result.push_back(src_content[i]);
 				raw_locations.push_back(i);
 			}
-
-			if(is_in_comment_1) {
-
-				if(src_content[i] == '\n')
-				{
-					result.push_back('\n');
-					raw_locations.push_back(i);
-					is_in_comment_1 = false;
-				}
-			}
-
-			if(is_in_comment_2) {
-
-				if(
-					(src_content[i - 1] == '*')
-					&& (src_content[i] == '/')
-				)
-					is_in_comment_2 = false;
-			}
-		}
-
-		if(is_in_comment_2) {
-
-			if(error_stack_p)
-				error_stack_p->push({
-					"multi-line comment is not closed"
-					-1,
-					src_length,
-				});
-
-			return eastl::nullopt;
 		}
 
 		return TG_pack<G_string, TG_vector<sz>> {
