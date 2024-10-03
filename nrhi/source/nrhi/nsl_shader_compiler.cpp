@@ -8876,16 +8876,16 @@ namespace nrhi {
 				data_param_declarations += "out ";
 
 			if(flag_is_has(data_param.flags, E_nsl_data_param_flag::INDICES))
-				data_param_declarations += "indices";
+				data_param_declarations += "indices ";
 
 			if(flag_is_has(data_param.flags, E_nsl_data_param_flag::VERTICES))
-				data_param_declarations += "vertices";
+				data_param_declarations += "vertices ";
 
 			if(flag_is_has(data_param.flags, E_nsl_data_param_flag::PRIMITIVES))
-				data_param_declarations += "primitives";
+				data_param_declarations += "primitives ";
 
 			if(flag_is_has(data_param.flags, E_nsl_data_param_flag::PAYLOAD))
-				data_param_declarations += "payload";
+				data_param_declarations += "payload ";
 
 			data_param_declarations += (
 				argument_type
