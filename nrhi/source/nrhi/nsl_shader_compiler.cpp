@@ -4624,6 +4624,20 @@ namespace nrhi {
 			}
 		}
 
+		// check for is_comparison_state annotation
+		auto it = context.current_object_config.find("is_comparison_state");
+		if(it != context.current_object_config.end()) {
+
+			const auto& info_tree_reader = it->second;
+
+			auto value_opt = info_tree_reader.read_b8(0);
+
+			if(!value_opt)
+				return eastl::nullopt;
+
+			sampler_state_info.is_comparison_state = value_opt.value();
+		}
+
 		// register sampler_state
 		name_manager_p->template T_register_name<FE_nsl_name_types::SAMPLER_STATE>(tree.object_implementation.name);
 		sampler_state_manager_p->register_sampler_state(
@@ -8712,6 +8726,17 @@ namespace nrhi {
 		G_string sampler_state_register_slot_macro = register_slot_macro(sampler_state.first);
 		G_string sampler_state_register_slot_space_macro = register_slot_space_macro(sampler_state.first);
 
+		G_string type;
+
+		if(sampler_state.second.is_comparison_state)
+		{
+			type = "SamplerComparisonState";
+		}
+		else
+		{
+			type = "SamplerState";
+		}
+
 		result += (
 			G_string("\n#ifdef ")
 			+ sampler_state_register_slot_macro
@@ -8738,7 +8763,8 @@ namespace nrhi {
 			+ sampler_state.first
 			+ ")\n"
 
-			+ "SamplerState "
+			+ type
+			+ " "
 			+ sampler_state.first
 			+ " : "
 			+ "NSL_REGISTER_"
@@ -9814,6 +9840,7 @@ namespace nrhi {
 					.name = it->first,
 					.desc = sampler_state_info.desc,
 					.is_static = sampler_state_info.is_static,
+					.is_comparison_state = sampler_state_info.is_comparison_state,
 					.actual_slots = sampler_state_info.actual_slots,
 					.actual_slot_spaces = sampler_state_info.actual_slot_spaces
 

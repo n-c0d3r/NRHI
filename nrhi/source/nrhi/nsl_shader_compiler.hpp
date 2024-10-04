@@ -432,6 +432,7 @@ namespace nrhi {
 
 		F_sampler_state_desc desc;
 		b8 is_static = false;
+		b8 is_comparison_state = false;
 
 		u32 slot = NCPP_U32_MAX;
 		u32 slot_space = NCPP_U32_MAX;
@@ -782,6 +783,7 @@ namespace nrhi {
 
 		F_sampler_state_desc desc;
 		b8 is_static = false;
+		b8 is_comparison_state = false;
 
 		TG_vector<u32> actual_slots;
 		TG_vector<u32> actual_slot_spaces;
