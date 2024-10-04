@@ -1178,7 +1178,7 @@ namespace nrhi {
 	TG_map<G_string, ED_cull_mode> F_nsl_info_tree_reader::cull_mode_str_to_value_map_;
 	TG_map<G_string, ED_fill_mode> F_nsl_info_tree_reader::fill_mode_str_to_value_map_;
 	TG_map<G_string, ED_format> F_nsl_info_tree_reader::format_str_to_value_map_;
-	TG_map<G_string, ED_depth_comparison_func> F_nsl_info_tree_reader::depth_comparison_func_str_to_value_map_;
+	TG_map<G_string, ED_comparison_func> F_nsl_info_tree_reader::comparison_func_str_to_value_map_;
 	TG_map<G_string, ED_primitive_topology> F_nsl_info_tree_reader::primitive_topology_str_to_value_map_;
 
 	F_nsl_info_tree_reader::F_nsl_info_tree_reader(
@@ -1356,15 +1356,15 @@ namespace nrhi {
 			format_str_to_value_map_["R8G8_TYPELESS"] = ED_format::R8G8_TYPELESS;
 			format_str_to_value_map_["R8_TYPELESS"] = ED_format::R8_TYPELESS;
 
-			// setup depth_comparison_func_str_to_value_map_
-			depth_comparison_func_str_to_value_map_["NEVER"] = ED_depth_comparison_func::NEVER;
-			depth_comparison_func_str_to_value_map_["LESS"] = ED_depth_comparison_func::LESS;
-			depth_comparison_func_str_to_value_map_["EQUAL"] = ED_depth_comparison_func::EQUAL;
-			depth_comparison_func_str_to_value_map_["LESS_EQUAL"] = ED_depth_comparison_func::LESS_EQUAL;
-			depth_comparison_func_str_to_value_map_["GREATER"] = ED_depth_comparison_func::GREATER;
-			depth_comparison_func_str_to_value_map_["NOT_EQUAL"] = ED_depth_comparison_func::NOT_EQUAL;
-			depth_comparison_func_str_to_value_map_["GREATER_EQUAL"] = ED_depth_comparison_func::GREATER_EQUAL;
-			depth_comparison_func_str_to_value_map_["ALWAYS"] = ED_depth_comparison_func::ALWAYS;
+			// setup comparison_func_str_to_value_map_
+			comparison_func_str_to_value_map_["NEVER"] = ED_comparison_func::NEVER;
+			comparison_func_str_to_value_map_["LESS"] = ED_comparison_func::LESS;
+			comparison_func_str_to_value_map_["EQUAL"] = ED_comparison_func::EQUAL;
+			comparison_func_str_to_value_map_["LESS_EQUAL"] = ED_comparison_func::LESS_EQUAL;
+			comparison_func_str_to_value_map_["GREATER"] = ED_comparison_func::GREATER;
+			comparison_func_str_to_value_map_["NOT_EQUAL"] = ED_comparison_func::NOT_EQUAL;
+			comparison_func_str_to_value_map_["GREATER_EQUAL"] = ED_comparison_func::GREATER_EQUAL;
+			comparison_func_str_to_value_map_["ALWAYS"] = ED_comparison_func::ALWAYS;
 
 			// setup primitive_topology_str_to_value_map_
 			primitive_topology_str_to_value_map_["NONE"] = ED_primitive_topology::NONE;
@@ -2062,7 +2062,7 @@ namespace nrhi {
 
 		return it->second;
 	}
-	eastl::optional<ED_depth_comparison_func> F_nsl_info_tree_reader::read_depth_comparison_func(u32 index, b8 is_required) const {
+	eastl::optional<ED_comparison_func> F_nsl_info_tree_reader::read_comparison_func(u32 index, b8 is_required) const {
 
 		if(!guarantee_index(index, is_required)) {
 
@@ -2071,9 +2071,9 @@ namespace nrhi {
 
 		G_string value_str = parse_value_str(info_trees_[index].name);
 
-		auto it = depth_comparison_func_str_to_value_map_.find(value_str);
+		auto it = comparison_func_str_to_value_map_.find(value_str);
 
-		if (it == depth_comparison_func_str_to_value_map_.end()) {
+		if (it == comparison_func_str_to_value_map_.end()) {
 
 			if(is_required)
 				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
@@ -4868,7 +4868,7 @@ namespace nrhi {
 
 						const auto& sub_info_tree_reader = sub_info_tree_reader_opt.value();
 
-						auto value_opt = sub_info_tree_reader.read_depth_comparison_func(0);
+						auto value_opt = sub_info_tree_reader.read_comparison_func(0);
 
 						if(!value_opt)
 							return eastl::nullopt;

@@ -38,7 +38,7 @@
 #include <nrhi/cull_mode.hpp>
 #include <nrhi/fill_mode.hpp>
 #include <nrhi/format.hpp>
-#include <nrhi/depth_comparison_func.hpp>
+#include <nrhi/comparison_func.hpp>
 #include <nrhi/primitive_topology.hpp>
 #include <nrhi/pipeline_state_desc.hpp>
 #include <nrhi/device.hpp>
@@ -206,7 +206,7 @@ namespace nrhi {
 		static TG_map<G_string, ED_cull_mode> cull_mode_str_to_value_map_;
 		static TG_map<G_string, ED_fill_mode> fill_mode_str_to_value_map_;
 		static TG_map<G_string, ED_format> format_str_to_value_map_;
-		static TG_map<G_string, ED_depth_comparison_func> depth_comparison_func_str_to_value_map_;
+		static TG_map<G_string, ED_comparison_func> comparison_func_str_to_value_map_;
 		static TG_map<G_string, ED_primitive_topology> primitive_topology_str_to_value_map_;
 
 	public:
@@ -262,7 +262,7 @@ namespace nrhi {
 		eastl::optional<ED_cull_mode> read_cull_mode(u32 index, b8 is_required = true) const;
 		eastl::optional<ED_fill_mode> read_fill_mode(u32 index, b8 is_required = true) const;
 		eastl::optional<ED_format> read_format(u32 index, b8 is_required = true) const;
-		eastl::optional<ED_depth_comparison_func> read_depth_comparison_func(u32 index, b8 is_required = true) const;
+		eastl::optional<ED_comparison_func> read_comparison_func(u32 index, b8 is_required = true) const;
 		eastl::optional<ED_primitive_topology> read_primitive_topology(u32 index, b8 is_required = true) const;
 		eastl::optional<E_nsl_output_topology> read_output_topology(u32 index, b8 is_required = true) const;
 
