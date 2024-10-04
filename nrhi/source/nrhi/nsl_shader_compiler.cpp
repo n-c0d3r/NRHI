@@ -4460,6 +4460,16 @@ namespace nrhi {
 					return eastl::nullopt;
 
 				sampler_state_info.slot = value_opt.value();
+
+				if(info_tree_reader.info_trees().size() > 1)
+				{
+					auto value2_opt = info_tree_reader.read_u32(1);
+
+					if(!value2_opt)
+						return eastl::nullopt;
+
+					sampler_state_info.slot_space = value2_opt.value();
+				}
 			}
 		}
 
