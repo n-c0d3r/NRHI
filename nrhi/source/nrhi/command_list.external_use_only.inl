@@ -1074,6 +1074,17 @@ namespace nrhi {
 			);
 		);
 	}
+
+	NCPP_FORCE_INLINE void A_command_list::async_dispatch_mesh(
+		PA_vector3_u32 thread_group_count_3d
+	) {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			H_command_list::async_dispatch_mesh(
+				NCPP_KTHIS(),
+				thread_group_count_3d
+			);
+		);
+	}
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_INDIRECT_COMMANDS

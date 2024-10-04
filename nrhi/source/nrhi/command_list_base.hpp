@@ -539,6 +539,11 @@ namespace nrhi {
 		void async_dispatch(
 			PA_vector3_u32 thread_group_count_3d
 		);
+
+    public:
+    	void async_dispatch_mesh(
+			PA_vector3_u32 thread_group_count_3d
+		);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_INDIRECT_COMMANDS
