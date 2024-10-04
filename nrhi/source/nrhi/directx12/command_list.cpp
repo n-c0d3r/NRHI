@@ -1159,6 +1159,26 @@ namespace nrhi {
 		);
 	}
 
+	void HD_directx12_command_list::async_dispatch_mesh(
+		TKPA_valid<A_command_list> command_list_p,
+		PA_vector3_u32 thread_group_count_3d
+	) {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
+		NCPP_ASSERT(command_list_p->supports_graphics()) << "command list does not support graphics";
+
+		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
+
+		ID3D12GraphicsCommandList6* d3d12_command_list_p = 0;
+		HRESULT hr = dx12_command_list_p->d3d12_command_list_p()->QueryInterface(IID_PPV_ARGS(&d3d12_command_list_p));
+		NCPP_ASSERT(SUCCEEDED(hr));
+
+		d3d12_command_list_p->DispatchMesh(
+			thread_group_count_3d.x,
+			thread_group_count_3d.y,
+			thread_group_count_3d.z
+		);
+	}
+
 	void HD_directx12_command_list::async_execute_indirect(
 		TKPA_valid<A_command_list> command_list_p,
 		TKPA_valid<A_command_signature> command_signature_p,

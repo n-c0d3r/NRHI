@@ -407,6 +407,12 @@ namespace nrhi {
 		);
 
 	public:
+		static void async_dispatch_mesh(
+			TKPA_valid<A_command_list> command_list_p,
+			PA_vector3_u32 thread_group_count_3d
+		);
+
+	public:
 		static void async_execute_indirect(
 			TKPA_valid<A_command_list> command_list_p,
 			TKPA_valid<A_command_signature> command_signature_p,

@@ -312,6 +312,10 @@ NRHI_FunctionHelper_CreateFunctionClass(
             TKPA_valid<A_command_list> command_list_p,
             PA_vector3_u32 thread_group_count_3d
         )"
+		"async_dispatch_mesh" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            PA_vector3_u32 thread_group_count_3d
+        )"
 		"async_execute_indirect" "void(
 			TKPA_valid<A_command_list> command_list_p,
 			TKPA_valid<A_command_signature> command_signature_p,
