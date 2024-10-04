@@ -108,6 +108,7 @@ namespace nrhi {
 
 	struct F_resource_clear_value
 	{
+		ED_format format = ED_format::NONE;
 		F_vector4_f32 color;
 		f32 depth = 0.0f;
 		u8 stencil = 0;

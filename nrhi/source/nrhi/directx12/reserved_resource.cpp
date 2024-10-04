@@ -101,7 +101,9 @@ namespace nrhi {
 			|| (d3d12_resource_desc.Flags == D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL)
 		)
 		{
-			d3d12_clear_value.Format = d3d12_resource_desc.Format;
+			d3d12_clear_value.Format = DXGI_FORMAT(desc.clear_value.format);
+			if(d3d12_clear_value.Format == DXGI_FORMAT_UNKNOWN)
+				d3d12_clear_value.Format = d3d12_resource_desc.Format;
 			d3d12_clear_value.Color[0] = desc.clear_value.color.x;
 			d3d12_clear_value.Color[1] = desc.clear_value.color.y;
 			d3d12_clear_value.Color[2] = desc.clear_value.color.z;
