@@ -8041,6 +8041,8 @@ namespace nrhi {
 		result += "#define NSL_PRE_SHADER_KEYWORDS_NUM_THREADS(X, Y, Z) [numthreads(X, Y, Z)]\n";
 		result += "#define NSL_PRE_SHADER_KEYWORDS_OUTPUT_TOPOLOGY(X) [outputtopology(X)]\n";
 
+		result += G_string("#define advanced_struct struct");
+
 		result += G_string("#define b8 bool\n");
 		result += G_string("#define i32 int\n");
 		result += G_string("#define u32 uint\n");

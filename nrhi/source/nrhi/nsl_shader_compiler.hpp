@@ -306,7 +306,7 @@ namespace nrhi {
 	struct F_nsl_data_argument_member {
 
 		F_nsl_data_argument argument;
-		u32 offset;
+		u32 offset = 0;
 	};
 
 	using F_nsl_structure_config_map = TG_unordered_map<G_string, F_nsl_info_tree_reader>;
@@ -659,7 +659,7 @@ namespace nrhi {
 
 		G_string target_type;
 		G_string target_binding;
-		E_nsl_element_format element_format;
+		E_nsl_element_format element_format = E_nsl_element_format::NONE;
 		u32 element_count = 1;
 
 	};
@@ -760,7 +760,7 @@ namespace nrhi {
 
 		G_string name;
 
-		ED_shader_type type;
+		ED_shader_type type = ED_shader_type::NONE;
 
 		F_vector3_u thread_group_size = F_vector3_u::zero();
 	};
