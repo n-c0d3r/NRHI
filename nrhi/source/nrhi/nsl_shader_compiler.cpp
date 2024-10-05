@@ -2517,6 +2517,34 @@ namespace nrhi {
 		);
 		return null;
 	}
+	TK<F_nsl_translation_unit> F_nsl_shader_module_manager::make_virtual(
+		const G_string& abs_path,
+		const G_string& src_content,
+		TKPA_valid<F_nsl_translation_unit> from_unit_p,
+		const F_nsl_ast_tree& tree
+	)
+	{
+		auto it = abs_path_to_translation_unit_p_.find(abs_path);
+
+		if(it == abs_path_to_translation_unit_p_.end())
+		{
+			auto unit_p = shader_compiler_p_->translation_unit_manager_p()->create_unit(
+				src_content,
+				abs_path
+			).no_requirements();
+
+			abs_path_to_translation_unit_p_[abs_path] = unit_p;
+
+			return unit_p;
+		}
+
+		NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+			&(from_unit_p->error_group_p()->stack()),
+			tree.begin_location,
+			"virtual shader module at absolute path \"" + abs_path + "\" was already created"
+		);
+		return null;
+	}
 
 	void F_nsl_shader_module_manager::register_translation_unit(const G_string& abs_path, TKPA_valid<F_nsl_translation_unit> translation_unit_p)
 	{
@@ -2618,17 +2646,53 @@ namespace nrhi {
 
 		G_string path = H_nsl_utilities::clear_space_head_tail(object_implementation.bodies[0].content);
 
+		auto name_manager_p = shader_compiler_p()->name_manager_p();
 		auto shader_module_manager_p = shader_compiler_p()->shader_module_manager_p();
+		auto submodule_manager_p = shader_compiler_p()->submodule_manager_p();
 		auto translation_unit_compiler_p = shader_compiler_p()->translation_unit_compiler_p();
 
-		imported_unit_p_ = shader_module_manager_p->load(
-			unit_p,
-			path,
-			tree
-		);
+		if(name_manager_p->is_name_registered(path))
+		{
+			G_string target = name_manager_p->target(path);
 
-		if(!imported_unit_p_)
-			return eastl::nullopt;
+			if(
+				name_manager_p->name_type(target)
+				!= T_type_hash_code<FE_nsl_name_types::SUBMODULE>
+			)
+			{
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					&(unit_p->error_group_p()->stack()),
+					object_implementation.bodies[0].begin_location,
+					"\"" + path + "\" is not a submodule"
+				);
+				return eastl::nullopt;
+			}
+
+			auto submodule_object_p = submodule_manager_p->submodule_object_p(target);
+
+			imported_unit_p_ = submodule_object_p->virtual_unit_p();
+
+			if(imported_unit_p_->is_prepared())
+			{
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					&(unit_p->error_group_p()->stack()),
+					object_implementation.begin_location,
+					"submodule \"" + path + "\" was already imported"
+				);
+				return eastl::nullopt;
+			}
+		}
+		else
+		{
+			imported_unit_p_ = shader_module_manager_p->load(
+				unit_p,
+				path,
+				tree
+			);
+
+			if(!imported_unit_p_)
+				return eastl::nullopt;
+		}
 
 		if(
 			!(
@@ -2682,6 +2746,109 @@ namespace nrhi {
 
 		auto object_p = register_object(
 			TU<F_nsl_import_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_submodule_object::F_nsl_submodule_object(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		TKPA_valid<A_nsl_object_type> type_p,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const G_string& name
+	) :
+		A_nsl_object(
+			shader_compiler_p,
+			type_p,
+			translation_unit_p,
+			name
+		)
+	{
+	}
+	F_nsl_submodule_object::~F_nsl_submodule_object() {
+	}
+
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_submodule_object::recursive_build_ast_tree(
+		F_nsl_context& context,
+		TK_valid<F_nsl_translation_unit> unit_p,
+		TG_vector<F_nsl_ast_tree>& trees,
+		sz index,
+		F_nsl_error_stack* error_stack_p
+	) {
+		auto& tree = trees[index];
+
+		auto& object_implementation = tree.object_implementation;
+
+		auto name_manager_p = shader_compiler_p()->name_manager_p();
+		auto shader_module_manager_p = shader_compiler_p()->shader_module_manager_p();
+		auto submodule_manager_p = shader_compiler_p()->submodule_manager_p();
+		auto translation_unit_compiler_p = shader_compiler_p()->translation_unit_compiler_p();
+
+		if(name_manager_p->is_name_registered(object_implementation.name))
+		{
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				&(unit_p->error_group_p()->stack()),
+				object_implementation.begin_name_location,
+				"\"" + object_implementation.name + "\" was already registered"
+			);
+			return eastl::nullopt;
+		}
+
+		name_manager_p->T_register_name<FE_nsl_name_types::SUBMODULE>(object_implementation.name);
+
+		virtual_unit_p_ = shader_module_manager_p->make_virtual(
+			unit_p->abs_path() + "::" + object_implementation.name,
+			object_implementation.bodies[0].content,
+			unit_p,
+			tree
+		);
+
+		if(!virtual_unit_p_)
+			return eastl::nullopt;
+
+		submodule_manager_p->register_submodule(
+			object_implementation.name,
+			NCPP_KTHIS()
+		);
+
+		return TG_vector<F_nsl_ast_tree>();
+	}
+
+
+
+	F_nsl_submodule_object_type::F_nsl_submodule_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"submodule",
+			true,
+			1,
+			1
+		)
+	{
+	}
+	F_nsl_submodule_object_type::~F_nsl_submodule_object_type() {
+	}
+
+	TK<A_nsl_object> F_nsl_submodule_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	) {
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_submodule_object>()(
 				shader_compiler_p(),
 				NCPP_KTHIS(),
 				translation_unit_p,
@@ -6600,6 +6767,9 @@ namespace nrhi {
 			TU<F_nsl_import_object_type>()(shader_compiler_p_)
 		);
 		register_type(
+			TU<F_nsl_submodule_object_type>()(shader_compiler_p_)
+		);
+		register_type(
 			TU<F_nsl_require_object_type>()(shader_compiler_p_)
 		);
 		register_type(
@@ -9638,6 +9808,15 @@ namespace nrhi {
 
 
 
+	F_nsl_submodule_manager::F_nsl_submodule_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
+		shader_compiler_p_(shader_compiler_p)
+	{
+	}
+	F_nsl_submodule_manager::~F_nsl_submodule_manager() {
+	}
+
+
+
 	F_nsl_reflector::F_nsl_reflector(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
 		shader_compiler_p_(shader_compiler_p)
 	{
@@ -9954,6 +10133,7 @@ namespace nrhi {
 		uniform_manager_p_(customizer.uniform_manager_creator(NCPP_KTHIS())),
 		sampler_state_manager_p_(customizer.sampler_state_manager_creator(NCPP_KTHIS())),
 		pipeline_state_manager_p_(customizer.pipeline_state_manager_creator(NCPP_KTHIS())),
+		submodule_manager_p_(customizer.submodule_manager_creator(NCPP_KTHIS())),
 		reflector_p_(customizer.reflector_creator(NCPP_KTHIS()))
 	{
 	}

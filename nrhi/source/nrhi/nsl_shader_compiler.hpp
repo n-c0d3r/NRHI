@@ -585,6 +585,7 @@ namespace nrhi {
 		struct SAMPLER_STATE {};
 		struct PIPELINE_STATE {};
 		struct SHADER {};
+		struct SUBMODULE {};
 
 	};
 
@@ -1135,6 +1136,12 @@ namespace nrhi {
 			const G_string& path,
 			const F_nsl_ast_tree& tree
 		);
+		virtual TK<F_nsl_translation_unit> make_virtual(
+			const G_string& abs_path,
+			const G_string& src_content,
+			TKPA_valid<F_nsl_translation_unit> from_unit_p,
+			const F_nsl_ast_tree& tree
+		);
 
 	public:
 		void register_translation_unit(const G_string& abs_path, TKPA_valid<F_nsl_translation_unit> translation_unit_p);
@@ -1299,6 +1306,62 @@ namespace nrhi {
 
 	public:
 		NCPP_OBJECT(F_nsl_import_object_type);
+
+	};
+
+
+
+	class NRHI_API F_nsl_submodule_object final : public A_nsl_object {
+
+	private:
+		TK<F_nsl_translation_unit> virtual_unit_p_;
+
+	public:
+		NCPP_FORCE_INLINE TKPA<F_nsl_translation_unit> virtual_unit_p() const noexcept { return virtual_unit_p_; }
+
+
+
+	public:
+		F_nsl_submodule_object(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			TKPA_valid<A_nsl_object_type> type_p,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			const G_string& name = ""
+		);
+		virtual ~F_nsl_submodule_object();
+
+	public:
+		NCPP_OBJECT(F_nsl_submodule_object);
+
+	public:
+		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
+			F_nsl_context& context,
+			TK_valid<F_nsl_translation_unit> unit_p,
+			TG_vector<F_nsl_ast_tree>& trees,
+			sz index,
+			F_nsl_error_stack* error_stack_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_submodule_object_type final : public A_nsl_object_type {
+
+	public:
+		F_nsl_submodule_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_submodule_object_type();
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+
+	public:
+		NCPP_OBJECT(F_nsl_submodule_object_type);
 
 	};
 
@@ -3975,6 +4038,54 @@ namespace nrhi {
 
 
 
+	class NRHI_API F_nsl_submodule_manager {
+
+	private:
+		TK_valid<F_nsl_shader_compiler> shader_compiler_p_;
+
+	protected:
+		TG_unordered_map<G_string, TK<F_nsl_submodule_object>> name_to_submodule_object_p_map_;
+
+	public:
+		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
+
+		NCPP_FORCE_INLINE auto& name_to_submodule_object_p_map() noexcept { return name_to_submodule_object_p_map_; }
+		NCPP_FORCE_INLINE const auto& name_to_submodule_object_p_map() const noexcept { return name_to_submodule_object_p_map_; }
+
+
+
+	public:
+		F_nsl_submodule_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p);
+		virtual ~F_nsl_submodule_manager();
+
+	public:
+		NCPP_OBJECT(F_nsl_submodule_manager);
+
+	public:
+		NCPP_FORCE_INLINE b8 is_name_registered(const G_string& name) const {
+
+			auto it = name_to_submodule_object_p_map_.find(name);
+
+			return (it != name_to_submodule_object_p_map_.end());
+		}
+		NCPP_FORCE_INLINE TKPA_valid<F_nsl_submodule_object> submodule_object_p(const G_string& name) const {
+
+			auto it = name_to_submodule_object_p_map_.find(name);
+
+			NCPP_ASSERT(it != name_to_submodule_object_p_map_.end()) << "can't find " << T_cout_value(name);
+
+			return (TKPA_valid<F_nsl_submodule_object>)it->second;
+		}
+		NCPP_FORCE_INLINE void register_submodule(const G_string& name, TKPA_valid<F_nsl_submodule_object> submodule_object_p) {
+
+			NCPP_ASSERT(name_to_submodule_object_p_map_.find(name) == name_to_submodule_object_p_map_.end()) << T_cout_value(name) << " already exists";
+
+			name_to_submodule_object_p_map_[name] = submodule_object_p.no_requirements();
+		}
+	};
+
+
+
 	class NRHI_API F_nsl_reflector {
 
 	private:
@@ -4063,6 +4174,10 @@ namespace nrhi {
 			pipeline_state_manager_creator
 		);
 		NRHI_NSL_DEFINE_SUBSYSTEM_CREATOR_AS_CUSTOMIZATION_MEMBER(
+			F_nsl_submodule_manager,
+			submodule_manager_creator
+		);
+		NRHI_NSL_DEFINE_SUBSYSTEM_CREATOR_AS_CUSTOMIZATION_MEMBER(
 			F_nsl_reflector,
 			reflector_creator
 		);
@@ -4084,6 +4199,7 @@ namespace nrhi {
 		TU<F_nsl_uniform_manager> uniform_manager_p_;
 		TU<F_nsl_sampler_state_manager> sampler_state_manager_p_;
 		TU<F_nsl_pipeline_state_manager> pipeline_state_manager_p_;
+		TU<F_nsl_submodule_manager> submodule_manager_p_;
 		TU<F_nsl_reflector> reflector_p_;
 
 		TU<A_nsl_output_language> output_language_p_;
@@ -4104,6 +4220,7 @@ namespace nrhi {
 		NCPP_FORCE_INLINE TK_valid<F_nsl_uniform_manager> uniform_manager_p() const noexcept { return NCPP_FOH_VALID(uniform_manager_p_); }
 		NCPP_FORCE_INLINE TK_valid<F_nsl_sampler_state_manager> sampler_state_manager_p() const noexcept { return NCPP_FOH_VALID(sampler_state_manager_p_); }
 		NCPP_FORCE_INLINE TK_valid<F_nsl_pipeline_state_manager> pipeline_state_manager_p() const noexcept { return NCPP_FOH_VALID(pipeline_state_manager_p_); }
+		NCPP_FORCE_INLINE TK_valid<F_nsl_submodule_manager> submodule_manager_p() const noexcept { return NCPP_FOH_VALID(submodule_manager_p_); }
 		NCPP_FORCE_INLINE TK_valid<F_nsl_reflector> reflector_p() const noexcept { return NCPP_FOH_VALID(reflector_p_); }
 
 		NCPP_FORCE_INLINE TK<A_nsl_output_language> output_language_p() const noexcept { return output_language_p_; }

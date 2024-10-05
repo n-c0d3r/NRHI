@@ -128,6 +128,10 @@ int main() {
 "{\n"
 "}\n"
 "\n"
+"submodule demo_submodule(\n"
+"	#define HELLO_DEMO_SUBMODULE\n"
+")\n"
+"\n"
 "@color_formats(R8G8B8A8_UNORM)\n"
 "default_pipeline_state()\n"
 "\n"
@@ -152,6 +156,8 @@ int main() {
 "	vs_main\n"
 "	ps_main\n"
 ")\n"
+"\n"
+"import(demo_submodule)\n"
 "\n",
 		"",
 		E_nsl_output_language::HLSL_5_1
