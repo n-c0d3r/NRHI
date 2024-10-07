@@ -87,7 +87,8 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 	public:
-		u32 wave_size();
+		u32 min_wave_size();
+		u32 max_wave_size();
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
     };
 

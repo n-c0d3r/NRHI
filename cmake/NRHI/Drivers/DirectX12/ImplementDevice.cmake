@@ -35,7 +35,10 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "hlsl_highest_shader_model" "eastl::pair<u32, u32>(
     		TKPA_valid<A_device> device_p
     	)"
-        "wave_size" "u32(
+        "min_wave_size" "u32(
+    		TKPA_valid<A_device> device_p
+    	)"
+        "max_wave_size" "u32(
     		TKPA_valid<A_device> device_p
     	)"
 )

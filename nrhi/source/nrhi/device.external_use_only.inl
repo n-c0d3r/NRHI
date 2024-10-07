@@ -62,10 +62,16 @@ namespace nrhi {
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-	NCPP_FORCE_INLINE u32 A_device::wave_size() {
+	NCPP_FORCE_INLINE u32 A_device::min_wave_size() {
 
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
-			return H_device::wave_size(NCPP_KTHIS());
+			return H_device::min_wave_size(NCPP_KTHIS());
+		);
+	}
+	NCPP_FORCE_INLINE u32 A_device::max_wave_size() {
+
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			return H_device::max_wave_size(NCPP_KTHIS());
 		);
 	}
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION

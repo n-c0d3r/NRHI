@@ -91,9 +91,12 @@ namespace nrhi {
     	);
 
     public:
-    	static u32 wave_size(
+    	static u32 min_wave_size(
     		TKPA_valid<A_device> device_p
     	);
+    	static u32 max_wave_size(
+			TKPA_valid<A_device> device_p
+		);
     };
 
 }
