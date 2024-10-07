@@ -241,4 +241,15 @@ namespace nrhi {
 
 		return { 0, 0 };
 	}
+	u32 HD_directx12_device::wave_size(
+        TKPA_valid<A_device> device_p
+    )
+    {
+		auto d3d12_device_p = device_p.T_cast<F_directx12_device>()->d3d12_device_p();
+
+	    D3D12_FEATURE_DATA_D3D12_OPTIONS1 options;
+		d3d12_device_p->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS1, &options, sizeof(options));
+
+		return options.BaselineWaveSizeInThreads;
+    }
 }

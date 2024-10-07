@@ -89,6 +89,11 @@ namespace nrhi {
     	static eastl::pair<u32, u32> hlsl_highest_shader_model(
     		TKPA_valid<A_device> device_p
     	);
+
+    public:
+    	static u32 wave_size(
+    		TKPA_valid<A_device> device_p
+    	);
     };
 
 }

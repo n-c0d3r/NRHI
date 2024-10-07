@@ -85,6 +85,10 @@ namespace nrhi {
 		E_resource_heap_tier resource_heap_tier();
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+	public:
+		u32 wave_size();
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
     };
 
 }
