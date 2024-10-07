@@ -2933,6 +2933,12 @@ namespace nrhi {
 
 		return TG_vector<F_nsl_ast_tree>();
 	}
+	eastl::optional<G_string> F_nsl_require_object::apply(const F_nsl_ast_tree& tree)
+	{
+		return shader_compiler_p()->translation_unit_compiler_p()->ast_trees_to_string(
+			tree.childs
+		);
+	}
 
 
 
@@ -3332,6 +3338,12 @@ namespace nrhi {
 		}
 
 		return TG_vector<F_nsl_ast_tree>();
+	}
+	eastl::optional<G_string> F_nsl_otherwise_object::apply(const F_nsl_ast_tree& tree)
+	{
+		return shader_compiler_p()->translation_unit_compiler_p()->ast_trees_to_string(
+			tree.childs
+		);
 	}
 
 

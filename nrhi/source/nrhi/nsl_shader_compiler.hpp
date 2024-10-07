@@ -1506,7 +1506,9 @@ namespace nrhi {
 			sz index,
 			F_nsl_error_stack* error_stack_p
 		) override;
-
+		virtual eastl::optional<G_string> apply(
+			const F_nsl_ast_tree& tree
+		) override;
 	};
 
 
@@ -1563,7 +1565,9 @@ namespace nrhi {
 			sz index,
 			F_nsl_error_stack* error_stack_p
 		) override;
-
+		virtual eastl::optional<G_string> apply(
+			const F_nsl_ast_tree& tree
+		) override;
 	};
 
 
