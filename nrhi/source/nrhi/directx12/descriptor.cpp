@@ -93,8 +93,7 @@ namespace nrhi {
 			&d3d12_cbv_desc,
 			D3D12_CPU_DESCRIPTOR_HANDLE(cpu_address)
 		);
-		HRESULT hr = d3d12_device_p->GetDeviceRemovedReason();
-		NCPP_ASSERT(!FAILED(hr)) << "can't initialize cbv descriptor";
+		NCPP_ASSERT(SUCCEEDED(d3d12_device_p->GetDeviceRemovedReason())) << "can't initialize cbv descriptor";
 	}
 	void HD_directx12_descriptor::initialize_srv(
 		TKPA_valid<A_device> device_p,
@@ -210,8 +209,7 @@ namespace nrhi {
 			&d3d12_srv_desc,
 			D3D12_CPU_DESCRIPTOR_HANDLE(cpu_address)
 		);
-		HRESULT hr = d3d12_device_p->GetDeviceRemovedReason();
-		NCPP_ASSERT(!FAILED(hr)) << "can't initialize srv descriptor";
+		NCPP_ASSERT(SUCCEEDED(d3d12_device_p->GetDeviceRemovedReason())) << "can't initialize srv descriptor";
 	}
 	void HD_directx12_descriptor::initialize_uav(
 		TKPA_valid<A_device> device_p,
@@ -311,8 +309,7 @@ namespace nrhi {
 			&d3d12_uav_desc,
 			D3D12_CPU_DESCRIPTOR_HANDLE(cpu_address)
 		);
-		HRESULT hr = d3d12_device_p->GetDeviceRemovedReason();
-		NCPP_ASSERT(!FAILED(hr)) << "can't initialize uav descriptor";
+		NCPP_ASSERT(SUCCEEDED(d3d12_device_p->GetDeviceRemovedReason())) << "can't initialize uav descriptor";
 	}
 	void HD_directx12_descriptor::initialize_rtv(
 		TKPA_valid<A_device> device_p,
@@ -382,8 +379,7 @@ namespace nrhi {
 			&d3d12_rtv_desc,
 			D3D12_CPU_DESCRIPTOR_HANDLE(cpu_address)
 		);
-		HRESULT hr = d3d12_device_p->GetDeviceRemovedReason();
-		NCPP_ASSERT(!FAILED(hr)) << "can't initialize rtv descriptor";
+		NCPP_ASSERT(SUCCEEDED(d3d12_device_p->GetDeviceRemovedReason())) << "can't initialize rtv descriptor";
 	}
 	void HD_directx12_descriptor::initialize_dsv(
 		TKPA_valid<A_device> device_p,
@@ -453,8 +449,7 @@ namespace nrhi {
 			&d3d12_dsv_desc,
 			D3D12_CPU_DESCRIPTOR_HANDLE(cpu_address)
 		);
-		HRESULT hr = d3d12_device_p->GetDeviceRemovedReason();
-		NCPP_ASSERT(!FAILED(hr)) << "can't initialize dsv descriptor";
+		NCPP_ASSERT(SUCCEEDED(d3d12_device_p->GetDeviceRemovedReason())) << "can't initialize dsv descriptor";
 	}
 
 	void HD_directx12_descriptor::initialize_sampler_state(
@@ -478,8 +473,7 @@ namespace nrhi {
 			&d3d12_sampler_state_desc,
 			D3D12_CPU_DESCRIPTOR_HANDLE(cpu_address)
 		);
-		HRESULT hr = d3d12_device_p->GetDeviceRemovedReason();
-		NCPP_ASSERT(!FAILED(hr)) << "can't initialize sampler state descriptor";
+		NCPP_ASSERT(SUCCEEDED(d3d12_device_p->GetDeviceRemovedReason())) << "can't initialize sampler state descriptor";
 	}
 
 	void HD_directx12_descriptor::copy_descriptor_ranges(
