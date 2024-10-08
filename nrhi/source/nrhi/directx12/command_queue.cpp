@@ -92,6 +92,12 @@ namespace nrhi {
 				command_list_count,
 				d3d12_command_list_p_array.data()
 			);
+
+		NCPP_ASSERT(
+			SUCCEEDED(
+				command_queue_p->device_p().T_cast<F_directx12_device>()->d3d12_device_p()->GetDeviceRemovedReason()
+			)
+		) << "can't execute command lists";
 	}
 	void HD_directx12_command_queue::async_execute_command_list(
 		TKPA_valid<A_command_queue> command_queue_p,
@@ -108,6 +114,12 @@ namespace nrhi {
 				1,
 				(ID3D12CommandList**)&d3d12_command_list_p
 			);
+
+		NCPP_ASSERT(
+			SUCCEEDED(
+				command_queue_p->device_p().T_cast<F_directx12_device>()->d3d12_device_p()->GetDeviceRemovedReason()
+			)
+		) << "can't execute command list";
 	}
 
 
