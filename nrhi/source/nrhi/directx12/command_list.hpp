@@ -149,6 +149,13 @@ namespace nrhi {
 			f32 depth,
 			u8 stencil
 		);
+		static void async_clear_uav(
+            TKPA_valid<A_command_list> command_list_p,
+            F_descriptor_gpu_address uav_gpu_address,
+            F_descriptor_cpu_address uav_cpu_address,
+            TKPA_valid<A_resource> resource_p,
+            u32 values[4]
+        );
 
 	public:
 		static void bind_descriptor_heaps(

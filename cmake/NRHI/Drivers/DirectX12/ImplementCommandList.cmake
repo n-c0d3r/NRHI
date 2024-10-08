@@ -78,6 +78,13 @@ NRHI_FunctionHelper_CreateFunctionClass(
             f32 depth,
             u8 stencil
         )"
+		"async_clear_uav" "void(
+            TKPA_valid<A_command_list> command_list_p,
+            F_descriptor_gpu_address uav_gpu_address,
+            F_descriptor_cpu_address uav_cpu_address,
+            TKPA_valid<A_resource> resource_p,
+            u32 values[4]
+        )"
 		"bind_descriptor_heaps" "void(
 			TKPA_valid<A_command_list> command_list_p,
 			const TG_span<TK_valid<A_descriptor_heap>>& descriptor_heap_p_span

@@ -593,6 +593,25 @@ namespace nrhi {
 			);
 		);
 	}
+	NCPP_FORCE_INLINE void A_command_list::async_clear_uav(
+        F_descriptor_gpu_address uav_gpu_address,
+        F_descriptor_cpu_address uav_cpu_address,
+        TKPA_valid<A_resource> resource_p,
+        u32 values[4]
+    )
+    {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
+				H_command_list::async_clear_uav(
+					NCPP_KTHIS(),
+					uav_gpu_address,
+					uav_cpu_address,
+					resource_p,
+					values
+				);
+			);
+		);
+    }
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 

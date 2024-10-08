@@ -274,6 +274,27 @@ namespace nrhi {
 			0
 		);
 	}
+	void HD_directx12_command_list::async_clear_uav(
+        TKPA_valid<A_command_list> command_list_p,
+        F_descriptor_gpu_address uav_gpu_address,
+        F_descriptor_cpu_address uav_cpu_address,
+        TKPA_valid<A_resource> resource_p,
+        u32 values[4]
+    )
+    {
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
+
+		auto dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
+
+		dx12_command_list_p->d3d12_command_list_p()->ClearUnorderedAccessViewUint(
+			{ uav_gpu_address },
+			{ uav_cpu_address },
+			resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p(),
+			values,
+			0,
+			0
+		);
+    }
 
 	void HD_directx12_command_list::bind_descriptor_heaps(
 		TKPA_valid<A_command_list> command_list_p,
