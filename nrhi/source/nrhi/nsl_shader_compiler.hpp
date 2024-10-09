@@ -373,6 +373,10 @@ namespace nrhi {
 		UNORDERED_ACCESS,
 		CONSTANT_BUFFER
 	};
+	enum class E_nsl_resource_flag {
+		NONE,
+		GLOBALLY_COHERENT
+	};
 	using F_nsl_resource_config_map = TG_unordered_map<G_string, F_nsl_info_tree_reader>;
 	struct F_nsl_resource_info {
 
@@ -394,6 +398,8 @@ namespace nrhi {
 		F_resource_dimension_sizes dimension_sizes = { 1 };
 		u32 dimension_count = 1;
 		u32 is_array = false;
+
+		E_nsl_resource_flag flags = E_nsl_resource_flag::NONE;
 
 		TG_unordered_map<G_string, E_nsl_shader_filter> shader_filters = { { "*", {} } };
 
@@ -837,6 +843,8 @@ namespace nrhi {
 		u32 sort_uniforms = true;
 
 		sz constant_size = 0;
+
+		E_nsl_resource_flag flags = E_nsl_resource_flag::NONE;
 
 	public:
 		NCPP_FORCE_INLINE TG_vector<u32> shader_indices() const {

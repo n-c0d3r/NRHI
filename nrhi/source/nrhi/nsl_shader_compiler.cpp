@@ -4238,6 +4238,18 @@ namespace nrhi {
 			}
 		}
 
+		// check for globally_coherent annotation
+		{
+			auto it = context.current_object_config.find("globally_coherent");
+			if(it != context.current_object_config.end()) {
+
+				resource_info.flags = flag_combine(
+					resource_info.flags,
+					E_nsl_resource_flag::GLOBALLY_COHERENT
+				);
+			}
+		}
+
 		// check for shaders annotation
 		{
 			auto it = context.current_object_config.find("shaders");
@@ -9232,6 +9244,11 @@ namespace nrhi {
 			uniform_declarations += ";\n";
 		}
 
+		G_string pre_def_content;
+
+		if(flag_is_has(resource.second.flags, E_nsl_resource_flag::GLOBALLY_COHERENT))
+			pre_def_content += "globallycoherent ";
+
 		result += (
 			G_string("\n#ifdef ")
 			+ resource_register_slot_macro
@@ -9263,8 +9280,10 @@ namespace nrhi {
 
 		if(resource.second.type != "ConstantBuffer")
 			result += (
+				pre_def_content
+
 				// resource type
-				parsed_type
+				+ parsed_type
 				+ " "
 
 				// resource name
@@ -9280,7 +9299,10 @@ namespace nrhi {
 			);
 		else {
 			result += (
-				"cbuffer "
+				pre_def_content
+
+				// resource type
+				+ "cbuffer "
 
 				// resource name
 				+ resource.first
@@ -10117,7 +10139,8 @@ namespace nrhi {
 					.actual_slot_spaces = resource_info.actual_slot_spaces,
 					.data_arguments = std::move(data_arguments),
 					.sort_uniforms = resource_info.sort_uniforms,
-					.constant_size = resource_info.constant_size
+					.constant_size = resource_info.constant_size,
+					.flags = resource_info.flags
 
 				};
 
