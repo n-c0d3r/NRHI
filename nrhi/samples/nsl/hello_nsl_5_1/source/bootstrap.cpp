@@ -63,6 +63,7 @@ int main() {
 "	Texture2D(float4)\n"
 ")\n"
 "\n"
+"@globally_coherent\n"
 "resource demo_texture_2d_rw\n"
 "(\n"
 "	RWTexture2D(float4)\n"
