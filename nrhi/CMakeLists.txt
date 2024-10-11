@@ -31,7 +31,7 @@ set(NRHI_MAX_RENDER_TARGET_COUNT_PER_DRAWCALL 8 CACHE STRING "Max render target 
 set(NRHI_MAX_INPUT_BUFFER_COUNT_PER_DRAWCALL 16 CACHE STRING "Max vertex buffer count per drawcall")
 set(NRHI_MAX_VERTEX_INSTANCE_BUFFER_COUNT_PER_DRAWCALL 16 CACHE STRING "On some platforms, there is a limit of the combination count of vertex buffers and instance buffers")
 set(NRHI_MAX_CONSTANT_BUFFER_COUNT_PER_DRAWCALL 16 CACHE STRING "Max constant buffer count per drawcall")
-set(NRHI_MAX_RESOURCE_BARRIER_COUNT_PER_BATCH 16 CACHE STRING "Max resource barrier count per batch")
+set(NRHI_MAX_RESOURCE_BARRIER_COUNT_PER_BATCH 64 CACHE STRING "Max resource barrier count per batch")
 set(NRHI_MAX_COMMAND_LIST_COUNT_PER_BATCH 128 CACHE STRING "Max command list count per batch")
 
 # NRHI threading options

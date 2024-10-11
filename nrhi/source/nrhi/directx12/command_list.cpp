@@ -157,6 +157,8 @@ namespace nrhi {
 
 		D3D12_RESOURCE_BARRIER batch[NRHI_MAX_RESOURCE_BARRIER_COUNT_PER_BATCH];
 
+		NCPP_ASSERT(barrier_count <= NRHI_MAX_RESOURCE_BARRIER_COUNT_PER_BATCH) << "too many barriers";
+
 		for(u32 i = 0; i < barrier_count; ++i)
 		{
 			const auto& resource_barrier = resource_barriers[i];
