@@ -743,6 +743,9 @@ namespace nrhi {
 			u32 color_attachment_count = (u32)(color_attachments.size());
 
 			F_descriptor_cpu_address d3d12_rtv_addresses[NRHI_MAX_RENDER_TARGET_COUNT_PER_DRAWCALL];
+
+			NCPP_ASSERT(color_attachment_count <= NRHI_MAX_RENDER_TARGET_COUNT_PER_DRAWCALL) << "too many color attachments";
+
 			for(u32 i = 0; i < color_attachment_count; ++i) {
 
 				NCPP_ASSERT(color_attachments[i]->is_valid_generation()) << "color attachment's generation is not valid";
@@ -839,6 +842,9 @@ namespace nrhi {
 		u32 buffer_count = input_buffer_p_span.size();
 
 		D3D12_VERTEX_BUFFER_VIEW d3d12_buffer_views[NRHI_MAX_INPUT_BUFFER_COUNT_PER_DRAWCALL];
+
+		NCPP_ASSERT(buffer_count <= NRHI_MAX_INPUT_BUFFER_COUNT_PER_DRAWCALL) << "too many buffers";
+
 		for(u32 i = 0; i < buffer_count; ++i)
 		{
 			const auto& input_buffer_p = input_buffer_p_span[i];
@@ -930,6 +936,9 @@ namespace nrhi {
 		u32 buffer_count = gpu_virtual_addresses.size();
 
 		D3D12_VERTEX_BUFFER_VIEW d3d12_buffer_views[NRHI_MAX_INPUT_BUFFER_COUNT_PER_DRAWCALL];
+
+		NCPP_ASSERT(buffer_count <= NRHI_MAX_INPUT_BUFFER_COUNT_PER_DRAWCALL) << "too many buffers";
+
 		for(u32 i = 0; i < buffer_count; ++i)
 		{
 			auto& d3d12_buffer_view = d3d12_buffer_views[i];
