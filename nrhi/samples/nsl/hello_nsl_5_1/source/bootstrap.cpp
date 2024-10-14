@@ -159,6 +159,7 @@ int main() {
 ")\n"
 "\n"
 "import(demo_submodule)\n"
+"import(demo_submodule)\n"
 "\n",
 		"",
 		E_nsl_output_language::HLSL_5_1

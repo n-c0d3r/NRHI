@@ -1322,10 +1322,15 @@ namespace nrhi {
 	class NRHI_API F_nsl_submodule_object final : public A_nsl_object {
 
 	private:
-		TK<F_nsl_translation_unit> virtual_unit_p_;
+		G_string content_;
+		F_nsl_ast_tree ast_tree_;
 
 	public:
-		NCPP_FORCE_INLINE TKPA<F_nsl_translation_unit> virtual_unit_p() const noexcept { return virtual_unit_p_; }
+		u32 next_id = 0;
+
+	public:
+		NCPP_FORCE_INLINE const auto& content() const noexcept { return content_; }
+		NCPP_FORCE_INLINE const auto& ast_tree() const noexcept { return ast_tree_; }
 
 
 

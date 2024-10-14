@@ -2670,17 +2670,20 @@ namespace nrhi {
 
 			auto submodule_object_p = submodule_manager_p->submodule_object_p(target);
 
-			imported_unit_p_ = submodule_object_p->virtual_unit_p();
+			imported_unit_p_ = shader_module_manager_p->make_virtual(
+				submodule_object_p->translation_unit_p()->abs_path()
+				+ "::"
+				+ submodule_object_p->name()
+				+ " {"
+				+ G_to_string(submodule_object_p->next_id++)
+				+ "}",
+				submodule_object_p->content(),
+				submodule_object_p->translation_unit_p(),
+				submodule_object_p->ast_tree()
+			);
 
-			if(imported_unit_p_->is_prepared())
-			{
-				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-					&(unit_p->error_group_p()->stack()),
-					object_implementation.begin_location,
-					"submodule \"" + path + "\" was already imported"
-				);
+			if(!imported_unit_p_)
 				return eastl::nullopt;
-			}
 		}
 		else
 		{
@@ -2805,15 +2808,8 @@ namespace nrhi {
 
 		name_manager_p->T_register_name<FE_nsl_name_types::SUBMODULE>(object_implementation.name);
 
-		virtual_unit_p_ = shader_module_manager_p->make_virtual(
-			unit_p->abs_path() + "::" + object_implementation.name,
-			object_implementation.bodies[0].content,
-			unit_p,
-			tree
-		);
-
-		if(!virtual_unit_p_)
-			return eastl::nullopt;
+		content_ = object_implementation.bodies[0].content;
+		ast_tree_ = tree;
 
 		submodule_manager_p->register_submodule(
 			object_implementation.name,
