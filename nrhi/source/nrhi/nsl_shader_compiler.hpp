@@ -288,11 +288,11 @@ namespace nrhi {
 
 	enum class E_nsl_data_param_flag
 	{
-		NONE,
-		INDICES,
-		VERTICES,
-		PRIMITIVES,
-		PAYLOAD
+		NONE = 0x0,
+		INDICES = 0x1,
+		VERTICES = 0x2,
+		PRIMITIVES = 0x4,
+		PAYLOAD = 0x8
 	};
 	struct F_nsl_data_param {
 
