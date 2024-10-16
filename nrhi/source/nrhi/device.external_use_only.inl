@@ -74,5 +74,11 @@ namespace nrhi {
 			return H_device::max_wave_size(NCPP_KTHIS());
 		);
 	}
+	NCPP_FORCE_INLINE u32 A_device::total_lane_count() {
+
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_WORK_SUBMISSION(
+			return H_device::total_lane_count(NCPP_KTHIS());
+		);
+	}
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 }

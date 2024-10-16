@@ -97,6 +97,9 @@ namespace nrhi {
     	static u32 max_wave_size(
 			TKPA_valid<A_device> device_p
 		);
+    	static u32 total_lane_count(
+			TKPA_valid<A_device> device_p
+		);
     };
 
 }

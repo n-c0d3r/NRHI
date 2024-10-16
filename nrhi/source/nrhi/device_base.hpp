@@ -89,6 +89,7 @@ namespace nrhi {
 	public:
 		u32 min_wave_size();
 		u32 max_wave_size();
+		u32 total_lane_count();
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
     };
 
