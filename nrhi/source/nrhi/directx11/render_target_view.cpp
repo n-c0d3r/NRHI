@@ -89,7 +89,7 @@ namespace nrhi {
                 ED_resource_type::TEXTURE_2D_ARRAY,
 				d3d11_rtv_desc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2DARRAY;
 				d3d11_rtv_desc.Texture2DArray.MipSlice = desc.base_mip_level;
-				d3d11_rtv_desc.Texture2DArray.FirstArraySlice = desc.array_slice;
+				d3d11_rtv_desc.Texture2DArray.FirstArraySlice = desc.first_array_slice;
 				d3d11_rtv_desc.Texture2DArray.ArraySize = target_array_size;
 				NCPP_ASSERT(target_array_size) << "texture 2d array size can't be zero";
 				NRHI_ENUM_BREAK;

@@ -77,7 +77,7 @@ namespace nrhi {
 
     	union {
     		u64 mem_offset = 0;
-    		u32 array_slice;
+    		u32 first_array_slice;
     	};
 
         sz overrided_element_count = 0;

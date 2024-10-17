@@ -25,7 +25,7 @@ namespace nrhi {
 				.overrided_resource_flags = resource_flags,
 				.resource_p = texture_2d_array_p.oref.no_requirements(),
 				.base_mip_level = base_mip_level,
-				.array_slice = index,
+				.first_array_slice = index,
 				.overrided_array_size = array_size
 			}
 		);
@@ -44,7 +44,7 @@ namespace nrhi {
 				.overrided_resource_flags = resource_flags,
 				.resource_p = texture_2d_array_p.oref.no_requirements(),
 				.base_mip_level = base_mip_level,
-				.array_slice = index,
+				.first_array_slice = index,
 				.overrided_array_size = array_size
 			}
 		);
@@ -62,7 +62,7 @@ namespace nrhi {
 				.overrided_resource_flags = resource_flags,
 				.resource_p = texture_2d_array_p.oref.no_requirements(),
 				.base_mip_level = target_mip_level,
-				.array_slice = index,
+				.first_array_slice = index,
 				.overrided_array_size = 1
 			}
 		);
@@ -86,7 +86,7 @@ namespace nrhi {
 				.overrided_resource_flags = resource_flags,
 				.resource_p = texture_2d_array_p.oref.no_requirements(),
 				.base_mip_level = base_mip_level,
-				.array_slice = index,
+				.first_array_slice = index,
 				.overrided_array_size = array_size
 			}
 		);
@@ -107,7 +107,7 @@ namespace nrhi {
 				.overrided_resource_flags = resource_flags,
 				.resource_p = texture_2d_array_p.oref.no_requirements(),
 				.base_mip_level = base_mip_level,
-				.array_slice = index,
+				.first_array_slice = index,
 				.overrided_array_size = array_size
 			}
 		);
@@ -127,7 +127,7 @@ namespace nrhi {
 				.overrided_resource_flags = resource_flags,
 				.resource_p = texture_2d_array_p.oref.no_requirements(),
 				.base_mip_level = target_mip_level,
-				.array_slice = index,
+				.first_array_slice = index,
 				.overrided_array_size = 1
 			}
 		);
