@@ -335,8 +335,6 @@ namespace nrhi {
 	{
 		F_resource_footprint result;
 
-		result.size = 0;
-
 		u32 subresource_count = HD_directx12_resource::subresource_count(desc);
 		result.placed_subresource_footprints.resize(subresource_count);
 		result.subresource_sizes.resize(subresource_count);
@@ -362,7 +360,9 @@ namespace nrhi {
 
 		TG_fixed_vector<D3D12_PLACED_SUBRESOURCE_FOOTPRINT, 6> d3d12_placed_subresource_footprints(subresource_count);
 
-		device_p.T_cast<F_directx12_device>()->d3d12_device_p()->GetCopyableFootprints(
+		auto d3d12_device_p = device_p.T_cast<F_directx12_device>()->d3d12_device_p();
+
+		d3d12_device_p->GetCopyableFootprints(
 			&d3d12_resource_desc,
 			0,
 			subresource_count,
@@ -375,8 +375,6 @@ namespace nrhi {
 
 		for(u32 i = 0; i < subresource_count; ++i)
 		{
-			result.size += result.subresource_sizes[i];
-
 			auto& placed_subresource_footprint = result.placed_subresource_footprints[i];
 			auto& d3d12_placed_subresource_footprint = d3d12_placed_subresource_footprints[i];
 
@@ -388,6 +386,12 @@ namespace nrhi {
 			placed_subresource_footprint.footprint.first_pitch = d3d12_placed_subresource_footprint.Footprint.RowPitch;
 		}
 
+		result.size = d3d12_device_p->GetResourceAllocationInfo(
+			0,
+			1,
+			&d3d12_resource_desc
+		).SizeInBytes;
+
 		return eastl::move(result);
 	}
 	sz HD_directx12_resource::calculate_size(
@@ -395,13 +399,6 @@ namespace nrhi {
 		const F_resource_desc& desc
 	)
 	{
-		u32 subresource_count = HD_directx12_resource::subresource_count(desc);
-
-		sz result = 0;
-
-		F_subresource_sizes subresource_sizes(subresource_count);
-		subresource_sizes.resize(subresource_count);
-
 		D3D12_RESOURCE_DESC d3d12_resource_desc;
 		d3d12_resource_desc.Dimension = NRHI_DRIVER_DIRECTX_12_MAP___RESOURCE_TYPE___TO___RESOURCE_DIMENSION(desc.type);
 		d3d12_resource_desc.Alignment = desc.alignment;
@@ -421,23 +418,13 @@ namespace nrhi {
 			d3d12_resource_desc.Width = desc.element_count * desc.stride;
 		}
 
-		device_p.T_cast<F_directx12_device>()->d3d12_device_p()->GetCopyableFootprints(
-			&d3d12_resource_desc,
-			0,
-			subresource_count,
-			0,
-			0,
-			0,
-			0,
-			subresource_sizes.data()
-		);
+		auto d3d12_device_p = device_p.T_cast<F_directx12_device>()->d3d12_device_p();
 
-		for(u32 i = 0; i < subresource_count; ++i)
-		{
-			result += subresource_sizes[i];
-		}
-
-		return result;
+		return d3d12_device_p->GetResourceAllocationInfo(
+			0,
+			1,
+			&d3d12_resource_desc
+		).SizeInBytes;
 	}
 
 
