@@ -74,7 +74,7 @@ namespace nrhi {
 		if(desc.type == ED_resource_type::BUFFER)
 		{
 			d3d12_resource_desc.Format = DXGI_FORMAT_UNKNOWN;
-			d3d12_resource_desc.Width = desc.element_count * desc.stride;
+			d3d12_resource_desc.Width = u64(desc.element_count) * u64(desc.stride);
 		}
 
 		D3D12_RESOURCE_STATES d3d12_resource_states = D3D12_RESOURCE_STATES(desc.initial_state);
