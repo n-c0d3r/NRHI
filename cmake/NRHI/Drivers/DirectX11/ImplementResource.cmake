@@ -82,6 +82,17 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "mip_divisor" "F_vector3_u32(
             ED_resource_type type
         )"
+        "subresource_count" "u32(
+			const F_resource_desc& desc
+		)"
+        "footprint" "F_resource_footprint(
+			TKPA_valid<A_device> device_p,
+			const F_resource_desc& desc
+		)"
+        "calculate_size" "sz(
+			TKPA_valid<A_device> device_p,
+			const F_resource_desc& desc
+		)"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX11> Implement resource done")

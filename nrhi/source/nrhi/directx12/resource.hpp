@@ -227,6 +227,19 @@ namespace nrhi {
 			ED_resource_type type
 		);
 
+	public:
+		static u32 subresource_count(
+			const F_resource_desc& desc
+		);
+		static F_resource_footprint footprint(
+			TKPA_valid<A_device> device_p,
+			const F_resource_desc& desc
+		);
+		static sz calculate_size(
+			TKPA_valid<A_device> device_p,
+			const F_resource_desc& desc
+		);
+
 
 
 #pragma region Alternative Functions

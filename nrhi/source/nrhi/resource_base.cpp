@@ -1,10 +1,11 @@
 #include <nrhi/resource_base.hpp>
 #include <nrhi/driver.hpp>
+#include <nrhi/resource.hpp>
 
 
 
-namespace nrhi {
-
+namespace nrhi
+{
     A_resource::A_resource(
         TKPA_valid<A_device> device_p,
         const F_initial_resource_data& initial_data,
@@ -13,7 +14,8 @@ namespace nrhi {
     ) :
         A_device_child(device_p),
         desc_(desc),
-        initial_data_(initial_data)
+        initial_data_(initial_data),
+		footprint_(H_resource::footprint(device_p, desc))
     {
         desc_.type = overrided_type;
     }
@@ -61,6 +63,7 @@ namespace nrhi {
 			initial_data_ = initial_data;
 			desc_ = desc;
 			++generation_;
+			footprint_ = H_resource::footprint(device_p(), desc_);
 		);
 	}
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
@@ -70,6 +73,7 @@ namespace nrhi {
     	NCPP_ASSERT(desc_.type == desc.type) << "can't change type";
 		NCPP_ASSERT(management_type() == E_resource_management_type::COMMITTED);
 		desc_ = desc;
+		footprint_ = H_resource::footprint(device_p(), desc_);
 	}
 	void A_resource::finalize_rebuild_placed(
 		const F_resource_desc& desc,
@@ -81,6 +85,7 @@ namespace nrhi {
 		desc_ = desc;
 		placed_heap_p_ = heap_p.no_requirements();
 		placed_heap_offset_ = heap_offset;
+		footprint_ = H_resource::footprint(device_p(), desc_);
 	}
 	void A_resource::finalize_rebuild_reserved(
 		const F_resource_desc& desc
@@ -88,6 +93,7 @@ namespace nrhi {
     	NCPP_ASSERT(desc_.type == desc.type) << "can't change type";
 		NCPP_ASSERT(management_type() == E_resource_management_type::RESERVED);
 		desc_ = desc;
+		footprint_ = H_resource::footprint(device_p(), desc_);
 	}
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
@@ -102,5 +108,6 @@ namespace nrhi {
 
 	void A_resource::release_driver_specific_implementation()
     {
+    	footprint_ = {};
     }
 }

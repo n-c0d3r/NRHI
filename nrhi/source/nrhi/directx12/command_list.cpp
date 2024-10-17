@@ -812,6 +812,7 @@ namespace nrhi {
 		) << "invalid resource bind flag";
 
 		const auto& index_buffer_desc = index_buffer_p->desc();
+		const auto& index_buffer_footprint = index_buffer_p->footprint();
 
 		u32 offset_in_bytes = offset * index_buffer_desc.stride;
 
@@ -819,7 +820,7 @@ namespace nrhi {
 		d3d12_index_buffer_view.BufferLocation = HD_directx12_resource::gpu_virtual_address(
 			NCPP_AOH_VALID(index_buffer_p)
 		) + offset_in_bytes;
-		d3d12_index_buffer_view.SizeInBytes = index_buffer_desc.size - offset_in_bytes;
+		d3d12_index_buffer_view.SizeInBytes = index_buffer_footprint.size - offset_in_bytes;
 		d3d12_index_buffer_view.Format = DXGI_FORMAT(index_buffer_desc.format);
 
 		d3d12_command_list_p->IASetIndexBuffer(
@@ -849,6 +850,7 @@ namespace nrhi {
 		{
 			const auto& input_buffer_p = input_buffer_p_span[i];
 			const auto& desc = input_buffer_p->desc();
+			const auto& footprint = input_buffer_p->footprint();
 
 			u32 offset_in_bytes = offset_span[i] * desc.stride;
 
@@ -856,7 +858,7 @@ namespace nrhi {
 			d3d12_buffer_view.BufferLocation = HD_directx12_resource::gpu_virtual_address(
 				NCPP_AOH_VALID(input_buffer_p)
 			) + offset_in_bytes;
-			d3d12_buffer_view.SizeInBytes = desc.size - offset_in_bytes;
+			d3d12_buffer_view.SizeInBytes = footprint.size - offset_in_bytes;
 			d3d12_buffer_view.StrideInBytes = desc.stride;
 		}
 
@@ -878,6 +880,7 @@ namespace nrhi {
 		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
 
 		const auto& desc = input_buffer_p->desc();
+		const auto& footprint = input_buffer_p->footprint();
 
 		u32 offset_in_bytes = offset * desc.stride;
 
@@ -887,7 +890,7 @@ namespace nrhi {
 		d3d12_buffer_view.BufferLocation = HD_directx12_resource::gpu_virtual_address(
 			NCPP_AOH_VALID(input_buffer_p)
 		) + offset_in_bytes;
-		d3d12_buffer_view.SizeInBytes = desc.size - offset_in_bytes;
+		d3d12_buffer_view.SizeInBytes = footprint.size - offset_in_bytes;
 		d3d12_buffer_view.StrideInBytes = desc.stride;
 
 		d3d12_command_list_p->IASetVertexBuffers(
@@ -990,8 +993,8 @@ namespace nrhi {
 		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
 
 		NCPP_ASSERT(
-			dst_resource_p->desc().size
-			== src_resource_p->desc().size
+			dst_resource_p->footprint().size
+			== src_resource_p->footprint().size
 		) << "src resource and dst resource are required to have the same size";
 
 		dx12_command_list_p->d3d12_command_list_p()->CopyResource(
@@ -1043,12 +1046,12 @@ namespace nrhi {
     	}
     	else
     	{
-    		d3d12_texture_copy_location_dst.PlacedFootprint.Offset = dst_location.subresource_footprint.offset;
-    		d3d12_texture_copy_location_dst.PlacedFootprint.Footprint.Width = dst_location.subresource_footprint.width;
-    		d3d12_texture_copy_location_dst.PlacedFootprint.Footprint.Height = dst_location.subresource_footprint.height;
-    		d3d12_texture_copy_location_dst.PlacedFootprint.Footprint.Depth = dst_location.subresource_footprint.depth;
-    		d3d12_texture_copy_location_dst.PlacedFootprint.Footprint.Format = DXGI_FORMAT(dst_location.subresource_footprint.format);
-    		d3d12_texture_copy_location_dst.PlacedFootprint.Footprint.RowPitch = dst_location.subresource_footprint.first_pitch;
+    		d3d12_texture_copy_location_dst.PlacedFootprint.Offset = dst_location.placed_subresource_footprint.offset;
+    		d3d12_texture_copy_location_dst.PlacedFootprint.Footprint.Width = dst_location.placed_subresource_footprint.footprint.width;
+    		d3d12_texture_copy_location_dst.PlacedFootprint.Footprint.Height = dst_location.placed_subresource_footprint.footprint.height;
+    		d3d12_texture_copy_location_dst.PlacedFootprint.Footprint.Depth = dst_location.placed_subresource_footprint.footprint.depth;
+    		d3d12_texture_copy_location_dst.PlacedFootprint.Footprint.Format = DXGI_FORMAT(dst_location.placed_subresource_footprint.footprint.format);
+    		d3d12_texture_copy_location_dst.PlacedFootprint.Footprint.RowPitch = dst_location.placed_subresource_footprint.footprint.first_pitch;
     	}
 
     	D3D12_TEXTURE_COPY_LOCATION d3d12_texture_copy_location_src;
@@ -1060,12 +1063,12 @@ namespace nrhi {
     	}
     	else
     	{
-    		d3d12_texture_copy_location_src.PlacedFootprint.Offset = src_location.subresource_footprint.offset;
-    		d3d12_texture_copy_location_src.PlacedFootprint.Footprint.Width = src_location.subresource_footprint.width;
-    		d3d12_texture_copy_location_src.PlacedFootprint.Footprint.Height = src_location.subresource_footprint.height;
-    		d3d12_texture_copy_location_src.PlacedFootprint.Footprint.Depth = src_location.subresource_footprint.depth;
-    		d3d12_texture_copy_location_src.PlacedFootprint.Footprint.Format = DXGI_FORMAT(src_location.subresource_footprint.format);
-    		d3d12_texture_copy_location_src.PlacedFootprint.Footprint.RowPitch = src_location.subresource_footprint.first_pitch;
+    		d3d12_texture_copy_location_src.PlacedFootprint.Offset = src_location.placed_subresource_footprint.offset;
+    		d3d12_texture_copy_location_src.PlacedFootprint.Footprint.Width = src_location.placed_subresource_footprint.footprint.width;
+    		d3d12_texture_copy_location_src.PlacedFootprint.Footprint.Height = src_location.placed_subresource_footprint.footprint.height;
+    		d3d12_texture_copy_location_src.PlacedFootprint.Footprint.Depth = src_location.placed_subresource_footprint.footprint.depth;
+    		d3d12_texture_copy_location_src.PlacedFootprint.Footprint.Format = DXGI_FORMAT(src_location.placed_subresource_footprint.footprint.format);
+    		d3d12_texture_copy_location_src.PlacedFootprint.Footprint.RowPitch = src_location.placed_subresource_footprint.footprint.first_pitch;
     	}
 
     	D3D12_BOX d3d12_box;

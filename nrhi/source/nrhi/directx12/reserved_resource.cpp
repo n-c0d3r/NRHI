@@ -71,10 +71,10 @@ namespace nrhi {
 		d3d12_resource_desc.Layout = D3D12_TEXTURE_LAYOUT(desc.layout);
 		d3d12_resource_desc.Flags = NRHI_DRIVER_DIRECTX_12_MAP___RESOURCE_FLAG___TO___RESOURCE_FLAG(desc.flags);
 
-		if(desc.type == ED_resource_type::BUFFER) {
-
+		if(desc.type == ED_resource_type::BUFFER)
+		{
 			d3d12_resource_desc.Format = DXGI_FORMAT_UNKNOWN;
-			d3d12_resource_desc.Width = desc.size;
+			d3d12_resource_desc.Width = desc.element_count * desc.stride;
 		}
 
 		D3D12_RESOURCE_STATES d3d12_resource_states = D3D12_RESOURCE_STATES(desc.initial_state);

@@ -68,8 +68,6 @@ namespace nrhi {
 	};
     using F_initial_resource_data = TG_vector<F_subresource_data>;
 
-
-
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	enum class E_resource_management_type {
 
@@ -81,12 +79,9 @@ namespace nrhi {
 	};
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
-
-
-	struct F_subresource
+	struct F_subresource_footprint
 	{
-		sz offset = 0;
-		sz size = 0;
+		ED_format format = ED_format::NONE;
 
 		union {
 			u32 width = 1;
@@ -98,13 +93,41 @@ namespace nrhi {
 			u32 depth;
 		};
 
-		sz first_pitch = 0;
+		u32 first_pitch = 0;
+	};
+
+	struct F_placed_subresource_footprint
+	{
+		u64 offset = 0;
+		F_subresource_footprint footprint;
+	};
+	using F_placed_subresource_footprints = TG_fixed_vector<F_placed_subresource_footprint, 6>;
+
+	using F_subresource_sizes = TG_fixed_vector<u64, 6>;
+
+	struct F_resource_footprint
+	{
+		F_placed_subresource_footprints placed_subresource_footprints;
+		u64 size = 0;
+		F_subresource_sizes subresource_sizes;
+	};
+
+	struct F_subresource_info
+	{
+		union {
+			u32 width = 1;
+			u32 element_count;
+		};
+		u32 height = 1;
+		union {
+			u32 array_size = 1;
+			u32 depth;
+		};
 
 		u32 mip_level = 0;
 		u32 array_slice = 0;
 	};
-
-
+	using F_subresource_infos = TG_fixed_vector<F_subresource_info, 6>;
 
 	struct F_resource_clear_value
 	{
@@ -113,8 +136,6 @@ namespace nrhi {
 		f32 depth = 0.0f;
 		u8 stencil = 0;
 	};
-
-
 
     struct F_resource_desc {
 
@@ -127,7 +148,6 @@ namespace nrhi {
             u32 array_size = 0;
             u32 depth;
         };
-		sz size = 0;
 
         ED_format format = ED_format::NONE;
         u32 stride = 0;
@@ -143,7 +163,7 @@ namespace nrhi {
 			b8 can_create_view = true;
 		);
 
-    	TG_fixed_vector<F_subresource, 1> subresources;
+    	F_subresource_infos subresource_infos;
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 		ED_resource_state initial_state = ED_resource_state::COMMON;

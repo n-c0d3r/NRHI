@@ -6425,6 +6425,7 @@ namespace nrhi {
 
 
 
+#ifdef NRHI_DRIVER_SUPPORT_AMPLIFICATION_SHADER
 	F_nsl_amplification_shader_object::F_nsl_amplification_shader_object(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 		TKPA_valid<A_nsl_object_type> type_p,
@@ -6579,9 +6580,11 @@ namespace nrhi {
 
 		return object_p;
 	}
+#endif
 
 
 
+#ifdef NRHI_DRIVER_SUPPORT_MESH_SHADER
 	F_nsl_mesh_shader_object::F_nsl_mesh_shader_object(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 		TKPA_valid<A_nsl_object_type> type_p,
@@ -6777,6 +6780,7 @@ namespace nrhi {
 
 		return object_p;
 	}
+#endif
 
 
 
@@ -6816,12 +6820,16 @@ namespace nrhi {
 		register_type(
 			TU<F_nsl_compute_shader_object_type>()(shader_compiler_p_)
 		);
+#ifdef NRHI_DRIVER_SUPPORT_AMPLIFICATION_SHADER
 		register_type(
 			TU<F_nsl_amplification_shader_object_type>()(shader_compiler_p_)
 		);
+#endif
+#ifdef NRHI_DRIVER_SUPPORT_MESH_SHADER
 		register_type(
 			TU<F_nsl_mesh_shader_object_type>()(shader_compiler_p_)
 		);
+#endif
 		register_type(
 			TU<F_nsl_structure_object_type>()(shader_compiler_p_)
 		);
@@ -9824,8 +9832,12 @@ namespace nrhi {
 			}
 			if(
 				(shader_object_p->type() == ED_shader_type::VERTEX)
-				|| (shader_object_p->type() == ED_shader_type::MESH)
+#ifdef NRHI_DRIVER_SUPPORT_AMPLIFICATION_SHADER
 				|| (shader_object_p->type() == ED_shader_type::AMPLIFICATION)
+#endif
+#ifdef NRHI_DRIVER_SUPPORT_MESH_SHADER
+				|| (shader_object_p->type() == ED_shader_type::MESH)
+#endif
 			)
 			{
 				result.type = ED_pipeline_state_type::GRAPHICS;

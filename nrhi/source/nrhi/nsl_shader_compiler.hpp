@@ -2333,6 +2333,7 @@ namespace nrhi {
 
 
 
+#ifdef NRHI_DRIVER_SUPPORT_AMPLIFICATION_SHADER
 	class NRHI_API F_nsl_amplification_shader_object final : public A_nsl_shader_object {
 
 	public:
@@ -2382,9 +2383,11 @@ namespace nrhi {
 		NCPP_OBJECT(F_nsl_amplification_shader_object_type);
 
 	};
+#endif
 
 
 
+#ifdef NRHI_DRIVER_SUPPORT_MESH_SHADER
 	class NRHI_API F_nsl_mesh_shader_object final : public A_nsl_shader_object {
 
 	public:
@@ -2432,8 +2435,8 @@ namespace nrhi {
 
 	public:
 		NCPP_OBJECT(F_nsl_mesh_shader_object_type);
-
 	};
+#endif
 
 
 

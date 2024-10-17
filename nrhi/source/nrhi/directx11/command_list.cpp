@@ -1159,8 +1159,8 @@ namespace nrhi {
 
 		NCPP_ASSERT(data_p) << "invalid data";
 		NCPP_ASSERT(data_size) << "invalid data size";
-		NCPP_ASSERT((src_data_offset + data_size) <= resource_p->desc().size) << "invalid src data range";
-		NCPP_ASSERT((dst_data_offset + data_size) <= resource_p->desc().size) << "invalid dst data range";
+		NCPP_ASSERT((src_data_offset + data_size) <= resource_p->footprint().size) << "invalid src data range";
+		NCPP_ASSERT((dst_data_offset + data_size) <= resource_p->footprint().size) << "invalid dst data range";
 
 		D3D11_MAPPED_SUBRESOURCE d3d11_mapped_resource;
 		d3d11_device_context_p->Map(

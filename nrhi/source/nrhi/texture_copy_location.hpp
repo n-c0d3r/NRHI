@@ -34,31 +34,14 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/texture_copy_location_type.hpp>
+#include <nrhi/resource_desc.hpp>
 
 #pragma endregion
 
 
 
-namespace nrhi {
-
-    struct F_texture_subresource_footprint
-    {
-        u64 offset = 0;
-        ED_format format = ED_format::NONE;
-
-        union {
-            u32 width = 1;
-            u32 element_count;
-        };
-        u32 height = 1;
-        union {
-            u32 array_size = 1;
-            u32 depth;
-        };
-
-        u32 first_pitch = 0;
-    };
-
+namespace nrhi
+{
     struct F_texture_copy_location {
 
         TK<A_resource> resource_p;
@@ -67,7 +50,7 @@ namespace nrhi {
 
         union
         {
-            F_texture_subresource_footprint subresource_footprint = {};
+            F_placed_subresource_footprint placed_subresource_footprint = {};
             u32 subresource_index;
         };
     };

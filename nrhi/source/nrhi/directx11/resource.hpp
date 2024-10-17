@@ -156,6 +156,19 @@ namespace nrhi {
         );
 
     public:
+        static u32 subresource_count(
+            const F_resource_desc& desc
+        );
+        static F_resource_footprint footprint(
+            TKPA_valid<A_device> device_p,
+            const F_resource_desc& desc
+        );
+        static sz calculate_size(
+            TKPA_valid<A_device> device_p,
+            const F_resource_desc& desc
+        );
+
+    public:
         static F_vector3_u32 most_detailed_subresource_volume(
             ED_resource_type type,
             PA_vector3_u32 resource_volume

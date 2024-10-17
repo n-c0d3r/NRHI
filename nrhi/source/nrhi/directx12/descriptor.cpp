@@ -81,13 +81,17 @@ namespace nrhi {
 
 		NCPP_ASSERT(resource_desc.type == ED_resource_type::BUFFER) << "invalid resource type";
 
-		sz target_size = desc.overrided_size;
-		if(target_size == 0)
-			target_size = resource_desc.size;
+		sz target_element_count = desc.overrided_element_count;
+		if(target_element_count == 0)
+			target_element_count = resource_desc.element_count;
+
+		sz target_stride = desc.overrided_stride;
+		if(target_stride == 0)
+			target_stride = resource_desc.stride;
 
 		D3D12_CONSTANT_BUFFER_VIEW_DESC d3d12_cbv_desc = {};
-		d3d12_cbv_desc.BufferLocation = d3d12_resource_p->GetGPUVirtualAddress() + desc.mem_offset;
-		d3d12_cbv_desc.SizeInBytes = target_size;
+		d3d12_cbv_desc.BufferLocation = d3d12_resource_p->GetGPUVirtualAddress() + desc.index * target_stride;
+		d3d12_cbv_desc.SizeInBytes = target_element_count * target_stride;
 
 		d3d12_device_p->CreateConstantBufferView(
 			&d3d12_cbv_desc,
@@ -133,9 +137,9 @@ namespace nrhi {
 		if(target_format == ED_format::NONE)
 			target_format = resource_desc.format;
 
-		sz target_size = desc.overrided_size;
-		if(target_size == 0)
-			target_size = resource_desc.size;
+		sz target_element_count = desc.overrided_element_count;
+		if(target_element_count == 0)
+			target_element_count = resource_desc.element_count;
 
 		sz target_stride = desc.overrided_stride;
 		if(target_stride == 0)
@@ -149,8 +153,8 @@ namespace nrhi {
 			NRHI_ENUM_CASE(
 				ED_resource_type::BUFFER,
 				d3d12_srv_desc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
-				d3d12_srv_desc.Buffer.FirstElement = desc.mem_offset / target_stride;
-				d3d12_srv_desc.Buffer.NumElements = target_size / target_stride;
+				d3d12_srv_desc.Buffer.FirstElement = desc.index;
+				d3d12_srv_desc.Buffer.NumElements = target_element_count;
 				if(d3d12_srv_desc.Format == DXGI_FORMAT_UNKNOWN)
 					d3d12_srv_desc.Buffer.StructureByteStride = target_stride;
 				NRHI_ENUM_BREAK;
@@ -249,9 +253,9 @@ namespace nrhi {
 		if(target_format == ED_format::NONE)
 			target_format = resource_desc.format;
 
-		sz target_size = desc.overrided_size;
-		if(target_size == 0)
-			target_size = resource_desc.size;
+		sz target_element_count = desc.overrided_element_count;
+		if(target_element_count == 0)
+			target_element_count = resource_desc.element_count;
 
 		sz target_stride = desc.overrided_stride;
 		if(target_stride == 0)
@@ -264,8 +268,8 @@ namespace nrhi {
 			NRHI_ENUM_CASE(
 				ED_resource_type::BUFFER,
 				d3d12_uav_desc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
-				d3d12_uav_desc.Buffer.FirstElement = desc.mem_offset / target_stride;
-				d3d12_uav_desc.Buffer.NumElements = target_size / target_stride;
+				d3d12_uav_desc.Buffer.FirstElement = desc.index;
+				d3d12_uav_desc.Buffer.NumElements = target_element_count;
 				if(d3d12_uav_desc.Format == DXGI_FORMAT_UNKNOWN)
 					d3d12_uav_desc.Buffer.StructureByteStride = target_stride;
 				NRHI_ENUM_BREAK;

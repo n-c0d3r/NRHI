@@ -71,6 +71,7 @@ namespace nrhi {
 
 	protected:
 		u64 generation_ = 0;
+    	F_resource_footprint footprint_;
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 		u64 placed_heap_offset_;
@@ -83,25 +84,26 @@ namespace nrhi {
 
 		NCPP_FORCE_INLINE u64 generation() const noexcept { return generation_; }
 		NCPP_FORCE_INLINE void set_generation_unsafe(u64 value) noexcept { generation_ = value; }
+		NCPP_FORCE_INLINE const F_resource_footprint& footprint() const noexcept { return footprint_; }
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-		NCPP_FORCE_INLINE u64 placed_heap_offset() const noexcept {
-
+		NCPP_FORCE_INLINE u64 placed_heap_offset() const noexcept
+    	{
 			NCPP_ASSERT(management_type() == E_resource_management_type::PLACED);
 			return placed_heap_offset_;
 		}
-		NCPP_FORCE_INLINE void set_placed_heap_offset_unsafe(u64 value) noexcept {
-
+		NCPP_FORCE_INLINE void set_placed_heap_offset_unsafe(u64 value) noexcept
+    	{
 			NCPP_ASSERT(management_type() == E_resource_management_type::PLACED);
 			placed_heap_offset_ = value;
 		}
-		NCPP_FORCE_INLINE TKPA_valid<A_resource_heap> placed_heap_p() const noexcept {
-
+		NCPP_FORCE_INLINE TKPA_valid<A_resource_heap> placed_heap_p() const noexcept
+    	{
 			NCPP_ASSERT(management_type() == E_resource_management_type::PLACED);
 			return (TKPA_valid<A_resource_heap>)placed_heap_p_;
 		}
-		NCPP_FORCE_INLINE void set_placed_heap_p_unsafe(TKPA_valid<A_resource_heap> value) noexcept {
-
+		NCPP_FORCE_INLINE void set_placed_heap_p_unsafe(TKPA_valid<A_resource_heap> value) noexcept
+    	{
 			NCPP_ASSERT(management_type() == E_resource_management_type::PLACED);
 			placed_heap_p_ = value.no_requirements();
 		}
@@ -178,13 +180,12 @@ namespace nrhi {
 
 
 
-	NCPP_FORCE_INLINE F_resource_desc& inject_resource_desc(TKPA_valid<A_resource> resource_p) noexcept {
-
+	NCPP_FORCE_INLINE F_resource_desc& inject_resource_desc(TKPA_valid<A_resource> resource_p) noexcept
+	{
 		return (F_resource_desc&)(resource_p->desc());
 	}
-	NCPP_FORCE_INLINE u64& inject_resource_generation(TKPA_valid<A_resource> resource_p) noexcept {
-
+	NCPP_FORCE_INLINE u64& inject_resource_generation(TKPA_valid<A_resource> resource_p) noexcept
+	{
 		return resource_p->generation_;
 	}
-
 }

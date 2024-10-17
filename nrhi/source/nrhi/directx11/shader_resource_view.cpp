@@ -74,6 +74,12 @@ namespace nrhi {
 		if(target_format == ED_format::NONE)
 			target_format = resource_desc.format;
 
+    	sz target_element_count = desc.overrided_element_count;
+    	if(target_element_count == 0)
+    		target_element_count = resource_desc.element_count;
+
+    	NCPP_ASSERT(desc.overrided_stride == 0) << "overrided stride is not supported";
+
         D3D11_SHADER_RESOURCE_VIEW_DESC d3d11_srv_desc;
         memset(&d3d11_srv_desc, 0, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
         d3d11_srv_desc.Format = DXGI_FORMAT(target_format);
@@ -82,8 +88,8 @@ namespace nrhi {
 			NRHI_ENUM_CASE(
 				ED_resource_type::BUFFER,
 				d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
-				d3d11_srv_desc.Buffer.FirstElement = desc.mem_offset / resource_desc.stride;
-				d3d11_srv_desc.Buffer.NumElements = resource_desc.size / resource_desc.stride;
+				d3d11_srv_desc.Buffer.FirstElement = desc.index;
+				d3d11_srv_desc.Buffer.NumElements = target_element_count;
 				NRHI_ENUM_BREAK;
             )
 			NRHI_ENUM_CASE(

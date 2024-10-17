@@ -191,7 +191,7 @@ namespace nrhi {
 		TKPA_valid<A_resource> resource_p,
 		u32 subresource_index
 	) {
-		CD3DX12_RANGE range(0, resource_p->desc().size);
+		CD3DX12_RANGE range(0, resource_p->footprint().subresource_sizes[subresource_index]);
 		void* data_p = 0;
 
 		HRESULT hr = resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p()->Map(
@@ -313,6 +313,131 @@ namespace nrhi {
 				return { 2, 2, 2 };
 			)
 		);
+	}
+
+	u32 HD_directx12_resource::subresource_count(
+		const F_resource_desc& desc
+	)
+	{
+		return (
+			eastl::max<u32>(desc.mip_level_count, 1)
+			* (
+				(desc.type == ED_resource_type::TEXTURE_3D)
+				? 1
+				: eastl::max<u32>(desc.array_size, 1)
+			)
+		);
+	}
+	F_resource_footprint HD_directx12_resource::footprint(
+		TKPA_valid<A_device> device_p,
+		const F_resource_desc& desc
+	)
+	{
+		F_resource_footprint result;
+
+		result.size = 0;
+
+		u32 subresource_count = HD_directx12_resource::subresource_count(desc);
+		result.placed_subresource_footprints.resize(subresource_count);
+		result.subresource_sizes.resize(subresource_count);
+
+		D3D12_RESOURCE_DESC d3d12_resource_desc;
+		d3d12_resource_desc.Dimension = NRHI_DRIVER_DIRECTX_12_MAP___RESOURCE_TYPE___TO___RESOURCE_DIMENSION(desc.type);
+		d3d12_resource_desc.Alignment = desc.alignment;
+		d3d12_resource_desc.Width = eastl::max<u32>(1, desc.width);
+		d3d12_resource_desc.Height = eastl::max<u32>(1, desc.height);
+		d3d12_resource_desc.DepthOrArraySize = eastl::max<u32>(1, desc.depth);
+		d3d12_resource_desc.MipLevels = eastl::max<u32>(1, desc.mip_level_count);
+		d3d12_resource_desc.Format = DXGI_FORMAT(desc.format);
+		d3d12_resource_desc.SampleDesc.Count = desc.sample_desc.count;
+		d3d12_resource_desc.SampleDesc.Quality = desc.sample_desc.quality;
+		d3d12_resource_desc.Layout = D3D12_TEXTURE_LAYOUT(desc.layout);
+		d3d12_resource_desc.Flags = NRHI_DRIVER_DIRECTX_12_MAP___RESOURCE_FLAG___TO___RESOURCE_FLAG(desc.flags);
+
+		if(desc.type == ED_resource_type::BUFFER)
+		{
+			d3d12_resource_desc.Format = DXGI_FORMAT_UNKNOWN;
+			d3d12_resource_desc.Width = desc.element_count * desc.stride;
+		}
+
+		TG_fixed_vector<D3D12_PLACED_SUBRESOURCE_FOOTPRINT, 6> d3d12_placed_subresource_footprints(subresource_count);
+
+		device_p.T_cast<F_directx12_device>()->d3d12_device_p()->GetCopyableFootprints(
+			&d3d12_resource_desc,
+			0,
+			subresource_count,
+			0,
+			d3d12_placed_subresource_footprints.data(),
+			0,
+			0,
+			result.subresource_sizes.data()
+		);
+
+		for(u32 i = 0; i < subresource_count; ++i)
+		{
+			result.size += result.subresource_sizes[i];
+
+			auto& placed_subresource_footprint = result.placed_subresource_footprints[i];
+			auto& d3d12_placed_subresource_footprint = d3d12_placed_subresource_footprints[i];
+
+			placed_subresource_footprint.offset = d3d12_placed_subresource_footprint.Offset;
+			placed_subresource_footprint.footprint.width = d3d12_placed_subresource_footprint.Footprint.Width;
+			placed_subresource_footprint.footprint.height = d3d12_placed_subresource_footprint.Footprint.Height;
+			placed_subresource_footprint.footprint.depth = d3d12_placed_subresource_footprint.Footprint.Depth;
+			placed_subresource_footprint.footprint.format = ED_format(d3d12_placed_subresource_footprint.Footprint.Format);
+			placed_subresource_footprint.footprint.first_pitch = d3d12_placed_subresource_footprint.Footprint.RowPitch;
+		}
+
+		return eastl::move(result);
+	}
+	sz HD_directx12_resource::calculate_size(
+		TKPA_valid<A_device> device_p,
+		const F_resource_desc& desc
+	)
+	{
+		u32 subresource_count = HD_directx12_resource::subresource_count(desc);
+
+		sz result = 0;
+
+		F_subresource_sizes subresource_sizes(subresource_count);
+		subresource_sizes.resize(subresource_count);
+
+		D3D12_RESOURCE_DESC d3d12_resource_desc;
+		d3d12_resource_desc.Dimension = NRHI_DRIVER_DIRECTX_12_MAP___RESOURCE_TYPE___TO___RESOURCE_DIMENSION(desc.type);
+		d3d12_resource_desc.Alignment = desc.alignment;
+		d3d12_resource_desc.Width = eastl::max<u32>(1, desc.width);
+		d3d12_resource_desc.Height = eastl::max<u32>(1, desc.height);
+		d3d12_resource_desc.DepthOrArraySize = eastl::max<u32>(1, desc.depth);
+		d3d12_resource_desc.MipLevels = eastl::max<u32>(1, desc.mip_level_count);
+		d3d12_resource_desc.Format = DXGI_FORMAT(desc.format);
+		d3d12_resource_desc.SampleDesc.Count = desc.sample_desc.count;
+		d3d12_resource_desc.SampleDesc.Quality = desc.sample_desc.quality;
+		d3d12_resource_desc.Layout = D3D12_TEXTURE_LAYOUT(desc.layout);
+		d3d12_resource_desc.Flags = NRHI_DRIVER_DIRECTX_12_MAP___RESOURCE_FLAG___TO___RESOURCE_FLAG(desc.flags);
+
+		if(desc.type == ED_resource_type::BUFFER)
+		{
+			d3d12_resource_desc.Format = DXGI_FORMAT_UNKNOWN;
+			d3d12_resource_desc.Width = desc.element_count * desc.stride;
+		}
+
+		device_p.T_cast<F_directx12_device>()->d3d12_device_p()->GetCopyableFootprints(
+			&d3d12_resource_desc,
+			0,
+			subresource_count,
+			0,
+			0,
+			0,
+			0,
+			subresource_sizes.data()
+		);
+
+		for(u32 i = 0; i < subresource_count; ++i)
+		{
+			result += subresource_sizes[i];
+		}
+
+		return result;
 	}
 
 

@@ -141,6 +141,7 @@ namespace nrhi {
 		D3D11_MAP d3d11_map_type;
 
 		const auto& desc = resource_p->desc();
+		const auto& footprint = resource_p->footprint();
 
 		NRHI_ENUM_SWITCH(
 			desc.heap_type,
@@ -165,7 +166,7 @@ namespace nrhi {
 		);
 		NCPP_ASSERT(!FAILED(hr)) << "can't map resource";
 
-		return { (u8*)(d3d11_mapped_resource.pData), desc.size };
+		return { (u8*)(d3d11_mapped_resource.pData), footprint.size };
 	}
 	void HD_directx11_resource::unmap(
 		TKPA_valid<A_resource> resource_p,
@@ -268,4 +269,75 @@ namespace nrhi {
 		);
 	}
 
+	u32 HD_directx11_resource::subresource_count(
+		const F_resource_desc& desc
+	)
+	{
+		return (
+			eastl::max<u32>(desc.mip_level_count, 1)
+			* (
+				(desc.type == ED_resource_type::TEXTURE_3D)
+				? 1
+				: eastl::max<u32>(desc.array_size, 1)
+			)
+		);
+	}
+	F_resource_footprint HD_directx11_resource::footprint(
+		TKPA_valid<A_device> device_p,
+		const F_resource_desc& desc
+	)
+	{
+		F_resource_footprint result;
+
+		result.size = 0;
+
+		u32 subresource_count = HD_directx11_resource::subresource_count(desc);
+		result.placed_subresource_footprints.resize(subresource_count);
+		result.subresource_sizes.resize(subresource_count);
+
+		for(u32 i = 0; i < subresource_count; ++i)
+		{
+			auto& placed_subresource_footprint = result.placed_subresource_footprints[i];
+			auto& subresource_info = desc.subresource_infos[i];
+
+			auto first_pitch = HD_directx11_resource::first_pitch(desc.stride, subresource_info.width);
+			auto second_pitch = HD_directx11_resource::second_pitch(first_pitch, subresource_info.height);
+			auto third_pitch = HD_directx11_resource::third_pitch(second_pitch, subresource_info.depth);
+
+			placed_subresource_footprint.offset = result.size;
+			placed_subresource_footprint.footprint.width = subresource_info.width;
+			placed_subresource_footprint.footprint.height = subresource_info.height;
+			placed_subresource_footprint.footprint.depth = subresource_info.depth;
+			placed_subresource_footprint.footprint.format = desc.format;
+			placed_subresource_footprint.footprint.first_pitch = first_pitch;
+
+			result.subresource_sizes[i] = third_pitch;
+
+			result.size += result.subresource_sizes[i];
+		}
+
+		return eastl::move(result);
+	}
+	sz HD_directx11_resource::calculate_size(
+		TKPA_valid<A_device> device_p,
+		const F_resource_desc& desc
+	)
+	{
+		u32 subresource_count = HD_directx11_resource::subresource_count(desc);
+
+		sz result = 0;
+
+		for(u32 i = 0; i < subresource_count; ++i)
+		{
+			auto& subresource_info = desc.subresource_infos[i];
+
+			auto first_pitch = HD_directx11_resource::first_pitch(desc.stride, subresource_info.width);
+			auto second_pitch = HD_directx11_resource::second_pitch(first_pitch, subresource_info.height);
+			auto third_pitch = HD_directx11_resource::third_pitch(second_pitch, subresource_info.depth);
+
+			result += third_pitch;
+		}
+
+		return result;
+	}
 }
