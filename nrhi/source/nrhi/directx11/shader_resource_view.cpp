@@ -78,7 +78,9 @@ namespace nrhi {
     	if(target_element_count == 0)
     		target_element_count = resource_desc.element_count;
 
-    	NCPP_ASSERT(desc.overrided_stride == 0) << "overrided stride is not supported";
+    	sz target_stride = desc.overrided_stride;
+    	if(target_stride == 0)
+    		target_stride = resource_desc.stride;
 
         D3D11_SHADER_RESOURCE_VIEW_DESC d3d11_srv_desc;
         memset(&d3d11_srv_desc, 0, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
@@ -88,7 +90,7 @@ namespace nrhi {
 			NRHI_ENUM_CASE(
 				ED_resource_type::BUFFER,
 				d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
-				d3d11_srv_desc.Buffer.FirstElement = desc.index;
+				d3d11_srv_desc.Buffer.FirstElement = desc.mem_offset / target_stride;
 				d3d11_srv_desc.Buffer.NumElements = target_element_count;
 				NRHI_ENUM_BREAK;
             )
@@ -128,7 +130,7 @@ namespace nrhi {
 				else {
 					d3d11_srv_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
 					d3d11_srv_desc.Texture2DArray.MipLevels = resource_desc.mip_level_count;
-					d3d11_srv_desc.Texture2DArray.FirstArraySlice = desc.index;
+					d3d11_srv_desc.Texture2DArray.FirstArraySlice = desc.array_slice;
 					d3d11_srv_desc.Texture2DArray.ArraySize = target_array_size;
 					d3d11_srv_desc.Texture2DArray.MostDetailedMip = desc.base_mip_level;
 					NCPP_ASSERT(target_array_size) << "texture 2d array size can't be zero";

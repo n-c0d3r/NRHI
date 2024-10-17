@@ -90,7 +90,7 @@ namespace nrhi {
 			target_stride = resource_desc.stride;
 
 		D3D12_CONSTANT_BUFFER_VIEW_DESC d3d12_cbv_desc = {};
-		d3d12_cbv_desc.BufferLocation = d3d12_resource_p->GetGPUVirtualAddress() + desc.index * target_stride;
+		d3d12_cbv_desc.BufferLocation = d3d12_resource_p->GetGPUVirtualAddress() + desc.mem_offset;
 		d3d12_cbv_desc.SizeInBytes = target_element_count * target_stride;
 
 		d3d12_device_p->CreateConstantBufferView(
@@ -153,7 +153,7 @@ namespace nrhi {
 			NRHI_ENUM_CASE(
 				ED_resource_type::BUFFER,
 				d3d12_srv_desc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
-				d3d12_srv_desc.Buffer.FirstElement = desc.index;
+				d3d12_srv_desc.Buffer.FirstElement = u64(desc.mem_offset) / u64(target_stride);
 				d3d12_srv_desc.Buffer.NumElements = target_element_count;
 				if(d3d12_srv_desc.Format == DXGI_FORMAT_UNKNOWN)
 					d3d12_srv_desc.Buffer.StructureByteStride = target_stride;
@@ -195,7 +195,7 @@ namespace nrhi {
 				else {
 					d3d12_srv_desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2DARRAY;
 					d3d12_srv_desc.Texture2DArray.MipLevels = resource_desc.mip_level_count;
-					d3d12_srv_desc.Texture2DArray.FirstArraySlice = desc.index;
+					d3d12_srv_desc.Texture2DArray.FirstArraySlice = desc.array_slice;
 					d3d12_srv_desc.Texture2DArray.ArraySize = target_array_size;
 					d3d12_srv_desc.Texture2DArray.MostDetailedMip = desc.base_mip_level;
 					NCPP_ASSERT(target_array_size) << "texture 2d array size can't be zero";
@@ -268,7 +268,7 @@ namespace nrhi {
 			NRHI_ENUM_CASE(
 				ED_resource_type::BUFFER,
 				d3d12_uav_desc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
-				d3d12_uav_desc.Buffer.FirstElement = desc.index;
+				d3d12_uav_desc.Buffer.FirstElement = u64(desc.mem_offset) / u64(target_stride);
 				d3d12_uav_desc.Buffer.NumElements = target_element_count;
 				if(d3d12_uav_desc.Format == DXGI_FORMAT_UNKNOWN)
 					d3d12_uav_desc.Buffer.StructureByteStride = target_stride;
@@ -296,7 +296,7 @@ namespace nrhi {
 				ED_resource_type::TEXTURE_2D_ARRAY,
 				d3d12_uav_desc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE2DARRAY;
 				d3d12_uav_desc.Texture2DArray.MipSlice = desc.base_mip_level;
-				d3d12_uav_desc.Texture2DArray.FirstArraySlice = desc.index;
+				d3d12_uav_desc.Texture2DArray.FirstArraySlice = desc.array_slice;
 				d3d12_uav_desc.Texture2DArray.ArraySize = target_array_size;
 				NCPP_ASSERT(target_array_size) << "texture 2d array size can't be zero";
 				NRHI_ENUM_BREAK;
@@ -367,7 +367,7 @@ namespace nrhi {
 				ED_resource_type::TEXTURE_2D_ARRAY,
 				d3d12_rtv_desc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2DARRAY;
 				d3d12_rtv_desc.Texture2DArray.MipSlice = desc.base_mip_level;
-				d3d12_rtv_desc.Texture2DArray.FirstArraySlice = desc.index;
+				d3d12_rtv_desc.Texture2DArray.FirstArraySlice = desc.array_slice;
 				d3d12_rtv_desc.Texture2DArray.ArraySize = target_array_size;
 				NCPP_ASSERT(target_array_size) << "texture 2d array size can't be zero";
 				NRHI_ENUM_BREAK;
@@ -437,7 +437,7 @@ namespace nrhi {
 				ED_resource_type::TEXTURE_2D_ARRAY,
 				d3d12_dsv_desc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2DARRAY;
 				d3d12_dsv_desc.Texture2DArray.MipSlice = desc.base_mip_level;
-				d3d12_dsv_desc.Texture2DArray.FirstArraySlice = desc.index;
+				d3d12_dsv_desc.Texture2DArray.FirstArraySlice = desc.array_slice;
 				d3d12_dsv_desc.Texture2DArray.ArraySize = target_array_size;
 				NCPP_ASSERT(target_array_size) << "texture 2d array size can't be zero";
 				NRHI_ENUM_BREAK;

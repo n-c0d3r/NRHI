@@ -75,7 +75,10 @@ namespace nrhi {
             u32 target_mip_level;
         };
 
-    	u32 index = 0;
+    	union {
+    		u64 mem_offset = 0;
+    		u32 array_slice;
+    	};
 
         sz overrided_element_count = 0;
         u32 overrided_stride = 0;
