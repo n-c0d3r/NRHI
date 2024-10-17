@@ -195,7 +195,7 @@ namespace nrhi {
 				else {
 					d3d12_srv_desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2DARRAY;
 					d3d12_srv_desc.Texture2DArray.MipLevels = resource_desc.mip_level_count;
-					d3d12_srv_desc.Texture2DArray.FirstArraySlice = desc.array_slice;
+					d3d12_srv_desc.Texture2DArray.FirstArraySlice = desc.first_array_slice;
 					d3d12_srv_desc.Texture2DArray.ArraySize = target_array_size;
 					d3d12_srv_desc.Texture2DArray.MostDetailedMip = desc.base_mip_level;
 					NCPP_ASSERT(target_array_size) << "texture 2d array size can't be zero";
@@ -296,7 +296,7 @@ namespace nrhi {
 				ED_resource_type::TEXTURE_2D_ARRAY,
 				d3d12_uav_desc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE2DARRAY;
 				d3d12_uav_desc.Texture2DArray.MipSlice = desc.base_mip_level;
-				d3d12_uav_desc.Texture2DArray.FirstArraySlice = desc.array_slice;
+				d3d12_uav_desc.Texture2DArray.FirstArraySlice = desc.first_array_slice;
 				d3d12_uav_desc.Texture2DArray.ArraySize = target_array_size;
 				NCPP_ASSERT(target_array_size) << "texture 2d array size can't be zero";
 				NRHI_ENUM_BREAK;
@@ -367,7 +367,7 @@ namespace nrhi {
 				ED_resource_type::TEXTURE_2D_ARRAY,
 				d3d12_rtv_desc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2DARRAY;
 				d3d12_rtv_desc.Texture2DArray.MipSlice = desc.base_mip_level;
-				d3d12_rtv_desc.Texture2DArray.FirstArraySlice = desc.array_slice;
+				d3d12_rtv_desc.Texture2DArray.FirstArraySlice = desc.first_array_slice;
 				d3d12_rtv_desc.Texture2DArray.ArraySize = target_array_size;
 				NCPP_ASSERT(target_array_size) << "texture 2d array size can't be zero";
 				NRHI_ENUM_BREAK;
@@ -437,7 +437,7 @@ namespace nrhi {
 				ED_resource_type::TEXTURE_2D_ARRAY,
 				d3d12_dsv_desc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2DARRAY;
 				d3d12_dsv_desc.Texture2DArray.MipSlice = desc.base_mip_level;
-				d3d12_dsv_desc.Texture2DArray.FirstArraySlice = desc.array_slice;
+				d3d12_dsv_desc.Texture2DArray.FirstArraySlice = desc.first_array_slice;
 				d3d12_dsv_desc.Texture2DArray.ArraySize = target_array_size;
 				NCPP_ASSERT(target_array_size) << "texture 2d array size can't be zero";
 				NRHI_ENUM_BREAK;
