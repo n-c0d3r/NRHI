@@ -181,15 +181,15 @@ namespace nrhi {
 		);
     }
 
-	sz HD_directx11_resource::first_pitch(u32 element_stride, u32 count)
+	sz HD_directx11_resource::texture_first_pitch(u32 element_stride, u32 count)
     {
     	return element_stride * count;
     }
-	sz HD_directx11_resource::second_pitch(sz first_pitch, u32 count)
+	sz HD_directx11_resource::texture_second_pitch(sz first_pitch, u32 count)
 	{
     	return first_pitch * count;
 	}
-	sz HD_directx11_resource::third_pitch(sz second_pitch, u32 count)
+	sz HD_directx11_resource::texture_third_pitch(sz second_pitch, u32 count)
 	{
     	return second_pitch * count;
 	}
@@ -300,18 +300,26 @@ namespace nrhi {
 			auto& placed_subresource_footprint = result.placed_subresource_footprints[i];
 			auto& subresource_info = desc.subresource_infos[i];
 
-			auto first_pitch = HD_directx11_resource::first_pitch(desc.stride, subresource_info.width);
-			auto second_pitch = HD_directx11_resource::second_pitch(first_pitch, subresource_info.height);
-			auto third_pitch = HD_directx11_resource::third_pitch(second_pitch, subresource_info.depth);
-
 			placed_subresource_footprint.offset = result.size;
 			placed_subresource_footprint.footprint.width = subresource_info.width;
 			placed_subresource_footprint.footprint.height = subresource_info.height;
 			placed_subresource_footprint.footprint.depth = subresource_info.depth;
 			placed_subresource_footprint.footprint.format = desc.format;
-			placed_subresource_footprint.footprint.first_pitch = first_pitch;
 
-			result.subresource_sizes[i] = third_pitch;
+			if(desc.type == ED_resource_type::BUFFER)
+			{
+				placed_subresource_footprint.footprint.first_pitch = desc.stride * desc.element_count;
+				result.subresource_sizes[i] = placed_subresource_footprint.footprint.first_pitch;
+			}
+			else
+			{
+				auto first_pitch = HD_directx11_resource::texture_first_pitch(desc.stride, subresource_info.width);
+				auto second_pitch = HD_directx11_resource::texture_second_pitch(first_pitch, subresource_info.height);
+				auto third_pitch = HD_directx11_resource::texture_third_pitch(second_pitch, subresource_info.depth);
+
+				placed_subresource_footprint.footprint.first_pitch = first_pitch;
+				result.subresource_sizes[i] = third_pitch;
+			}
 
 			result.size += result.subresource_sizes[i];
 		}
@@ -331,11 +339,18 @@ namespace nrhi {
 		{
 			auto& subresource_info = desc.subresource_infos[i];
 
-			auto first_pitch = HD_directx11_resource::first_pitch(desc.stride, subresource_info.width);
-			auto second_pitch = HD_directx11_resource::second_pitch(first_pitch, subresource_info.height);
-			auto third_pitch = HD_directx11_resource::third_pitch(second_pitch, subresource_info.depth);
+			if(desc.type == ED_resource_type::BUFFER)
+			{
+				result += desc.stride * desc.element_count;
+			}
+			else
+			{
+				auto first_pitch = HD_directx11_resource::texture_first_pitch(desc.stride, subresource_info.width);
+				auto second_pitch = HD_directx11_resource::texture_second_pitch(first_pitch, subresource_info.height);
+				auto third_pitch = HD_directx11_resource::texture_third_pitch(second_pitch, subresource_info.depth);
 
-			result += third_pitch;
+				result += third_pitch;
+			}
 		}
 
 		return result;

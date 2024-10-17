@@ -219,19 +219,19 @@ namespace nrhi {
 		return resource_p.T_cast<F_directx12_resource>()->d3d12_resource_p()->GetGPUVirtualAddress();
 	}
 
-	sz HD_directx12_resource::first_pitch(u32 element_stride, u32 count)
+	sz HD_directx12_resource::texture_first_pitch(u32 element_stride, u32 count)
 	{
 		return align_size(
 			element_stride * count,
 			D3D12_TEXTURE_DATA_PITCH_ALIGNMENT
 		);
 	}
-	sz HD_directx12_resource::second_pitch(sz first_pitch, u32 count)
+	sz HD_directx12_resource::texture_second_pitch(sz first_pitch, u32 count)
 	{
 		NCPP_ASSERT(first_pitch % D3D12_TEXTURE_DATA_PITCH_ALIGNMENT == 0) << "first pitch is not aligned";
 		return first_pitch * count;
 	}
-	sz HD_directx12_resource::third_pitch(sz second_pitch, u32 count)
+	sz HD_directx12_resource::texture_third_pitch(sz second_pitch, u32 count)
 	{
 		NCPP_ASSERT(second_pitch % D3D12_TEXTURE_DATA_PITCH_ALIGNMENT == 0) << "second pitch is not aligned";
 		return second_pitch * count;

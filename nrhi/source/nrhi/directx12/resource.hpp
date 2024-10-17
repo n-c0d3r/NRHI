@@ -200,9 +200,9 @@ namespace nrhi {
 		);
 
 	public:
-		static sz first_pitch(u32 element_stride, u32 count);
-		static sz second_pitch(sz first_pitch, u32 count);
-		static sz third_pitch(sz second_pitch, u32 count);
+		static sz texture_first_pitch(u32 element_stride, u32 count);
+		static sz texture_second_pitch(sz first_pitch, u32 count);
+		static sz texture_third_pitch(sz second_pitch, u32 count);
 
 	public:
 		static u32 subresource_index(
