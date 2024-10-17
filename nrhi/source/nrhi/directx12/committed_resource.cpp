@@ -99,8 +99,8 @@ namespace nrhi {
 
 		D3D12_CLEAR_VALUE d3d12_clear_value;
 		if(
-			(d3d12_resource_desc.Flags == D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET)
-			|| (d3d12_resource_desc.Flags == D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL)
+			flag_is_has(d3d12_resource_desc.Flags, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET)
+			|| flag_is_has(d3d12_resource_desc.Flags, D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL)
 		)
 		{
 			d3d12_clear_value.Format = DXGI_FORMAT(desc.clear_value.format);
