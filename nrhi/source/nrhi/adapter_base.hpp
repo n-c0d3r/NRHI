@@ -34,15 +34,31 @@
 
 
 
-namespace nrhi {
+namespace nrhi
+{
+    struct F_adapter_desc
+    {
+        G_string description;
+        u32 vendor_id = 0;
+        u32 device_id = 0;
+        u32 subsystem_id = 0;
+        u32 revision = 0;
+        sz dedicated_video_memory = 0;
+        sz dedicated_system_memory = 0;
+        sz shared_system_memory = 0;
+    };
 
-    class NRHI_API A_adapter {
-
+    class NRHI_API A_adapter
+    {
     private:
         u32 index_ = 0;
 
+    protected:
+        F_adapter_desc desc_;
+
     public:
         NCPP_FORCE_INLINE u32 index() const noexcept { return index_; }
+        NCPP_FORCE_INLINE const auto& desc() const noexcept { return desc_; }
 
 
 
@@ -58,5 +74,4 @@ namespace nrhi {
     public:
         F_gpu_memory_info gpu_memory_info();
     };
-
 }

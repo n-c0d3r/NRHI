@@ -9,7 +9,17 @@ namespace nrhi {
         A_adapter(index),
         dxgi_adapter_p_(dxgi_adapter_p)
     {
+        DXGI_ADAPTER_DESC dxgi_adapter_desc;
+        dxgi_adapter_p_->GetDesc(&dxgi_adapter_desc);
 
+        desc_.description = G_to_string(dxgi_adapter_desc.Description);
+        desc_.vendor_id = dxgi_adapter_desc.VendorId;
+        desc_.device_id = dxgi_adapter_desc.DeviceId;
+        desc_.subsystem_id = dxgi_adapter_desc.SubSysId;
+        desc_.revision = dxgi_adapter_desc.Revision;
+        desc_.dedicated_video_memory = dxgi_adapter_desc.DedicatedVideoMemory;
+        desc_.dedicated_system_memory = dxgi_adapter_desc.DedicatedSystemMemory;
+        desc_.shared_system_memory = dxgi_adapter_desc.SharedSystemMemory;
     }
 	F_directx12_adapter::~F_directx12_adapter(){
 
