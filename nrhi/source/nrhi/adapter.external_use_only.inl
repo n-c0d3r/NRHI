@@ -1,8 +1,8 @@
 #pragma once
 
-/** @file nrhi/adapter_base.hpp
+/** @file nrhi/adapter.external_use_only.inl
 *
-*   Implement adapter base class.
+*   Implement adapter inline functions that is only used by external.
 */
 
 
@@ -28,7 +28,14 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/prerequisites.hpp>
-#include <nrhi/gpu_memory_info.hpp>
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
+#include <nrhi/adapter.hpp>
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
 #pragma endregion
 
@@ -36,27 +43,11 @@
 
 namespace nrhi {
 
-    class NRHI_API A_adapter {
-
-    private:
-        u32 index_ = 0;
-
-    public:
-        NCPP_FORCE_INLINE u32 index() const noexcept { return index_; }
-
-
-
-    protected:
-        A_adapter(u32 index);
-
-    public:
-        virtual ~A_adapter();
-
-	public:
-        NCPP_OBJECT(A_adapter);
-
-    public:
-        F_gpu_memory_info gpu_memory_info();
-    };
-
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
+	NCPP_FORCE_INLINE F_gpu_memory_info A_adapter::gpu_memory_info() {
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT(
+			return H_adapter::gpu_memory_info(NCPP_KTHIS());
+		);
+	}
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 }

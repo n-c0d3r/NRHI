@@ -106,6 +106,7 @@ namespace nrhi { }
 #include <nrhi/directx12/committed_resource.hpp>
 #endif
 
+#include <nrhi/adapter.external_use_only.inl>
 #include <nrhi/device.external_use_only.inl>
 #include <nrhi/command_list.external_use_only.inl>
 #include <nrhi/command_queue.external_use_only.inl>
