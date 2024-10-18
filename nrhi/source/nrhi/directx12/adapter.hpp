@@ -34,6 +34,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/adapter_base.hpp>
+#include <nrhi/gpu_memory_info.hpp>
 
 #pragma endregion
 
@@ -95,6 +96,9 @@ namespace nrhi {
         static void initialize_adapters();
         static void release_adapters();
 
+    public:
+        static F_gpu_memory_info gpu_memory_info(
+            TKPA_valid<A_adapter> adapter_p
+        );
     };
-
 }

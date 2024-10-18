@@ -90,6 +90,8 @@ namespace nrhi { }
 #include <nrhi/debug_name.hpp>
 #include <nrhi/render_object.hpp>
 
+#include <nrhi/gpu_memory_info.hpp>
+
 #ifdef NRHI_DRIVER_DIRECTX_11
 #include <nrhi/directx11/buffer.hpp>
 #include <nrhi/directx11/texture.hpp>

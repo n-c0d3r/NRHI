@@ -55,4 +55,23 @@ namespace nrhi {
         keyed_adapter_p_vector_.clear();
     }
 
+    F_gpu_memory_info HD_directx12_adapter::gpu_memory_info(
+        TKPA_valid<A_adapter> adapter_p
+    )
+    {
+        auto dxgi_adapter_p = adapter_p.T_cast<F_directx12_adapter>()->dxgi_adapter_p();
+
+        IDXGIAdapter3* dxgi_adapter_3_p = 0;
+        dxgi_adapter_p->QueryInterface(IID_PPV_ARGS(&dxgi_adapter_3_p));
+        NCPP_ASSERT(dxgi_adapter_3_p) << "not supported";
+
+        DXGI_QUERY_VIDEO_MEMORY_INFO dxgi_gpu_memory_info;
+        HRESULT hr = dxgi_adapter_3_p->QueryVideoMemoryInfo(0, DXGI_MEMORY_SEGMENT_GROUP_LOCAL, &dxgi_gpu_memory_info);
+        NCPP_ASSERT(SUCCEEDED(hr)) << "can't query gpu memory info";
+
+        return {
+            .budget = dxgi_gpu_memory_info.Budget,
+            .current_usage = dxgi_gpu_memory_info.CurrentUsage
+        };
+    }
 }

@@ -94,7 +94,6 @@ namespace nrhi {
     private:
         static void initialize_adapters();
         static void release_adapters();
-
     };
 
 }

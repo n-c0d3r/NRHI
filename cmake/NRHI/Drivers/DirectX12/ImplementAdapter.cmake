@@ -21,6 +21,9 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "<nrhi/directx12/adapter.hpp>"
     VALUES
         "adapter_p_vector" "const TG_vector<TK_valid<A_adapter>>&()"
+        "gpu_memory_info" "F_gpu_memory_info(
+            TKPA_valid<A_adapter> adapter_p
+        )"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement adapter done")
