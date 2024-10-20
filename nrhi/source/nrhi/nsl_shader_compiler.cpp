@@ -1180,6 +1180,7 @@ namespace nrhi {
 	TG_map<G_string, ED_format> F_nsl_info_tree_reader::format_str_to_value_map_;
 	TG_map<G_string, ED_comparison_func> F_nsl_info_tree_reader::comparison_func_str_to_value_map_;
 	TG_map<G_string, ED_primitive_topology> F_nsl_info_tree_reader::primitive_topology_str_to_value_map_;
+	TG_map<G_string, ED_shader_visibility> F_nsl_info_tree_reader::shader_visibility_str_to_value_map_;
 
 	F_nsl_info_tree_reader::F_nsl_info_tree_reader(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
@@ -1370,6 +1371,16 @@ namespace nrhi {
 			primitive_topology_str_to_value_map_["NONE"] = ED_primitive_topology::NONE;
 			primitive_topology_str_to_value_map_["LINE_LIST"] = ED_primitive_topology::LINE_LIST;
 			primitive_topology_str_to_value_map_["TRIANGLE_LIST"] = ED_primitive_topology::TRIANGLE_LIST;
+
+			// setup shader_visibility_str_to_value_map_
+			shader_visibility_str_to_value_map_["ALL"] = ED_shader_visibility::ALL;
+			shader_visibility_str_to_value_map_["VERTEX"] = ED_shader_visibility::VERTEX;
+			shader_visibility_str_to_value_map_["TESSELLATION_CONTROL"] = ED_shader_visibility::TESSELLATION_CONTROL;
+			shader_visibility_str_to_value_map_["TESSELLATION_EVALUATION"] = ED_shader_visibility::TESSELLATION_EVALUATION;
+			shader_visibility_str_to_value_map_["GEOMETRY"] = ED_shader_visibility::GEOMETRY;
+			shader_visibility_str_to_value_map_["PIXEL"] = ED_shader_visibility::PIXEL;
+			shader_visibility_str_to_value_map_["AMPLIFICATION"] = ED_shader_visibility::AMPLIFICATION;
+			shader_visibility_str_to_value_map_["MESH"] = ED_shader_visibility::MESH;
 		}
 	}
 	F_nsl_info_tree_reader::~F_nsl_info_tree_reader() {
@@ -2138,6 +2149,74 @@ namespace nrhi {
 		}
 
 		return eastl::nullopt;
+	}
+	eastl::optional<ED_shader_visibility> F_nsl_info_tree_reader::read_shader_visibility(u32 index, b8 is_required) const {
+
+		if(!guarantee_index(index, is_required)) {
+
+			return eastl::nullopt;
+		}
+
+		G_string value_str = parse_value_str(info_trees_[index].name);
+
+		auto it = shader_visibility_str_to_value_map_.find(value_str);
+
+		if (it == shader_visibility_str_to_value_map_.end()) {
+
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
+			return eastl::nullopt;
+		}
+
+		return it->second;
+	}
+	b8 F_nsl_info_tree_reader::read_configurable_elements(
+		const eastl::function<
+			b8(
+				const F_nsl_info_tree& element_info_tree,
+				const F_nsl_info_tree_reader& element_info_tree_reader,
+				TG_unordered_map<G_string, F_nsl_info_tree_reader>& config_map
+			)
+		>& callback
+	) const
+	{
+		TG_unordered_map<G_string, F_nsl_info_tree_reader> config_map;
+
+		for(auto& info_tree : info_trees_)
+		{
+			if(info_tree.name[0] == '@')
+			{
+				config_map[
+					info_tree.name.substr(1, info_tree.name.length() - 1)
+				] = F_nsl_info_tree_reader(
+					NCPP_FOH_VALID(shader_compiler_p_),
+					info_tree.childs,
+					info_tree.begin_childs_location,
+					error_stack_p_
+				);
+				continue;
+			}
+
+			F_nsl_info_tree_reader element_info_tree_reader(
+				NCPP_FOH_VALID(shader_compiler_p_),
+				info_tree.childs,
+				info_tree.begin_childs_location,
+				error_stack_p_
+			);
+
+			if(!callback(info_tree, element_info_tree_reader, config_map))
+			{
+				return false;
+			}
+
+			config_map = {};
+		}
+
+		return true;
 	}
 
 
@@ -4992,6 +5071,7 @@ namespace nrhi {
 			};
 		}
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 		// check for root_signature annotation
 		{
 			auto it = context.current_object_config.find("root_signature");
@@ -4999,14 +5079,41 @@ namespace nrhi {
 
 				const auto& info_tree_reader = it->second;
 
-				auto value_opt = info_tree_reader.read_u32(0);
-
-				if(!value_opt)
+				auto root_signature_name_value_opt = info_tree_reader.read_string(0);
+				if(!root_signature_name_value_opt)
 					return eastl::nullopt;
 
-				pipeline_state_info.root_signature = value_opt.value();
+				auto& root_signature_name_value = root_signature_name_value_opt.value();
+
+				if(name_manager_p->is_name_registered(root_signature_name_value))
+				{
+					G_string root_signature_name = name_manager_p->target(root_signature_name_value);
+
+					if(name_manager_p->name_type(root_signature_name) != T_type_hash_code<FE_nsl_name_types::ROOT_SIGNATURE>)
+					{
+						NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+							&(unit_p->error_group_p()->stack()),
+							object_implementation.bodies[0].begin_location,
+							"\"" + info_tree_reader.info_trees()[0].name + "\" is not a root signature"
+						);
+						return eastl::nullopt;
+					}
+
+					pipeline_state_info.root_signature_selection = {
+						.name = root_signature_name,
+						.type = E_nsl_root_signature_selection_type::EMBEDDED
+					};
+				}
+				else
+				{
+					pipeline_state_info.root_signature_selection = {
+						.name = root_signature_name_value,
+						.type = E_nsl_root_signature_selection_type::EXTERNAL
+					};
+				}
 			}
 		}
+#endif
 
 		// check for color_formats annotation
 		{
@@ -5296,12 +5403,18 @@ namespace nrhi {
 			}
 		}
 
+		//
+		options_ = pipeline_state_info.options;
+
 		// register pipeline_state
-		name_manager_p->template T_register_name<FE_nsl_name_types::PIPELINE_STATE>(tree.object_implementation.name);
-		pipeline_state_manager_p->register_pipeline_state(
-			tree.object_implementation.name,
-			pipeline_state_info
-		);
+		if(!is_fake_)
+		{
+			name_manager_p->template T_register_name<FE_nsl_name_types::PIPELINE_STATE>(tree.object_implementation.name);
+			pipeline_state_manager_p->register_pipeline_state(
+				tree.object_implementation.name,
+				pipeline_state_info
+			);
+		}
 
 		return std::move(child_trees);
 	}
@@ -5835,6 +5948,8 @@ namespace nrhi {
 		sz index,
 		F_nsl_error_stack* error_stack_p
 	) {
+		is_fake_ = true;
+
 		auto result_opt = F_nsl_pipeline_state_object::recursive_build_ast_tree(
 			context,
 			unit_p,
@@ -5846,11 +5961,7 @@ namespace nrhi {
 		if(!result_opt)
 			return result_opt;
 
-		auto pipeline_state_manager_p = shader_compiler_p()->pipeline_state_manager_p();
-
-		const auto& pipeline_state_info = pipeline_state_manager_p->pipeline_state_info(name());
-
-		context.default_pipeline_state_options = pipeline_state_info.options;
+		context.default_pipeline_state_options = options();
 
 		return result_opt;
 	}
@@ -5893,6 +6004,560 @@ namespace nrhi {
 
 		return object_p;
 	}
+
+
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+	F_nsl_root_signature_object::F_nsl_root_signature_object(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		TKPA_valid<A_nsl_object_type> type_p,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const G_string& name
+	) :
+		A_nsl_object(
+			shader_compiler_p,
+			type_p,
+			translation_unit_p,
+			name
+		)
+	{
+	}
+	F_nsl_root_signature_object::~F_nsl_root_signature_object() {
+	}
+
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_root_signature_object::recursive_build_ast_tree(
+		F_nsl_context& context,
+		TK_valid<F_nsl_translation_unit> unit_p,
+		TG_vector<F_nsl_ast_tree>& trees,
+		sz index,
+		F_nsl_error_stack* error_stack_p
+	) {
+		auto& tree = trees[index];
+		auto& object_implementation = tree.object_implementation;
+
+		context.parent_object_p = NCPP_KTHIS().no_requirements();
+
+		auto name_manager_p = shader_compiler_p()->name_manager_p();
+		auto translation_unit_compiler_p = shader_compiler_p()->translation_unit_compiler_p();
+		auto root_signature_manager_p = shader_compiler_p()->root_signature_manager_p();
+		auto sampler_state_manager_p = shader_compiler_p()->sampler_state_manager_p();
+
+		//
+		F_nsl_root_signature_info root_signature_info;
+		root_signature_info.config_map = context.current_object_config;
+
+		TG_unordered_map<G_string, F_nsl_info_tree_reader> root_param_config_map;
+
+		// parse child info trees
+		auto child_info_trees_opt = H_nsl_utilities::build_info_trees(
+			object_implementation.bodies[0].content,
+			object_implementation.bodies[0].begin_location,
+			&(unit_p->error_group_p()->stack())
+		);
+		if(!child_info_trees_opt) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				&(unit_p->error_group_p()->stack()),
+				object_implementation.bodies[0].begin_location,
+				"can't parse root params"
+			);
+			return eastl::nullopt;
+		}
+
+		//
+		auto& child_info_trees = child_info_trees_opt.value();
+		F_nsl_info_tree_reader child_info_tree_reader(
+			shader_compiler_p(),
+			child_info_trees,
+			object_implementation.bodies[0].begin_location,
+			&(unit_p->error_group_p()->stack())
+		);
+
+		//
+		if(
+			!child_info_tree_reader.read_configurable_elements(
+				[&](
+					const F_nsl_info_tree& element_info_tree,
+					const F_nsl_info_tree_reader& element_info_tree_reader,
+					TG_unordered_map<G_string, F_nsl_info_tree_reader>& config_map
+				)
+				{
+					if(element_info_tree.name == "STATIC_SAMPLER")
+					{
+						F_static_sampler_state_desc static_sampler_state_desc;
+
+						// parse shader visiblity
+						{
+							auto it = config_map.find("shader_visibility");
+							if(it != config_map.end())
+							{
+								auto shader_visibility_opt = it->second.read_shader_visibility(0);
+								if(!shader_visibility_opt)
+								{
+									return false;
+								}
+
+								static_sampler_state_desc.shader_visibility = shader_visibility_opt.value();
+							}
+						}
+
+						// slot
+						{
+							auto it = config_map.find("slot");
+							if(it != config_map.end())
+							{
+								const auto& slot_info_tree_reader = it->second;
+
+								auto slot_value_opt = slot_info_tree_reader.read_u32(0);
+								if(!slot_value_opt)
+								{
+									return false;
+								}
+								static_sampler_state_desc.shader_register = slot_value_opt.value();
+
+								if(slot_info_tree_reader.info_trees().size() > 1)
+								{
+									auto slot_space_value_opt = slot_info_tree_reader.read_u32(1);
+									if(!slot_space_value_opt)
+									{
+										return false;
+									}
+									static_sampler_state_desc.register_space = slot_space_value_opt.value();
+								}
+							}
+						}
+
+						// desc
+						{
+							auto name_opt = element_info_tree_reader.read_string(0);
+							if(!name_opt)
+							{
+								return false;
+							}
+
+							auto& name = name_opt.value();
+
+							if(!(name_manager_p->is_name_registered(name)))
+							{
+								return false;
+							}
+
+							if(name_manager_p->name_type(name) != T_type_hash_code<FE_nsl_name_types::SAMPLER_STATE>)
+							{
+								NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+									&(unit_p->error_group_p()->stack()),
+									object_implementation.bodies[0].begin_location,
+									"\"" + element_info_tree_reader.info_trees()[0].name + "\" is not a sampler state"
+								);
+								return false;
+							}
+
+							auto& sampler_state_info = sampler_state_manager_p->sampler_state_info(name);
+
+							static_sampler_state_desc.sampler_state_desc = sampler_state_info.desc;
+						}
+
+						//
+						root_signature_info.desc.static_sampler_state_descs.push_back(
+							static_sampler_state_desc
+						);
+					}
+					else
+					{
+						F_root_param_desc param_desc;
+
+						// parse shader visiblity
+						{
+							auto it = config_map.find("shader_visibility");
+							if(it != config_map.end())
+							{
+								auto shader_visibility_opt = it->second.read_shader_visibility(0);
+								if(!shader_visibility_opt)
+								{
+									return false;
+								}
+
+								param_desc.shader_visibility = shader_visibility_opt.value();
+							}
+						}
+
+						// parse type
+						const G_string& param_type_name = element_info_tree.name;
+						if(param_type_name == "DESCRIPTOR_TABLE")
+						{
+							param_desc.type = ED_root_param_type::DESCRIPTOR_TABLE;
+
+							// parse ranges
+							if(
+								!element_info_tree_reader.read_configurable_elements(
+									[&](
+										const F_nsl_info_tree& range_element_info_tree,
+										const F_nsl_info_tree_reader& range_element_info_tree_reader,
+										TG_unordered_map<G_string, F_nsl_info_tree_reader>& range_config_map
+									)
+									{
+										F_descriptor_range_desc range_desc;
+
+										// parse descriptor count
+										if(range_element_info_tree_reader.info_trees().size() > 0)
+										{
+											auto descriptor_count_opt = range_element_info_tree_reader.read_i32(0);
+											if(!descriptor_count_opt)
+											{
+												return false;
+											}
+											range_desc.descriptor_count = descriptor_count_opt.value();
+										}
+										else
+										{
+											range_desc.descriptor_count = 1;
+										}
+
+										// parse offset in descriptors from table start
+										if(range_element_info_tree_reader.info_trees().size() > 1)
+										{
+											auto offset_in_descriptors_from_table_start_opt = range_element_info_tree_reader.read_i32(1);
+											if(!offset_in_descriptors_from_table_start_opt)
+											{
+												return false;
+											}
+											range_desc.offset_in_descriptors_from_table_start = offset_in_descriptors_from_table_start_opt.value();
+										}
+
+										// ranges
+										const G_string& range_param_type_name = range_element_info_tree.name;
+										if(range_param_type_name == "CBV")
+										{
+											range_desc.type = ED_descriptor_range_type::CONSTANT_BUFFER;
+
+											// slot
+											{
+												auto range_it = range_config_map.find("slot");
+												if(range_it != range_config_map.end())
+												{
+													const auto& range_slot_info_tree_reader = range_it->second;
+
+													auto range_slot_value_opt = range_slot_info_tree_reader.read_u32(0);
+													if(!range_slot_value_opt)
+													{
+														return false;
+													}
+													range_desc.base_register = range_slot_value_opt.value();
+
+													if(range_slot_info_tree_reader.info_trees().size() > 1)
+													{
+														auto range_slot_space_value_opt = range_slot_info_tree_reader.read_u32(1);
+														if(!range_slot_space_value_opt)
+														{
+															return false;
+														}
+														range_desc.register_space = range_slot_space_value_opt.value();
+													}
+												}
+											}
+										}
+										else if(range_param_type_name == "SRV")
+										{
+											range_desc.type = ED_descriptor_range_type::SHADER_RESOURCE;
+
+											// slot
+											{
+												auto range_it = range_config_map.find("slot");
+												if(range_it != range_config_map.end())
+												{
+													const auto& range_slot_info_tree_reader = range_it->second;
+
+													auto range_slot_value_opt = range_slot_info_tree_reader.read_u32(0);
+													if(!range_slot_value_opt)
+													{
+														return false;
+													}
+													range_desc.base_register = range_slot_value_opt.value();
+
+													if(range_slot_info_tree_reader.info_trees().size() > 1)
+													{
+														auto range_slot_space_value_opt = range_slot_info_tree_reader.read_u32(1);
+														if(!range_slot_space_value_opt)
+														{
+															return false;
+														}
+														range_desc.register_space = range_slot_space_value_opt.value();
+													}
+												}
+											}
+										}
+										else if(range_param_type_name == "UAV")
+										{
+											range_desc.type = ED_descriptor_range_type::UNORDERED_ACCESS;
+
+											// slot
+											{
+												auto range_it = range_config_map.find("slot");
+												if(range_it != range_config_map.end())
+												{
+													const auto& range_slot_info_tree_reader = range_it->second;
+
+													auto range_slot_value_opt = range_slot_info_tree_reader.read_u32(0);
+													if(!range_slot_value_opt)
+													{
+														return false;
+													}
+													range_desc.base_register = range_slot_value_opt.value();
+
+													if(range_slot_info_tree_reader.info_trees().size() > 1)
+													{
+														auto range_slot_space_value_opt = range_slot_info_tree_reader.read_u32(1);
+														if(!range_slot_space_value_opt)
+														{
+															return false;
+														}
+														range_desc.register_space = range_slot_space_value_opt.value();
+													}
+												}
+											}
+										}
+										else if(range_param_type_name == "SAMPLER")
+										{
+											range_desc.type = ED_descriptor_range_type::SAMPLER;
+
+											// slot
+											{
+												auto range_it = range_config_map.find("slot");
+												if(range_it != range_config_map.end())
+												{
+													const auto& range_slot_info_tree_reader = range_it->second;
+
+													auto range_slot_value_opt = range_slot_info_tree_reader.read_u32(0);
+													if(!range_slot_value_opt)
+													{
+														return false;
+													}
+													range_desc.base_register = range_slot_value_opt.value();
+
+													if(range_slot_info_tree_reader.info_trees().size() > 1)
+													{
+														auto range_slot_space_value_opt = range_slot_info_tree_reader.read_u32(1);
+														if(!range_slot_space_value_opt)
+														{
+															return false;
+														}
+														range_desc.register_space = range_slot_space_value_opt.value();
+													}
+												}
+											}
+										}
+
+										param_desc.descriptor_table_desc.range_descs.push_back(range_desc);
+
+										return true;
+									}
+								)
+							)
+							{
+								return false;
+							}
+						}
+						else if(param_type_name == "CONSTANTS")
+						{
+							param_desc.type = ED_root_param_type::CONSTANTS;
+
+							// parse count
+							auto count_opt = element_info_tree_reader.read_u32(0);
+							if(!count_opt)
+							{
+								return false;
+							}
+							param_desc.constants_desc.constant_count = count_opt.value();
+
+							// slot
+							{
+								auto it = config_map.find("slot");
+								if(it != config_map.end())
+								{
+									const auto& slot_info_tree_reader = it->second;
+
+									auto slot_value_opt = slot_info_tree_reader.read_u32(0);
+									if(!slot_value_opt)
+									{
+										return false;
+									}
+									param_desc.constants_desc.base_register = slot_value_opt.value();
+
+									if(slot_info_tree_reader.info_trees().size() > 1)
+									{
+										auto slot_space_value_opt = slot_info_tree_reader.read_u32(1);
+										if(!slot_space_value_opt)
+										{
+											return false;
+										}
+										param_desc.constants_desc.register_space = slot_space_value_opt.value();
+									}
+								}
+							}
+						}
+						else if(param_type_name == "CBV")
+						{
+							param_desc.type = ED_root_param_type::CONSTANT_BUFFER;
+
+							// slot
+							{
+								auto it = config_map.find("slot");
+								if(it != config_map.end())
+								{
+									const auto& slot_info_tree_reader = it->second;
+
+									auto slot_value_opt = slot_info_tree_reader.read_u32(0);
+									if(!slot_value_opt)
+									{
+										return false;
+									}
+									param_desc.descriptor_desc.shader_register = slot_value_opt.value();
+
+									if(slot_info_tree_reader.info_trees().size() > 1)
+									{
+										auto slot_space_value_opt = slot_info_tree_reader.read_u32(1);
+										if(!slot_space_value_opt)
+										{
+											return false;
+										}
+										param_desc.descriptor_desc.register_space = slot_space_value_opt.value();
+									}
+								}
+							}
+						}
+						else if(param_type_name == "SRV")
+						{
+							param_desc.type = ED_root_param_type::SHADER_RESOURCE;
+
+							// slot
+							{
+								auto it = config_map.find("slot");
+								if(it != config_map.end())
+								{
+									const auto& slot_info_tree_reader = it->second;
+
+									auto slot_value_opt = slot_info_tree_reader.read_u32(0);
+									if(!slot_value_opt)
+									{
+										return false;
+									}
+									param_desc.descriptor_desc.shader_register = slot_value_opt.value();
+
+									if(slot_info_tree_reader.info_trees().size() > 1)
+									{
+										auto slot_space_value_opt = slot_info_tree_reader.read_u32(1);
+										if(!slot_space_value_opt)
+										{
+											return false;
+										}
+										param_desc.descriptor_desc.register_space = slot_space_value_opt.value();
+									}
+								}
+							}
+						}
+						else if(param_type_name == "UAV")
+						{
+							param_desc.type = ED_root_param_type::UNORDERED_ACCESS;
+
+							// slot
+							{
+								auto it = config_map.find("slot");
+								if(it != config_map.end())
+								{
+									const auto& slot_info_tree_reader = it->second;
+
+									auto slot_value_opt = slot_info_tree_reader.read_u32(0);
+									if(!slot_value_opt)
+									{
+										return false;
+									}
+									param_desc.descriptor_desc.shader_register = slot_value_opt.value();
+
+									if(slot_info_tree_reader.info_trees().size() > 1)
+									{
+										auto slot_space_value_opt = slot_info_tree_reader.read_u32(1);
+										if(!slot_space_value_opt)
+										{
+											return false;
+										}
+										param_desc.descriptor_desc.register_space = slot_space_value_opt.value();
+									}
+								}
+							}
+						}
+
+						//
+						root_signature_info.desc.param_descs.push_back(
+							eastl::move(param_desc)
+						);
+					}
+
+					return true;
+				}
+			)
+		)
+		{
+			return eastl::nullopt;
+		}
+
+		// allow_input_assembler annotation
+		if(context.current_object_config.find("allow_input_assembler") != context.current_object_config.end())
+		{
+			root_signature_info.desc.flags = flag_combine(
+				root_signature_info.desc.flags,
+				ED_root_signature_flag::ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT
+			);
+		}
+
+		// register root_signature
+		name_manager_p->template T_register_name<FE_nsl_name_types::ROOT_SIGNATURE>(tree.object_implementation.name);
+		root_signature_manager_p->register_root_signature(
+			tree.object_implementation.name,
+			root_signature_info
+		);
+
+		return TG_vector<F_nsl_ast_tree>();
+	}
+
+
+
+	F_nsl_root_signature_object_type::F_nsl_root_signature_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"root_signature",
+			true,
+			1,
+			1,
+			nsl_global_object_type_channel_mask
+		)
+	{
+	}
+	F_nsl_root_signature_object_type::~F_nsl_root_signature_object_type() {
+	}
+
+	TK<A_nsl_object> F_nsl_root_signature_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	) {
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_root_signature_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+#endif
 
 
 
@@ -6851,6 +7516,11 @@ namespace nrhi {
 		register_type(
 			TU<F_nsl_pipeline_state_object_type>()(shader_compiler_p_)
 		);
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		register_type(
+			TU<F_nsl_root_signature_object_type>()(shader_compiler_p_)
+		);
+#endif
 		register_type(
 			TU<F_nsl_default_pipeline_state_object_type>()(shader_compiler_p_)
 		);
@@ -9850,6 +10520,24 @@ namespace nrhi {
 
 
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+	F_nsl_root_signature_manager::F_nsl_root_signature_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
+		shader_compiler_p_(shader_compiler_p)
+	{
+	}
+	F_nsl_root_signature_manager::~F_nsl_root_signature_manager() {
+	}
+
+	F_nsl_root_signature_info F_nsl_root_signature_manager::process_root_signature_info(const G_string& name, const F_nsl_root_signature_info& root_signature_info) {
+
+		F_nsl_root_signature_info result = root_signature_info;
+
+		return std::move(result);
+	}
+#endif
+
+
+
 	F_nsl_submodule_manager::F_nsl_submodule_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
 		shader_compiler_p_(shader_compiler_p)
 	{
@@ -9876,6 +10564,9 @@ namespace nrhi {
 		auto sampler_state_manager_p = shader_compiler_p_->sampler_state_manager_p();
 		auto resource_manager_p = shader_compiler_p_->resource_manager_p();
 		auto uniform_manager_p = shader_compiler_p_->uniform_manager_p();
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		auto root_signature_manager_p = shader_compiler_p_->root_signature_manager_p();
+#endif
 
 		auto& name_to_primitive_data_type_map = data_type_manager_p->name_to_primitive_data_type_map();
 		auto& name_to_structure_info_map = data_type_manager_p->name_to_structure_info_map();
@@ -9883,6 +10574,9 @@ namespace nrhi {
 		auto& name_to_pipeline_state_info_map = pipeline_state_manager_p->name_to_pipeline_state_info_map();
 		auto& name_to_sampler_state_info_map = sampler_state_manager_p->name_to_sampler_state_info_map();
 		auto& name_to_resource_info_map = resource_manager_p->name_to_resource_info_map();
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		auto& name_to_root_signature_info_map = root_signature_manager_p->name_to_root_signature_info_map();
+#endif
 
 		TG_unordered_map<G_string, u32> name_to_type_index_map;
 
@@ -10047,7 +10741,7 @@ namespace nrhi {
 					.name = it->first,
 					.type = pipeline_state_info.type,
 					.options = pipeline_state_info.options,
-					.root_signature = pipeline_state_info.root_signature,
+					.root_signature_selection = pipeline_state_info.root_signature_selection,
 					.shader_indices = shader_indices
 
 				};
@@ -10055,6 +10749,29 @@ namespace nrhi {
 				++it;
 			}
 		}
+
+		// root signatures
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		{
+			u32 root_signature_count = name_to_root_signature_info_map.size();
+
+			reflection.root_signatures.resize(root_signature_count);
+
+			auto it = name_to_root_signature_info_map.begin();
+
+			for(u32 i = 0; i < root_signature_count; ++i) {
+
+				auto& root_signature_info = it->second;
+
+				reflection.root_signatures[i] = F_nsl_root_signature_reflection {
+					.name = it->first,
+					.desc = root_signature_info.desc
+				};
+
+				++it;
+			}
+		}
+#endif
 
 		// sampler states
 		{
@@ -10176,6 +10893,9 @@ namespace nrhi {
 		uniform_manager_p_(customizer.uniform_manager_creator(NCPP_KTHIS())),
 		sampler_state_manager_p_(customizer.sampler_state_manager_creator(NCPP_KTHIS())),
 		pipeline_state_manager_p_(customizer.pipeline_state_manager_creator(NCPP_KTHIS())),
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		root_signature_manager_p_(customizer.root_signature_manager_creator(NCPP_KTHIS())),
+#endif
 		submodule_manager_p_(customizer.submodule_manager_creator(NCPP_KTHIS())),
 		reflector_p_(customizer.reflector_creator(NCPP_KTHIS()))
 	{

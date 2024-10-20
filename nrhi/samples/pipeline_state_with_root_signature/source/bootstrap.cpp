@@ -81,6 +81,7 @@ int main() {
 "	INSTANCE_DATA\n"
 ")\n"
 "@primitive_topology(TRIANGLE_LIST)\n"
+"@root_signature(MAIN_ROOT_SIGNATURE)\n"
 "pipeline_state graphics_pso_main\n"
 "(\n"
 "	vs_main\n"
@@ -97,7 +98,8 @@ int main() {
 	);
 	NCPP_ASSERT(nsl_shader_compiled_result_opt);
 
-	const auto& nsl_shader_compiled_result = nsl_shader_compiled_result_opt.value();
+	auto& nsl_shader_compiled_result = nsl_shader_compiled_result_opt.value();
+	nsl_shader_compiled_result.finalize();
 
 	auto root_signature_p = H_root_signature::create(
 		NCPP_FOH_VALID(device_p),
@@ -106,16 +108,15 @@ int main() {
 		}
 	);
 
-	F_graphics_pipeline_state_shader_binaries shader_binaries;
-
-	auto pipeline_state_p = H_graphics_pipeline_state::create_with_root_signature(
+	auto pipeline_state_p = H_nsl_factory::create_pipeline_states_with_root_signature(
 		NCPP_FOH_VALID(device_p),
-		H_pipeline_state_compiler::compile_graphics_nsl(
-			nsl_shader_compiled_result,
-			shader_binaries,
-			0
-		),
-		NCPP_FOH_VALID(root_signature_p)
+		nsl_shader_compiled_result,
+		{
+			{
+				"MAIN_ROOT_SIGNATURE",
+				root_signature_p
+			}
+		}
 	);
 
 	return 0;

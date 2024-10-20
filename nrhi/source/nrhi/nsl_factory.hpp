@@ -62,7 +62,7 @@ namespace nrhi {
 		static TG_vector<TU<A_pipeline_state>> create_pipeline_states_with_root_signature(
 			TKPA_valid<A_device> device_p,
 			const F_nsl_compiled_result& compiled_result,
-			const TG_span<TK_valid<A_root_signature>>& root_signature_p_vector = {}
+			const TG_unordered_map<G_string, TK<A_root_signature>>& root_signature_map = {}
 		);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 

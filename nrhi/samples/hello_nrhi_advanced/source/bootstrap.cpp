@@ -417,6 +417,7 @@ int main() {
 "	INSTANCE_POSITION\n"
 ")\n"
 "@primitive_topology(TRIANGLE_LIST)\n"
+"@root_signature(MAIN_ROOT_SIGNATURE)\n"
 "pipeline_state graphics_pso_main\n"
 "(\n"
 "	vs_main\n"
@@ -459,9 +460,12 @@ int main() {
 	auto pipeline_state_p_vector = H_nsl_factory::create_pipeline_states_with_root_signature(
 		NCPP_FOH_VALID(device_p),
 		nsl_shader_compiled_result,
-		NCPP_INIL_SPAN(
-			NCPP_FOH_VALID(root_signature_p)
-		)
+		{
+			{
+				"MAIN_ROOT_SIGNATURE",
+				root_signature_p
+			}
+		}
 	);
 
 	U_graphics_pipeline_state_handle pipeline_state_p = {

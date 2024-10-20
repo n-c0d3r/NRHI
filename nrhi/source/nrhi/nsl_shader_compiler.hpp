@@ -42,6 +42,9 @@
 #include <nrhi/primitive_topology.hpp>
 #include <nrhi/pipeline_state_desc.hpp>
 #include <nrhi/device.hpp>
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+#include <nrhi/root_signature_desc.hpp>
+#endif
 
 #pragma endregion
 
@@ -208,6 +211,7 @@ namespace nrhi {
 		static TG_map<G_string, ED_format> format_str_to_value_map_;
 		static TG_map<G_string, ED_comparison_func> comparison_func_str_to_value_map_;
 		static TG_map<G_string, ED_primitive_topology> primitive_topology_str_to_value_map_;
+		static TG_map<G_string, ED_shader_visibility> shader_visibility_str_to_value_map_;
 
 	public:
 		NCPP_FORCE_INLINE TKPA<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
@@ -265,6 +269,16 @@ namespace nrhi {
 		eastl::optional<ED_comparison_func> read_comparison_func(u32 index, b8 is_required = true) const;
 		eastl::optional<ED_primitive_topology> read_primitive_topology(u32 index, b8 is_required = true) const;
 		eastl::optional<E_nsl_output_topology> read_output_topology(u32 index, b8 is_required = true) const;
+		eastl::optional<ED_shader_visibility> read_shader_visibility(u32 index, b8 is_required = true) const;
+		b8 read_configurable_elements(
+			const eastl::function<
+				b8(
+					const F_nsl_info_tree& element_info_tree,
+					const F_nsl_info_tree_reader& element_info_tree_reader,
+					TG_unordered_map<G_string, F_nsl_info_tree_reader>& config_map
+				)
+			>& callback
+		) const;
 
 	};
 
@@ -456,6 +470,45 @@ namespace nrhi {
 	};
 	using F_nsl_sampler_state = eastl::pair<G_string, F_nsl_sampler_state_info>;
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+	using F_nsl_root_signature_config_map = TG_unordered_map<G_string, F_nsl_info_tree_reader>;
+	struct F_nsl_root_signature_info
+	{
+		F_root_signature_desc desc;
+
+		F_nsl_root_signature_config_map config_map;
+
+		u32 begin_location = 0;
+		u32 end_location = 0;
+		TK<F_nsl_translation_unit> translation_unit_p;
+	};
+	using F_nsl_root_signature = eastl::pair<G_string, F_nsl_root_signature_info>;
+
+	enum class E_nsl_root_signature_selection_type
+	{
+		EMBEDDED,
+		EXTERNAL
+	};
+	struct F_nsl_root_signature_selection
+	{
+		G_string name;
+		E_nsl_root_signature_selection_type type = E_nsl_root_signature_selection_type::EMBEDDED;
+
+		NCPP_FORCE_INLINE b8 is_valid() const noexcept
+		{
+			return !(name.empty());
+		}
+		NCPP_FORCE_INLINE b8 is_null() const noexcept
+		{
+			return name.empty();
+		}
+		NCPP_FORCE_INLINE operator b8 () const noexcept
+		{
+			return is_valid();
+		}
+	};
+#endif
+
 	using F_nsl_pipeline_state_config_map = TG_unordered_map<G_string, F_nsl_info_tree_reader>;
 	struct F_nsl_pipeline_state_info {
 
@@ -465,7 +518,9 @@ namespace nrhi {
 
 		F_general_pipeline_state_options options;
 
-		u32 root_signature = 0;
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		F_nsl_root_signature_selection root_signature_selection;
+#endif
 
 		F_nsl_pipeline_state_config_map config_map;
 
@@ -580,8 +635,8 @@ namespace nrhi {
 		)
 	>;
 
-	struct FE_nsl_name_types {
-
+	struct FE_nsl_name_types
+	{
 		struct DATA_TYPE {};
 		struct SEMANTIC {};
 		struct STRUCTURE {};
@@ -592,7 +647,9 @@ namespace nrhi {
 		struct PIPELINE_STATE {};
 		struct SHADER {};
 		struct SUBMODULE {};
-
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		struct ROOT_SIGNATURE {};
+#endif
 	};
 
 	enum class E_nsl_primitive_data_type {
@@ -779,11 +836,22 @@ namespace nrhi {
 
 		F_general_pipeline_state_options options;
 
-		u32 root_signature = 0;
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		F_nsl_root_signature_selection root_signature_selection;
+#endif
 
 		TG_vector<u32> shader_indices;
 
 	};
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+	struct F_nsl_root_signature_reflection {
+
+		G_string name;
+
+		F_root_signature_desc desc;
+
+	};
+#endif
 	struct F_nsl_sampler_state_reflection {
 
 		G_string name;
@@ -885,6 +953,9 @@ namespace nrhi {
 	{
 		TG_vector<F_nsl_shader_reflection> shaders;
 		TG_vector<F_nsl_pipeline_state_reflection> pipeline_states;
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		TG_vector<F_nsl_root_signature_reflection> root_signatures;
+#endif
 		TG_vector<F_nsl_sampler_state_reflection> sampler_states;
 		TG_vector<F_nsl_resource_reflection> resources;
 		TG_vector<F_nsl_type_reflection> types;
@@ -954,6 +1025,41 @@ namespace nrhi {
 
 			return pipeline_states[pipeline_state_index];
 		}
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+	public:
+		NCPP_FORCE_INLINE u32 search_root_signature_index(const G_string& name) const noexcept {
+
+			u32 root_signature_count = root_signatures.size();
+			for(u32 i = 0; i < root_signature_count; ++i) {
+
+				if(root_signatures[i].name == name)
+					return i;
+			}
+
+			return -1;
+		}
+		NCPP_FORCE_INLINE F_nsl_root_signature_reflection& search_root_signature(const G_string& name) noexcept {
+
+			u32 root_signature_index = search_root_signature_index(name);
+
+			NCPP_ASSERT(root_signature_index != -1)
+				<< "not found root signature "
+				<< T_cout_value(name);
+
+			return root_signatures[root_signature_index];
+		}
+		NCPP_FORCE_INLINE const F_nsl_root_signature_reflection& search_root_signature(const G_string& name) const noexcept {
+
+			u32 root_signature_index = search_root_signature_index(name);
+
+			NCPP_ASSERT(root_signature_index != -1)
+				<< "not found root signature "
+				<< T_cout_value(name);
+
+			return root_signatures[root_signature_index];
+		}
+#endif
 
 	public:
 		NCPP_FORCE_INLINE u32 search_sampler_state_index(const G_string& name) const noexcept {
@@ -2016,7 +2122,16 @@ namespace nrhi {
 
 
 
-	class NRHI_API F_nsl_pipeline_state_object : public A_nsl_object {
+	class NRHI_API F_nsl_pipeline_state_object : public A_nsl_object
+	{
+	private:
+		F_general_pipeline_state_options options_;
+
+	protected:
+		b8 is_fake_ = false;
+
+	public:
+		NCPP_FORCE_INLINE const auto& options() const noexcept { return options_; }
 
 	public:
 		F_nsl_pipeline_state_object(
@@ -2114,6 +2229,55 @@ namespace nrhi {
 		) override;
 
 	};
+
+
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+	class NRHI_API F_nsl_root_signature_object : public A_nsl_object
+	{
+	public:
+		F_nsl_root_signature_object(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			TKPA_valid<A_nsl_object_type> type_p,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			const G_string& name = ""
+		);
+		virtual ~F_nsl_root_signature_object();
+
+	public:
+		NCPP_OBJECT(F_nsl_root_signature_object);
+
+	public:
+		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
+			F_nsl_context& context,
+			TK_valid<F_nsl_translation_unit> unit_p,
+			TG_vector<F_nsl_ast_tree>& trees,
+			sz index,
+			F_nsl_error_stack* error_stack_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_root_signature_object_type : public A_nsl_object_type {
+
+	public:
+		F_nsl_root_signature_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_root_signature_object_type();
+
+	public:
+		NCPP_OBJECT(F_nsl_root_signature_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+#endif
 
 
 
@@ -4053,8 +4217,75 @@ namespace nrhi {
 
 	private:
 		F_nsl_pipeline_state_info process_pipeline_state_info(const G_string& name, const F_nsl_pipeline_state_info& pipeline_state_info);
-
 	};
+
+
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+	class NRHI_API F_nsl_root_signature_manager {
+
+	private:
+		TK_valid<F_nsl_shader_compiler> shader_compiler_p_;
+
+	protected:
+		TG_unordered_map<G_string, F_nsl_root_signature_info> name_to_root_signature_info_map_;
+
+	public:
+		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
+
+		NCPP_FORCE_INLINE TG_unordered_map<G_string, F_nsl_root_signature_info>& name_to_root_signature_info_map() noexcept { return name_to_root_signature_info_map_; }
+		NCPP_FORCE_INLINE const TG_unordered_map<G_string, F_nsl_root_signature_info>& name_to_root_signature_info_map() const noexcept { return name_to_root_signature_info_map_; }
+
+
+
+	public:
+		F_nsl_root_signature_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p);
+		virtual ~F_nsl_root_signature_manager();
+
+	public:
+		NCPP_OBJECT(F_nsl_root_signature_manager);
+
+	public:
+		NCPP_FORCE_INLINE b8 is_name_has_root_signature_info(const G_string& name) const {
+
+			auto it = name_to_root_signature_info_map_.find(name);
+
+			return (it != name_to_root_signature_info_map_.end());
+		}
+		NCPP_FORCE_INLINE F_nsl_root_signature_info& root_signature_info(const G_string& name) {
+
+			auto it = name_to_root_signature_info_map_.find(name);
+
+			NCPP_ASSERT(it != name_to_root_signature_info_map_.end()) << "can't find " << T_cout_value(name);
+
+			return it->second;
+		}
+		NCPP_FORCE_INLINE const F_nsl_root_signature_info& root_signature_info(const G_string& name) const {
+
+			auto it = name_to_root_signature_info_map_.find(name);
+
+			NCPP_ASSERT(it != name_to_root_signature_info_map_.end()) << "can't find " << T_cout_value(name);
+
+			return it->second;
+		}
+		NCPP_FORCE_INLINE void register_root_signature(const G_string& name, const F_nsl_root_signature_info& root_signature_info) {
+
+			NCPP_ASSERT(name_to_root_signature_info_map_.find(name) == name_to_root_signature_info_map_.end()) << T_cout_value(name) << " already exists";
+
+			name_to_root_signature_info_map_[name] = process_root_signature_info(name, root_signature_info);
+		}
+		NCPP_FORCE_INLINE void deregister_root_signature(const G_string& name) {
+
+			NCPP_ASSERT(name_to_root_signature_info_map_.find(name) != name_to_root_signature_info_map_.end()) << T_cout_value(name) << " is not exists";
+
+			auto it = name_to_root_signature_info_map_.find(name);
+			name_to_root_signature_info_map_.erase(it);
+		}
+
+	private:
+		F_nsl_root_signature_info process_root_signature_info(const G_string& name, const F_nsl_root_signature_info& root_signature_info);
+	};
+#endif
 
 
 
@@ -4193,6 +4424,12 @@ namespace nrhi {
 			F_nsl_pipeline_state_manager,
 			pipeline_state_manager_creator
 		);
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		NRHI_NSL_DEFINE_SUBSYSTEM_CREATOR_AS_CUSTOMIZATION_MEMBER(
+			F_nsl_root_signature_manager,
+			root_signature_manager_creator
+		);
+#endif
 		NRHI_NSL_DEFINE_SUBSYSTEM_CREATOR_AS_CUSTOMIZATION_MEMBER(
 			F_nsl_submodule_manager,
 			submodule_manager_creator
@@ -4219,6 +4456,9 @@ namespace nrhi {
 		TU<F_nsl_uniform_manager> uniform_manager_p_;
 		TU<F_nsl_sampler_state_manager> sampler_state_manager_p_;
 		TU<F_nsl_pipeline_state_manager> pipeline_state_manager_p_;
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		TU<F_nsl_root_signature_manager> root_signature_manager_p_;
+#endif
 		TU<F_nsl_submodule_manager> submodule_manager_p_;
 		TU<F_nsl_reflector> reflector_p_;
 
@@ -4240,6 +4480,9 @@ namespace nrhi {
 		NCPP_FORCE_INLINE TK_valid<F_nsl_uniform_manager> uniform_manager_p() const noexcept { return NCPP_FOH_VALID(uniform_manager_p_); }
 		NCPP_FORCE_INLINE TK_valid<F_nsl_sampler_state_manager> sampler_state_manager_p() const noexcept { return NCPP_FOH_VALID(sampler_state_manager_p_); }
 		NCPP_FORCE_INLINE TK_valid<F_nsl_pipeline_state_manager> pipeline_state_manager_p() const noexcept { return NCPP_FOH_VALID(pipeline_state_manager_p_); }
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		NCPP_FORCE_INLINE TK_valid<F_nsl_root_signature_manager> root_signature_manager_p() const noexcept { return NCPP_FOH_VALID(root_signature_manager_p_); }
+#endif
 		NCPP_FORCE_INLINE TK_valid<F_nsl_submodule_manager> submodule_manager_p() const noexcept { return NCPP_FOH_VALID(submodule_manager_p_); }
 		NCPP_FORCE_INLINE TK_valid<F_nsl_reflector> reflector_p() const noexcept { return NCPP_FOH_VALID(reflector_p_); }
 
