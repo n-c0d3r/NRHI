@@ -49,8 +49,8 @@ namespace nrhi {
 
 
 
-	class NRHI_API H_nsl_factory {
-
+	class NRHI_API H_nsl_factory
+	{
 	public:
 #ifdef NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_BINDING
 		static TG_vector<TU<A_pipeline_state>> create_pipeline_states(
@@ -66,6 +66,43 @@ namespace nrhi {
 		);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+	public:
+		static TG_vector<TU<A_root_signature>> create_root_signatures(
+			TKPA_valid<A_device> device_p,
+			const F_nsl_compiled_result& compiled_result
+		);
+		static TG_unordered_map<G_string, TK<A_root_signature>> make_root_signature_map(
+			const TG_span<TK_valid<A_root_signature>>& root_signature_p_span,
+			const F_nsl_compiled_result& compiled_result
+		);
+		struct F_owned_root_signature_map
+		{
+			TG_unordered_map<G_string, TK<A_root_signature>> map;
+			TG_vector<TU<A_root_signature>> root_signature_p_vector;
+		};
+		static F_owned_root_signature_map make_owned_root_signature_map(
+			TKPA_valid<A_device> device_p,
+			const F_nsl_compiled_result& compiled_result
+		)
+		{
+			F_owned_root_signature_map result;
+
+			result.root_signature_p_vector = create_root_signatures(
+				device_p,
+				compiled_result
+			);
+			result.map = make_root_signature_map(
+				{
+					(TK_valid<A_root_signature>*)(result.root_signature_p_vector.data()),
+					result.root_signature_p_vector.size()
+				},
+				compiled_result
+			);
+
+			return eastl::move(result);
+		}
+#endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 	};
 
 }

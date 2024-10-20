@@ -403,6 +403,12 @@ int main() {
 "	color = text_color;\n"
 "}\n"
 "\n"
+"@allow_input_assembler\n"
+"root_signature MAIN_ROOT_SIGNATURE(\n"
+"	@shader_visibility(PIXEL)\n"
+"	CBV\n"
+")\n"
+"\n"
 "@color_formats(R8G8B8A8_UNORM)\n"
 "@rasterizer\n"
 "(\n"
@@ -438,34 +444,15 @@ int main() {
 	auto& nsl_shader_compiled_result = nsl_shader_compiled_result_opt.value();
 	nsl_shader_compiled_result.finalize();
 
-	F_root_param_desc cbv_root_param_desc(
-		ED_root_param_type::CONSTANT_BUFFER,
-		F_root_descriptor_desc {
-			0,
-			0
-		},
-		ED_shader_visibility::PIXEL
-	);
-
-	auto root_signature_p = H_root_signature::create(
+	auto owned_root_signature_map = H_nsl_factory::make_owned_root_signature_map(
 		NCPP_FOH_VALID(device_p),
-		{
-			.param_descs = {
-				cbv_root_param_desc
-			},
-			.flags = ED_root_signature_flag::ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT
-		}
+		nsl_shader_compiled_result
 	);
 
 	auto pipeline_state_p_vector = H_nsl_factory::create_pipeline_states_with_root_signature(
 		NCPP_FOH_VALID(device_p),
 		nsl_shader_compiled_result,
-		{
-			{
-				"MAIN_ROOT_SIGNATURE",
-				root_signature_p
-			}
-		}
+		owned_root_signature_map.map
 	);
 
 	U_graphics_pipeline_state_handle pipeline_state_p = {
@@ -531,7 +518,7 @@ int main() {
 
 				//
 				command_list_p->ZG_bind_root_signature(
-					NCPP_FOH_VALID(root_signature_p)
+					NCPP_FOH_VALID(owned_root_signature_map.map["MAIN_ROOT_SIGNATURE"])
 				);
 
 				// render text
