@@ -6509,6 +6509,24 @@ namespace nrhi {
 			);
 		}
 
+		// cbv_srv_uav_heap_directly_indexed annotation
+		if(context.current_object_config.find("cbv_srv_uav_heap_directly_indexed") != context.current_object_config.end())
+		{
+			root_signature_info.desc.flags = flag_combine(
+				root_signature_info.desc.flags,
+				ED_root_signature_flag::CBV_SRV_UAV_HEAP_DIRECTLY_INDEXED
+			);
+		}
+
+		// sampler_heap_directly_indexed annotation
+		if(context.current_object_config.find("sampler_heap_directly_indexed") != context.current_object_config.end())
+		{
+			root_signature_info.desc.flags = flag_combine(
+				root_signature_info.desc.flags,
+				ED_root_signature_flag::SAMPLER_HEAP_DIRECTLY_INDEXED
+			);
+		}
+
 		// register root_signature
 		name_manager_p->template T_register_name<FE_nsl_name_types::ROOT_SIGNATURE>(tree.object_implementation.name);
 		root_signature_manager_p->register_root_signature(
