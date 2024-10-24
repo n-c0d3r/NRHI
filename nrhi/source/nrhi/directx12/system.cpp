@@ -6,8 +6,21 @@
 
 
 
-namespace nrhi {
+#ifdef NRHI_ENABLE_DIRECTX_12_AGILITY_SDK
+	extern "C"
+	{
+		__declspec(dllexport) extern const UINT D3D12SDKVersion = NRHI_DIRECTX12_AGILITY_SDK_VERSION_MAJOR;
+	}
+	extern "C"
+	{
+		__declspec(dllexport) extern const char* D3D12SDKPath = NRHI_DIRECTX12_AGILITY_SDK_DIR;
+	}
+#endif
 
+
+
+namespace nrhi
+{
     void HD_directx12_system::initialize(){
 
 #ifdef NRHI_ENABLE_DRIVER_DEBUGGER

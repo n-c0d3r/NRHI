@@ -41,6 +41,9 @@ option(NRHI_THREAD_SAFE "If checked, NRHI will use locks when creating and relea
 option(NRHI_ENABLE_DRIVER_DEBUGGER "If checked, NRHI will enable driver debugger if possible" ON)
 set(NRHI_DEBUG_NAME_STATIC_SIZE 32 CACHE STRING "")
 
+# NRHI other options
+option(NRHI_ENABLE_DIRECTX_12_AGILITY_SDK "If checked, NRHI will download DirectX 12 Agility SDK automatically and use it at runtime" ON)
+
 # Compute driver count and some supports
 NCPP_SetGlobal(NRHI_DRIVER_INTERFACE_SUPPORT_SIMPLE_RESOURCE_BINDING OFF)
 NCPP_SetGlobal(NRHI_DRIVER_INTERFACE_SUPPORT_SIMPLE_INDIRECT_COMMANDS OFF)
@@ -213,6 +216,9 @@ if(NRHI_DRIVER_METAL)
 endif()
 if(NRHI_DRIVER_DIRECTX_12)
     include(NRHI/Drivers/DirectX12/Implement)
+    if(NRHI_ENABLE_DIRECTX_12_AGILITY_SDK)
+        include(NRHI/Drivers/DirectX12/CheckDirectX12AgilitySDK)
+    endif()
 endif()
 if(NRHI_DRIVER_VULKAN)
     include(NRHI/Drivers/Vulkan/Implement)
@@ -439,12 +445,19 @@ NCPP_ApplyDependencies(
         ${NRHI_THIRD_PARTY_TARGETS}
         ${DriverSpecificDependentTargets}
 )
+
 foreach(File ${NRHI_THIRD_PARTY_FILES_AS_DEPENDENCIES})
     NCPP_AddFileAsDependency(nrhi "${File}")
 endforeach()
 foreach(File ${NRHI_THIRD_PARTY_TARGET_FILES_AS_DEPENDENCIES})
     NCPP_AddTargetFileAsDependency(nrhi "${File}")
 endforeach()
+
+if(NRHI_DRIVER_DIRECTX_12)
+    if(NRHI_ENABLE_DIRECTX_12_AGILITY_SDK)
+        NCPP_AddFileAsDependencyWithOffset(nrhi "${NRHI_DIRECTX12_AGILITY_SDK_D3D12_CORE_DLL}" "DirectX12AgilitySDK")
+    endif()
+endif()
 
 
 
