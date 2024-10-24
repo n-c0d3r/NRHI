@@ -53,7 +53,7 @@ namespace nrhi {
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-	NCPP_FORCE_INLINE E_resource_heap_tier A_device::resource_heap_tier() {
+	NCPP_FORCE_INLINE ED_resource_heap_tier A_device::resource_heap_tier() {
 
 		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
 			return H_device::resource_heap_tier(NCPP_KTHIS());

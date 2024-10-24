@@ -82,7 +82,7 @@ namespace nrhi {
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 	public:
-		E_resource_heap_tier resource_heap_tier();
+		ED_resource_heap_tier resource_heap_tier();
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION

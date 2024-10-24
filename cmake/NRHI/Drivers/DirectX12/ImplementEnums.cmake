@@ -37,6 +37,7 @@ include(NRHI/Drivers/DirectX12/ImplementTextureCubeFace)
 include(NRHI/Drivers/DirectX12/ImplementInputClassification)
 include(NRHI/Drivers/DirectX12/ImplementIndirectArgumentType)
 include(NRHI/Drivers/DirectX12/ImplementResourceHeapFlag)
+include(NRHI/Drivers/DirectX12/ImplementResourceHeapTier)
 
 
 

@@ -81,7 +81,7 @@ namespace nrhi {
 		);
 
 	public:
-		static E_resource_heap_tier resource_heap_tier(
+		static ED_resource_heap_tier resource_heap_tier(
 			TKPA_valid<A_device> device_p
 		);
 

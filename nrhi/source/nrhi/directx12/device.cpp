@@ -60,7 +60,7 @@ namespace nrhi {
 		);
 	}
 
-	E_resource_heap_tier HD_directx12_device::resource_heap_tier(
+	ED_resource_heap_tier HD_directx12_device::resource_heap_tier(
 		TKPA_valid<A_device> device_p
 	) {
 		D3D12_FEATURE_DATA_D3D12_OPTIONS d3d12_feature_data_d3d12_options;
@@ -74,9 +74,9 @@ namespace nrhi {
 		switch (d3d12_feature_data_d3d12_options.ResourceHeapTier)
 		{
 		case D3D12_RESOURCE_HEAP_TIER_1:
-			return E_resource_heap_tier::A;
+			return ED_resource_heap_tier::A;
 		case D3D12_RESOURCE_HEAP_TIER_2:
-			return E_resource_heap_tier::B;
+			return ED_resource_heap_tier::B;
 		}
 	}
 
