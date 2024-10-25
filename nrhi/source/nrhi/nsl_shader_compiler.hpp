@@ -191,6 +191,12 @@ namespace nrhi {
 		LINE
 	};
 
+	struct F_nsl_data_type_selection
+	{
+		G_string name;
+		TG_vector<F_nsl_data_type_selection> childs;
+	};
+
 	class NRHI_API F_nsl_info_tree_reader {
 
 	private:
@@ -270,6 +276,7 @@ namespace nrhi {
 		eastl::optional<ED_primitive_topology> read_primitive_topology(u32 index, b8 is_required = true) const;
 		eastl::optional<E_nsl_output_topology> read_output_topology(u32 index, b8 is_required = true) const;
 		eastl::optional<ED_shader_visibility> read_shader_visibility(u32 index, b8 is_required = true) const;
+		eastl::optional<F_nsl_data_type_selection> read_data_type_selection(u32 index, b8 is_required = true) const;
 		b8 read_configurable_elements(
 			const eastl::function<
 				b8(
@@ -294,7 +301,7 @@ namespace nrhi {
 	struct F_nsl_data_argument {
 
 		G_string name;
-		G_string type;
+		F_nsl_data_type_selection type_selection;
 		u32 count = 1;
 		b8 is_array = false;
 		F_nsl_data_argument_config_map config_map;
@@ -429,7 +436,7 @@ namespace nrhi {
 	using F_nsl_uniform_config_map = TG_unordered_map<G_string, F_nsl_info_tree_reader>;
 	struct F_nsl_uniform_info {
 
-		G_string type;
+		F_nsl_data_type_selection type_selection;
 		G_string buffer;
 
 		u32 count = 1;
@@ -713,6 +720,7 @@ namespace nrhi {
 
 		NONE,
 		PRIMITIVE,
+		SEMANTIC,
 		STRUCTURE
 
 	};
@@ -820,29 +828,6 @@ namespace nrhi {
 
 	};
 
-	struct F_nsl_shader_reflection {
-
-		G_string name;
-
-		ED_shader_type type = ED_shader_type::NONE;
-
-		F_vector3_u thread_group_size = F_vector3_u::zero();
-	};
-	struct F_nsl_pipeline_state_reflection {
-
-		G_string name;
-
-		ED_pipeline_state_type type = ED_pipeline_state_type::NONE;
-
-		F_general_pipeline_state_options options;
-
-#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-		F_nsl_root_signature_selection root_signature_selection;
-#endif
-
-		TG_vector<u32> shader_indices;
-
-	};
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 	struct F_nsl_root_signature_reflection {
 
@@ -880,16 +865,49 @@ namespace nrhi {
 		}
 
 	};
-	struct F_nsl_data_argument_reflection {
-
+	struct F_nsl_data_argument_reflection
+	{
 		G_string name;
 
-		u32 type_index = NCPP_U32_MAX;
+		F_nsl_data_type_selection type_selection;
 
 		u32 count = 1;
 		b8 is_array = false;
-
+	};
+	struct F_nsl_placed_data_argument_reflection
+	{
+		F_nsl_data_argument_reflection argument;
 		u32 offset = 0;
+	};
+	struct F_nsl_data_param_reflection {
+
+		F_nsl_data_argument_reflection argument;
+		E_nsl_data_param_flag flags = E_nsl_data_param_flag::NONE;
+
+	};
+	struct F_nsl_shader_reflection {
+
+		G_string name;
+
+		ED_shader_type type = ED_shader_type::NONE;
+
+		F_vector3_u thread_group_size = F_vector3_u::zero();
+
+		TG_vector<F_nsl_data_param_reflection> data_params;
+	};
+	struct F_nsl_pipeline_state_reflection {
+
+		G_string name;
+
+		ED_pipeline_state_type type = ED_pipeline_state_type::NONE;
+
+		F_general_pipeline_state_options options;
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		F_nsl_root_signature_selection root_signature_selection;
+#endif
+
+		TG_vector<u32> shader_indices;
 
 	};
 	struct F_nsl_resource_reflection {
@@ -907,7 +925,7 @@ namespace nrhi {
 		TG_vector<u32> actual_slots;
 		TG_vector<u32> actual_slot_spaces;
 
-		TG_vector<F_nsl_data_argument_reflection> data_arguments;
+		TG_vector<F_nsl_placed_data_argument_reflection> placed_data_arguments;
 		u32 sort_uniforms = true;
 
 		sz constant_size = 0;
@@ -931,10 +949,14 @@ namespace nrhi {
 		}
 
 	};
-	struct F_nsl_structure_reflection {
-
-		TG_vector<F_nsl_data_argument_reflection> data_arguments;
-
+	struct F_nsl_structure_reflection
+	{
+		TG_vector<F_nsl_placed_data_argument_reflection> placed_data_arguments;
+	};
+	struct F_nsl_semantic_reflection
+	{
+		G_string name;
+		G_string binding;
 	};
 	struct F_nsl_type_reflection {
 
@@ -943,6 +965,7 @@ namespace nrhi {
 		E_nsl_type_class type_class = E_nsl_type_class::NONE;
 
 		E_nsl_primitive_data_type primitive_data_type = E_nsl_primitive_data_type::NONE;
+		F_nsl_semantic_reflection semantic;
 		F_nsl_structure_reflection structure;
 
 		sz size = 0;

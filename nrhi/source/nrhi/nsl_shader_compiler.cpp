@@ -2174,6 +2174,39 @@ namespace nrhi {
 
 		return it->second;
 	}
+	eastl::optional<F_nsl_data_type_selection> F_nsl_info_tree_reader::read_data_type_selection(u32 index, b8 is_required) const
+	{
+		if(!guarantee_index(index, is_required)) {
+
+			return eastl::nullopt;
+		}
+
+		const auto& info_tree = info_trees_[index];
+
+		G_string value_str = parse_value_str(info_tree.name);
+
+		F_nsl_info_tree_reader child_reader(
+			NCPP_FOH_VALID(shader_compiler_p_),
+			info_tree.childs,
+			info_tree.begin_childs_location,
+			error_stack_p_
+		);
+
+		TG_vector<F_nsl_data_type_selection> childs(info_tree.childs.size());
+		for(u32 i = 0; i < info_tree.childs.size(); ++i)
+		{
+			auto child_opt = child_reader.read_data_type_selection(i);
+			if(!child_opt)
+				return child_opt;
+
+			childs[i] = eastl::move(child_opt.value());
+		}
+
+		return F_nsl_data_type_selection {
+			.name = value_str,
+			.childs = eastl::move(childs)
+		};
+	}
 	b8 F_nsl_info_tree_reader::read_configurable_elements(
 		const eastl::function<
 			b8(
@@ -3808,16 +3841,15 @@ namespace nrhi {
 				is_array = true;
 			}
 
-			auto type_opt = argument_child_info_tree_reader.read_string(0);
-
-			if(!type_opt)
+			auto type_selection_opt = argument_child_info_tree_reader.read_data_type_selection(0);
+			if(!type_selection_opt)
 				return eastl::nullopt;
 
 			structure_info.argument_members.push_back(
 				F_nsl_data_argument_member {
 					.argument = F_nsl_data_argument {
 						.name = argument_child_info_tree.name,
-						.type = type_opt.value(),
+						.type_selection = type_selection_opt.value(),
 						.count = count,
 						.is_array = is_array,
 						.config_map = std::move(data_argument_config_map)
@@ -4506,12 +4538,11 @@ namespace nrhi {
 
 		// read uniform type
 		{
-			auto value_opt = info_tree_reader.read_string(0);
-
+			auto value_opt = info_tree_reader.read_data_type_selection(0);
 			if(!value_opt)
 				return eastl::nullopt;
 
-			uniform_info.type = value_opt.value();
+			uniform_info.type_selection = value_opt.value();
 		}
 
 		// check for count
@@ -7640,16 +7671,15 @@ namespace nrhi {
 					is_array = true;
 				}
 
-				auto type_opt = param_child_info_tree_reader.read_string(0);
-
-				if(!type_opt)
+				auto type_selection_opt = param_child_info_tree_reader.read_data_type_selection(0);
+				if(!type_selection_opt)
 					return eastl::nullopt;
 
 				data_params_.push_back(
 					F_nsl_data_param {
 						.argument = F_nsl_data_argument{
 							.name = param_child_info_tree.name,
-							.type = type_opt.value(),
+							.type_selection = type_selection_opt.value(),
 							.count = count,
 							.is_array = is_array,
 							.config_map = std::move(data_argument_config_map)
@@ -9335,8 +9365,8 @@ namespace nrhi {
 					auto sort_func = [&](const F_uniform_iterator& a, const F_uniform_iterator& b) -> b8 {
 
 						return (
-							data_type_manager_p->size(a->second.type)
-							> data_type_manager_p->size(b->second.type)
+							data_type_manager_p->size(a->second.type_selection.name)
+							> data_type_manager_p->size(b->second.type_selection.name)
 						);
 					};
 					eastl::sort(uniform_iterator_vector.begin(), uniform_iterator_vector.end(), sort_func);
@@ -9360,10 +9390,10 @@ namespace nrhi {
 
 						F_uniform_iterator& uniform_iterator = uniform_iterator_vector[i];
 
-						u32 member_alignment = data_type_manager_p->alignment(uniform_iterator->second.type);
+						u32 member_alignment = data_type_manager_p->alignment(uniform_iterator->second.type_selection.name);
 						u32 member_element_count = uniform_iterator->second.count;
 
-						u32 member_single_element_size = data_type_manager_p->size(uniform_iterator->second.type);
+						u32 member_single_element_size = data_type_manager_p->size(uniform_iterator->second.type_selection.name);
 						u32 aligned_member_single_element_size = align_size(member_single_element_size, member_alignment);
 
 						u32 member_size = (
@@ -9786,10 +9816,10 @@ namespace nrhi {
 			auto& argument_member = result.argument_members[i];
 			auto& argument = argument_member.argument;
 
-			u32 member_alignment = alignment(argument.type);
+			u32 member_alignment = alignment(argument.type_selection.name);
 			u32 member_element_count = argument.count;
 
-			u32 member_single_element_size = size(argument.type);
+			u32 member_single_element_size = size(argument.type_selection.name);
 			u32 aligned_member_single_element_size = align_size(member_single_element_size, member_alignment);
 
 			u32 member_size = (
@@ -10676,9 +10706,9 @@ namespace nrhi {
 
 		for(const auto& argument_member : structure.second.argument_members) {
 
-			G_string argument_type = argument_member.argument.type;
+			G_string argument_type = argument_member.argument.type_selection.name;
 
-			b8 is_semantic = data_type_manager_p->is_name_has_semantic_info(argument_member.argument.type);
+			b8 is_semantic = data_type_manager_p->is_name_has_semantic_info(argument_member.argument.type_selection.name);
 
 			G_string semantic_option;
 
@@ -10760,7 +10790,7 @@ namespace nrhi {
 		b8 is_first_data_param = true;
 		for(const auto& data_param : shader_object_p->data_params()) {
 
-			G_string argument_type = data_param.argument.type;
+			G_string argument_type = data_param.argument.type_selection.name;
 
 			b8 is_semantic = data_type_manager_p->is_name_has_semantic_info(argument_type);
 
@@ -10910,7 +10940,7 @@ namespace nrhi {
 
 			const auto& uniform_info = uniform_manager_p->uniform_info(uniform);
 
-			uniform_declarations += uniform_info.type + " " + uniform;
+			uniform_declarations += uniform_info.type_selection.name + " " + uniform;
 
 			if(uniform_info.is_array)
 			{
@@ -11834,6 +11864,7 @@ namespace nrhi {
 #endif
 
 		auto& name_to_primitive_data_type_map = data_type_manager_p->name_to_primitive_data_type_map();
+		auto& name_to_semantic_info_map = data_type_manager_p->name_to_semantic_info_map();
 		auto& name_to_structure_info_map = data_type_manager_p->name_to_structure_info_map();
 		auto& name_to_shader_object_p_map = shader_manager_p->name_to_shader_object_p_map();
 		auto& name_to_pipeline_state_info_map = pipeline_state_manager_p->name_to_pipeline_state_info_map();
@@ -11844,6 +11875,33 @@ namespace nrhi {
 #endif
 
 		TG_unordered_map<G_string, u32> name_to_type_index_map;
+
+		// semantic data types
+		{
+			for(auto& it : name_to_semantic_info_map)
+			{
+				const auto& semantic_info = it.second;
+
+				auto primitive_data_type = name_to_primitive_data_type_map[semantic_info.target_type];
+
+				name_to_type_index_map[it.first] = reflection.types.size();
+
+				reflection.types.push_back(
+					F_nsl_type_reflection {
+						.name = it.first,
+						.type_class = E_nsl_type_class::PRIMITIVE,
+						.primitive_data_type = primitive_data_type,
+						.semantic = {
+							.name = it.first,
+							.binding = semantic_info.target_binding
+						},
+
+						.size = data_type_manager_p->size(semantic_info.target_type),
+						.alignment = data_type_manager_p->alignment(semantic_info.target_type)
+					}
+				);
+			}
+		}
 
 		// primitive data types
 		{
@@ -11924,30 +11982,15 @@ namespace nrhi {
 					auto& argument_member = structure_info.argument_members[j];
 					auto& argument = argument_member.argument;
 
-					G_string actual_type = argument.type;
-
-					if(data_type_manager_p->is_name_has_semantic_info(actual_type)) {
-
-						const auto& semantic_info = data_type_manager_p->semantic_info(actual_type);
-						actual_type = semantic_info.target_type;
-					}
-					if(data_type_manager_p->is_name_has_enumeration_info(actual_type)) {
-
-						const auto& enumeration_info = data_type_manager_p->enumeration_info(actual_type);
-						actual_type = enumeration_info.value_type;
-					}
-
-					structure.data_arguments.push_back(
-						F_nsl_data_argument_reflection {
-
-							.name = argument.name,
-							.type_index = name_to_type_index_map[
-								actual_type
-							],
-							.count = argument.count,
-							.is_array = argument.is_array,
+					structure.placed_data_arguments.push_back(
+						F_nsl_placed_data_argument_reflection {
+							.argument = F_nsl_data_argument_reflection {
+								.name = argument.name,
+								.type_selection = argument.type_selection,
+								.count = argument.count,
+								.is_array = argument.is_array
+							},
 							.offset = argument_member.offset
-
 						}
 					);
 				}
@@ -11968,13 +12011,34 @@ namespace nrhi {
 
 				auto& shader_object_p = it->second;
 
-				reflection.shaders[i] = F_nsl_shader_reflection {
-
+				F_nsl_shader_reflection shader_reflection = {
 					.name = shader_object_p->name(),
 					.type = shader_object_p->type(),
 
 					.thread_group_size = shader_object_p->thread_group_size()
 				};
+
+				const auto& data_params = shader_object_p->data_params();
+				u32 data_param_count = data_params.size();
+				for(u32 j = 0; j < data_param_count; ++j) {
+
+					auto& data_param = data_params[j];
+					auto& argument = data_param.argument;
+
+					shader_reflection.data_params.push_back(
+						F_nsl_data_param_reflection {
+							.argument = F_nsl_data_argument_reflection {
+								.name = argument.name,
+								.type_selection = argument.type_selection,
+								.count = argument.count,
+								.is_array = argument.is_array
+							},
+							.flags = data_param.flags
+						}
+					);
+				}
+
+				reflection.shaders[i] = shader_reflection;
 
 				++it;
 			}
@@ -12079,38 +12143,23 @@ namespace nrhi {
 
 				// build data args
 				u32 data_arg_count = resource_info.uniforms.size();
-				TG_vector<F_nsl_data_argument_reflection> data_arguments;
-				data_arguments.reserve(data_arg_count);
+				TG_vector<F_nsl_placed_data_argument_reflection> placed_data_arguments;
+				placed_data_arguments.reserve(data_arg_count);
 				for(u32 j = 0; j < data_arg_count; ++j)
 				{
 					const G_string& uniform_name = resource_info.uniforms[j];
 
 					auto& uniform_info = uniform_manager_p->uniform_info(uniform_name);
 
-					G_string actual_type = uniform_info.type;
-
-					if (data_type_manager_p->is_name_has_semantic_info(actual_type))
-					{
-						const auto& semantic_info = data_type_manager_p->semantic_info(actual_type);
-						actual_type = semantic_info.target_type;
-					}
-					if (data_type_manager_p->is_name_has_enumeration_info(actual_type))
-					{
-						const auto& enumeration_info = data_type_manager_p->enumeration_info(actual_type);
-						actual_type = enumeration_info.value_type;
-					}
-
-					data_arguments.push_back(
-						F_nsl_data_argument_reflection{
-
-							.name = uniform_name,
-							.type_index = name_to_type_index_map[
-								actual_type
-							],
-							.count = uniform_info.count,
-							.is_array = uniform_info.is_array,
+					placed_data_arguments.push_back(
+						F_nsl_placed_data_argument_reflection{
+							.argument = F_nsl_data_argument_reflection {
+								.name = uniform_name,
+								.type_selection = uniform_info.type_selection,
+								.count = uniform_info.count,
+								.is_array = uniform_info.is_array
+							},
 							.offset = uniform_info.offset
-
 						}
 					);
 				}
@@ -12127,7 +12176,7 @@ namespace nrhi {
 					.is_array = resource_info.is_array,
 					.actual_slots = resource_info.actual_slots,
 					.actual_slot_spaces = resource_info.actual_slot_spaces,
-					.data_arguments = std::move(data_arguments),
+					.placed_data_arguments = std::move(placed_data_arguments),
 					.sort_uniforms = resource_info.sort_uniforms,
 					.constant_size = resource_info.constant_size,
 					.flags = resource_info.flags
