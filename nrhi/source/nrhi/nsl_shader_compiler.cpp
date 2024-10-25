@@ -6527,6 +6527,16 @@ namespace nrhi {
 			);
 		}
 
+		// bindless annotation
+		if(context.current_object_config.find("bindless") != context.current_object_config.end())
+		{
+			root_signature_info.desc.flags = flag_combine(
+				root_signature_info.desc.flags,
+				ED_root_signature_flag::CBV_SRV_UAV_HEAP_DIRECTLY_INDEXED,
+				ED_root_signature_flag::SAMPLER_HEAP_DIRECTLY_INDEXED
+			);
+		}
+
 		// register root_signature
 		name_manager_p->template T_register_name<FE_nsl_name_types::ROOT_SIGNATURE>(tree.object_implementation.name);
 		root_signature_manager_p->register_root_signature(
@@ -6579,6 +6589,873 @@ namespace nrhi {
 
 
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+	F_nsl_descriptor_heap_getter_object::F_nsl_descriptor_heap_getter_object(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		TKPA_valid<A_nsl_object_type> type_p,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		ED_descriptor_heap_type descriptor_heap_type,
+		E_nsl_resource_type resource_type,
+		const G_string& name
+	) :
+		A_nsl_object(
+			shader_compiler_p,
+			type_p,
+			translation_unit_p,
+			name
+		),
+		descriptor_heap_type_(descriptor_heap_type),
+		resource_type_(resource_type)
+	{
+	}
+
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_descriptor_heap_getter_object::recursive_build_ast_tree(
+		F_nsl_context& context,
+		TK_valid<F_nsl_translation_unit> unit_p,
+		TG_vector<F_nsl_ast_tree>& trees,
+		sz index,
+		F_nsl_error_stack* error_stack_p
+	)
+	{
+		auto translation_unit_compiler_p = shader_compiler_p()->translation_unit_compiler_p();
+
+		//
+		auto& tree = trees[index];
+		auto& object_implementation = tree.object_implementation;
+
+		// parse body
+		context.object_type_channel_mask_stack.push(nsl_function_body_object_type_channel_mask);
+		u32 index_body = type_p()->max_object_body_count() - 1;
+		auto body_childs_opt = translation_unit_compiler_p->parse(
+			unit_p,
+			object_implementation.bodies[index_body].content,
+			context,
+			object_implementation.bodies[index_body].begin_location
+		);
+		if(!body_childs_opt) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				&(unit_p->error_group_p()->stack()),
+				object_implementation.bodies[index_body].begin_location,
+				"can't parse $(...) block"
+			);
+			return eastl::nullopt;
+		}
+		context.object_type_channel_mask_stack.pop();
+
+		//
+		TG_vector<F_nsl_ast_tree> child_trees = eastl::move(body_childs_opt.value());
+
+		//
+		return eastl::move(child_trees);
+	}
+	eastl::optional<G_string> F_nsl_descriptor_heap_getter_object::apply(
+		const F_nsl_ast_tree& tree
+	)
+	{
+		auto output_language_p = shader_compiler_p()->output_language_p();
+		auto translation_unit_compiler_p = shader_compiler_p()->translation_unit_compiler_p();
+
+		auto childs_to_string_opt = translation_unit_compiler_p->ast_trees_to_string(
+			tree.childs
+		);
+		if(!childs_to_string_opt)
+			return childs_to_string_opt;
+
+		return output_language_p->descriptor_heap_getter_to_string(
+			translation_unit_p(),
+			tree,
+			childs_to_string_opt.value()
+		);
+	}
+
+
+
+	F_nsl_descriptor_heap_getter_object_type::F_nsl_descriptor_heap_getter_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		const G_string& name,
+		b8 is_object_name_required,
+		u32 min_body_count,
+		u32 max_body_count
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			name,
+			is_object_name_required,
+			min_body_count,
+			max_body_count
+		)
+	{
+	}
+
+	TK<A_nsl_object> F_nsl_descriptor_heap_getter_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	)
+	{
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_descriptor_heap_getter_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				ED_descriptor_heap_type::CONSTANT_BUFFER_SHADER_RESOURCE_UNORDERED_ACCESS,
+				E_nsl_resource_type::NONE,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_constant_buffer_descriptor_heap_getter_object_type::F_nsl_constant_buffer_descriptor_heap_getter_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"$ConstantBuffer",
+			false,
+			2,
+			2
+		)
+	{
+	}
+
+	TK<A_nsl_object> F_nsl_constant_buffer_descriptor_heap_getter_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	)
+	{
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_descriptor_heap_getter_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				ED_descriptor_heap_type::CONSTANT_BUFFER_SHADER_RESOURCE_UNORDERED_ACCESS,
+				E_nsl_resource_type::CONSTANT_BUFFER,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_buffer_descriptor_heap_getter_object_type::F_nsl_buffer_descriptor_heap_getter_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"$Buffer",
+			false,
+			2,
+			2
+		)
+	{
+	}
+
+	TK<A_nsl_object> F_nsl_buffer_descriptor_heap_getter_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	)
+	{
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_descriptor_heap_getter_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				ED_descriptor_heap_type::CONSTANT_BUFFER_SHADER_RESOURCE_UNORDERED_ACCESS,
+				E_nsl_resource_type::BUFFER,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_byte_address_buffer_descriptor_heap_getter_object_type::F_nsl_byte_address_buffer_descriptor_heap_getter_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"$ByteAddressBuffer",
+			false,
+			1,
+			1
+		)
+	{
+	}
+
+	TK<A_nsl_object> F_nsl_byte_address_buffer_descriptor_heap_getter_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	)
+	{
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_descriptor_heap_getter_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				ED_descriptor_heap_type::CONSTANT_BUFFER_SHADER_RESOURCE_UNORDERED_ACCESS,
+				E_nsl_resource_type::BYTE_ADDRESS_BUFFER,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_structured_buffer_descriptor_heap_getter_object_type::F_nsl_structured_buffer_descriptor_heap_getter_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"$StructuredBuffer",
+			false,
+			2,
+			2
+		)
+	{
+	}
+
+	TK<A_nsl_object> F_nsl_structured_buffer_descriptor_heap_getter_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	)
+	{
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_descriptor_heap_getter_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				ED_descriptor_heap_type::CONSTANT_BUFFER_SHADER_RESOURCE_UNORDERED_ACCESS,
+				E_nsl_resource_type::STRUCTURED_BUFFER,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_texture_1d_descriptor_heap_getter_object_type::F_nsl_texture_1d_descriptor_heap_getter_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"$Texture1D",
+			false,
+			2,
+			2
+		)
+	{
+	}
+
+	TK<A_nsl_object> F_nsl_texture_1d_descriptor_heap_getter_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	)
+	{
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_descriptor_heap_getter_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				ED_descriptor_heap_type::CONSTANT_BUFFER_SHADER_RESOURCE_UNORDERED_ACCESS,
+				E_nsl_resource_type::TEXTURE_1D,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_texture_1d_array_descriptor_heap_getter_object_type::F_nsl_texture_1d_array_descriptor_heap_getter_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"$Texture1DArray",
+			false,
+			2,
+			2
+		)
+	{
+	}
+
+	TK<A_nsl_object> F_nsl_texture_1d_array_descriptor_heap_getter_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	)
+	{
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_descriptor_heap_getter_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				ED_descriptor_heap_type::CONSTANT_BUFFER_SHADER_RESOURCE_UNORDERED_ACCESS,
+				E_nsl_resource_type::TEXTURE_1D_ARRAY,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_texture_2d_descriptor_heap_getter_object_type::F_nsl_texture_2d_descriptor_heap_getter_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"$Texture2D",
+			false,
+			2,
+			2
+		)
+	{
+	}
+
+	TK<A_nsl_object> F_nsl_texture_2d_descriptor_heap_getter_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	)
+	{
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_descriptor_heap_getter_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				ED_descriptor_heap_type::CONSTANT_BUFFER_SHADER_RESOURCE_UNORDERED_ACCESS,
+				E_nsl_resource_type::TEXTURE_2D,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_texture_2d_array_descriptor_heap_getter_object_type::F_nsl_texture_2d_array_descriptor_heap_getter_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"$Texture2DArray",
+			false,
+			2,
+			2
+		)
+	{
+	}
+
+	TK<A_nsl_object> F_nsl_texture_2d_array_descriptor_heap_getter_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	)
+	{
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_descriptor_heap_getter_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				ED_descriptor_heap_type::CONSTANT_BUFFER_SHADER_RESOURCE_UNORDERED_ACCESS,
+				E_nsl_resource_type::TEXTURE_2D_ARRAY,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_texture_3d_descriptor_heap_getter_object_type::F_nsl_texture_3d_descriptor_heap_getter_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"$Texture3D",
+			false,
+			2,
+			2
+		)
+	{
+	}
+
+	TK<A_nsl_object> F_nsl_texture_3d_descriptor_heap_getter_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	)
+	{
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_descriptor_heap_getter_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				ED_descriptor_heap_type::CONSTANT_BUFFER_SHADER_RESOURCE_UNORDERED_ACCESS,
+				E_nsl_resource_type::TEXTURE_3D,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_texture_cube_descriptor_heap_getter_object_type::F_nsl_texture_cube_descriptor_heap_getter_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"$TextureCube",
+			false,
+			2,
+			2
+		)
+	{
+	}
+
+	TK<A_nsl_object> F_nsl_texture_cube_descriptor_heap_getter_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	)
+	{
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_descriptor_heap_getter_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				ED_descriptor_heap_type::CONSTANT_BUFFER_SHADER_RESOURCE_UNORDERED_ACCESS,
+				E_nsl_resource_type::TEXTURE_CUBE,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_texture_cube_array_descriptor_heap_getter_object_type::F_nsl_texture_cube_array_descriptor_heap_getter_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"$TextureCubeArray",
+			false,
+			2,
+			2
+		)
+	{
+	}
+
+	TK<A_nsl_object> F_nsl_texture_cube_array_descriptor_heap_getter_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	)
+	{
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_descriptor_heap_getter_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				ED_descriptor_heap_type::CONSTANT_BUFFER_SHADER_RESOURCE_UNORDERED_ACCESS,
+				E_nsl_resource_type::TEXTURE_CUBE_ARRAY,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_rw_buffer_descriptor_heap_getter_object_type::F_nsl_rw_buffer_descriptor_heap_getter_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"$RWBuffer",
+			false,
+			2,
+			2
+		)
+	{
+	}
+
+	TK<A_nsl_object> F_nsl_rw_buffer_descriptor_heap_getter_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	)
+	{
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_descriptor_heap_getter_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				ED_descriptor_heap_type::CONSTANT_BUFFER_SHADER_RESOURCE_UNORDERED_ACCESS,
+				E_nsl_resource_type::RW_BUFFER,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_rw_byte_address_buffer_descriptor_heap_getter_object_type::F_nsl_rw_byte_address_buffer_descriptor_heap_getter_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"$RWByteAddressBuffer",
+			false,
+			1,
+			1
+		)
+	{
+	}
+
+	TK<A_nsl_object> F_nsl_rw_byte_address_buffer_descriptor_heap_getter_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	)
+	{
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_descriptor_heap_getter_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				ED_descriptor_heap_type::CONSTANT_BUFFER_SHADER_RESOURCE_UNORDERED_ACCESS,
+				E_nsl_resource_type::RW_BYTE_ADDRESS_BUFFER,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_rw_structured_buffer_descriptor_heap_getter_object_type::F_nsl_rw_structured_buffer_descriptor_heap_getter_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"$RWStructuredBuffer",
+			false,
+			2,
+			2
+		)
+	{
+	}
+
+	TK<A_nsl_object> F_nsl_rw_structured_buffer_descriptor_heap_getter_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	)
+	{
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_descriptor_heap_getter_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				ED_descriptor_heap_type::CONSTANT_BUFFER_SHADER_RESOURCE_UNORDERED_ACCESS,
+				E_nsl_resource_type::RW_STRUCTURED_BUFFER,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_rw_texture_1d_descriptor_heap_getter_object_type::F_nsl_rw_texture_1d_descriptor_heap_getter_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"$RWTexture1D",
+			false,
+			2,
+			2
+		)
+	{
+	}
+
+	TK<A_nsl_object> F_nsl_rw_texture_1d_descriptor_heap_getter_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	)
+	{
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_descriptor_heap_getter_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				ED_descriptor_heap_type::CONSTANT_BUFFER_SHADER_RESOURCE_UNORDERED_ACCESS,
+				E_nsl_resource_type::RW_TEXTURE_1D,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_rw_texture_1d_array_descriptor_heap_getter_object_type::F_nsl_rw_texture_1d_array_descriptor_heap_getter_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"$RWTexture1DArray",
+			false,
+			2,
+			2
+		)
+	{
+	}
+
+	TK<A_nsl_object> F_nsl_rw_texture_1d_array_descriptor_heap_getter_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	)
+	{
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_descriptor_heap_getter_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				ED_descriptor_heap_type::CONSTANT_BUFFER_SHADER_RESOURCE_UNORDERED_ACCESS,
+				E_nsl_resource_type::RW_TEXTURE_1D_ARRAY,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_rw_texture_2d_descriptor_heap_getter_object_type::F_nsl_rw_texture_2d_descriptor_heap_getter_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"$RWTexture2D",
+			false,
+			2,
+			2
+		)
+	{
+	}
+
+	TK<A_nsl_object> F_nsl_rw_texture_2d_descriptor_heap_getter_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	)
+	{
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_descriptor_heap_getter_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				ED_descriptor_heap_type::CONSTANT_BUFFER_SHADER_RESOURCE_UNORDERED_ACCESS,
+				E_nsl_resource_type::RW_TEXTURE_2D,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_rw_texture_2d_array_descriptor_heap_getter_object_type::F_nsl_rw_texture_2d_array_descriptor_heap_getter_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"$RWTexture2DArray",
+			false,
+			2,
+			2
+		)
+	{
+	}
+
+	TK<A_nsl_object> F_nsl_rw_texture_2d_array_descriptor_heap_getter_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	)
+	{
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_descriptor_heap_getter_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				ED_descriptor_heap_type::CONSTANT_BUFFER_SHADER_RESOURCE_UNORDERED_ACCESS,
+				E_nsl_resource_type::RW_TEXTURE_2D_ARRAY,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_rw_texture_3d_descriptor_heap_getter_object_type::F_nsl_rw_texture_3d_descriptor_heap_getter_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"$RWTexture3D",
+			false,
+			2,
+			2
+		)
+	{
+	}
+
+	TK<A_nsl_object> F_nsl_rw_texture_3d_descriptor_heap_getter_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	)
+	{
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_descriptor_heap_getter_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				ED_descriptor_heap_type::CONSTANT_BUFFER_SHADER_RESOURCE_UNORDERED_ACCESS,
+				E_nsl_resource_type::RW_TEXTURE_3D,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+#endif
+
+
+
 	A_nsl_shader_object::A_nsl_shader_object(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
 		TKPA_valid<A_nsl_object_type> type_p,
@@ -6609,7 +7486,7 @@ namespace nrhi {
 			tree.childs
 		);
 		if(!childs_to_string_opt)
-			return childs_to_string_opt.value();
+			return childs_to_string_opt;
 
 		G_string childs_to_string = childs_to_string_opt.value();
 
@@ -7494,6 +8371,62 @@ namespace nrhi {
 		register_type(
 			TU<F_nsl_semantic_object_type>()(shader_compiler_p_)
 		);
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		register_type(
+			TU<F_nsl_descriptor_heap_getter_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_constant_buffer_descriptor_heap_getter_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_buffer_descriptor_heap_getter_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_structured_buffer_descriptor_heap_getter_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_texture_1d_descriptor_heap_getter_object_type>()(shader_compiler_p_)
+			);
+		register_type(
+			TU<F_nsl_texture_1d_array_descriptor_heap_getter_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_texture_2d_descriptor_heap_getter_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_texture_2d_array_descriptor_heap_getter_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_texture_3d_descriptor_heap_getter_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_texture_cube_descriptor_heap_getter_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_texture_cube_array_descriptor_heap_getter_object_type>()(shader_compiler_p_)
+			);
+		register_type(
+			TU<F_nsl_rw_buffer_descriptor_heap_getter_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_rw_structured_buffer_descriptor_heap_getter_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_rw_texture_1d_descriptor_heap_getter_object_type>()(shader_compiler_p_)
+			);
+		register_type(
+			TU<F_nsl_rw_texture_1d_array_descriptor_heap_getter_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_rw_texture_2d_descriptor_heap_getter_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_rw_texture_2d_array_descriptor_heap_getter_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_rw_texture_3d_descriptor_heap_getter_object_type>()(shader_compiler_p_)
+		);
+#endif
 		register_type(
 			TU<F_nsl_vertex_shader_object_type>()(shader_compiler_p_)
 		);
@@ -8900,6 +9833,17 @@ namespace nrhi {
 
 		return true;
 	}
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+	eastl::optional<G_string> A_nsl_output_language::descriptor_heap_getter_to_string(
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const F_nsl_ast_tree& tree,
+		const G_string& index_str
+	)
+	{
+		return eastl::nullopt;
+	}
+#endif
 
 
 
@@ -10341,6 +11285,267 @@ namespace nrhi {
 		name_manager_p->register_name("NSL_HLSL_MINOR", "6");
 	}
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+	eastl::optional<G_string> F_nsl_output_hlsl_6_6::descriptor_heap_getter_to_string(
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const F_nsl_ast_tree& tree,
+		const G_string& index_str
+	)
+	{
+		auto descriptor_heap_getter_object_p = tree.object_implementation.attached_object_p.T_cast<F_nsl_descriptor_heap_getter_object>();
+
+		ED_descriptor_heap_type descriptor_heap_type = descriptor_heap_getter_object_p->descriptor_heap_type();
+		E_nsl_resource_type resource_type = descriptor_heap_getter_object_p->resource_type();
+
+		G_string getter;
+
+		NRHI_ENUM_SWITCH(
+			descriptor_heap_type,
+			NRHI_ENUM_CASE(
+				ED_descriptor_heap_type::CONSTANT_BUFFER_SHADER_RESOURCE_UNORDERED_ACCESS,
+				getter = "ResourceDescriptorHeap[" + index_str + "]";
+			)
+			NRHI_ENUM_CASE(
+				ED_descriptor_heap_type::SAMPLER,
+				getter = "SamplerDescriptorHeap[" + index_str + "]";
+			)
+		);
+
+		switch (resource_type)
+		{
+		case E_nsl_resource_type::NONE:
+			return getter;
+			break;
+		case E_nsl_resource_type::CONSTANT_BUFFER:
+		{
+			return  (
+				G_string("(")
+				+ "(ConstantBuffer<"
+				+ tree.object_implementation.bodies[0].content
+				+ ">)"
+				+ getter
+				+ ")"
+			);
+			break;
+		}
+		case E_nsl_resource_type::BUFFER:
+		{
+			return  (
+				G_string("(")
+				+ "(Buffer<"
+				+ tree.object_implementation.bodies[0].content
+				+ ">)"
+				+ getter
+				+ ")"
+			);
+			break;
+		}
+		case E_nsl_resource_type::BYTE_ADDRESS_BUFFER:
+		{
+			return  (
+				G_string("(")
+				+ "(ByteAddressBuffer)"
+				+ getter
+				+ ")"
+			);
+			break;
+		}
+		case E_nsl_resource_type::STRUCTURED_BUFFER:
+		{
+			return  (
+				G_string("(")
+				+ "(StructuredBuffer<"
+				+ tree.object_implementation.bodies[0].content
+				+ ">)"
+				+ getter
+				+ ")"
+			);
+			break;
+		}
+		case E_nsl_resource_type::TEXTURE_1D:
+		{
+			return  (
+				G_string("(")
+				+ "(Texture1D<"
+				+ tree.object_implementation.bodies[0].content
+				+ ">)"
+				+ getter
+				+ ")"
+			);
+			break;
+		}
+		case E_nsl_resource_type::TEXTURE_1D_ARRAY:
+		{
+			return  (
+				G_string("(")
+				+ "(Texture1DArray<"
+				+ tree.object_implementation.bodies[0].content
+				+ ">)"
+				+ getter
+				+ ")"
+			);
+			break;
+		}
+		case E_nsl_resource_type::TEXTURE_2D:
+		{
+			return  (
+				G_string("(")
+				+ "(Texture2D<"
+				+ tree.object_implementation.bodies[0].content
+				+ ">)"
+				+ getter
+				+ ")"
+			);
+			break;
+		}
+		case E_nsl_resource_type::TEXTURE_2D_ARRAY:
+		{
+			return  (
+				G_string("(")
+				+ "(Texture2DArray<"
+				+ tree.object_implementation.bodies[0].content
+				+ ">)"
+				+ getter
+				+ ")"
+			);
+			break;
+		}
+		case E_nsl_resource_type::TEXTURE_3D:
+		{
+			return  (
+				G_string("(")
+				+ "(Texture3D<"
+				+ tree.object_implementation.bodies[0].content
+				+ ">)"
+				+ getter
+				+ ")"
+			);
+			break;
+		}
+		case E_nsl_resource_type::TEXTURE_CUBE:
+		{
+			return  (
+				G_string("(")
+				+ "(TextureCube<"
+				+ tree.object_implementation.bodies[0].content
+				+ ">)"
+				+ getter
+				+ ")"
+			);
+			break;
+		}
+		case E_nsl_resource_type::TEXTURE_CUBE_ARRAY:
+		{
+			return  (
+				G_string("(")
+				+ "(TextureCubeArray<"
+				+ tree.object_implementation.bodies[0].content
+				+ ">)"
+				+ getter
+				+ ")"
+			);
+			break;
+		}
+		case E_nsl_resource_type::RW_BUFFER:
+		{
+			return  (
+				G_string("(")
+				+ "(RWBuffer<"
+				+ tree.object_implementation.bodies[0].content
+				+ ">)"
+				+ getter
+				+ ")"
+			);
+			break;
+		}
+		case E_nsl_resource_type::RW_BYTE_ADDRESS_BUFFER:
+		{
+			return  (
+				G_string("(")
+				+ "(RWByteAddressBuffer)"
+				+ getter
+				+ ")"
+			);
+			break;
+		}
+		case E_nsl_resource_type::RW_STRUCTURED_BUFFER:
+		{
+			return  (
+				G_string("(")
+				+ "(RWStructuredBuffer<"
+				+ tree.object_implementation.bodies[0].content
+				+ ">)"
+				+ getter
+				+ ")"
+			);
+			break;
+		}
+		case E_nsl_resource_type::RW_TEXTURE_1D:
+		{
+			return  (
+				G_string("(")
+				+ "(RWTexture1D<"
+				+ tree.object_implementation.bodies[0].content
+				+ ">)"
+				+ getter
+				+ ")"
+			);
+			break;
+		}
+		case E_nsl_resource_type::RW_TEXTURE_1D_ARRAY:
+		{
+			return  (
+				G_string("(")
+				+ "(RWTexture1DArray<"
+				+ tree.object_implementation.bodies[0].content
+				+ ">)"
+				+ getter
+				+ ")"
+			);
+			break;
+		}
+		case E_nsl_resource_type::RW_TEXTURE_2D:
+		{
+			return  (
+				G_string("(")
+				+ "(RWTexture2D<"
+				+ tree.object_implementation.bodies[0].content
+				+ ">)"
+				+ getter
+				+ ")"
+			);
+			break;
+		}
+		case E_nsl_resource_type::RW_TEXTURE_2D_ARRAY:
+		{
+			return  (
+				G_string("(")
+				+ "(RWTexture2DArray<"
+				+ tree.object_implementation.bodies[0].content
+				+ ">)"
+				+ getter
+				+ ")"
+			);
+			break;
+		}
+		case E_nsl_resource_type::RW_TEXTURE_3D:
+		{
+			return  (
+				G_string("(")
+				+ "(RWTexture3D<"
+				+ tree.object_implementation.bodies[0].content
+				+ ">)"
+				+ getter
+				+ ")"
+			);
+			break;
+		}
+		}
+
+		return eastl::nullopt;
+	}
+#endif
+
 
 
 	F_nsl_output_hlsl_6_7::F_nsl_output_hlsl_6_7(
@@ -10402,25 +11607,25 @@ namespace nrhi {
 		name_to_resource_type_class_map_["RWTexture3D"] = E_nsl_resource_type_class::UNORDERED_ACCESS;
 
 		// setup name_to_resource_type_map_
-		name_to_resource_type_map_["ConstantBuffer"] = E_nsl_resource_type::ConstantBuffer;
-		name_to_resource_type_map_["Buffer"] = E_nsl_resource_type::Buffer;
-		name_to_resource_type_map_["ByteAddressBuffer"] = E_nsl_resource_type::ByteAddressBuffer;
-		name_to_resource_type_map_["StructuredBuffer"] = E_nsl_resource_type::StructuredBuffer;
-		name_to_resource_type_map_["Texture1D"] = E_nsl_resource_type::Texture1D;
-		name_to_resource_type_map_["Texture1DArray"] = E_nsl_resource_type::Texture1DArray;
-		name_to_resource_type_map_["Texture2D"] = E_nsl_resource_type::Texture2D;
-		name_to_resource_type_map_["Texture2DArray"] = E_nsl_resource_type::Texture2DArray;
-		name_to_resource_type_map_["Texture3D"] = E_nsl_resource_type::Texture3D;
-		name_to_resource_type_map_["TextureCube"] = E_nsl_resource_type::TextureCube;
-		name_to_resource_type_map_["TextureCubeArray"] = E_nsl_resource_type::TextureCubeArray;
-		name_to_resource_type_map_["RWBuffer"] = E_nsl_resource_type::RWBuffer;
-		name_to_resource_type_map_["RWByteAddressBuffer"] = E_nsl_resource_type::RWByteAddressBuffer;
-		name_to_resource_type_map_["RWStructuredBuffer"] = E_nsl_resource_type::RWStructuredBuffer;
-		name_to_resource_type_map_["RWTexture1D"] = E_nsl_resource_type::RWTexture1D;
-		name_to_resource_type_map_["RWTexture1DArray"] = E_nsl_resource_type::RWTexture1DArray;
-		name_to_resource_type_map_["RWTexture2D"] = E_nsl_resource_type::RWTexture2D;
-		name_to_resource_type_map_["RWTexture2DArray"] = E_nsl_resource_type::RWTexture2DArray;
-		name_to_resource_type_map_["RWTexture3D"] = E_nsl_resource_type::RWTexture3D;
+		name_to_resource_type_map_["ConstantBuffer"] = E_nsl_resource_type::CONSTANT_BUFFER;
+		name_to_resource_type_map_["Buffer"] = E_nsl_resource_type::BUFFER;
+		name_to_resource_type_map_["ByteAddressBuffer"] = E_nsl_resource_type::BYTE_ADDRESS_BUFFER;
+		name_to_resource_type_map_["StructuredBuffer"] = E_nsl_resource_type::STRUCTURED_BUFFER;
+		name_to_resource_type_map_["Texture1D"] = E_nsl_resource_type::TEXTURE_1D;
+		name_to_resource_type_map_["Texture1DArray"] = E_nsl_resource_type::TEXTURE_1D_ARRAY;
+		name_to_resource_type_map_["Texture2D"] = E_nsl_resource_type::TEXTURE_2D;
+		name_to_resource_type_map_["Texture2DArray"] = E_nsl_resource_type::TEXTURE_2D_ARRAY;
+		name_to_resource_type_map_["Texture3D"] = E_nsl_resource_type::TEXTURE_3D;
+		name_to_resource_type_map_["TextureCube"] = E_nsl_resource_type::TEXTURE_CUBE;
+		name_to_resource_type_map_["TextureCubeArray"] = E_nsl_resource_type::TEXTURE_CUBE_ARRAY;
+		name_to_resource_type_map_["RWBuffer"] = E_nsl_resource_type::RW_BUFFER;
+		name_to_resource_type_map_["RWByteAddressBuffer"] = E_nsl_resource_type::RW_BYTE_ADDRESS_BUFFER;
+		name_to_resource_type_map_["RWStructuredBuffer"] = E_nsl_resource_type::RW_STRUCTURED_BUFFER;
+		name_to_resource_type_map_["RWTexture1D"] = E_nsl_resource_type::RW_TEXTURE_1D;
+		name_to_resource_type_map_["RWTexture1DArray"] = E_nsl_resource_type::RW_TEXTURE_1D_ARRAY;
+		name_to_resource_type_map_["RWTexture2D"] = E_nsl_resource_type::RW_TEXTURE_2D;
+		name_to_resource_type_map_["RWTexture2DArray"] = E_nsl_resource_type::RW_TEXTURE_2D_ARRAY;
+		name_to_resource_type_map_["RWTexture3D"] = E_nsl_resource_type::RW_TEXTURE_3D;
 	}
 	F_nsl_resource_manager::~F_nsl_resource_manager() {
 	}

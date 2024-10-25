@@ -1,3 +1,4 @@
 
 add_subdirectory(hello_nsl)
 add_subdirectory(hello_nsl_5_1)
+add_subdirectory(hello_nsl_6_6)

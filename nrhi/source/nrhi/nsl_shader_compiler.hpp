@@ -361,25 +361,25 @@ namespace nrhi {
 
 	enum class E_nsl_resource_type {
 		NONE,
-		ConstantBuffer,
-		Buffer,
-		ByteAddressBuffer,
-		StructuredBuffer,
-		Texture1D,
-		Texture1DArray,
-		Texture2D,
-		Texture2DArray,
-		Texture3D,
-		TextureCube,
-		TextureCubeArray,
-		RWBuffer,
-		RWByteAddressBuffer,
-		RWStructuredBuffer,
-		RWTexture1D,
-		RWTexture1DArray,
-		RWTexture2D,
-		RWTexture2DArray,
-		RWTexture3D
+		CONSTANT_BUFFER,
+		BUFFER,
+		BYTE_ADDRESS_BUFFER,
+		STRUCTURED_BUFFER,
+		TEXTURE_1D,
+		TEXTURE_1D_ARRAY,
+		TEXTURE_2D,
+		TEXTURE_2D_ARRAY,
+		TEXTURE_3D,
+		TEXTURE_CUBE,
+		TEXTURE_CUBE_ARRAY,
+		RW_BUFFER,
+		RW_BYTE_ADDRESS_BUFFER,
+		RW_STRUCTURED_BUFFER,
+		RW_TEXTURE_1D,
+		RW_TEXTURE_1D_ARRAY,
+		RW_TEXTURE_2D,
+		RW_TEXTURE_2D_ARRAY,
+		RW_TEXTURE_3D
 	};
 	enum class E_nsl_resource_type_class {
 		NONE,
@@ -2281,6 +2281,473 @@ namespace nrhi {
 
 
 
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+	class NRHI_API F_nsl_descriptor_heap_getter_object : public A_nsl_object
+	{
+	private:
+		ED_descriptor_heap_type descriptor_heap_type_;
+		E_nsl_resource_type resource_type_ = E_nsl_resource_type::NONE;
+
+	public:
+		NCPP_FORCE_INLINE ED_descriptor_heap_type descriptor_heap_type() const noexcept { return descriptor_heap_type_; }
+		NCPP_FORCE_INLINE E_nsl_resource_type resource_type() const noexcept { return resource_type_; }
+
+
+
+	public:
+		F_nsl_descriptor_heap_getter_object(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			TKPA_valid<A_nsl_object_type> type_p,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			ED_descriptor_heap_type descriptor_heap_type = ED_descriptor_heap_type::CONSTANT_BUFFER_SHADER_RESOURCE_UNORDERED_ACCESS,
+			E_nsl_resource_type resource_type = E_nsl_resource_type::NONE,
+			const G_string& name = ""
+		);
+		virtual ~F_nsl_descriptor_heap_getter_object() = default;
+
+	public:
+		NCPP_OBJECT(F_nsl_descriptor_heap_getter_object);
+
+	public:
+		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
+			F_nsl_context& context,
+			TK_valid<F_nsl_translation_unit> unit_p,
+			TG_vector<F_nsl_ast_tree>& trees,
+			sz index,
+			F_nsl_error_stack* error_stack_p
+		) override;
+		virtual eastl::optional<G_string> apply(
+			const F_nsl_ast_tree& tree
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_descriptor_heap_getter_object_type : public A_nsl_object_type
+	{
+	public:
+		F_nsl_descriptor_heap_getter_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			const G_string& name = "$",
+			b8 is_object_name_required = false,
+			u32 min_body_count = 1,
+			u32 max_body_count = 1
+		);
+		virtual ~F_nsl_descriptor_heap_getter_object_type() = default;
+
+	public:
+		NCPP_OBJECT(F_nsl_descriptor_heap_getter_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_constant_buffer_descriptor_heap_getter_object_type : public A_nsl_object_type
+	{
+	public:
+		F_nsl_constant_buffer_descriptor_heap_getter_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_constant_buffer_descriptor_heap_getter_object_type() = default;
+
+	public:
+		NCPP_OBJECT(F_nsl_constant_buffer_descriptor_heap_getter_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_buffer_descriptor_heap_getter_object_type : public A_nsl_object_type
+	{
+	public:
+		F_nsl_buffer_descriptor_heap_getter_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_buffer_descriptor_heap_getter_object_type() = default;
+
+	public:
+		NCPP_OBJECT(F_nsl_buffer_descriptor_heap_getter_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_byte_address_buffer_descriptor_heap_getter_object_type : public A_nsl_object_type
+	{
+	public:
+		F_nsl_byte_address_buffer_descriptor_heap_getter_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_byte_address_buffer_descriptor_heap_getter_object_type() = default;
+
+	public:
+		NCPP_OBJECT(F_nsl_byte_address_buffer_descriptor_heap_getter_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_structured_buffer_descriptor_heap_getter_object_type : public A_nsl_object_type
+	{
+	public:
+		F_nsl_structured_buffer_descriptor_heap_getter_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_structured_buffer_descriptor_heap_getter_object_type() = default;
+
+	public:
+		NCPP_OBJECT(F_nsl_structured_buffer_descriptor_heap_getter_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_texture_1d_descriptor_heap_getter_object_type : public A_nsl_object_type
+	{
+	public:
+		F_nsl_texture_1d_descriptor_heap_getter_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_texture_1d_descriptor_heap_getter_object_type() = default;
+
+	public:
+		NCPP_OBJECT(F_nsl_texture_1d_descriptor_heap_getter_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_texture_1d_array_descriptor_heap_getter_object_type : public A_nsl_object_type
+	{
+	public:
+		F_nsl_texture_1d_array_descriptor_heap_getter_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_texture_1d_array_descriptor_heap_getter_object_type() = default;
+
+	public:
+		NCPP_OBJECT(F_nsl_texture_1d_array_descriptor_heap_getter_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_texture_2d_descriptor_heap_getter_object_type : public A_nsl_object_type
+	{
+	public:
+		F_nsl_texture_2d_descriptor_heap_getter_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_texture_2d_descriptor_heap_getter_object_type() = default;
+
+	public:
+		NCPP_OBJECT(F_nsl_texture_2d_descriptor_heap_getter_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_texture_2d_array_descriptor_heap_getter_object_type : public A_nsl_object_type
+	{
+	public:
+		F_nsl_texture_2d_array_descriptor_heap_getter_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_texture_2d_array_descriptor_heap_getter_object_type() = default;
+
+	public:
+		NCPP_OBJECT(F_nsl_texture_2d_array_descriptor_heap_getter_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_texture_3d_descriptor_heap_getter_object_type : public A_nsl_object_type
+	{
+	public:
+		F_nsl_texture_3d_descriptor_heap_getter_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_texture_3d_descriptor_heap_getter_object_type() = default;
+
+	public:
+		NCPP_OBJECT(F_nsl_texture_3d_descriptor_heap_getter_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_texture_cube_descriptor_heap_getter_object_type : public A_nsl_object_type
+	{
+	public:
+		F_nsl_texture_cube_descriptor_heap_getter_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_texture_cube_descriptor_heap_getter_object_type() = default;
+
+	public:
+		NCPP_OBJECT(F_nsl_texture_cube_descriptor_heap_getter_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_texture_cube_array_descriptor_heap_getter_object_type : public A_nsl_object_type
+	{
+	public:
+		F_nsl_texture_cube_array_descriptor_heap_getter_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_texture_cube_array_descriptor_heap_getter_object_type() = default;
+
+	public:
+		NCPP_OBJECT(F_nsl_texture_cube_array_descriptor_heap_getter_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_rw_buffer_descriptor_heap_getter_object_type : public A_nsl_object_type
+	{
+	public:
+		F_nsl_rw_buffer_descriptor_heap_getter_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_rw_buffer_descriptor_heap_getter_object_type() = default;
+
+	public:
+		NCPP_OBJECT(F_nsl_rw_buffer_descriptor_heap_getter_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_rw_byte_address_buffer_descriptor_heap_getter_object_type : public A_nsl_object_type
+	{
+	public:
+		F_nsl_rw_byte_address_buffer_descriptor_heap_getter_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_rw_byte_address_buffer_descriptor_heap_getter_object_type() = default;
+
+	public:
+		NCPP_OBJECT(F_nsl_rw_byte_address_buffer_descriptor_heap_getter_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_rw_structured_buffer_descriptor_heap_getter_object_type : public A_nsl_object_type
+	{
+	public:
+		F_nsl_rw_structured_buffer_descriptor_heap_getter_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_rw_structured_buffer_descriptor_heap_getter_object_type() = default;
+
+	public:
+		NCPP_OBJECT(F_nsl_rw_structured_buffer_descriptor_heap_getter_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_rw_texture_1d_descriptor_heap_getter_object_type : public A_nsl_object_type
+	{
+	public:
+		F_nsl_rw_texture_1d_descriptor_heap_getter_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_rw_texture_1d_descriptor_heap_getter_object_type() = default;
+
+	public:
+		NCPP_OBJECT(F_nsl_rw_texture_1d_descriptor_heap_getter_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_rw_texture_1d_array_descriptor_heap_getter_object_type : public A_nsl_object_type
+	{
+	public:
+		F_nsl_rw_texture_1d_array_descriptor_heap_getter_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_rw_texture_1d_array_descriptor_heap_getter_object_type() = default;
+
+	public:
+		NCPP_OBJECT(F_nsl_rw_texture_1d_array_descriptor_heap_getter_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_rw_texture_2d_descriptor_heap_getter_object_type : public A_nsl_object_type
+	{
+	public:
+		F_nsl_rw_texture_2d_descriptor_heap_getter_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_rw_texture_2d_descriptor_heap_getter_object_type() = default;
+
+	public:
+		NCPP_OBJECT(F_nsl_rw_texture_2d_descriptor_heap_getter_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_rw_texture_2d_array_descriptor_heap_getter_object_type : public A_nsl_object_type
+	{
+	public:
+		F_nsl_rw_texture_2d_array_descriptor_heap_getter_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_rw_texture_2d_array_descriptor_heap_getter_object_type() = default;
+
+	public:
+		NCPP_OBJECT(F_nsl_rw_texture_2d_array_descriptor_heap_getter_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_rw_texture_3d_descriptor_heap_getter_object_type : public A_nsl_object_type
+	{
+	public:
+		F_nsl_rw_texture_3d_descriptor_heap_getter_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_rw_texture_3d_descriptor_heap_getter_object_type() = default;
+
+	public:
+		NCPP_OBJECT(F_nsl_rw_texture_3d_descriptor_heap_getter_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+#endif
+
+
+
 	class NRHI_API A_nsl_shader_object : public A_nsl_object {
 
 	private:
@@ -3548,7 +4015,13 @@ namespace nrhi {
 			const G_string& body,
 			const G_string& pre_shader_keyword
 		) = 0;
-
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		virtual eastl::optional<G_string> descriptor_heap_getter_to_string(
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			const F_nsl_ast_tree& tree,
+			const G_string& index_str
+		);
+#endif
 	};
 
 
@@ -3872,6 +4345,15 @@ namespace nrhi {
 
 	private:
 		void register_data_types_internal();
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+	public:
+		virtual eastl::optional<G_string> descriptor_heap_getter_to_string(
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			const F_nsl_ast_tree& tree,
+			const G_string& index_str
+		) override;
+#endif
 	};
 
 
