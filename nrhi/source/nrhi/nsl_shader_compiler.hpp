@@ -2348,6 +2348,27 @@ namespace nrhi {
 
 
 
+	class NRHI_API F_nsl_sampler_state_descriptor_heap_getter_object_type : public A_nsl_object_type
+	{
+	public:
+		F_nsl_sampler_state_descriptor_heap_getter_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_sampler_state_descriptor_heap_getter_object_type() = default;
+
+	public:
+		NCPP_OBJECT(F_nsl_sampler_state_descriptor_heap_getter_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+
+
+
 	class NRHI_API F_nsl_constant_buffer_descriptor_heap_getter_object_type : public A_nsl_object_type
 	{
 	public:

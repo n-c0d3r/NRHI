@@ -6714,6 +6714,45 @@ namespace nrhi {
 
 
 
+	F_nsl_sampler_state_descriptor_heap_getter_object_type::F_nsl_sampler_state_descriptor_heap_getter_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"$SamplerState",
+			false,
+			1,
+			1
+		)
+	{
+	}
+
+	TK<A_nsl_object> F_nsl_sampler_state_descriptor_heap_getter_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	)
+	{
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_descriptor_heap_getter_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				ED_descriptor_heap_type::SAMPLER,
+				E_nsl_resource_type::NONE,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
 	F_nsl_constant_buffer_descriptor_heap_getter_object_type::F_nsl_constant_buffer_descriptor_heap_getter_object_type(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
 	) :
@@ -8374,6 +8413,9 @@ namespace nrhi {
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 		register_type(
 			TU<F_nsl_descriptor_heap_getter_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_sampler_state_descriptor_heap_getter_object_type>()(shader_compiler_p_)
 		);
 		register_type(
 			TU<F_nsl_constant_buffer_descriptor_heap_getter_object_type>()(shader_compiler_p_)
