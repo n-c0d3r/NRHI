@@ -716,13 +716,13 @@ namespace nrhi {
 
 	};
 
-	enum class E_nsl_type_class {
-
+	enum class E_nsl_type_class
+	{
 		NONE,
 		PRIMITIVE,
 		SEMANTIC,
-		STRUCTURE
-
+		STRUCTURE,
+		VIRTUAL
 	};
 
 	using F_nsl_object_config = TG_unordered_map<G_string, F_nsl_info_tree_reader>;
@@ -3665,6 +3665,7 @@ namespace nrhi {
 		TG_unordered_map<G_string, F_nsl_semantic_info> name_to_semantic_info_map_;
 		TG_unordered_map<G_string, F_nsl_structure_info> name_to_structure_info_map_;
 		TG_unordered_map<G_string, F_nsl_enumeration_info> name_to_enumeration_info_map_;
+		TG_unordered_set<G_string> virtual_name_set_;
 
 	public:
 		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
@@ -3687,6 +3688,7 @@ namespace nrhi {
 		NCPP_FORCE_INLINE const TG_unordered_map<G_string, F_nsl_semantic_info>& name_to_semantic_info_map() const noexcept { return name_to_semantic_info_map_; }
 		NCPP_FORCE_INLINE const TG_unordered_map<G_string, F_nsl_structure_info>& name_to_structure_info_map() const noexcept { return name_to_structure_info_map_; }
 		NCPP_FORCE_INLINE const TG_unordered_map<G_string, F_nsl_enumeration_info>& name_to_enumeration_info_map() const noexcept { return name_to_enumeration_info_map_; }
+		NCPP_FORCE_INLINE const auto& virtual_name_set() const noexcept { return virtual_name_set_; }
 
 
 
@@ -3982,6 +3984,40 @@ namespace nrhi {
 			name_to_enumeration_info_map_.erase(it);
 		}
 
+	public:
+		NCPP_FORCE_INLINE b8 is_virtual(const G_string& name) const
+		{
+			auto it = virtual_name_set_.find(name);
+
+			return (it != virtual_name_set_.end());
+		}
+		NCPP_FORCE_INLINE void register_virtual(const G_string& name)
+		{
+			NCPP_ASSERT(virtual_name_set_.find(name) == virtual_name_set_.end()) << T_cout_value(name) << " already exists";
+
+			virtual_name_set_.insert(name);
+
+			register_size(name, 0);
+			register_alignment(name, 0);
+			register_type_class(name, E_nsl_type_class::VIRTUAL);
+			register_primitive_data_type(name, E_nsl_primitive_data_type::NONE);
+			register_element_format(name, E_nsl_element_format::NONE);
+			register_element_count(name, 0);
+		}
+		NCPP_FORCE_INLINE void deregister_virtual(const G_string& name)
+		{
+			NCPP_ASSERT(virtual_name_set_.find(name) != virtual_name_set_.end()) << T_cout_value(name) << " is not exists";
+
+			virtual_name_set_.erase(virtual_name_set_.find(name));
+
+			deregister_size(name);
+			deregister_alignment(name);
+			deregister_type_class(name);
+			deregister_primitive_data_type(name);
+			deregister_element_format(name);
+			deregister_element_count(name);
+		}
+
 	private:
 		F_nsl_semantic_info process_semantic_info(const G_string& name, const F_nsl_semantic_info& semantic_info);
 		F_nsl_structure_info process_structure_info(const G_string& name, const F_nsl_structure_info& structure_info);
@@ -4191,6 +4227,11 @@ namespace nrhi {
 			const G_string& sub_name_keyword = ""
 		);
 
+	public:
+		virtual eastl::optional<G_string> data_type_selection_to_string(
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			const F_nsl_data_type_selection& data_type_selection
+		);
 	};
 
 

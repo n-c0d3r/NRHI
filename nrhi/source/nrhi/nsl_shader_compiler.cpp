@@ -10704,25 +10704,28 @@ namespace nrhi {
 
 		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
 
-		for(const auto& argument_member : structure.second.argument_members) {
-
-			G_string argument_type = argument_member.argument.type_selection.name;
-
+		for(const auto& argument_member : structure.second.argument_members)
+		{
 			b8 is_semantic = data_type_manager_p->is_name_has_semantic_info(argument_member.argument.type_selection.name);
 
 			G_string semantic_option;
 
 			if(is_semantic) {
 
-				const auto& semantic_info = data_type_manager_p->semantic_info(argument_type);
+				const auto& semantic_info = data_type_manager_p->semantic_info(argument_member.argument.type_selection.name);
 
 				semantic_option = ": " + semantic_info.target_binding;
-
-				argument_type = semantic_info.target_type;
 			}
 
+			auto argument_type_str_opt = data_type_selection_to_string(
+				translation_unit_p,
+				argument_member.argument.type_selection
+			);
+			if(!argument_type_str_opt)
+				return eastl::nullopt;
+
 			argument_member_declarations += (
-				argument_type
+				argument_type_str_opt.value()
 				+ " "
 				+ argument_member.argument.name
 			);
@@ -10790,20 +10793,23 @@ namespace nrhi {
 		b8 is_first_data_param = true;
 		for(const auto& data_param : shader_object_p->data_params()) {
 
-			G_string argument_type = data_param.argument.type_selection.name;
-
-			b8 is_semantic = data_type_manager_p->is_name_has_semantic_info(argument_type);
+			b8 is_semantic = data_type_manager_p->is_name_has_semantic_info(data_param.argument.type_selection.name);
 
 			G_string semantic_option;
 
 			if(is_semantic) {
 
-				const auto& semantic_info = data_type_manager_p->semantic_info(argument_type);
+				const auto& semantic_info = data_type_manager_p->semantic_info(data_param.argument.type_selection.name);
 
 				semantic_option = ": " + semantic_info.target_binding;
-
-				argument_type = semantic_info.target_type;
 			}
+
+			auto argument_type_str_opt = data_type_selection_to_string(
+				translation_unit_p,
+				data_param.argument.type_selection
+			);
+			if(!argument_type_str_opt)
+				return eastl::nullopt;
 
 			if(!is_first_data_param) {
 
@@ -10829,7 +10835,7 @@ namespace nrhi {
 				data_param_declarations += "payload ";
 
 			data_param_declarations += (
-				argument_type
+				argument_type_str_opt.value()
 				+ " "
 				+ data_param.argument.name
 			);
@@ -11030,6 +11036,53 @@ namespace nrhi {
 		result += "#endif\n";
 
 		return std::move(result);
+	}
+
+	eastl::optional<G_string> A_nsl_output_hlsl::data_type_selection_to_string(
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const F_nsl_data_type_selection& data_type_selection
+	)
+	{
+		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
+		if(data_type_manager_p->is_name_has_semantic_info(data_type_selection.name)) {
+
+			const auto& semantic_info = data_type_manager_p->semantic_info(data_type_selection.name);
+
+			return semantic_info.target_type;
+		}
+
+		G_string result = data_type_selection.name;
+
+		u32 child_count = data_type_selection.childs.size();
+
+		if(child_count)
+		{
+			result += "<";
+		}
+
+		for(u32 i = 0; i < child_count; ++i)
+		{
+			auto child_value_opt = data_type_selection_to_string(
+				translation_unit_p,
+				data_type_selection.childs[i]
+			);
+			if(!child_value_opt)
+				return eastl::nullopt;
+
+			result += child_value_opt.value();
+
+			if(i < (child_count - 1))
+			{
+				result += ", ";
+			}
+		}
+
+		if(child_count)
+		{
+			result += ">";
+		}
+
+		return eastl::move(result);
 	}
 
 
