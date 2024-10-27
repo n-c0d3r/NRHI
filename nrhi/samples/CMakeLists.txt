@@ -23,5 +23,8 @@ if(NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION)
     add_subdirectory(pipeline_state_with_root_signature)
     add_subdirectory(root_signature)
 endif()
+if(NRHI_DRIVER_SUPPORT_WORK_GRAPHS)
+    add_subdirectory(work_graphs)
+endif()
 
 add_subdirectory(nsl)

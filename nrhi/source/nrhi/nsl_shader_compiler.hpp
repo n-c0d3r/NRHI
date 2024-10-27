@@ -80,6 +80,7 @@ namespace nrhi {
 		HLSL_6_5,
 		HLSL_6_6,
 		HLSL_6_7,
+		HLSL_6_8
 
 	};
 
@@ -1205,9 +1206,11 @@ namespace nrhi {
 		u32 shader_count = 0;
 
 		TG_vector<F_shader_binary> shader_binaries;
+		F_shader_binary unified_shader_binary;
 
 	public:
 		G_string build(u32 shader_index) const;
+		G_string build_library() const;
 
 		NCPP_FORCE_INLINE b8 is_finalized() const noexcept {
 
@@ -1215,6 +1218,8 @@ namespace nrhi {
 		}
 		void finalize();
 		void finalize_and_release_src_content();
+		void finalize_library();
+		void finalize_library_and_release_src_content();
 
 	};
 
@@ -4117,7 +4122,7 @@ namespace nrhi {
 				auto highest_shader_model = HD_directx12_device::hlsl_highest_shader_model(device_p);
 
 				if(highest_shader_model.first > 6)
-					return E_nsl_output_language::HLSL_6_7;
+					return E_nsl_output_language::HLSL_6_8;
 
 				if(highest_shader_model.first == 6)
 				{
@@ -4137,6 +4142,8 @@ namespace nrhi {
 						return E_nsl_output_language::HLSL_6_6;
 					if(highest_shader_model.second == 7)
 						return E_nsl_output_language::HLSL_6_7;
+					if(highest_shader_model.second == 8)
+						return E_nsl_output_language::HLSL_6_8;
 				}
 
 				return E_nsl_output_language::HLSL_5_1;
@@ -4457,6 +4464,21 @@ namespace nrhi {
 
 	private:
 		void register_data_types_internal();
+	};
+
+
+
+	class NRHI_API F_nsl_output_hlsl_6_8 : public F_nsl_output_hlsl_6_7 {
+
+	public:
+		F_nsl_output_hlsl_6_8(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			E_nsl_output_language output_language_as_enum = E_nsl_output_language::HLSL_6_8
+		);
+		virtual ~F_nsl_output_hlsl_6_8();
+
+	public:
+		NCPP_OBJECT(F_nsl_output_hlsl_6_8);
 	};
 
 

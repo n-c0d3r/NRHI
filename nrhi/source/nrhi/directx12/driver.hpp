@@ -39,50 +39,55 @@
 
 
 
-namespace nrhi {
-
-    class NRHI_API HD_directx12_driver {
-
+namespace nrhi
+{
+    class NRHI_API HD_directx12_driver
+	{
     public:
-		static constexpr b8 is_interface_support_simple_resource_binding() { return false; }
-		static constexpr b8 is_interface_support_simple_indirect_commands() { return false; }
-		static constexpr b8 is_interface_support_simple_resource_management() { return false; }
-		static constexpr b8 is_interface_support_simple_work_submission() { return false; }
+		static constexpr b8 interface_support_simple_resource_binding() { return false; }
+		static constexpr b8 interface_support_simple_indirect_commands() { return false; }
+		static constexpr b8 interface_support_simple_resource_management() { return false; }
+		static constexpr b8 interface_support_simple_work_submission() { return false; }
 
-		static constexpr b8 is_interface_support_advanced_resource_binding() { return true; }
-		static constexpr b8 is_interface_support_advanced_indirect_commands() { return true; }
-		static constexpr b8 is_interface_support_advanced_resource_management() { return true; }
-		static constexpr b8 is_interface_support_advanced_work_submission() { return true; }
+		static constexpr b8 interface_support_advanced_resource_binding() { return true; }
+		static constexpr b8 interface_support_advanced_indirect_commands() { return true; }
+		static constexpr b8 interface_support_advanced_resource_management() { return true; }
+		static constexpr b8 interface_support_advanced_work_submission() { return true; }
 
 	public:
-		static constexpr b8 is_full_support_simple_resource_binding() { return false; }
-		static constexpr b8 is_full_support_simple_indirect_commands() { return false; }
-		static constexpr b8 is_full_support_simple_resource_management() { return false; }
-		static constexpr b8 is_full_support_simple_work_submission() { return false; }
+		static constexpr b8 full_support_simple_resource_binding() { return false; }
+		static constexpr b8 full_support_simple_indirect_commands() { return false; }
+		static constexpr b8 full_support_simple_resource_management() { return false; }
+		static constexpr b8 full_support_simple_work_submission() { return false; }
 
-		static constexpr b8 is_full_support_advanced_resource_binding() { return true; }
-		static constexpr b8 is_full_support_advanced_indirect_commands() { return true; }
-		static constexpr b8 is_full_support_advanced_resource_management() { return true; }
-		static constexpr b8 is_full_support_advanced_work_submission() { return true; }
+		static constexpr b8 full_support_advanced_resource_binding() { return true; }
+		static constexpr b8 full_support_advanced_indirect_commands() { return true; }
+		static constexpr b8 full_support_advanced_resource_management() { return true; }
+		static constexpr b8 full_support_advanced_work_submission() { return true; }
 
 	public:
 #ifdef NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
-		static constexpr b8 is_support_simple_resource_binding() { return true; }
-		static constexpr b8 is_support_simple_indirect_commands() { return true; }
-		static constexpr b8 is_support_simple_resource_management() { return true; }
-		static constexpr b8 is_support_simple_work_submission() { return true; }
+		static constexpr b8 support_simple_resource_binding() { return true; }
+		static constexpr b8 support_simple_indirect_commands() { return true; }
+		static constexpr b8 support_simple_resource_management() { return true; }
+		static constexpr b8 support_simple_work_submission() { return true; }
 #else
-		static constexpr b8 is_support_simple_resource_binding() { return false; }
-		static constexpr b8 is_support_simple_indirect_commands() { return false; }
-		static constexpr b8 is_support_simple_resource_management() { return false; }
-		static constexpr b8 is_support_simple_work_submission() { return false; }
+		static constexpr b8 support_simple_resource_binding() { return false; }
+		static constexpr b8 support_simple_indirect_commands() { return false; }
+		static constexpr b8 support_simple_resource_management() { return false; }
+		static constexpr b8 support_simple_work_submission() { return false; }
 #endif // NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
 
-        static constexpr b8 is_support_advanced_resource_binding() { return true; }
-        static constexpr b8 is_support_advanced_indirect_commands() { return true; }
-        static constexpr b8 is_support_advanced_resource_management() { return true; }
-        static constexpr b8 is_support_advanced_work_submission() { return true; }
+        static constexpr b8 support_advanced_resource_binding() { return true; }
+        static constexpr b8 support_advanced_indirect_commands() { return true; }
+        static constexpr b8 support_advanced_resource_management() { return true; }
+        static constexpr b8 support_advanced_work_submission() { return true; }
 
+    public:
+        static constexpr b8 support_mesh_shader() { return true; }
+        static constexpr b8 support_amplification_shader() { return true; }
+
+    public:
+        static constexpr b8 support_work_graphs() { return true; }
     };
-
 }

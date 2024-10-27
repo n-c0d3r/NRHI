@@ -79,12 +79,69 @@ namespace nrhi {
 			return ED_resource_heap_tier::B;
 		}
 	}
+	ED_mesh_shader_tier HD_directx12_device::mesh_shader_tier(
+		TKPA_valid<A_device> device_p
+	)
+	{
+		D3D12_FEATURE_DATA_D3D12_OPTIONS7 d3d12_feature_data_d3d12_options;
 
-	struct eastl::pair<u32, u32> HD_directx12_device::hlsl_highest_shader_model(
+		device_p.T_cast<F_directx12_device>()->d3d12_device_p()->CheckFeatureSupport(
+			D3D12_FEATURE_D3D12_OPTIONS7,
+			&d3d12_feature_data_d3d12_options,
+			sizeof(d3d12_feature_data_d3d12_options)
+		);
+
+		switch (d3d12_feature_data_d3d12_options.MeshShaderTier)
+		{
+		case D3D12_MESH_SHADER_TIER_NOT_SUPPORTED:
+			return ED_mesh_shader_tier::NOT_SUPPORTED;
+		case D3D12_MESH_SHADER_TIER_1:
+			return ED_mesh_shader_tier::A;
+		}
+	}
+	ED_work_graphs_tier HD_directx12_device::work_graphs_tier(
+		TKPA_valid<A_device> device_p
+	)
+	{
+		D3D12_FEATURE_DATA_D3D12_OPTIONS21 d3d12_feature_data_d3d12_options;
+
+		device_p.T_cast<F_directx12_device>()->d3d12_device_p()->CheckFeatureSupport(
+			D3D12_FEATURE_D3D12_OPTIONS21,
+			&d3d12_feature_data_d3d12_options,
+			sizeof(d3d12_feature_data_d3d12_options)
+		);
+
+		switch (d3d12_feature_data_d3d12_options.WorkGraphsTier)
+		{
+		case D3D12_WORK_GRAPHS_TIER_NOT_SUPPORTED:
+			return ED_work_graphs_tier::NOT_SUPPORTED;
+		case D3D12_WORK_GRAPHS_TIER_1_0:
+			return ED_work_graphs_tier::A;
+		}
+	}
+
+	eastl::pair<u32, u32> HD_directx12_device::hlsl_highest_shader_model(
 		TKPA_valid<A_device> device_p
 	)
 	{
 		auto d3d12_device_p = device_p.T_cast<F_directx12_device>()->d3d12_device_p();
+
+		{
+			D3D12_FEATURE_DATA_SHADER_MODEL shader_model = {};
+			shader_model.HighestShaderModel = D3D_SHADER_MODEL_6_8;
+			if(
+				SUCCEEDED(
+					d3d12_device_p->CheckFeatureSupport(
+						D3D12_FEATURE_SHADER_MODEL,
+						&shader_model,
+						sizeof(shader_model)
+					)
+				)
+			)
+			{
+				return { 6, 8 };
+			}
+		}
 
 		{
 			D3D12_FEATURE_DATA_SHADER_MODEL shader_model = {};

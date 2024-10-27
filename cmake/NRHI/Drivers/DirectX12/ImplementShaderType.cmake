@@ -23,6 +23,7 @@ NRHI_EnumHelper_CreateEnum(
         COMPUTE 3
         AMPLIFICATION 4
         MESH 5
+        NODE 6
 )
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement shader type done")

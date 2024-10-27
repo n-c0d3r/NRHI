@@ -5,8 +5,8 @@
 
 namespace nrhi {
 
-	G_string F_nsl_compiled_result::build(u32 shader_index) const {
-
+	G_string F_nsl_compiled_result::build(u32 shader_index) const
+	{
 		G_string result;
 
 		u32 shader_count = reflection.shaders.size();
@@ -62,6 +62,9 @@ namespace nrhi {
 
 				u32 actual_slot = sampler_state.actual_slots[shader_index];
 
+				if(actual_slot == -1)
+					continue;
+
 				G_string register_slot_macro = (
 					"NSL_REGISTER_SLOT_"
 					+ sampler_state.name
@@ -86,6 +89,9 @@ namespace nrhi {
 				const auto& sampler_state = reflection.sampler_states[i];
 
 				u32 actual_slot_space = sampler_state.actual_slot_spaces[shader_index];
+
+				if(actual_slot_space == -1)
+					continue;
 
 				G_string register_slot_space_macro = (
 					"NSL_REGISTER_SLOT_SPACE_"
@@ -162,6 +168,173 @@ namespace nrhi {
 
 		return result;
 	}
+	G_string F_nsl_compiled_result::build_library() const
+	{
+		G_string result;
+
+		auto& shader_reflections = reflection.shaders;
+
+		u32 shader_count = reflection.shaders.size();
+		if(!shader_count)
+			return {};
+
+		// define shaders
+		for(u32 shader_index = 0; shader_index < shader_count; ++shader_index)
+		{
+			NCPP_ASSERT(shader_index < shader_count)
+				<< "shader index out of bound";
+
+			result += (
+				"#define NSL_SHADER_"
+				+ shader_reflections[shader_index].name
+				+ "\n"
+			);
+		}
+
+		// override sampler state actual slots
+		{
+			u32 sample_state_count = reflection.sampler_states.size();
+
+			for (u32 i = 0; i < sample_state_count; ++i)
+			{
+				const auto& sampler_state = reflection.sampler_states[i];
+
+				u32 actual_slot = sampler_state.actual_slots[0];
+
+#ifdef NCPP_ENABLE_ASSERT
+				for(u32 shader_index = 1; shader_index < shader_count; ++shader_index)
+				{
+					NCPP_ASSERT(sampler_state.actual_slots[shader_index] == actual_slot) << "invalid slots in shader library";
+				}
+#endif
+
+				if(actual_slot == -1)
+					continue;
+
+				G_string register_slot_macro = (
+					"NSL_REGISTER_SLOT_"
+					+ sampler_state.name
+				);
+
+				result += (
+					"#define "
+					+ register_slot_macro
+					+ " "
+					+ G_to_string(actual_slot)
+					+ "\n"
+				);
+			}
+		}
+
+		// override sampler state actual slot spaces
+		{
+			u32 sample_state_count = reflection.sampler_states.size();
+
+			for (u32 i = 0; i < sample_state_count; ++i)
+			{
+				const auto& sampler_state = reflection.sampler_states[i];
+
+				u32 actual_slot_space = sampler_state.actual_slot_spaces[0];
+
+#ifdef NCPP_ENABLE_ASSERT
+				for(u32 shader_index = 1; shader_index < shader_count; ++shader_index)
+				{
+					NCPP_ASSERT(sampler_state.actual_slot_spaces[shader_index] == actual_slot_space) << "invalid slot spaces in shader library";
+				}
+#endif
+
+				if(actual_slot_space == -1)
+					continue;
+
+				G_string register_slot_space_macro = (
+					"NSL_REGISTER_SLOT_SPACE_"
+					+ sampler_state.name
+				);
+
+				result += (
+					"#define "
+					+ register_slot_space_macro
+					+ " "
+					+ G_to_string(actual_slot_space)
+					+ "\n"
+				);
+			}
+		}
+
+		// override resource actual slots
+		{
+			u32 sample_state_count = reflection.resources.size();
+
+			for (u32 i = 0; i < sample_state_count; ++i)
+			{
+				const auto& resource = reflection.resources[i];
+
+				u32 actual_slot = resource.actual_slots[0];
+
+#ifdef NCPP_ENABLE_ASSERT
+				for(u32 shader_index = 1; shader_index < shader_count; ++shader_index)
+				{
+					NCPP_ASSERT(resource.actual_slots[shader_index] == actual_slot) << "invalid slots in shader library";
+				}
+#endif
+
+				if(actual_slot == -1)
+					continue;
+
+				G_string register_slot_macro = (
+					"NSL_REGISTER_SLOT_"
+					+ resource.name
+				);
+
+				result += (
+					"#define "
+					+ register_slot_macro
+					+ " "
+					+ G_to_string(actual_slot)
+					+ "\n"
+				);
+			}
+		}
+
+		// override resource actual slot spaces
+		{
+			u32 sample_state_count = reflection.resources.size();
+
+			for (u32 i = 0; i < sample_state_count; ++i)
+			{
+				const auto& resource = reflection.resources[i];
+
+				u32 actual_slot_space = resource.actual_slot_spaces[0];
+
+#ifdef NCPP_ENABLE_ASSERT
+				for(u32 shader_index = 1; shader_index < shader_count; ++shader_index)
+				{
+					NCPP_ASSERT(resource.actual_slot_spaces[shader_index] == actual_slot_space) << "invalid slot spaces in shader library";
+				}
+#endif
+
+				if(actual_slot_space == -1)
+					continue;
+
+				G_string register_slot_space_macro = (
+					"NSL_REGISTER_SLOT_SPACE_"
+					+ resource.name
+				);
+
+				result += (
+					"#define "
+					+ register_slot_space_macro
+					+ " "
+					+ G_to_string(actual_slot_space)
+					+ "\n"
+				);
+			}
+		}
+
+		result += src_content;
+
+		return result;
+	}
 	void F_nsl_compiled_result::finalize() {
 
 		const auto& shader_reflections = reflection.shaders;
@@ -180,6 +353,15 @@ namespace nrhi {
 	void F_nsl_compiled_result::finalize_and_release_src_content() {
 
 		finalize();
+
+		src_content.clear();
+	}
+	void F_nsl_compiled_result::finalize_library()
+	{
+	}
+	void F_nsl_compiled_result::finalize_library_and_release_src_content()
+	{
+		finalize_library();
 
 		src_content.clear();
 	}
@@ -11698,6 +11880,18 @@ namespace nrhi {
 
 
 
+	F_nsl_output_hlsl_6_8::F_nsl_output_hlsl_6_8(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		E_nsl_output_language output_language_as_enum
+	) :
+		F_nsl_output_hlsl_6_7(shader_compiler_p, output_language_as_enum)
+	{
+	}
+	F_nsl_output_hlsl_6_8::~F_nsl_output_hlsl_6_8() {
+	}
+
+
+
 	F_nsl_shader_manager::F_nsl_shader_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
 		shader_compiler_p_(shader_compiler_p)
 	{
@@ -12316,6 +12510,10 @@ namespace nrhi {
 			);
 		case E_nsl_output_language::HLSL_6_7:
 			return TU<F_nsl_output_hlsl_6_7>()(
+				NCPP_KTHIS()
+			);
+		case E_nsl_output_language::HLSL_6_8:
+			return TU<F_nsl_output_hlsl_6_8>()(
 				NCPP_KTHIS()
 			);
 		default:

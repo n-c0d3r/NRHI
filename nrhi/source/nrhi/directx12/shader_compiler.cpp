@@ -410,6 +410,10 @@ namespace nrhi {
 			model_major = 6;
 			model_minor = 7;
 			break;
+		case E_nsl_output_language::HLSL_6_8:
+			model_major = 6;
+			model_minor = 8;
+			break;
 		}
 
 		if(model_major >= 6)

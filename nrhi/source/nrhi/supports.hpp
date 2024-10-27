@@ -13,10 +13,10 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_BINDING
-#define NRHI_DRIVER_ENABLE_IF_SUPPORT_SIMPLE_RESOURCE_BINDING(...) NRHI_DRIVER_IF(nrhi::H_driver::is_support_simple_resource_binding()) { \
+#define NRHI_DRIVER_ENABLE_IF_SUPPORT_SIMPLE_RESOURCE_BINDING(...) NRHI_DRIVER_IF(nrhi::H_driver::support_simple_resource_binding()) { \
                 __VA_ARGS__ ; \
             }
-#define NRHI_DRIVER_DISABLE_IF_SUPPORT_SIMPLE_RESOURCE_BINDING(...) NRHI_DRIVER_IF(!nrhi::H_driver::is_support_simple_resource_binding()) { \
+#define NRHI_DRIVER_DISABLE_IF_SUPPORT_SIMPLE_RESOURCE_BINDING(...) NRHI_DRIVER_IF(!nrhi::H_driver::support_simple_resource_binding()) { \
                 __VA_ARGS__ ; \
             }
 #else
@@ -64,10 +64,10 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-#define NRHI_DRIVER_ENABLE_IF_SUPPORT_ADVANCED_RESOURCE_BINDING(...) NRHI_DRIVER_IF(nrhi::H_driver::is_support_advanced_resource_binding()) { \
+#define NRHI_DRIVER_ENABLE_IF_SUPPORT_ADVANCED_RESOURCE_BINDING(...) NRHI_DRIVER_IF(nrhi::H_driver::support_advanced_resource_binding()) { \
                 __VA_ARGS__ ; \
             }
-#define NRHI_DRIVER_DISABLE_IF_SUPPORT_ADVANCED_RESOURCE_BINDING(...) NRHI_DRIVER_IF(!nrhi::H_driver::is_support_advanced_resource_binding()) { \
+#define NRHI_DRIVER_DISABLE_IF_SUPPORT_ADVANCED_RESOURCE_BINDING(...) NRHI_DRIVER_IF(!nrhi::H_driver::support_advanced_resource_binding()) { \
                 __VA_ARGS__ ; \
             }
 #else
@@ -121,10 +121,10 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef NRHI_DRIVER_SUPPORT_SIMPLE_RESOURCE_MANAGEMENT
-#define NRHI_DRIVER_ENABLE_IF_SUPPORT_SIMPLE_RESOURCE_MANAGEMENT(...) NRHI_DRIVER_IF(nrhi::H_driver::is_support_simple_resource_management()) { \
+#define NRHI_DRIVER_ENABLE_IF_SUPPORT_SIMPLE_RESOURCE_MANAGEMENT(...) NRHI_DRIVER_IF(nrhi::H_driver::support_simple_resource_management()) { \
                 __VA_ARGS__ ; \
             }
-#define NRHI_DRIVER_DISABLE_IF_SUPPORT_SIMPLE_RESOURCE_MANAGEMENT(...) NRHI_DRIVER_IF(!nrhi::H_driver::is_support_simple_resource_management()) { \
+#define NRHI_DRIVER_DISABLE_IF_SUPPORT_SIMPLE_RESOURCE_MANAGEMENT(...) NRHI_DRIVER_IF(!nrhi::H_driver::support_simple_resource_management()) { \
                 __VA_ARGS__ ; \
             }
 #else
@@ -172,10 +172,10 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-#define NRHI_DRIVER_ENABLE_IF_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT(...) NRHI_DRIVER_IF(nrhi::H_driver::is_support_advanced_resource_management()) { \
+#define NRHI_DRIVER_ENABLE_IF_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT(...) NRHI_DRIVER_IF(nrhi::H_driver::support_advanced_resource_management()) { \
                 __VA_ARGS__ ; \
             }
-#define NRHI_DRIVER_DISABLE_IF_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT(...) NRHI_DRIVER_IF(!nrhi::H_driver::is_support_advanced_resource_management()) { \
+#define NRHI_DRIVER_DISABLE_IF_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT(...) NRHI_DRIVER_IF(!nrhi::H_driver::support_advanced_resource_management()) { \
                 __VA_ARGS__ ; \
             }
 #else
@@ -229,10 +229,10 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef NRHI_DRIVER_SUPPORT_SIMPLE_WORK_SUBMISSION
-#define NRHI_DRIVER_ENABLE_IF_SUPPORT_SIMPLE_WORK_SUBMISSION(...) NRHI_DRIVER_IF(nrhi::H_driver::is_support_simple_work_submission()) { \
+#define NRHI_DRIVER_ENABLE_IF_SUPPORT_SIMPLE_WORK_SUBMISSION(...) NRHI_DRIVER_IF(nrhi::H_driver::support_simple_work_submission()) { \
                 __VA_ARGS__ ; \
             }
-#define NRHI_DRIVER_DISABLE_IF_SUPPORT_SIMPLE_WORK_SUBMISSION(...) NRHI_DRIVER_IF(!nrhi::H_driver::is_support_simple_work_submission()) { \
+#define NRHI_DRIVER_DISABLE_IF_SUPPORT_SIMPLE_WORK_SUBMISSION(...) NRHI_DRIVER_IF(!nrhi::H_driver::support_simple_work_submission()) { \
                 __VA_ARGS__ ; \
             }
 #else
@@ -280,10 +280,10 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-#define NRHI_DRIVER_ENABLE_IF_SUPPORT_ADVANCED_WORK_SUBMISSION(...) NRHI_DRIVER_IF(nrhi::H_driver::is_support_advanced_work_submission()) { \
+#define NRHI_DRIVER_ENABLE_IF_SUPPORT_ADVANCED_WORK_SUBMISSION(...) NRHI_DRIVER_IF(nrhi::H_driver::support_advanced_work_submission()) { \
                 __VA_ARGS__ ; \
             }
-#define NRHI_DRIVER_DISABLE_IF_SUPPORT_ADVANCED_WORK_SUBMISSION(...) NRHI_DRIVER_IF(!nrhi::H_driver::is_support_advanced_work_submission()) { \
+#define NRHI_DRIVER_DISABLE_IF_SUPPORT_ADVANCED_WORK_SUBMISSION(...) NRHI_DRIVER_IF(!nrhi::H_driver::support_advanced_work_submission()) { \
                 __VA_ARGS__ ; \
             }
 #else
@@ -337,10 +337,10 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef NRHI_DRIVER_SUPPORT_SIMPLE_INDIRECT_COMMANDS
-#define NRHI_DRIVER_ENABLE_IF_SUPPORT_SIMPLE_INDIRECT_COMMANDS(...) NRHI_DRIVER_IF(nrhi::H_driver::is_support_simple_indirect_commands()) { \
+#define NRHI_DRIVER_ENABLE_IF_SUPPORT_SIMPLE_INDIRECT_COMMANDS(...) NRHI_DRIVER_IF(nrhi::H_driver::support_simple_indirect_commands()) { \
                 __VA_ARGS__ ; \
             }
-#define NRHI_DRIVER_DISABLE_IF_SUPPORT_SIMPLE_INDIRECT_COMMANDS(...) NRHI_DRIVER_IF(!nrhi::H_driver::is_support_simple_indirect_commands()) { \
+#define NRHI_DRIVER_DISABLE_IF_SUPPORT_SIMPLE_INDIRECT_COMMANDS(...) NRHI_DRIVER_IF(!nrhi::H_driver::support_simple_indirect_commands()) { \
                 __VA_ARGS__ ; \
             }
 #else
@@ -388,10 +388,10 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_INDIRECT_COMMANDS
-#define NRHI_DRIVER_ENABLE_IF_SUPPORT_ADVANCED_INDIRECT_COMMANDS(...) NRHI_DRIVER_IF(nrhi::H_driver::is_support_advanced_indirect_commands()) { \
+#define NRHI_DRIVER_ENABLE_IF_SUPPORT_ADVANCED_INDIRECT_COMMANDS(...) NRHI_DRIVER_IF(nrhi::H_driver::support_advanced_indirect_commands()) { \
                 __VA_ARGS__ ; \
             }
-#define NRHI_DRIVER_DISABLE_IF_SUPPORT_ADVANCED_INDIRECT_COMMANDS(...) NRHI_DRIVER_IF(!nrhi::H_driver::is_support_advanced_indirect_commands()) { \
+#define NRHI_DRIVER_DISABLE_IF_SUPPORT_ADVANCED_INDIRECT_COMMANDS(...) NRHI_DRIVER_IF(!nrhi::H_driver::support_advanced_indirect_commands()) { \
                 __VA_ARGS__ ; \
             }
 #else
@@ -445,10 +445,10 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-#define NRHI_DRIVER_ENABLE_IF_SUPPORT_ADVANCED_RESOURCE_BINDING(...) NRHI_DRIVER_IF(nrhi::H_driver::is_support_advanced_resource_binding()) { \
+#define NRHI_DRIVER_ENABLE_IF_SUPPORT_ADVANCED_RESOURCE_BINDING(...) NRHI_DRIVER_IF(nrhi::H_driver::support_advanced_resource_binding()) { \
                 __VA_ARGS__ ; \
             }
-#define NRHI_DRIVER_DISABLE_IF_SUPPORT_ADVANCED_RESOURCE_BINDING(...) NRHI_DRIVER_IF(!nrhi::H_driver::is_support_advanced_resource_binding()) { \
+#define NRHI_DRIVER_DISABLE_IF_SUPPORT_ADVANCED_RESOURCE_BINDING(...) NRHI_DRIVER_IF(!nrhi::H_driver::support_advanced_resource_binding()) { \
                 __VA_ARGS__ ; \
             }
 #else
@@ -496,10 +496,10 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-#define NRHI_DRIVER_ENABLE_IF_SUPPORT_ADVANCED_RESOURCE_BINDING(...) NRHI_DRIVER_IF(nrhi::H_driver::is_support_advanced_resource_binding()) { \
+#define NRHI_DRIVER_ENABLE_IF_SUPPORT_ADVANCED_RESOURCE_BINDING(...) NRHI_DRIVER_IF(nrhi::H_driver::support_advanced_resource_binding()) { \
                 __VA_ARGS__ ; \
             }
-#define NRHI_DRIVER_DISABLE_IF_SUPPORT_ADVANCED_RESOURCE_BINDING(...) NRHI_DRIVER_IF(!nrhi::H_driver::is_support_advanced_resource_binding()) { \
+#define NRHI_DRIVER_DISABLE_IF_SUPPORT_ADVANCED_RESOURCE_BINDING(...) NRHI_DRIVER_IF(!nrhi::H_driver::support_advanced_resource_binding()) { \
                 __VA_ARGS__ ; \
             }
 #else
@@ -553,10 +553,10 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-#define NRHI_DRIVER_ENABLE_IF_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT(...) NRHI_DRIVER_IF(nrhi::H_driver::is_support_advanced_resource_management()) { \
+#define NRHI_DRIVER_ENABLE_IF_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT(...) NRHI_DRIVER_IF(nrhi::H_driver::support_advanced_resource_management()) { \
                 __VA_ARGS__ ; \
             }
-#define NRHI_DRIVER_DISABLE_IF_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT(...) NRHI_DRIVER_IF(!nrhi::H_driver::is_support_advanced_resource_management()) { \
+#define NRHI_DRIVER_DISABLE_IF_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT(...) NRHI_DRIVER_IF(!nrhi::H_driver::support_advanced_resource_management()) { \
                 __VA_ARGS__ ; \
             }
 #else
@@ -604,10 +604,10 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
-#define NRHI_DRIVER_ENABLE_IF_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT(...) NRHI_DRIVER_IF(nrhi::H_driver::is_support_advanced_resource_management()) { \
+#define NRHI_DRIVER_ENABLE_IF_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT(...) NRHI_DRIVER_IF(nrhi::H_driver::support_advanced_resource_management()) { \
                 __VA_ARGS__ ; \
             }
-#define NRHI_DRIVER_DISABLE_IF_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT(...) NRHI_DRIVER_IF(!nrhi::H_driver::is_support_advanced_resource_management()) { \
+#define NRHI_DRIVER_DISABLE_IF_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT(...) NRHI_DRIVER_IF(!nrhi::H_driver::support_advanced_resource_management()) { \
                 __VA_ARGS__ ; \
             }
 #else
@@ -661,10 +661,10 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-#define NRHI_DRIVER_ENABLE_IF_SUPPORT_ADVANCED_WORK_SUBMISSION(...) NRHI_DRIVER_IF(nrhi::H_driver::is_support_advanced_work_submission()) { \
+#define NRHI_DRIVER_ENABLE_IF_SUPPORT_ADVANCED_WORK_SUBMISSION(...) NRHI_DRIVER_IF(nrhi::H_driver::support_advanced_work_submission()) { \
                 __VA_ARGS__ ; \
             }
-#define NRHI_DRIVER_DISABLE_IF_SUPPORT_ADVANCED_WORK_SUBMISSION(...) NRHI_DRIVER_IF(!nrhi::H_driver::is_support_advanced_work_submission()) { \
+#define NRHI_DRIVER_DISABLE_IF_SUPPORT_ADVANCED_WORK_SUBMISSION(...) NRHI_DRIVER_IF(!nrhi::H_driver::support_advanced_work_submission()) { \
                 __VA_ARGS__ ; \
             }
 #else
@@ -712,10 +712,10 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-#define NRHI_DRIVER_ENABLE_IF_SUPPORT_ADVANCED_WORK_SUBMISSION(...) NRHI_DRIVER_IF(nrhi::H_driver::is_support_advanced_work_submission()) { \
+#define NRHI_DRIVER_ENABLE_IF_SUPPORT_ADVANCED_WORK_SUBMISSION(...) NRHI_DRIVER_IF(nrhi::H_driver::support_advanced_work_submission()) { \
                 __VA_ARGS__ ; \
             }
-#define NRHI_DRIVER_DISABLE_IF_SUPPORT_ADVANCED_WORK_SUBMISSION(...) NRHI_DRIVER_IF(!nrhi::H_driver::is_support_advanced_work_submission()) { \
+#define NRHI_DRIVER_DISABLE_IF_SUPPORT_ADVANCED_WORK_SUBMISSION(...) NRHI_DRIVER_IF(!nrhi::H_driver::support_advanced_work_submission()) { \
                 __VA_ARGS__ ; \
             }
 #else
@@ -769,10 +769,10 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_INDIRECT_COMMANDS
-#define NRHI_DRIVER_ENABLE_IF_SUPPORT_ADVANCED_INDIRECT_COMMANDS(...) NRHI_DRIVER_IF(nrhi::H_driver::is_support_advanced_indirect_commands()) { \
+#define NRHI_DRIVER_ENABLE_IF_SUPPORT_ADVANCED_INDIRECT_COMMANDS(...) NRHI_DRIVER_IF(nrhi::H_driver::support_advanced_indirect_commands()) { \
                 __VA_ARGS__ ; \
             }
-#define NRHI_DRIVER_DISABLE_IF_SUPPORT_ADVANCED_INDIRECT_COMMANDS(...) NRHI_DRIVER_IF(!nrhi::H_driver::is_support_advanced_indirect_commands()) { \
+#define NRHI_DRIVER_DISABLE_IF_SUPPORT_ADVANCED_INDIRECT_COMMANDS(...) NRHI_DRIVER_IF(!nrhi::H_driver::support_advanced_indirect_commands()) { \
                 __VA_ARGS__ ; \
             }
 #else
@@ -820,10 +820,10 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_INDIRECT_COMMANDS
-#define NRHI_DRIVER_ENABLE_IF_SUPPORT_ADVANCED_INDIRECT_COMMANDS(...) NRHI_DRIVER_IF(nrhi::H_driver::is_support_advanced_indirect_commands()) { \
+#define NRHI_DRIVER_ENABLE_IF_SUPPORT_ADVANCED_INDIRECT_COMMANDS(...) NRHI_DRIVER_IF(nrhi::H_driver::support_advanced_indirect_commands()) { \
                 __VA_ARGS__ ; \
             }
-#define NRHI_DRIVER_DISABLE_IF_SUPPORT_ADVANCED_INDIRECT_COMMANDS(...) NRHI_DRIVER_IF(!nrhi::H_driver::is_support_advanced_indirect_commands()) { \
+#define NRHI_DRIVER_DISABLE_IF_SUPPORT_ADVANCED_INDIRECT_COMMANDS(...) NRHI_DRIVER_IF(!nrhi::H_driver::support_advanced_indirect_commands()) { \
                 __VA_ARGS__ ; \
             }
 #else

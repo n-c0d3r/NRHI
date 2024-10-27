@@ -92,6 +92,15 @@ namespace nrhi { }
 
 #include <nrhi/gpu_memory_info.hpp>
 
+#include <nrhi/utilities/abstract_data.hpp>
+
+#ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
+#include <nrhi/program_id.abstract_data.hpp>
+#include <nrhi/state_object_builder.abstract_data.hpp>
+#include <nrhi/work_graph_subobject.abstract_data.hpp>
+#include <nrhi/library_subobject.abstract_data.hpp>
+#endif
+
 #ifdef NRHI_DRIVER_DIRECTX_11
 #include <nrhi/directx11/buffer.hpp>
 #include <nrhi/directx11/texture.hpp>

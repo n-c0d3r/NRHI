@@ -43,19 +43,27 @@
 #include <nrhi/resource_heap_tier.hpp>
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
+#ifdef NRHI_DRIVER_SUPPORT_MESH_SHADER
+#include <nrhi/mesh_shader_tier.hpp>
+#endif // NRHI_DRIVER_SUPPORT_MESH_SHADER
+
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+#include <nrhi/work_graphs_tier.hpp>
+#endif // NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+
 #pragma endregion
 
 
 
-namespace nrhi {
-
+namespace nrhi
+{
     class A_adapter;
     class A_resource;
 
 
 
-    class NRHI_API A_device : public A_render_object {
-
+    class NRHI_API A_device : public A_render_object
+	{
     private:
         TK_valid<A_adapter> adapter_p_;
 
@@ -85,6 +93,16 @@ namespace nrhi {
 		ED_resource_heap_tier resource_heap_tier();
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
+#ifdef NRHI_DRIVER_SUPPORT_MESH_SHADER
+    public:
+    	ED_mesh_shader_tier mesh_shader_tier();
+#endif // NRHI_DRIVER_SUPPORT_MESH_SHADER
+
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+    public:
+    	ED_work_graphs_tier work_graphs_tier();
+#endif // NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 	public:
 		u32 min_wave_size();
@@ -92,5 +110,4 @@ namespace nrhi {
 		u32 total_lane_count();
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
     };
-
 }

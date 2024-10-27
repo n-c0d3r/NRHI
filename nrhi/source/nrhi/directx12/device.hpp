@@ -84,6 +84,12 @@ namespace nrhi {
 		static ED_resource_heap_tier resource_heap_tier(
 			TKPA_valid<A_device> device_p
 		);
+		static ED_mesh_shader_tier mesh_shader_tier(
+			TKPA_valid<A_device> device_p
+		);
+    	static ED_work_graphs_tier work_graphs_tier(
+			TKPA_valid<A_device> device_p
+		);
 
     public:
     	static eastl::pair<u32, u32> hlsl_highest_shader_model(
@@ -101,5 +107,4 @@ namespace nrhi {
 			TKPA_valid<A_device> device_p
 		);
     };
-
 }

@@ -32,6 +32,12 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "resource_heap_tier" "ED_resource_heap_tier(
 			TKPA_valid<A_device> device_p
 		)"
+        "mesh_shader_tier" "ED_mesh_shader_tier(
+			TKPA_valid<A_device> device_p
+		)"
+        "work_graphs_tier" "ED_work_graphs_tier(
+			TKPA_valid<A_device> device_p
+		)"
         "hlsl_highest_shader_model" "eastl::pair<u32, u32>(
     		TKPA_valid<A_device> device_p
     	)"

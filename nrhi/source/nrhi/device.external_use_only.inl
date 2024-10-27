@@ -61,6 +61,24 @@ namespace nrhi {
 	}
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_MANAGEMENT
 
+#ifdef NRHI_DRIVER_SUPPORT_MESH_SHADER
+	NCPP_FORCE_INLINE ED_mesh_shader_tier A_device::mesh_shader_tier()
+	{
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
+			return H_device::mesh_shader_tier(NCPP_KTHIS());
+		);
+	}
+#endif // NRHI_DRIVER_SUPPORT_MESH_SHADER
+
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+	NCPP_FORCE_INLINE ED_work_graphs_tier A_device::work_graphs_tier()
+	{
+		NRHI_DRIVER_REQUIRE_SUPPORT_ADVANCED_RESOURCE_BINDING(
+			return H_device::work_graphs_tier(NCPP_KTHIS());
+		);
+	}
+#endif // NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 	NCPP_FORCE_INLINE u32 A_device::min_wave_size() {
 

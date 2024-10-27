@@ -38,6 +38,10 @@ include(NRHI/Drivers/DirectX12/ImplementInputClassification)
 include(NRHI/Drivers/DirectX12/ImplementIndirectArgumentType)
 include(NRHI/Drivers/DirectX12/ImplementResourceHeapFlag)
 include(NRHI/Drivers/DirectX12/ImplementResourceHeapTier)
+include(NRHI/Drivers/DirectX12/ImplementMeshShaderTier)
+include(NRHI/Drivers/DirectX12/ImplementWorkGraphsTier)
+include(NRHI/Drivers/DirectX12/ImplementStateObjectType)
+include(NRHI/Drivers/DirectX12/ImplementStateSubobjectType)
 
 
 

@@ -26,66 +26,18 @@ int main() {
 "\n"
 "import(nrhi)\n"
 "\n"
-"semantic POSITION(float3)\n"
-"semantic NORMAL(float3)\n"
-"\n"
-"@input_class(PER_INSTANCE)\n"
-"semantic INSTANCE_DATA(float4x4)\n"
-"\n"
-"@value_type(u32)\n"
-"enum E_primitive_type\n"
-"(\n"
-"	E_PRIMITIVE_TYPE_POINT_LIST(2)\n"
-"	E_PRIMITIVE_TYPE_TRIANGLE_LIST(4)\n"
+"struct F_demo_node_input(\n"
+"	//dispatch_grid(SV_DISPATCH_GRID_3D)\n"
 ")\n"
 "\n"
-"struct F_vs_input\n"
-"(\n"
-"	local_position(POSITION)\n"
-"	local_normal(NORMAL)\n"
-"	instance_data(INSTANCE_DATA)\n"
-")\n"
-"\n"
-"struct F_vs_output\n"
-"(\n"
-"	clip_position(SV_POSITION)\n"
-")\n"
-"\n"
-"vertex_shader vs_main(\n"
-"	input(F_vs_input)\n"
-"	out output(F_vs_output)\n"
+"@launch(BROADCASTING)\n"
+"@max_dispatch_grid(16 1 1)\n"
+"@thread_group_size(16 1 1)\n"
+"node_shader demo_node(\n"
+"	input(DispatchNodeInputRecord(F_demo_node_input))\n"
 ")\n"
 "{\n"
-"	F_vs_output vout;\n"
-"	vout.clip_position = f32x4(0, 0, 0, 1);\n"
-"	\n"
-"	output = vout;\n"
 "}\n"
-"\n"
-"@color_formats(R8G8B8A8_UNORM)\n"
-"default_pipeline_state()\n"
-"\n"
-"@rasterizer\n"
-"(\n"
-"	cull_mode(BACK)\n"
-"	fill_mode(WIREFRAME)\n"
-")\n"
-"@input_assembler\n"
-"(\n"
-"	@buffer(0)\n"
-"	@offset(0)\n"
-"	POSITION\n"
-"	@buffer(1)\n"
-"	@offset(16)\n"
-"	NORMAL\n"
-"	INSTANCE_DATA\n"
-")\n"
-"@primitive_topology(TRIANGLE_LIST)\n"
-"@root_signature(MAIN_ROOT_SIGNATURE)\n"
-"pipeline_state graphics_pso_main\n"
-"(\n"
-"	vs_main\n"
-")\n"
 "\n";
 
 	auto compiler_p = TU<F_nsl_shader_compiler>()();
@@ -100,6 +52,18 @@ int main() {
 
 	auto& nsl_shader_compiled_result = nsl_shader_compiled_result_opt.value();
 	nsl_shader_compiled_result.finalize();
+
+	//
+	F_state_object_builder state_object_builder(ED_state_object_type::EXECUTABLE);
+
+	F_work_graph_subobject& work_graph_subobject = state_object_builder.add_work_graph();
+	work_graph_subobject.include_all_available_nodes();
+#ifdef NRHI_ENABLE_DRIVER_DEBUGGER
+	work_graph_subobject.set_debug_name("demo_work_graph");
+#endif
+
+	F_library_subobject& library_subobject = state_object_builder.add_library();
+	library_subobject.set_binary({});
 
 	auto root_signature_map = H_nsl_factory::make_owned_root_signature_map(
 		NCPP_FOH_VALID(device_p),
