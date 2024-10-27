@@ -93,6 +93,7 @@ namespace nrhi { }
 #include <nrhi/gpu_memory_info.hpp>
 
 #include <nrhi/node_id.hpp>
+#include <nrhi/work_graph_desc.hpp>
 
 #include <nrhi/utilities/abstract_data.hpp>
 

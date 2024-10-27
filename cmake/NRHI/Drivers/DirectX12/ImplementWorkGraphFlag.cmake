@@ -1,0 +1,25 @@
+
+message(STATUS "<NRHI::Drivers::DirectX12> Start implementing work graph flag")
+
+include(NRHI/Utilities/EnumHelper)
+
+
+
+NCPP_SetGlobal(NRHI_WORK_GRAPH_FLAG_ENUM_HPP_FILE_PATH "${NRHI_GENERATED_FILES_DIR}/work_graph_flag.hpp")
+NCPP_SetGlobal(NRHI_WORK_GRAPH_FLAG_ENUM_CPP_FILE_PATH "${NRHI_GENERATED_FILES_DIR}/work_graph_flag.cpp")
+
+
+
+NRHI_EnumHelper_CreateEnum(
+    NAMESPACE "nrhi"
+    NAME "ED_work_graph_flag"
+    DRIVER_UPPER_CASE_NAME "DIRECTX_12"
+    TARGET_HPP_FILE_PATH "${NRHI_WORK_GRAPH_FLAG_ENUM_HPP_FILE_PATH}"
+    TARGET_CPP_FILE_PATH "${NRHI_WORK_GRAPH_FLAG_ENUM_CPP_FILE_PATH}"
+    FLAG_OPERATORS
+    VALUES
+        NONE D3D12_WORK_GRAPH_FLAG_NONE
+        INCLUDE_ALL_AVAILABLE_NODES D3D12_WORK_GRAPH_FLAG_INCLUDE_ALL_AVAILABLE_NODES
+)
+
+message(STATUS "<NRHI::Drivers::DirectX12> Implement work graph flag done")
