@@ -1277,6 +1277,53 @@ namespace nrhi {
 
 
 
+	void HD_directx12_command_list::async_bind_generic_program(
+		TKPA_valid<A_command_list> command_list_p,
+		const F_program_id& program_id
+	)
+	{
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
+
+		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
+
+		ID3D12GraphicsCommandList* d3d12_command_list_p = dx12_command_list_p->d3d12_command_list_p();
+
+		ID3D12GraphicsCommandList10* d3d12_command_list_10_p;
+		HRESULT hr = d3d12_command_list_p->QueryInterface(IID_PPV_ARGS(&d3d12_command_list_p));
+		NCPP_ASSERT(SUCCEEDED(hr));
+
+		D3D12_SET_PROGRAM_DESC d3d12_set_program_desc;
+		d3d12_set_program_desc.Type = D3D12_PROGRAM_TYPE_GENERIC_PIPELINE;
+		d3d12_set_program_desc.GenericPipeline.ProgramIdentifier = *((D3D12_PROGRAM_IDENTIFIER*)&program_id);
+		d3d12_command_list_10_p->SetProgram(&d3d12_set_program_desc);
+	}
+	void HD_directx12_command_list::async_bind_work_graph_program(
+		TKPA_valid<A_command_list> command_list_p,
+		const F_program_id& program_id,
+		ED_bind_work_graph_program_flag flags,
+		F_resource_gpu_virtual_address backing_memory_gpu_address
+	)
+	{
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
+
+		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
+
+		ID3D12GraphicsCommandList* d3d12_command_list_p = dx12_command_list_p->d3d12_command_list_p();
+
+		ID3D12GraphicsCommandList10* d3d12_command_list_10_p;
+		HRESULT hr = d3d12_command_list_p->QueryInterface(IID_PPV_ARGS(&d3d12_command_list_p));
+		NCPP_ASSERT(SUCCEEDED(hr));
+
+		D3D12_SET_PROGRAM_DESC d3d12_set_program_desc;
+		d3d12_set_program_desc.Type = D3D12_PROGRAM_TYPE_WORK_GRAPH;
+		d3d12_set_program_desc.WorkGraph.Flags = D3D12_SET_WORK_GRAPH_FLAGS(flags);
+		d3d12_set_program_desc.WorkGraph.BackingMemory = { backing_memory_gpu_address };
+		d3d12_set_program_desc.WorkGraph.ProgramIdentifier = *((D3D12_PROGRAM_IDENTIFIER*)&program_id);
+		d3d12_command_list_10_p->SetProgram(&d3d12_set_program_desc);
+	}
+
+
+
 #pragma region Alternative Functions
 #ifdef NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
 	TU<A_command_list> HD_directx12_command_list::create(TKPA_valid<A_device> device_p, const F_command_list_desc& desc) {

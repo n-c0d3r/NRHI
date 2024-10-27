@@ -49,6 +49,14 @@
 #include <nrhi/texture_copy_location.hpp>
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 
+#ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
+#include <nrhi/program_id.abstract_data.hpp>
+#endif
+
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+#include <nrhi/bind_work_graph_program_flag.hpp>
+#endif
+
 #pragma endregion
 
 
@@ -570,6 +578,19 @@ namespace nrhi {
 		);
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_INDIRECT_COMMANDS
 
+#ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
+    public:
+    	void async_bind_generic_program(
+			const F_program_id& program_id
+		);
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+    	void async_bind_work_graph_program(
+			const F_program_id& program_id,
+			ED_bind_work_graph_program_flag flags,
+			F_resource_gpu_virtual_address backing_memory_gpu_address
+		);
+#endif
+#endif
     };
 
 

@@ -43,6 +43,7 @@ include(NRHI/Drivers/DirectX12/ImplementWorkGraphsTier)
 include(NRHI/Drivers/DirectX12/ImplementStateObjectType)
 include(NRHI/Drivers/DirectX12/ImplementStateObjectFlag)
 include(NRHI/Drivers/DirectX12/ImplementStateSubobjectType)
+include(NRHI/Drivers/DirectX12/ImplementBindWorkGraphProgramFlag)
 
 
 

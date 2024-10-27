@@ -71,11 +71,5 @@ int main() {
 		nsl_shader_compiled_result
 	);
 
-	auto pipeline_state_p_vector = H_nsl_factory::create_pipeline_states_with_root_signature(
-		NCPP_FOH_VALID(device_p),
-		nsl_shader_compiled_result,
-		root_signature_map.map
-	);
-
 	return 0;
 }

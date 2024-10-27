@@ -437,6 +437,18 @@ namespace nrhi {
 			u64 count_buffer_offset_in_bytes
 		);
 
+	public:
+		static void async_bind_generic_program(
+			TKPA_valid<A_command_list> command_list_p,
+			const F_program_id& program_id
+		);
+		static void async_bind_work_graph_program(
+			TKPA_valid<A_command_list> command_list_p,
+			const F_program_id& program_id,
+			ED_bind_work_graph_program_flag flags,
+			F_resource_gpu_virtual_address backing_memory_gpu_address
+		);
+
 
 
 #pragma region Alternative Functions
@@ -642,7 +654,6 @@ namespace nrhi {
 		);
 #endif // NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
 #pragma endregion
-
     };
 
 }

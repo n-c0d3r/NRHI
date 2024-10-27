@@ -1145,4 +1145,30 @@ namespace nrhi {
 	}
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_INDIRECT_COMMANDS
 
+#ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
+	NCPP_FORCE_INLINE void A_command_list::async_bind_generic_program(
+		const F_program_id& program_id
+	)
+	{
+		H_command_list::async_bind_generic_program(
+			NCPP_KTHIS(),
+			program_id
+		);
+	}
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+	NCPP_FORCE_INLINE void A_command_list::async_bind_work_graph_program(
+		const F_program_id& program_id,
+		ED_bind_work_graph_program_flag flags,
+		F_resource_gpu_virtual_address backing_memory_gpu_address
+	)
+	{
+		H_command_list::async_bind_work_graph_program(
+			NCPP_KTHIS(),
+			program_id,
+			flags,
+			backing_memory_gpu_address
+		);
+	}
+#endif
+#endif
 }
