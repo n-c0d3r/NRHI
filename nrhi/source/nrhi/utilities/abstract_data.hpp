@@ -84,21 +84,21 @@ namespace nrhi
 
         NCPP_FORCE_INLINE TF_abstract_data(const TF_abstract_data& x) noexcept
         {
-            F_helper_class::construct_copy(this, &x);
+            F_helper_class::construct_copy(this, (void*)&x);
         }
         NCPP_FORCE_INLINE TF_abstract_data& operator = (const TF_abstract_data& x) noexcept
         {
-            F_helper_class::operator_copy(this, &x);
+            F_helper_class::operator_copy(this, (void*)&x);
             return *this;
         }
 
         NCPP_FORCE_INLINE TF_abstract_data(TF_abstract_data&& x) noexcept
         {
-            F_helper_class::construct_move(this, &x);
+            F_helper_class::construct_move(this, (void*)&x);
         }
         NCPP_FORCE_INLINE TF_abstract_data& operator = (TF_abstract_data&& x) noexcept
         {
-            F_helper_class::operator_move(this, &x);
+            F_helper_class::operator_move(this, (void*)&x);
             return *this;
         }
 

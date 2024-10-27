@@ -49,11 +49,22 @@ NRHI_FunctionHelper_CreateFunctionClass(
             void* payload_p,
             ED_state_object_type type
         )"
+        "add_state_object_config" "F_state_object_config_subobject&(
+            void* payload_p
+        )"
         "add_work_graph" "F_work_graph_subobject&(
             void* payload_p
         )"
         "add_library" "F_library_subobject&(
             void* payload_p
+        )"
+        "build" "TU<A_state_object>(
+            void* payload_p,
+            TKPA_valid<A_device> device_p
+        )"
+        "add_to" "TU<A_state_object>(
+            void* payload_p,
+            TKPA_valid<A_state_object> src_state_object_p
         )"
 )
 

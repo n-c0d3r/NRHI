@@ -57,6 +57,12 @@ namespace nrhi
         }
 
     public:
+        NCPP_FORCE_INLINE F_state_object_config_subobject& add_state_object_config() noexcept
+        {
+            return H_state_object_builder::add_state_object_config(
+                this
+            );
+        }
         NCPP_FORCE_INLINE F_work_graph_subobject& add_work_graph() noexcept
         {
             return H_state_object_builder::add_work_graph(
@@ -67,6 +73,22 @@ namespace nrhi
         {
             return H_state_object_builder::add_library(
                 this
+            );
+        }
+
+    public:
+        NCPP_FORCE_INLINE TU<A_state_object> build(TKPA_valid<A_device> device_p) noexcept
+        {
+            return H_state_object_builder::build(
+                this,
+                device_p
+            );
+        }
+        NCPP_FORCE_INLINE TU<A_state_object> add_to(TKPA_valid<A_state_object> src_state_object_p) noexcept
+        {
+            return H_state_object_builder::add_to(
+                this,
+                src_state_object_p
             );
         }
     };

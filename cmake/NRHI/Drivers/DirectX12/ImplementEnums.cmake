@@ -41,6 +41,7 @@ include(NRHI/Drivers/DirectX12/ImplementResourceHeapTier)
 include(NRHI/Drivers/DirectX12/ImplementMeshShaderTier)
 include(NRHI/Drivers/DirectX12/ImplementWorkGraphsTier)
 include(NRHI/Drivers/DirectX12/ImplementStateObjectType)
+include(NRHI/Drivers/DirectX12/ImplementStateObjectFlag)
 include(NRHI/Drivers/DirectX12/ImplementStateSubobjectType)
 
 

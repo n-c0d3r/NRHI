@@ -2,6 +2,7 @@
 
 #include <nrhi/prerequisites.hpp>
 #include <nrhi/state_object_type.hpp>
+#include <nrhi/state_object_config_subobject.abstract_data.hpp>
 #include <nrhi/work_graph_subobject.abstract_data.hpp>
 #include <nrhi/library_subobject.abstract_data.hpp>
 
@@ -9,6 +10,11 @@
 
 namespace nrhi
 {
+    class A_device;
+    class A_state_object;
+
+
+
     class NRHI_API HD_directx12_state_object_builder
     {
     public:
@@ -51,6 +57,18 @@ namespace nrhi
         }
 
     public:
+        static NCPP_FORCE_INLINE F_state_object_config_subobject& add_state_object_config(
+            void* payload_p
+        ) noexcept
+        {
+            return *(
+                (F_state_object_config_subobject*)(
+                    ((CD3DX12_STATE_OBJECT_DESC*)payload_p)->CreateSubobject<
+                        CD3DX12_STATE_OBJECT_CONFIG_SUBOBJECT
+                    >()
+                )
+            );
+        }
         static NCPP_FORCE_INLINE F_work_graph_subobject& add_work_graph(
             void* payload_p
         ) noexcept
@@ -75,5 +93,15 @@ namespace nrhi
                 )
             );
         }
+
+    public:
+        static TU<A_state_object> build(
+            void* payload_p,
+            TKPA_valid<A_device> device_p
+        );
+        static TU<A_state_object> add_to(
+            void* payload_p,
+            TKPA_valid<A_state_object> src_state_object_p
+        );
     };
 }

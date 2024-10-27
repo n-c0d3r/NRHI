@@ -56,12 +56,25 @@ int main() {
 	//
 	F_state_object_builder state_object_builder(ED_state_object_type::EXECUTABLE);
 
+	F_state_object_config_subobject& state_object_config_subobject = state_object_builder.add_state_object_config();
+	state_object_config_subobject.set_flags(ED_state_object_flag::ALLOW_STATE_OBJECT_ADDITIONS);
+
 	F_work_graph_subobject& work_graph_subobject = state_object_builder.add_work_graph();
 	work_graph_subobject.include_all_available_nodes();
 	work_graph_subobject.set_name("demo_work_graph");
 
-	F_library_subobject& library_subobject = state_object_builder.add_library();
-	library_subobject.set_binary({});
+	auto state_object1_p = state_object_builder.build(
+		NCPP_FOH_VALID(device_p)
+	);
+
+	auto state_object2_p = state_object_builder.add_to(
+		NCPP_FOH_VALID(state_object1_p)
+	);
+
+	F_state_object_properties state_object_properties = NCPP_FOH_VALID(state_object1_p);
+	F_work_graph_properties work_graph_properties = NCPP_FOH_VALID(state_object1_p);
+
+	F_program_id work_graph_program_id = state_object_properties.program_id("demo_work_graph");
 
 	auto root_signature_map = H_nsl_factory::make_owned_root_signature_map(
 		NCPP_FOH_VALID(device_p),

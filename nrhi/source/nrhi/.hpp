@@ -101,6 +101,9 @@ namespace nrhi { }
 #include <nrhi/state_object_builder.abstract_data.hpp>
 #include <nrhi/work_graph_subobject.abstract_data.hpp>
 #include <nrhi/library_subobject.abstract_data.hpp>
+#include <nrhi/state_object_config_subobject.abstract_data.hpp>
+#include <nrhi/state_object_properties.abstract_data.hpp>
+#include <nrhi/work_graph_properties.abstract_data.hpp>
 #endif
 
 #ifdef NRHI_DRIVER_DIRECTX_11
