@@ -23,6 +23,23 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "namespace nrhi {
         }"
     VALUES
+        "dxcapi_compile_hlsl_from_src_content" "F_shader_binary(
+			const G_string& shader_class_name,
+			const G_string& shader_name,
+			const G_string& entry_point_name,
+			const G_string& src_content,
+			const G_string& abs_path,
+			u32 model_major,
+			u32 model_minor,
+			ED_shader_type type
+		)"
+        "dxcapi_compile_hlsl_library_from_src_content" "F_shader_binary(
+			const G_string& library_name,
+			const G_string& src_content,
+			const G_string& abs_path,
+			u32 model_major,
+			u32 model_minor
+		)"
         "compile_hlsl_from_src_content" "TG_vector<u8>(
 			const G_string& class_name,
 			const G_string& shader_name,
@@ -45,6 +62,9 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "compile_nsl" "TG_vector<u8>(
 			const F_nsl_compiled_result& compiled_result,
 			u32 shader_index
+		)"
+        "compile_nsl_library" "TG_vector<u8>(
+			const F_nsl_compiled_result& compiled_result
 		)"
 )
 

@@ -139,6 +139,73 @@ namespace nrhi {
 			(u8*)(pShader->GetBufferPointer()) + pShader->GetBufferSize()
 		};
 	}
+	F_shader_binary HD_directx12_shader_compiler::dxcapi_compile_hlsl_library_from_src_content(
+		const G_string& library_name,
+		const G_string& src_content,
+		const G_string& abs_path,
+		u32 model_major,
+		u32 model_minor
+	)
+	{
+		NCPP_ASSERT(model_major >= 6);
+
+		G_wstring wide_model = L"lib_" + G_to_wstring(model_major) + L"_" + G_to_wstring(model_minor);
+
+		Microsoft::WRL::ComPtr<IDxcCompiler3> pCompiler;
+		Microsoft::WRL::ComPtr<IDxcUtils> pUtils;
+		Microsoft::WRL::ComPtr<IDxcIncludeHandler> pIncludeHandler;
+
+		DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&pCompiler));
+		DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&pUtils));
+		pUtils->CreateDefaultIncludeHandler(&pIncludeHandler);
+
+		DxcBuffer sourceBuffer;
+		sourceBuffer.Ptr = src_content.data();
+		sourceBuffer.Size = src_content.length() * sizeof(char);
+		sourceBuffer.Encoding = DXC_CP_UTF8;
+
+		TG_vector<const wchar_t*> args = {
+			L"-T", wide_model.c_str(), // Target profile
+		};
+
+		if(
+			(model_major > 6)
+			|| (
+				(model_major == 6)
+				&& (model_major >= 2)
+			)
+		)
+		{
+			args.push_back(L"-enable-16bit-types");
+		}
+
+		Microsoft::WRL::ComPtr<IDxcResult> pResults;
+		pCompiler->Compile(
+			&sourceBuffer,
+			args.data(),
+			args.size(),
+			0,
+			IID_PPV_ARGS(pResults.GetAddressOf())
+		);
+
+		// Check for compilation errors
+		Microsoft::WRL::ComPtr<IDxcBlobUtf8> pErrors;
+		pResults->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&pErrors), nullptr);
+		NCPP_ASSERT(!(pErrors && pErrors->GetStringLength() > 0))
+			<< "can't compile shader library blob"
+			<< std::endl
+			<< ncpp::E_log_color::V_FOREGROUND_BRIGHT_RED
+			<< (char*)pErrors->GetBufferPointer();
+
+		// Get the compiled shader
+		Microsoft::WRL::ComPtr<IDxcBlob> pShader;
+		pResults->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&pShader), nullptr);
+
+		return {
+			(u8*)(pShader->GetBufferPointer()),
+			(u8*)(pShader->GetBufferPointer()) + pShader->GetBufferSize()
+		};
+	}
 
 	F_shader_binary HD_directx12_shader_compiler::compile_hlsl_from_src_content(
 		const G_string& class_name,
@@ -441,5 +508,71 @@ namespace nrhi {
 			compiled_result.reflection.shaders[shader_index].type
 		);
 	}
+	F_shader_binary HD_directx12_shader_compiler::compile_nsl_library(
+		const F_nsl_compiled_result& compiled_result
+	)
+	{
+		u32 model_major = 0;
+		u32 model_minor = 0;
 
+		switch (compiled_result.output_language_enum)
+		{
+		case E_nsl_output_language::HLSL_4:
+			model_major = 4;
+			break;
+		case E_nsl_output_language::HLSL_5:
+			model_major = 5;
+			break;
+		case E_nsl_output_language::HLSL_5_1:
+			model_major = 5;
+			model_minor = 1;
+			break;
+		case E_nsl_output_language::HLSL_6_0:
+			model_major = 6;
+			model_minor = 0;
+			break;
+		case E_nsl_output_language::HLSL_6_1:
+			model_major = 6;
+			model_minor = 1;
+			break;
+		case E_nsl_output_language::HLSL_6_2:
+			model_major = 6;
+			model_minor = 2;
+			break;
+		case E_nsl_output_language::HLSL_6_3:
+			model_major = 6;
+			model_minor = 3;
+			break;
+		case E_nsl_output_language::HLSL_6_4:
+			model_major = 6;
+			model_minor = 4;
+			break;
+		case E_nsl_output_language::HLSL_6_5:
+			model_major = 6;
+			model_minor = 5;
+			break;
+		case E_nsl_output_language::HLSL_6_6:
+			model_major = 6;
+			model_minor = 6;
+			break;
+		case E_nsl_output_language::HLSL_6_7:
+			model_major = 6;
+			model_minor = 7;
+			break;
+		case E_nsl_output_language::HLSL_6_8:
+			model_major = 6;
+			model_minor = 8;
+			break;
+		}
+
+		NCPP_ASSERT(model_major >= 6);
+
+		return dxcapi_compile_hlsl_library_from_src_content(
+			compiled_result.class_name,
+			compiled_result.build_library(),
+			"",
+			model_major,
+			model_minor
+		);
+	}
 }

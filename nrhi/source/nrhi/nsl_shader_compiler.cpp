@@ -358,6 +358,7 @@ namespace nrhi {
 	}
 	void F_nsl_compiled_result::finalize_library()
 	{
+		library_binary = H_shader_compiler::compile_nsl_library(*this);
 	}
 	void F_nsl_compiled_result::finalize_library_and_release_src_content()
 	{

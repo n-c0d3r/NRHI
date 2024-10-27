@@ -25,19 +25,6 @@ int main() {
 	G_string shader_src_content =
 "\n"
 "import(nrhi)\n"
-"\n"
-"struct F_demo_node_input(\n"
-"	//dispatch_grid(SV_DISPATCH_GRID_3D)\n"
-")\n"
-"\n"
-"@launch(BROADCASTING)\n"
-"@max_dispatch_grid(16 1 1)\n"
-"@thread_group_size(16 1 1)\n"
-"node_shader demo_node(\n"
-"	input(DispatchNodeInputRecord(F_demo_node_input))\n"
-")\n"
-"{\n"
-"}\n"
 "\n";
 
 	auto compiler_p = TU<F_nsl_shader_compiler>()();
@@ -51,13 +38,16 @@ int main() {
 	NCPP_ASSERT(nsl_shader_compiled_result_opt);
 
 	auto& nsl_shader_compiled_result = nsl_shader_compiled_result_opt.value();
-	nsl_shader_compiled_result.finalize();
+	nsl_shader_compiled_result.finalize_library();
 
 	//
 	F_state_object_builder state_object_builder(ED_state_object_type::EXECUTABLE);
 
 	F_state_object_config_subobject& state_object_config_subobject = state_object_builder.add_state_object_config();
 	state_object_config_subobject.set_flags(ED_state_object_flag::ALLOW_STATE_OBJECT_ADDITIONS);
+
+	F_library_subobject& library_subobject = state_object_builder.add_library();
+	library_subobject.set_binary(nsl_shader_compiled_result.library_binary);
 
 	F_work_graph_subobject& work_graph_subobject = state_object_builder.add_work_graph();
 	work_graph_subobject.include_all_available_nodes();

@@ -1206,7 +1206,7 @@ namespace nrhi {
 		u32 shader_count = 0;
 
 		TG_vector<F_shader_binary> shader_binaries;
-		F_shader_binary unified_shader_binary;
+		F_shader_binary library_binary;
 
 	public:
 		G_string build(u32 shader_index) const;
