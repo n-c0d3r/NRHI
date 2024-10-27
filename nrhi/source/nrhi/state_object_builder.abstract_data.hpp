@@ -51,7 +51,7 @@ namespace nrhi
         NCPP_FORCE_INLINE F_state_object_builder(ED_state_object_type type) noexcept
         {
             H_state_object_builder::construct_with_type(
-                payload_p(),
+                this,
                 type
             );
         }
@@ -60,13 +60,13 @@ namespace nrhi
         NCPP_FORCE_INLINE F_work_graph_subobject& add_work_graph() noexcept
         {
             return H_state_object_builder::add_work_graph(
-                payload_p()
+                this
             );
         }
         NCPP_FORCE_INLINE F_library_subobject& add_library() noexcept
         {
             return H_state_object_builder::add_library(
-                payload_p()
+                this
             );
         }
     };

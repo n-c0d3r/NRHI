@@ -46,7 +46,7 @@ NRHI_FunctionHelper_CreateFunctionClass(
             void* x_payload_p
         )"
         "include_all_available_nodes" "void(void* payload_p)"
-        "set_debug_name" "void(void* payload_p, const F_debug_name& value)"
+        "set_name" "void(void* payload_p, const G_string& value)"
 )
 
 message(STATUS "<NRHI::Drivers::DirectX12> Implement work graph subobject done")

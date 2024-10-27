@@ -58,9 +58,7 @@ int main() {
 
 	F_work_graph_subobject& work_graph_subobject = state_object_builder.add_work_graph();
 	work_graph_subobject.include_all_available_nodes();
-#ifdef NRHI_ENABLE_DRIVER_DEBUGGER
-	work_graph_subobject.set_debug_name("demo_work_graph");
-#endif
+	work_graph_subobject.set_name("demo_work_graph");
 
 	F_library_subobject& library_subobject = state_object_builder.add_library();
 	library_subobject.set_binary({});

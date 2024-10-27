@@ -68,37 +68,37 @@ namespace nrhi
         F_payload payload_;
 
     public:
-        NCPP_FORCE_INLINE void* payload_p() const noexcept { return (void*)payload_; }
+        NCPP_FORCE_INLINE void* payload_p() const noexcept { return this; }
 
 
 
     public:
         NCPP_FORCE_INLINE TF_abstract_data() noexcept
         {
-            F_helper_class::construct_default((void*)payload_);
+            F_helper_class::construct_default(this);
         }
         NCPP_FORCE_INLINE ~TF_abstract_data() noexcept
         {
-            F_helper_class::destruct((void*)payload_);
+            F_helper_class::destruct(this);
         }
 
         NCPP_FORCE_INLINE TF_abstract_data(const TF_abstract_data& x) noexcept
         {
-            F_helper_class::construct_copy((void*)payload_, (void*)x.payload_);
+            F_helper_class::construct_copy(this, &x);
         }
         NCPP_FORCE_INLINE TF_abstract_data& operator = (const TF_abstract_data& x) noexcept
         {
-            F_helper_class::operator_copy((void*)payload_, (void*)x.payload_);
+            F_helper_class::operator_copy(this, &x);
             return *this;
         }
 
         NCPP_FORCE_INLINE TF_abstract_data(TF_abstract_data&& x) noexcept
         {
-            F_helper_class::construct_move((void*)payload_, (void*)x.payload_);
+            F_helper_class::construct_move(this, &x);
         }
         NCPP_FORCE_INLINE TF_abstract_data& operator = (TF_abstract_data&& x) noexcept
         {
-            F_helper_class::operator_move((void*)payload_, (void*)x.payload_);
+            F_helper_class::operator_move(this, &x);
             return *this;
         }
 

@@ -39,13 +39,9 @@ namespace nrhi
         {
             ((CD3DX12_WORK_GRAPH_SUBOBJECT*)payload_p)->IncludeAllAvailableNodes();
         }
-        static NCPP_FORCE_INLINE void set_debug_name(void* payload_p, const F_debug_name& value) noexcept
+        static NCPP_FORCE_INLINE void set_name(void* payload_p, const G_string& value) noexcept
         {
-#ifndef NRHI_ENABLE_DRIVER_DEBUGGER
-            return;
-#endif
-
-		    auto wvalue = G_to_wstring(value.c_str());
+		    auto wvalue = G_to_wstring(value);
             ((CD3DX12_WORK_GRAPH_SUBOBJECT*)payload_p)->SetProgramName(wvalue.c_str());
         }
     };

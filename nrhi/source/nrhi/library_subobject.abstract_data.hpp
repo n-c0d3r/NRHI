@@ -43,7 +43,7 @@ namespace nrhi
         NCPP_FORCE_INLINE void set_binary(const TG_span<u8>& binary) noexcept
         {
             H_library_subobject::set_binary(
-                payload_p(),
+                this,
                 binary
             );
         }

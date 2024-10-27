@@ -43,18 +43,16 @@ namespace nrhi
         NCPP_FORCE_INLINE void include_all_available_nodes() noexcept
         {
             H_work_graph_subobject::include_all_available_nodes(
-                payload_p()
+                this
             );
         }
-#ifdef NRHI_ENABLE_DRIVER_DEBUGGER
-        NCPP_FORCE_INLINE void set_debug_name(const F_debug_name& value) noexcept
+        NCPP_FORCE_INLINE void set_name(const G_string& value) noexcept
         {
-            H_work_graph_subobject::set_debug_name(
-                payload_p(),
+            H_work_graph_subobject::set_name(
+                this,
                 value
             );
         }
-#endif
     };
 }
 #endif
