@@ -43,6 +43,8 @@ int main() {
 	//
 	F_state_object_builder state_object_builder(ED_state_object_type::EXECUTABLE);
 
+	F_global_root_signature_subobject& global_root_signature_subobject = state_object_builder.add_global_root_signature_subobject();
+
 	F_state_object_config_subobject& state_object_config_subobject = state_object_builder.add_state_object_config();
 	state_object_config_subobject.set_flags(ED_state_object_flag::ALLOW_STATE_OBJECT_ADDITIONS);
 

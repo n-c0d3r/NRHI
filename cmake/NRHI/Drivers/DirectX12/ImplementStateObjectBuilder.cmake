@@ -52,6 +52,12 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "add_state_object_config" "F_state_object_config_subobject&(
             void* payload_p
         )"
+        "add_global_root_signature" "F_global_root_signature_subobject&(
+            void* payload_p
+        )"
+        "add_local_root_signature" "F_local_root_signature_subobject&(
+            void* payload_p
+        )"
         "add_work_graph" "F_work_graph_subobject&(
             void* payload_p
         )"

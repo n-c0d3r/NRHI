@@ -3,6 +3,8 @@
 #include <nrhi/prerequisites.hpp>
 #include <nrhi/state_object_type.hpp>
 #include <nrhi/state_object_config_subobject.abstract_data.hpp>
+#include <nrhi/global_root_signature_subobject.abstract_data.hpp>
+#include <nrhi/local_root_signature_subobject.abstract_data.hpp>
 #include <nrhi/work_graph_subobject.abstract_data.hpp>
 #include <nrhi/library_subobject.abstract_data.hpp>
 
@@ -65,6 +67,30 @@ namespace nrhi
                 (F_state_object_config_subobject*)(
                     ((CD3DX12_STATE_OBJECT_DESC*)payload_p)->CreateSubobject<
                         CD3DX12_STATE_OBJECT_CONFIG_SUBOBJECT
+                    >()
+                )
+            );
+        }
+        static NCPP_FORCE_INLINE F_global_root_signature_subobject& add_global_root_signature_subobject(
+            void* payload_p
+        ) noexcept
+        {
+            return *(
+                (F_global_root_signature_subobject*)(
+                    ((CD3DX12_STATE_OBJECT_DESC*)payload_p)->CreateSubobject<
+                        CD3DX12_GLOBAL_ROOT_SIGNATURE_SUBOBJECT
+                    >()
+                )
+            );
+        }
+        static NCPP_FORCE_INLINE F_local_root_signature_subobject& add_local_root_signature_subobject(
+            void* payload_p
+        ) noexcept
+        {
+            return *(
+                (F_local_root_signature_subobject*)(
+                    ((CD3DX12_STATE_OBJECT_DESC*)payload_p)->CreateSubobject<
+                        CD3DX12_LOCAL_ROOT_SIGNATURE_SUBOBJECT
                     >()
                 )
             );

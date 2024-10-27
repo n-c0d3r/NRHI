@@ -63,6 +63,18 @@ namespace nrhi
                 this
             );
         }
+        NCPP_FORCE_INLINE F_global_root_signature_subobject& add_global_root_signature_subobject() noexcept
+        {
+            return H_state_object_builder::add_global_root_signature_subobject(
+                this
+            );
+        }
+        NCPP_FORCE_INLINE F_local_root_signature_subobject& add_local_root_signature_subobject() noexcept
+        {
+            return H_state_object_builder::add_local_root_signature_subobject(
+                this
+            );
+        }
         NCPP_FORCE_INLINE F_work_graph_subobject& add_work_graph() noexcept
         {
             return H_state_object_builder::add_work_graph(
