@@ -53,6 +53,13 @@ namespace nrhi
                 value
             );
         }
+        NCPP_FORCE_INLINE void add_entrypoint(const F_node_id& node_id) noexcept
+        {
+            H_work_graph_subobject::add_entrypoint(
+                (void*)this,
+                node_id
+            );
+        }
     };
 }
 #endif

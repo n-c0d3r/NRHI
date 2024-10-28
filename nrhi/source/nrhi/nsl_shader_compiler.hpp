@@ -45,6 +45,13 @@
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 #include <nrhi/root_signature_desc.hpp>
 #endif
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+#include <nrhi/node_id.hpp>
+#include <nrhi/work_graph_desc.hpp>
+#endif
+#ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
+#include <nrhi/state_object_config.hpp>
+#endif
 
 #pragma endregion
 
@@ -219,6 +226,7 @@ namespace nrhi {
 		static TG_map<G_string, ED_comparison_func> comparison_func_str_to_value_map_;
 		static TG_map<G_string, ED_primitive_topology> primitive_topology_str_to_value_map_;
 		static TG_map<G_string, ED_shader_visibility> shader_visibility_str_to_value_map_;
+		static TG_map<G_string, ED_state_object_flag> state_object_flag_str_to_value_map_;
 
 	public:
 		NCPP_FORCE_INLINE TKPA<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
@@ -278,6 +286,7 @@ namespace nrhi {
 		eastl::optional<E_nsl_output_topology> read_output_topology(u32 index, b8 is_required = true) const;
 		eastl::optional<ED_shader_visibility> read_shader_visibility(u32 index, b8 is_required = true) const;
 		eastl::optional<F_nsl_data_type_selection> read_data_type_selection(u32 index, b8 is_required = true) const;
+		eastl::optional<ED_state_object_flag> read_state_object_flag(u32 index, b8 is_required = true) const;
 		b8 read_configurable_elements(
 			const eastl::function<
 				b8(
@@ -985,6 +994,9 @@ namespace nrhi {
 		TG_vector<F_nsl_sampler_state_reflection> sampler_states;
 		TG_vector<F_nsl_resource_reflection> resources;
 		TG_vector<F_nsl_type_reflection> types;
+#ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
+		F_state_object_config state_object_config;
+#endif
 
 	public:
 		NCPP_FORCE_INLINE u32 search_shader_index(const G_string& name) const noexcept {
@@ -2394,6 +2406,55 @@ namespace nrhi {
 
 	public:
 		NCPP_OBJECT(F_nsl_local_root_signature_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+#endif
+
+
+
+#ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
+	class NRHI_API F_nsl_state_object_config_object : public A_nsl_object
+	{
+	public:
+		F_nsl_state_object_config_object(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			TKPA_valid<A_nsl_object_type> type_p,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			const G_string& name = ""
+		);
+		virtual ~F_nsl_state_object_config_object();
+
+	public:
+		NCPP_OBJECT(F_nsl_state_object_config_object);
+
+	public:
+		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
+			F_nsl_context& context,
+			TK_valid<F_nsl_translation_unit> unit_p,
+			TG_vector<F_nsl_ast_tree>& trees,
+			sz index,
+			F_nsl_error_stack* error_stack_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_state_object_config_object_type : public A_nsl_object_type {
+
+	public:
+		F_nsl_state_object_config_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_state_object_config_object_type();
+
+	public:
+		NCPP_OBJECT(F_nsl_state_object_config_object_type);
 
 	public:
 		virtual TK<A_nsl_object> create_object(
@@ -4977,17 +5038,49 @@ namespace nrhi {
 	public:
 		void set_global_root_signature_selection(const F_nsl_root_signature_selection& selection)
 		{
-			NCPP_ASSERT(global_root_signature_selection_);
+			NCPP_ASSERT(!global_root_signature_selection_) << "global root signature was already selected";
 			global_root_signature_selection_ = selection;
 		}
 		void set_local_root_signature_selection(const F_nsl_root_signature_selection& selection)
 		{
-			NCPP_ASSERT(local_root_signature_selection_);
+			NCPP_ASSERT(!local_root_signature_selection_) << "local root signature was already selected";
 			local_root_signature_selection_ = selection;
 		}
 
 	private:
 		F_nsl_root_signature_info process_root_signature_info(const G_string& name, const F_nsl_root_signature_info& root_signature_info);
+	};
+#endif
+
+
+
+#ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
+	class NRHI_API F_nsl_state_object {
+
+	private:
+		TK_valid<F_nsl_shader_compiler> shader_compiler_p_;
+
+		F_state_object_config config_;
+
+	public:
+		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
+
+		NCPP_FORCE_INLINE const auto& config() const noexcept { return config_; }
+
+
+
+	public:
+		F_nsl_state_object(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p);
+		virtual ~F_nsl_state_object();
+
+	public:
+		NCPP_OBJECT(F_nsl_state_object);
+
+	public:
+		void set_config(const F_state_object_config& value)
+		{
+			config_ = value;
+		}
 	};
 #endif
 
@@ -5134,6 +5227,12 @@ namespace nrhi {
 			root_signature_manager_creator
 		);
 #endif
+#ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
+		NRHI_NSL_DEFINE_SUBSYSTEM_CREATOR_AS_CUSTOMIZATION_MEMBER(
+			F_nsl_state_object,
+			state_object_creator
+		);
+#endif
 		NRHI_NSL_DEFINE_SUBSYSTEM_CREATOR_AS_CUSTOMIZATION_MEMBER(
 			F_nsl_submodule_manager,
 			submodule_manager_creator
@@ -5163,6 +5262,9 @@ namespace nrhi {
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 		TU<F_nsl_root_signature_manager> root_signature_manager_p_;
 #endif
+#ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
+		TU<F_nsl_state_object> state_object_p_;
+#endif
 		TU<F_nsl_submodule_manager> submodule_manager_p_;
 		TU<F_nsl_reflector> reflector_p_;
 
@@ -5186,6 +5288,9 @@ namespace nrhi {
 		NCPP_FORCE_INLINE TK_valid<F_nsl_pipeline_state_manager> pipeline_state_manager_p() const noexcept { return NCPP_FOH_VALID(pipeline_state_manager_p_); }
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 		NCPP_FORCE_INLINE TK_valid<F_nsl_root_signature_manager> root_signature_manager_p() const noexcept { return NCPP_FOH_VALID(root_signature_manager_p_); }
+#endif
+#ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
+		NCPP_FORCE_INLINE TK_valid<F_nsl_state_object> state_object_p() const noexcept { return NCPP_FOH_VALID(state_object_p_); }
 #endif
 		NCPP_FORCE_INLINE TK_valid<F_nsl_submodule_manager> submodule_manager_p() const noexcept { return NCPP_FOH_VALID(submodule_manager_p_); }
 		NCPP_FORCE_INLINE TK_valid<F_nsl_reflector> reflector_p() const noexcept { return NCPP_FOH_VALID(reflector_p_); }

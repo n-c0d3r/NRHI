@@ -1,6 +1,7 @@
 #pragma once
 
 #include <nrhi/prerequisites.hpp>
+#include <nrhi/work_graph_desc.hpp>
 
 
 

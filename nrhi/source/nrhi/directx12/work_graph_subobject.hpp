@@ -1,7 +1,8 @@
 #pragma once
 
 #include <nrhi/prerequisites.hpp>
-#include <nrhi/debug_name.hpp>
+#include <nrhi/work_graph_desc.hpp>
+#include <nrhi/node_id.hpp>
 
 
 
@@ -44,6 +45,13 @@ namespace nrhi
         {
 		    auto wvalue = G_to_wstring(value);
             ((CD3DX12_WORK_GRAPH_SUBOBJECT*)payload_p)->SetProgramName(wvalue.c_str());
+        }
+        static NCPP_FORCE_INLINE void add_entrypoint(void* payload_p, const F_node_id& node_id) noexcept
+        {
+            ((CD3DX12_WORK_GRAPH_SUBOBJECT*)payload_p)->AddEntrypoint({
+                .Name = G_to_wstring(node_id.name).c_str(),
+                .ArrayIndex = node_id.index
+            });
         }
     };
 }

@@ -1364,6 +1364,7 @@ namespace nrhi {
 	TG_map<G_string, ED_comparison_func> F_nsl_info_tree_reader::comparison_func_str_to_value_map_;
 	TG_map<G_string, ED_primitive_topology> F_nsl_info_tree_reader::primitive_topology_str_to_value_map_;
 	TG_map<G_string, ED_shader_visibility> F_nsl_info_tree_reader::shader_visibility_str_to_value_map_;
+	TG_map<G_string, ED_state_object_flag> F_nsl_info_tree_reader::state_object_flag_str_to_value_map_;
 
 	F_nsl_info_tree_reader::F_nsl_info_tree_reader(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
@@ -1564,6 +1565,12 @@ namespace nrhi {
 			shader_visibility_str_to_value_map_["PIXEL"] = ED_shader_visibility::PIXEL;
 			shader_visibility_str_to_value_map_["AMPLIFICATION"] = ED_shader_visibility::AMPLIFICATION;
 			shader_visibility_str_to_value_map_["MESH"] = ED_shader_visibility::MESH;
+
+			// setup state_object_flag_str_to_value_map_
+			state_object_flag_str_to_value_map_["NONE"] = ED_state_object_flag::NONE;
+			state_object_flag_str_to_value_map_["ALLOW_STATE_OBJECT_ADDITIONS"] = ED_state_object_flag::ALLOW_STATE_OBJECT_ADDITIONS;
+			state_object_flag_str_to_value_map_["ALLOW_EXTERNAL_DEPENDENCIES_ON_LOCAL_DEFINITIONS"] = ED_state_object_flag::ALLOW_EXTERNAL_DEPENDENCIES_ON_LOCAL_DEFINITIONS;
+			state_object_flag_str_to_value_map_["ALLOW_LOCAL_DEPENDENCIES_ON_EXTERNAL_DEFINITIONS"] = ED_state_object_flag::ALLOW_LOCAL_DEPENDENCIES_ON_EXTERNAL_DEFINITIONS;
 		}
 	}
 	F_nsl_info_tree_reader::~F_nsl_info_tree_reader() {
@@ -2389,6 +2396,30 @@ namespace nrhi {
 			.name = value_str,
 			.childs = eastl::move(childs)
 		};
+	}
+	eastl::optional<ED_state_object_flag> F_nsl_info_tree_reader::read_state_object_flag(u32 index, b8 is_required) const {
+
+		if(!guarantee_index(index, is_required)) {
+
+			return eastl::nullopt;
+		}
+
+		G_string value_str = parse_value_str(info_trees_[index].name);
+
+		auto it = state_object_flag_str_to_value_map_.find(value_str);
+
+		if (it == state_object_flag_str_to_value_map_.end()) {
+
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
+			return eastl::nullopt;
+		}
+
+		return it->second;
 	}
 	b8 F_nsl_info_tree_reader::read_configurable_elements(
 		const eastl::function<
@@ -6984,6 +7015,124 @@ namespace nrhi {
 
 
 
+#ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
+	F_nsl_state_object_config_object::F_nsl_state_object_config_object(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		TKPA_valid<A_nsl_object_type> type_p,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const G_string& name
+	) :
+		A_nsl_object(
+			shader_compiler_p,
+			type_p,
+			translation_unit_p,
+			name
+		)
+	{
+	}
+	F_nsl_state_object_config_object::~F_nsl_state_object_config_object() {
+	}
+
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_state_object_config_object::recursive_build_ast_tree(
+		F_nsl_context& context,
+		TK_valid<F_nsl_translation_unit> unit_p,
+		TG_vector<F_nsl_ast_tree>& trees,
+		sz index,
+		F_nsl_error_stack* error_stack_p
+	) {
+		auto& tree = trees[index];
+		auto& object_implementation = tree.object_implementation;
+
+		F_state_object_config config;
+
+		// parse info trees
+		auto info_trees_opt = H_nsl_utilities::build_info_trees(
+			object_implementation.bodies[0].content,
+			object_implementation.bodies[0].begin_location,
+			&(unit_p->error_group_p()->stack())
+		);
+		if(!info_trees_opt) {
+
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				&(unit_p->error_group_p()->stack()),
+				object_implementation.bodies[0].begin_location,
+				"can't parse state object config"
+			);
+			return eastl::nullopt;
+		}
+
+		auto& info_trees = info_trees_opt.value();
+		u32 info_tree_count = info_trees.size();
+
+		F_nsl_info_tree_reader info_tree_reader(
+			shader_compiler_p(),
+			info_trees,
+			object_implementation.bodies[0].begin_location,
+			&(unit_p->error_group_p()->stack())
+		);
+
+		for(u32 i = 0; i < info_tree_count; ++i)
+		{
+			auto& info_tree = info_trees[i];
+
+			if(info_tree.name == "flags")
+			{
+				auto child_info_tree_reader = info_tree_reader.read_sub("flags");
+
+				auto value_opt = child_info_tree_reader->read_state_object_flag(0);
+				if(!value_opt)
+					return eastl::nullopt;
+
+				config.flags = value_opt.value();
+			}
+		}
+
+		shader_compiler_p()->state_object_p()->set_config(config);
+
+		return TG_vector<F_nsl_ast_tree>();
+	}
+
+
+
+	F_nsl_state_object_config_object_type::F_nsl_state_object_config_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"state_object_config",
+			false,
+			1,
+			1
+		)
+	{
+	}
+	F_nsl_state_object_config_object_type::~F_nsl_state_object_config_object_type() {
+	}
+
+	TK<A_nsl_object> F_nsl_state_object_config_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	) {
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_state_object_config_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+#endif
+
+
+
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 	F_nsl_descriptor_heap_getter_object::F_nsl_descriptor_heap_getter_object(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
@@ -8912,6 +9061,11 @@ namespace nrhi {
 		);
 		register_type(
 			TU<F_nsl_local_root_signature_object_type>()(shader_compiler_p_)
+		);
+#endif
+#ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
+		register_type(
+			TU<F_nsl_state_object_config_object_type>()(shader_compiler_p_)
 		);
 #endif
 		register_type(
@@ -12268,6 +12422,17 @@ namespace nrhi {
 
 
 
+#ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
+	F_nsl_state_object::F_nsl_state_object(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
+		shader_compiler_p_(shader_compiler_p)
+	{
+	}
+	F_nsl_state_object::~F_nsl_state_object() {
+	}
+#endif
+
+
+
 	F_nsl_submodule_manager::F_nsl_submodule_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
 		shader_compiler_p_(shader_compiler_p)
 	{
@@ -12539,6 +12704,11 @@ namespace nrhi {
 		reflection.local_root_signature_selection = root_signature_manager_p->local_root_signature_selection();
 #endif
 
+		// state object config
+#ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
+		reflection.state_object_config = shader_compiler_p()->state_object_p()->config();
+#endif
+
 		// sampler states
 		{
 			u32 sampler_state_count = name_to_sampler_state_info_map.size();
@@ -12646,6 +12816,9 @@ namespace nrhi {
 		pipeline_state_manager_p_(customizer.pipeline_state_manager_creator(NCPP_KTHIS())),
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 		root_signature_manager_p_(customizer.root_signature_manager_creator(NCPP_KTHIS())),
+#endif
+#ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
+		state_object_p_(customizer.state_object_creator(NCPP_KTHIS())),
 #endif
 		submodule_manager_p_(customizer.submodule_manager_creator(NCPP_KTHIS())),
 		reflector_p_(customizer.reflector_creator(NCPP_KTHIS()))

@@ -26,6 +26,10 @@ int main() {
 "\n"
 "import(nrhi)\n"
 "\n"
+"state_object_config(\n"
+"	flags(ALLOW_STATE_OBJECT_ADDITIONS)\n"
+")\n"
+"\n"
 "global_root_signature GRS()\n"
 "local_root_signature LRS()\n"
 "\n";

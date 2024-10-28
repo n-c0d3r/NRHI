@@ -92,8 +92,14 @@ namespace nrhi { }
 
 #include <nrhi/gpu_memory_info.hpp>
 
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
 #include <nrhi/node_id.hpp>
 #include <nrhi/work_graph_desc.hpp>
+#endif
+
+#ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
+#include <nrhi/state_object_config.hpp>
+#endif
 
 #include <nrhi/utilities/abstract_data.hpp>
 
