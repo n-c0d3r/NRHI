@@ -55,6 +55,7 @@
 
 #ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
 #include <nrhi/bind_work_graph_program_flag.hpp>
+#include <nrhi/dispatch_graph_mode.hpp>
 #endif
 
 #pragma endregion
@@ -83,15 +84,35 @@ namespace nrhi {
 
 
 
-    struct F_command_list_desc {
-
+    struct F_command_list_desc
+	{
         ED_command_list_type type = ED_command_list_type::DIRECT;
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
 		TK<A_command_allocator> command_allocator_p;
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_WORK_SUBMISSION
-
     };
+
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+	struct F_dispatch_graph_desc
+	{
+		ED_dispatch_graph_mode mode;
+
+		struct F_node_cpu_input
+		{
+			u32 entry_point_index;
+			u32 record_count;
+			void* record_p;
+			u64 record_stride;
+		};
+
+		union
+		{
+			F_node_cpu_input node_cpu_input;
+			F_resource_gpu_virtual_address node_gpu_input;
+		};
+	};
+#endif
 
 
 
@@ -590,6 +611,11 @@ namespace nrhi {
 			F_resource_gpu_virtual_address backing_memory_gpu_address
 		);
 #endif
+#endif
+
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+    public:
+    	void async_dispatch_graph(const F_dispatch_graph_desc& desc);
 #endif
     };
 

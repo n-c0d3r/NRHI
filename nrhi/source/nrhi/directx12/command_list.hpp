@@ -449,6 +449,12 @@ namespace nrhi {
 			F_resource_gpu_virtual_address backing_memory_gpu_address
 		);
 
+	public:
+		static void async_dispatch_graph(
+			TKPA_valid<A_command_list> command_list_p,
+			const F_dispatch_graph_desc& desc
+		);
+
 
 
 #pragma region Alternative Functions
@@ -655,5 +661,4 @@ namespace nrhi {
 #endif // NRHI_DRIVER_ENABLE_INTERFACE_ONLY_SUPPORTS
 #pragma endregion
     };
-
 }

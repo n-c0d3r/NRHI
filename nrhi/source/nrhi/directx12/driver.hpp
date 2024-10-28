@@ -88,6 +88,7 @@ namespace nrhi
         static constexpr b8 support_amplification_shader() { return true; }
 
     public:
+        static constexpr b8 support_state_object() { return true; }
         static constexpr b8 support_work_graphs() { return true; }
     };
 }

@@ -339,6 +339,10 @@ NRHI_FunctionHelper_CreateFunctionClass(
 			KPA_valid_buffer_handle count_buffer_p,
 			u64 count_buffer_offset_in_bytes
 		)"
+		"async_dispatch_graph" "void(
+			TKPA_valid<A_command_list> command_list_p,
+			const F_dispatch_graph_desc& desc
+		)"
 		${MarkerFunctionValues}
 
 	ALTERNATIVE_VALUES

@@ -48,6 +48,7 @@ NRHI_FunctionHelper_CreateFunctionClass(
         "support_advanced_work_submission" "bool()"
         "support_mesh_shader" "bool()"
         "support_amplification_shader" "bool()"
+        "support_state_object" "bool()"
         "support_work_graphs" "bool()"
 )
 

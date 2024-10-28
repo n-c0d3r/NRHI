@@ -1150,6 +1150,7 @@ namespace nrhi {
 		const F_program_id& program_id
 	)
 	{
+		NCPP_ASSERT(H_driver::support_state_object());
 		H_command_list::async_bind_generic_program(
 			NCPP_KTHIS(),
 			program_id
@@ -1162,6 +1163,7 @@ namespace nrhi {
 		F_resource_gpu_virtual_address backing_memory_gpu_address
 	)
 	{
+		NCPP_ASSERT(H_driver::support_work_graphs());
 		H_command_list::async_bind_work_graph_program(
 			NCPP_KTHIS(),
 			program_id,
@@ -1170,5 +1172,16 @@ namespace nrhi {
 		);
 	}
 #endif
+#endif
+
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+	NCPP_FORCE_INLINE void A_command_list::async_dispatch_graph(const F_dispatch_graph_desc& desc)
+	{
+		NCPP_ASSERT(H_driver::support_work_graphs());
+		H_command_list::async_dispatch_graph(
+			NCPP_KTHIS(),
+			desc
+		);
+	}
 #endif
 }

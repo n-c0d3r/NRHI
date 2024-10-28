@@ -45,6 +45,7 @@ include(NRHI/Drivers/DirectX12/ImplementStateObjectFlag)
 include(NRHI/Drivers/DirectX12/ImplementStateSubobjectType)
 include(NRHI/Drivers/DirectX12/ImplementBindWorkGraphProgramFlag)
 include(NRHI/Drivers/DirectX12/ImplementWorkGraphFlag)
+include(NRHI/Drivers/DirectX12/ImplementDispatchGraphMode)
 
 
 

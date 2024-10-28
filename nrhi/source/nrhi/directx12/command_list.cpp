@@ -1322,6 +1322,42 @@ namespace nrhi {
 		d3d12_command_list_10_p->SetProgram(&d3d12_set_program_desc);
 	}
 
+	void HD_directx12_command_list::async_dispatch_graph(
+		TKPA_valid<A_command_list> command_list_p,
+		const F_dispatch_graph_desc& desc
+	)
+	{
+		NCPP_ASSERT(command_list_p.T_cast<F_directx12_command_list>()->is_in_record_) << "not in record";
+
+		const auto& dx12_command_list_p = command_list_p.T_cast<F_directx12_command_list>();
+
+		ID3D12GraphicsCommandList* d3d12_command_list_p = dx12_command_list_p->d3d12_command_list_p();
+
+		ID3D12GraphicsCommandList10* d3d12_command_list_10_p;
+		HRESULT hr = d3d12_command_list_p->QueryInterface(IID_PPV_ARGS(&d3d12_command_list_p));
+		NCPP_ASSERT(SUCCEEDED(hr));
+
+		D3D12_DISPATCH_GRAPH_DESC d3d12_dispatch_graph_desc;
+		d3d12_dispatch_graph_desc.Mode = D3D12_DISPATCH_MODE(desc.mode);
+
+		switch (d3d12_dispatch_graph_desc.Mode)
+		{
+		case D3D12_DISPATCH_MODE_NODE_CPU_INPUT:
+			d3d12_dispatch_graph_desc.NodeCPUInput.NumRecords = desc.node_cpu_input.record_count;
+			d3d12_dispatch_graph_desc.NodeCPUInput.pRecords = desc.node_cpu_input.record_p;
+			d3d12_dispatch_graph_desc.NodeCPUInput.RecordStrideInBytes = desc.node_cpu_input.record_stride;
+			break;
+		case D3D12_DISPATCH_MODE_NODE_GPU_INPUT:
+			d3d12_dispatch_graph_desc.NodeGPUInput = desc.node_gpu_input;
+			break;
+		default:
+			NCPP_ASSERT(false) << "not supported mode";
+			break;
+		}
+
+		d3d12_command_list_10_p->DispatchGraph(&d3d12_dispatch_graph_desc);
+	}
+
 
 
 #pragma region Alternative Functions
