@@ -25,6 +25,9 @@ int main() {
 	G_string shader_src_content =
 "\n"
 "import(nrhi)\n"
+"\n"
+"global_root_signature GRS()\n"
+"local_root_signature LRS()\n"
 "\n";
 
 	auto compiler_p = TU<F_nsl_shader_compiler>()();

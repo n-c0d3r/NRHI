@@ -6764,11 +6764,12 @@ namespace nrhi {
 
 
 	F_nsl_root_signature_object_type::F_nsl_root_signature_object_type(
-		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		const G_string& name
 	) :
 		A_nsl_object_type(
 			shader_compiler_p,
-			"root_signature",
+			name,
 			true,
 			1,
 			1,
@@ -6788,6 +6789,186 @@ namespace nrhi {
 
 		auto object_p = register_object(
 			TU<F_nsl_root_signature_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_global_root_signature_object::F_nsl_global_root_signature_object(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		TKPA_valid<A_nsl_object_type> type_p,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const G_string& name
+	) :
+		F_nsl_root_signature_object(
+			shader_compiler_p,
+			type_p,
+			translation_unit_p,
+			name
+		)
+	{
+	}
+	F_nsl_global_root_signature_object::~F_nsl_global_root_signature_object() {
+	}
+
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_global_root_signature_object::recursive_build_ast_tree(
+		F_nsl_context& context,
+		TK_valid<F_nsl_translation_unit> unit_p,
+		TG_vector<F_nsl_ast_tree>& trees,
+		sz index,
+		F_nsl_error_stack* error_stack_p
+	) {
+		auto& tree = trees[index];
+		auto& object_implementation = tree.object_implementation;
+
+		if(context.current_object_config.find("external") == context.current_object_config.end())
+		{
+			auto result_opt = F_nsl_root_signature_object::recursive_build_ast_tree(
+				context,
+				unit_p,
+				trees,
+				index,
+				error_stack_p
+			);
+			if(!result_opt)
+				return eastl::nullopt;
+
+			shader_compiler_p()->root_signature_manager_p()->set_global_root_signature_selection({
+				.name = object_implementation.name,
+				.type = E_nsl_root_signature_selection_type::EMBEDDED
+			});
+			return result_opt.value();
+		}
+
+		shader_compiler_p()->root_signature_manager_p()->set_global_root_signature_selection({
+			.name = object_implementation.name,
+			.type = E_nsl_root_signature_selection_type::EXTERNAL
+		});
+		return TG_vector<F_nsl_ast_tree>();
+	}
+
+
+
+	F_nsl_global_root_signature_object_type::F_nsl_global_root_signature_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		F_nsl_root_signature_object_type(
+			shader_compiler_p,
+			"global_root_signature"
+		)
+	{
+	}
+	F_nsl_global_root_signature_object_type::~F_nsl_global_root_signature_object_type() {
+	}
+
+	TK<A_nsl_object> F_nsl_global_root_signature_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	) {
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_global_root_signature_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_local_root_signature_object::F_nsl_local_root_signature_object(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		TKPA_valid<A_nsl_object_type> type_p,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const G_string& name
+	) :
+		F_nsl_root_signature_object(
+			shader_compiler_p,
+			type_p,
+			translation_unit_p,
+			name
+		)
+	{
+	}
+	F_nsl_local_root_signature_object::~F_nsl_local_root_signature_object() {
+	}
+
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_local_root_signature_object::recursive_build_ast_tree(
+		F_nsl_context& context,
+		TK_valid<F_nsl_translation_unit> unit_p,
+		TG_vector<F_nsl_ast_tree>& trees,
+		sz index,
+		F_nsl_error_stack* error_stack_p
+		) {
+		auto& tree = trees[index];
+		auto& object_implementation = tree.object_implementation;
+
+		if(context.current_object_config.find("external") == context.current_object_config.end())
+		{
+			auto result_opt = F_nsl_root_signature_object::recursive_build_ast_tree(
+				context,
+				unit_p,
+				trees,
+				index,
+				error_stack_p
+			);
+			if(!result_opt)
+				return eastl::nullopt;
+
+			shader_compiler_p()->root_signature_manager_p()->set_local_root_signature_selection({
+				.name = object_implementation.name,
+				.type = E_nsl_root_signature_selection_type::EMBEDDED
+			});
+			return result_opt.value();
+		}
+
+		shader_compiler_p()->root_signature_manager_p()->set_local_root_signature_selection({
+			.name = object_implementation.name,
+			.type = E_nsl_root_signature_selection_type::EXTERNAL
+		});
+		return TG_vector<F_nsl_ast_tree>();
+	}
+
+
+
+	F_nsl_local_root_signature_object_type::F_nsl_local_root_signature_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		F_nsl_root_signature_object_type(
+			shader_compiler_p,
+			"local_root_signature"
+		)
+	{
+	}
+	F_nsl_local_root_signature_object_type::~F_nsl_local_root_signature_object_type() {
+	}
+
+	TK<A_nsl_object> F_nsl_local_root_signature_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	) {
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_local_root_signature_object>()(
 				shader_compiler_p(),
 				NCPP_KTHIS(),
 				translation_unit_p,
@@ -8725,6 +8906,12 @@ namespace nrhi {
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 		register_type(
 			TU<F_nsl_root_signature_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_global_root_signature_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_local_root_signature_object_type>()(shader_compiler_p_)
 		);
 #endif
 		register_type(
@@ -12348,6 +12535,8 @@ namespace nrhi {
 				++it;
 			}
 		}
+		reflection.global_root_signature_selection = root_signature_manager_p->global_root_signature_selection();
+		reflection.local_root_signature_selection = root_signature_manager_p->local_root_signature_selection();
 #endif
 
 		// sampler states

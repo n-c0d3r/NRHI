@@ -979,6 +979,8 @@ namespace nrhi {
 		TG_vector<F_nsl_pipeline_state_reflection> pipeline_states;
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 		TG_vector<F_nsl_root_signature_reflection> root_signatures;
+		F_nsl_root_signature_selection global_root_signature_selection;
+		F_nsl_root_signature_selection local_root_signature_selection;
 #endif
 		TG_vector<F_nsl_sampler_state_reflection> sampler_states;
 		TG_vector<F_nsl_resource_reflection> resources;
@@ -2291,12 +2293,107 @@ namespace nrhi {
 
 	public:
 		F_nsl_root_signature_object_type(
-			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			const G_string& name = "root_signature"
 		);
 		virtual ~F_nsl_root_signature_object_type();
 
 	public:
 		NCPP_OBJECT(F_nsl_root_signature_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_global_root_signature_object : public F_nsl_root_signature_object
+	{
+	public:
+		F_nsl_global_root_signature_object(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			TKPA_valid<A_nsl_object_type> type_p,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			const G_string& name = ""
+		);
+		virtual ~F_nsl_global_root_signature_object();
+
+	public:
+		NCPP_OBJECT(F_nsl_global_root_signature_object);
+
+	public:
+		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
+			F_nsl_context& context,
+			TK_valid<F_nsl_translation_unit> unit_p,
+			TG_vector<F_nsl_ast_tree>& trees,
+			sz index,
+			F_nsl_error_stack* error_stack_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_global_root_signature_object_type : public F_nsl_root_signature_object_type {
+
+	public:
+		F_nsl_global_root_signature_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_global_root_signature_object_type();
+
+	public:
+		NCPP_OBJECT(F_nsl_global_root_signature_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_local_root_signature_object : public F_nsl_root_signature_object
+	{
+	public:
+		F_nsl_local_root_signature_object(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			TKPA_valid<A_nsl_object_type> type_p,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			const G_string& name = ""
+		);
+		virtual ~F_nsl_local_root_signature_object();
+
+	public:
+		NCPP_OBJECT(F_nsl_local_root_signature_object);
+
+	public:
+		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
+			F_nsl_context& context,
+			TK_valid<F_nsl_translation_unit> unit_p,
+			TG_vector<F_nsl_ast_tree>& trees,
+			sz index,
+			F_nsl_error_stack* error_stack_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_local_root_signature_object_type : public F_nsl_root_signature_object_type {
+
+	public:
+		F_nsl_local_root_signature_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_local_root_signature_object_type();
+
+	public:
+		NCPP_OBJECT(F_nsl_local_root_signature_object_type);
 
 	public:
 		virtual TK<A_nsl_object> create_object(
@@ -4816,6 +4913,9 @@ namespace nrhi {
 	private:
 		TK_valid<F_nsl_shader_compiler> shader_compiler_p_;
 
+		F_nsl_root_signature_selection global_root_signature_selection_;
+		F_nsl_root_signature_selection local_root_signature_selection_;
+
 	protected:
 		TG_unordered_map<G_string, F_nsl_root_signature_info> name_to_root_signature_info_map_;
 
@@ -4824,6 +4924,9 @@ namespace nrhi {
 
 		NCPP_FORCE_INLINE TG_unordered_map<G_string, F_nsl_root_signature_info>& name_to_root_signature_info_map() noexcept { return name_to_root_signature_info_map_; }
 		NCPP_FORCE_INLINE const TG_unordered_map<G_string, F_nsl_root_signature_info>& name_to_root_signature_info_map() const noexcept { return name_to_root_signature_info_map_; }
+
+		NCPP_FORCE_INLINE const auto& global_root_signature_selection() const noexcept { return global_root_signature_selection_; }
+		NCPP_FORCE_INLINE const auto& local_root_signature_selection() const noexcept { return local_root_signature_selection_; }
 
 
 
@@ -4869,6 +4972,18 @@ namespace nrhi {
 
 			auto it = name_to_root_signature_info_map_.find(name);
 			name_to_root_signature_info_map_.erase(it);
+		}
+
+	public:
+		void set_global_root_signature_selection(const F_nsl_root_signature_selection& selection)
+		{
+			NCPP_ASSERT(global_root_signature_selection_);
+			global_root_signature_selection_ = selection;
+		}
+		void set_local_root_signature_selection(const F_nsl_root_signature_selection& selection)
+		{
+			NCPP_ASSERT(local_root_signature_selection_);
+			local_root_signature_selection_ = selection;
 		}
 
 	private:
