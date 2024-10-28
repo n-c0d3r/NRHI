@@ -11720,6 +11720,138 @@ namespace nrhi {
 			if(flag_is_has(data_param.flags, E_nsl_data_param_flag::PAYLOAD))
 				data_param_declarations += "payload ";
 
+			//
+			{
+				auto it = data_param.argument.config_map.find("max_records");
+				if(it != data_param.argument.config_map.end())
+				{
+					auto& reader = it->second;
+
+					auto value_opt = reader.read_i32(0);
+					if(!value_opt)
+						return eastl::nullopt;
+
+					data_param_declarations += "[MaxRecords(" + G_to_string((value_opt.value())) + ")] ";
+				}
+			}
+
+			//
+			{
+				auto it = data_param.argument.config_map.find("max_records_shared_with");
+				if(it != data_param.argument.config_map.end())
+				{
+					auto& reader = it->second;
+
+					auto value_opt = reader.read_string(0);
+					if(!value_opt)
+						return eastl::nullopt;
+
+					data_param_declarations += "[MaxRecordsSharedWith(" + value_opt.value() + ")] ";
+				}
+			}
+
+			//
+			{
+				auto it = data_param.argument.config_map.find("node_array_size");
+				if(it != data_param.argument.config_map.end())
+				{
+					auto& reader = it->second;
+
+					auto value_opt = reader.read_i32(0);
+					if(!value_opt)
+						return eastl::nullopt;
+
+					data_param_declarations += "[NodeArraySize(" + G_to_string((value_opt.value())) + ")] ";
+				}
+			}
+
+			//
+			{
+				auto it = data_param.argument.config_map.find("node_array_size");
+				if(it != data_param.argument.config_map.end())
+				{
+					auto& reader = it->second;
+
+					auto value_opt = reader.read_i32(0);
+					if(!value_opt)
+						return eastl::nullopt;
+
+					data_param_declarations += "[NodeArraySize(" + G_to_string((value_opt.value())) + ")] ";
+				}
+			}
+
+			//
+			{
+				auto it = data_param.argument.config_map.find("unbounded_sparse_nodes");
+				if(it != data_param.argument.config_map.end())
+				{
+					data_param_declarations += "[UnboundedSparseNodes] ";
+				}
+			}
+
+			//
+			{
+				auto it = data_param.argument.config_map.find("allow_sparse_nodes");
+				if(it != data_param.argument.config_map.end())
+				{
+					data_param_declarations += "[AllowSparseNodes] ";
+				}
+			}
+
+			//
+			{
+				auto it = data_param.argument.config_map.find("globally_coherent");
+				if(it != data_param.argument.config_map.end())
+				{
+					data_param_declarations += "globallycoherent ";
+				}
+			}
+
+			//
+			{
+				auto it = data_param.argument.config_map.find("node_array_size");
+				if(it != data_param.argument.config_map.end())
+				{
+					auto& reader = it->second;
+
+					auto value_opt = reader.read_i32(0);
+					if(!value_opt)
+						return eastl::nullopt;
+
+					data_param_declarations += "[NodeArraySize(" + G_to_string((value_opt.value())) + ")] ";
+				}
+			}
+
+			//
+			{
+				auto it = data_param.argument.config_map.find("node_id");
+				if(it != data_param.argument.config_map.end())
+				{
+					auto& reader = it->second;
+
+					F_node_id node_id;
+
+					{
+						auto value_opt = reader.read_string(0);
+						if(!value_opt)
+							return eastl::nullopt;
+
+						node_id.name = value_opt.value();
+					}
+
+					if(reader.info_trees().size() > 1)
+					{
+						auto value_opt = reader.read_i32(0);
+						if(!value_opt)
+							return eastl::nullopt;
+
+						node_id.index = value_opt.value();
+					}
+
+					data_param_declarations += "[NodeID(" + node_id.name + ", " + G_to_string(node_id.index) + ")] ";
+				}
+			}
+
 			data_param_declarations += (
 				argument_type_str_opt.value()
 				+ " "
