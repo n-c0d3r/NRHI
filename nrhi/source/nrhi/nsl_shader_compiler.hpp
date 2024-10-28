@@ -227,6 +227,7 @@ namespace nrhi {
 		static TG_map<G_string, ED_primitive_topology> primitive_topology_str_to_value_map_;
 		static TG_map<G_string, ED_shader_visibility> shader_visibility_str_to_value_map_;
 		static TG_map<G_string, ED_state_object_flag> state_object_flag_str_to_value_map_;
+		static TG_map<G_string, ED_work_graph_flag> work_graph_flag_str_to_value_map_;
 
 	public:
 		NCPP_FORCE_INLINE TKPA<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
@@ -287,6 +288,7 @@ namespace nrhi {
 		eastl::optional<ED_shader_visibility> read_shader_visibility(u32 index, b8 is_required = true) const;
 		eastl::optional<F_nsl_data_type_selection> read_data_type_selection(u32 index, b8 is_required = true) const;
 		eastl::optional<ED_state_object_flag> read_state_object_flag(u32 index, b8 is_required = true) const;
+		eastl::optional<ED_work_graph_flag> read_work_graph_flag(u32 index, b8 is_required = true) const;
 		b8 read_configurable_elements(
 			const eastl::function<
 				b8(
@@ -526,6 +528,21 @@ namespace nrhi {
 	};
 #endif
 
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+	using F_nsl_work_graph_config_map = TG_unordered_map<G_string, F_nsl_info_tree_reader>;
+	struct F_nsl_work_graph_info
+	{
+		F_work_graph_desc desc;
+
+		F_nsl_work_graph_config_map config_map;
+
+		u32 begin_location = 0;
+		u32 end_location = 0;
+		TK<F_nsl_translation_unit> translation_unit_p;
+	};
+	using F_nsl_work_graph = eastl::pair<G_string, F_nsl_work_graph_info>;
+#endif
+
 	using F_nsl_pipeline_state_config_map = TG_unordered_map<G_string, F_nsl_info_tree_reader>;
 	struct F_nsl_pipeline_state_info {
 
@@ -666,6 +683,9 @@ namespace nrhi {
 		struct SUBMODULE {};
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 		struct ROOT_SIGNATURE {};
+#endif
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+		struct WORK_GRAPH {};
 #endif
 	};
 
@@ -839,12 +859,17 @@ namespace nrhi {
 	};
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-	struct F_nsl_root_signature_reflection {
-
+	struct F_nsl_root_signature_reflection
+	{
 		G_string name;
-
 		F_root_signature_desc desc;
-
+	};
+#endif
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+	struct F_nsl_work_graph_reflection
+	{
+		G_string name;
+		F_work_graph_desc desc;
 	};
 #endif
 	struct F_nsl_sampler_state_reflection {
@@ -991,6 +1016,9 @@ namespace nrhi {
 		F_nsl_root_signature_selection global_root_signature_selection;
 		F_nsl_root_signature_selection local_root_signature_selection;
 #endif
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+		TG_vector<F_nsl_work_graph_reflection> work_graphs;
+#endif
 		TG_vector<F_nsl_sampler_state_reflection> sampler_states;
 		TG_vector<F_nsl_resource_reflection> resources;
 		TG_vector<F_nsl_type_reflection> types;
@@ -1096,6 +1124,41 @@ namespace nrhi {
 				<< T_cout_value(name);
 
 			return root_signatures[root_signature_index];
+		}
+#endif
+
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+	public:
+		NCPP_FORCE_INLINE u32 search_work_graph_index(const G_string& name) const noexcept {
+
+			u32 work_graph_count = work_graphs.size();
+			for(u32 i = 0; i < work_graph_count; ++i) {
+
+				if(work_graphs[i].name == name)
+					return i;
+			}
+
+			return -1;
+		}
+		NCPP_FORCE_INLINE F_nsl_work_graph_reflection& search_work_graph(const G_string& name) noexcept {
+
+			u32 work_graph_index = search_work_graph_index(name);
+
+			NCPP_ASSERT(work_graph_index != -1)
+				<< "not found work graph "
+				<< T_cout_value(name);
+
+			return work_graphs[work_graph_index];
+		}
+		NCPP_FORCE_INLINE const F_nsl_work_graph_reflection& search_work_graph(const G_string& name) const noexcept {
+
+			u32 work_graph_index = search_work_graph_index(name);
+
+			NCPP_ASSERT(work_graph_index != -1)
+				<< "not found work graph "
+				<< T_cout_value(name);
+
+			return work_graphs[work_graph_index];
 		}
 #endif
 
@@ -2406,6 +2469,55 @@ namespace nrhi {
 
 	public:
 		NCPP_OBJECT(F_nsl_local_root_signature_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+#endif
+
+
+
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+	class NRHI_API F_nsl_work_graph_object : public A_nsl_object
+	{
+	public:
+		F_nsl_work_graph_object(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			TKPA_valid<A_nsl_object_type> type_p,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			const G_string& name = ""
+		);
+		virtual ~F_nsl_work_graph_object();
+
+	public:
+		NCPP_OBJECT(F_nsl_work_graph_object);
+
+	public:
+		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
+			F_nsl_context& context,
+			TK_valid<F_nsl_translation_unit> unit_p,
+			TG_vector<F_nsl_ast_tree>& trees,
+			sz index,
+			F_nsl_error_stack* error_stack_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_work_graph_object_type : public A_nsl_object_type {
+
+	public:
+		F_nsl_work_graph_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_work_graph_object_type();
+
+	public:
+		NCPP_OBJECT(F_nsl_work_graph_object_type);
 
 	public:
 		virtual TK<A_nsl_object> create_object(
@@ -5054,6 +5166,74 @@ namespace nrhi {
 
 
 
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+	class NRHI_API F_nsl_work_graph_manager {
+
+	private:
+		TK_valid<F_nsl_shader_compiler> shader_compiler_p_;
+
+	protected:
+		TG_unordered_map<G_string, F_nsl_work_graph_info> name_to_work_graph_info_map_;
+
+	public:
+		NCPP_FORCE_INLINE TKPA_valid<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
+
+		NCPP_FORCE_INLINE TG_unordered_map<G_string, F_nsl_work_graph_info>& name_to_work_graph_info_map() noexcept { return name_to_work_graph_info_map_; }
+		NCPP_FORCE_INLINE const TG_unordered_map<G_string, F_nsl_work_graph_info>& name_to_work_graph_info_map() const noexcept { return name_to_work_graph_info_map_; }
+
+
+
+	public:
+		F_nsl_work_graph_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p);
+		virtual ~F_nsl_work_graph_manager();
+
+	public:
+		NCPP_OBJECT(F_nsl_work_graph_manager);
+
+	public:
+		NCPP_FORCE_INLINE b8 is_name_has_work_graph_info(const G_string& name) const {
+
+			auto it = name_to_work_graph_info_map_.find(name);
+
+			return (it != name_to_work_graph_info_map_.end());
+		}
+		NCPP_FORCE_INLINE F_nsl_work_graph_info& work_graph_info(const G_string& name) {
+
+			auto it = name_to_work_graph_info_map_.find(name);
+
+			NCPP_ASSERT(it != name_to_work_graph_info_map_.end()) << "can't find " << T_cout_value(name);
+
+			return it->second;
+		}
+		NCPP_FORCE_INLINE const F_nsl_work_graph_info& work_graph_info(const G_string& name) const {
+
+			auto it = name_to_work_graph_info_map_.find(name);
+
+			NCPP_ASSERT(it != name_to_work_graph_info_map_.end()) << "can't find " << T_cout_value(name);
+
+			return it->second;
+		}
+		NCPP_FORCE_INLINE void register_work_graph(const G_string& name, const F_nsl_work_graph_info& work_graph_info) {
+
+			NCPP_ASSERT(name_to_work_graph_info_map_.find(name) == name_to_work_graph_info_map_.end()) << T_cout_value(name) << " already exists";
+
+			name_to_work_graph_info_map_[name] = process_work_graph_info(name, work_graph_info);
+		}
+		NCPP_FORCE_INLINE void deregister_work_graph(const G_string& name) {
+
+			NCPP_ASSERT(name_to_work_graph_info_map_.find(name) != name_to_work_graph_info_map_.end()) << T_cout_value(name) << " is not exists";
+
+			auto it = name_to_work_graph_info_map_.find(name);
+			name_to_work_graph_info_map_.erase(it);
+		}
+
+	private:
+		F_nsl_work_graph_info process_work_graph_info(const G_string& name, const F_nsl_work_graph_info& work_graph_info);
+	};
+#endif
+
+
+
 #ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
 	class NRHI_API F_nsl_state_object {
 
@@ -5227,6 +5407,12 @@ namespace nrhi {
 			root_signature_manager_creator
 		);
 #endif
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+		NRHI_NSL_DEFINE_SUBSYSTEM_CREATOR_AS_CUSTOMIZATION_MEMBER(
+			F_nsl_work_graph_manager,
+			work_graph_manager_creator
+		);
+#endif
 #ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
 		NRHI_NSL_DEFINE_SUBSYSTEM_CREATOR_AS_CUSTOMIZATION_MEMBER(
 			F_nsl_state_object,
@@ -5262,6 +5448,9 @@ namespace nrhi {
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 		TU<F_nsl_root_signature_manager> root_signature_manager_p_;
 #endif
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+		TU<F_nsl_work_graph_manager> work_graph_manager_p_;
+#endif
 #ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
 		TU<F_nsl_state_object> state_object_p_;
 #endif
@@ -5288,6 +5477,9 @@ namespace nrhi {
 		NCPP_FORCE_INLINE TK_valid<F_nsl_pipeline_state_manager> pipeline_state_manager_p() const noexcept { return NCPP_FOH_VALID(pipeline_state_manager_p_); }
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 		NCPP_FORCE_INLINE TK_valid<F_nsl_root_signature_manager> root_signature_manager_p() const noexcept { return NCPP_FOH_VALID(root_signature_manager_p_); }
+#endif
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+		NCPP_FORCE_INLINE TK_valid<F_nsl_work_graph_manager> work_graph_manager_p() const noexcept { return NCPP_FOH_VALID(work_graph_manager_p_); }
 #endif
 #ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
 		NCPP_FORCE_INLINE TK_valid<F_nsl_state_object> state_object_p() const noexcept { return NCPP_FOH_VALID(state_object_p_); }

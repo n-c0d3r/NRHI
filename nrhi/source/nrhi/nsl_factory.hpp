@@ -34,6 +34,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 
 #include <nrhi/nsl_shader_compiler.hpp>
+#include <nrhi/state_object_builder.abstract_data.hpp>
 
 #pragma endregion
 
@@ -103,6 +104,36 @@ namespace nrhi {
 			return eastl::move(result);
 		}
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
-	};
 
+#ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
+	public:
+		struct F_owned_state_object_builder
+		{
+			F_state_object_builder builder;
+			F_owned_root_signature_map owned_root_signature_map;
+		};
+		static F_state_object_builder make_state_object_builder(
+			const F_nsl_compiled_result& compiled_result,
+			const TG_unordered_map<G_string, TK<A_root_signature>>& root_signature_map,
+			ED_state_object_type state_object_type = ED_state_object_type::EXECUTABLE
+		);
+		static F_owned_state_object_builder make_owned_state_object_builder(
+			TKPA_valid<A_device> device_p,
+			const F_nsl_compiled_result& compiled_result,
+			ED_state_object_type state_object_type = ED_state_object_type::EXECUTABLE
+		)
+		{
+			F_owned_root_signature_map owned_root_signature_map = make_owned_root_signature_map(device_p, compiled_result);
+			F_state_object_builder state_object_builder = make_state_object_builder(
+				compiled_result,
+				owned_root_signature_map.map,
+				state_object_type
+			);
+			return {
+				.builder = eastl::move(state_object_builder),
+				.owned_root_signature_map = eastl::move(owned_root_signature_map)
+			};
+		}
+#endif
+	};
 }

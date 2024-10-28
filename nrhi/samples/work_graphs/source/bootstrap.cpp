@@ -26,12 +26,14 @@ int main() {
 "\n"
 "import(nrhi)\n"
 "\n"
-"state_object_config(\n"
-"	flags(ALLOW_STATE_OBJECT_ADDITIONS)\n"
-")\n"
+"@allow_state_object_additions\n"
+"state_object_config\n"
 "\n"
 "global_root_signature GRS()\n"
 "local_root_signature LRS()\n"
+"\n"
+"@include_all_available_nodes\n"
+"work_graph WG()\n"
 "\n";
 
 	auto compiler_p = TU<F_nsl_shader_compiler>()();
@@ -47,39 +49,13 @@ int main() {
 	auto& nsl_shader_compiled_result = nsl_shader_compiled_result_opt.value();
 	nsl_shader_compiled_result.finalize_library();
 
-	//
-	F_state_object_builder state_object_builder(ED_state_object_type::EXECUTABLE);
-
-	F_global_root_signature_subobject& global_root_signature_subobject = state_object_builder.add_global_root_signature_subobject();
-
-	F_local_root_signature_subobject& local_root_signature_subobject = state_object_builder.add_local_root_signature_subobject();
-
-	F_state_object_config_subobject& state_object_config_subobject = state_object_builder.add_state_object_config();
-	state_object_config_subobject.set_flags(ED_state_object_flag::ALLOW_STATE_OBJECT_ADDITIONS);
-
-	F_library_subobject& library_subobject = state_object_builder.add_library();
-	library_subobject.set_binary(nsl_shader_compiled_result.library_binary);
-
-	F_work_graph_subobject& work_graph_subobject = state_object_builder.add_work_graph();
-	work_graph_subobject.include_all_available_nodes();
-	work_graph_subobject.set_name("demo_work_graph");
-
-	auto state_object1_p = state_object_builder.build(
-		NCPP_FOH_VALID(device_p)
-	);
-
-	auto state_object2_p = state_object_builder.add_to(
-		NCPP_FOH_VALID(state_object1_p)
-	);
-
-	F_state_object_properties state_object_properties = NCPP_FOH_VALID(state_object1_p);
-	F_work_graph_properties work_graph_properties = NCPP_FOH_VALID(state_object1_p);
-
-	F_program_id work_graph_program_id = state_object_properties.program_id("demo_work_graph");
-
-	auto root_signature_map = H_nsl_factory::make_owned_root_signature_map(
+	auto owned_state_object_builder = H_nsl_factory::make_owned_state_object_builder(
 		NCPP_FOH_VALID(device_p),
 		nsl_shader_compiled_result
+	);
+
+	auto state_object_p = owned_state_object_builder.builder.build(
+		NCPP_FOH_VALID(device_p)
 	);
 
 	return 0;

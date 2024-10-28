@@ -263,4 +263,83 @@ namespace nrhi {
 		return std::move(result);
 	}
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+
+#ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
+	F_state_object_builder H_nsl_factory::make_state_object_builder(
+		const F_nsl_compiled_result& compiled_result,
+		const TG_unordered_map<G_string, TK<A_root_signature>>& root_signature_map,
+		ED_state_object_type state_object_type
+	)
+	{
+		F_state_object_builder result(state_object_type);
+
+		//
+		auto& reflection = compiled_result.reflection;
+
+		// global root signature
+		{
+			auto global_root_signature_selection = reflection.global_root_signature_selection;
+			if(global_root_signature_selection)
+			{
+				auto it = root_signature_map.find(global_root_signature_selection.name);
+				NCPP_ASSERT(it != root_signature_map.end()) << "not found root signature " << T_cout_value(global_root_signature_selection.name);
+
+				auto& global_root_signature_subobject = result.add_global_root_signature_subobject();
+				global_root_signature_subobject.set_root_signature_p(
+					NCPP_FOH_VALID(
+						it->second
+					)
+				);
+			}
+		}
+
+		// local root signature
+		{
+			auto local_root_signature_selection = reflection.local_root_signature_selection;
+			if(local_root_signature_selection)
+			{
+				auto it = root_signature_map.find(local_root_signature_selection.name);
+				NCPP_ASSERT(it != root_signature_map.end()) << "not found root signature " << T_cout_value(local_root_signature_selection.name);
+
+				auto& local_root_signature_subobject = result.add_local_root_signature_subobject();
+				local_root_signature_subobject.set_root_signature_p(
+					NCPP_FOH_VALID(
+						it->second
+					)
+				);
+			}
+		}
+
+		// library binary
+		NCPP_ASSERT(compiled_result.library_binary.size()) << "compiled result is not finalized (library mode)";
+		{
+			auto& library_subobject = result.add_library();
+			library_subobject.set_binary((F_shader_binary&)compiled_result.library_binary);
+		}
+
+		// work graph
+		{
+			auto& work_graph_reflections = reflection.work_graphs;
+			u32 work_graph_count = work_graph_reflections.size();
+			for(u32 i = 0; i < work_graph_count; ++i)
+			{
+				auto& work_graph_reflection = work_graph_reflections[i];
+
+				auto& work_graph_subobject = result.add_work_graph();
+				work_graph_subobject.set_name(work_graph_reflection.name);
+				if(
+					flag_is_has(
+						work_graph_reflection.desc.flags,
+						ED_work_graph_flag::INCLUDE_ALL_AVAILABLE_NODES
+					)
+				)
+				{
+					work_graph_subobject.include_all_available_nodes();
+				}
+			}
+		}
+
+		return eastl::move(state_object_type);
+	}
+#endif
 }

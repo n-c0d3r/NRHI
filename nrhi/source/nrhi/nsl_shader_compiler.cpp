@@ -1365,6 +1365,7 @@ namespace nrhi {
 	TG_map<G_string, ED_primitive_topology> F_nsl_info_tree_reader::primitive_topology_str_to_value_map_;
 	TG_map<G_string, ED_shader_visibility> F_nsl_info_tree_reader::shader_visibility_str_to_value_map_;
 	TG_map<G_string, ED_state_object_flag> F_nsl_info_tree_reader::state_object_flag_str_to_value_map_;
+	TG_map<G_string, ED_work_graph_flag> F_nsl_info_tree_reader::work_graph_flag_str_to_value_map_;
 
 	F_nsl_info_tree_reader::F_nsl_info_tree_reader(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
@@ -1571,6 +1572,10 @@ namespace nrhi {
 			state_object_flag_str_to_value_map_["ALLOW_STATE_OBJECT_ADDITIONS"] = ED_state_object_flag::ALLOW_STATE_OBJECT_ADDITIONS;
 			state_object_flag_str_to_value_map_["ALLOW_EXTERNAL_DEPENDENCIES_ON_LOCAL_DEFINITIONS"] = ED_state_object_flag::ALLOW_EXTERNAL_DEPENDENCIES_ON_LOCAL_DEFINITIONS;
 			state_object_flag_str_to_value_map_["ALLOW_LOCAL_DEPENDENCIES_ON_EXTERNAL_DEFINITIONS"] = ED_state_object_flag::ALLOW_LOCAL_DEPENDENCIES_ON_EXTERNAL_DEFINITIONS;
+
+			// setup work_graph_flag_str_to_value_map_
+			work_graph_flag_str_to_value_map_["NONE"] = ED_work_graph_flag::NONE;
+			work_graph_flag_str_to_value_map_["INCLUDE_ALL_AVAILABLE_NODES"] = ED_work_graph_flag::INCLUDE_ALL_AVAILABLE_NODES;
 		}
 	}
 	F_nsl_info_tree_reader::~F_nsl_info_tree_reader() {
@@ -2409,6 +2414,30 @@ namespace nrhi {
 		auto it = state_object_flag_str_to_value_map_.find(value_str);
 
 		if (it == state_object_flag_str_to_value_map_.end()) {
+
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
+			return eastl::nullopt;
+		}
+
+		return it->second;
+	}
+	eastl::optional<ED_work_graph_flag> F_nsl_info_tree_reader::read_work_graph_flag(u32 index, b8 is_required) const {
+
+		if(!guarantee_index(index, is_required)) {
+
+			return eastl::nullopt;
+		}
+
+		G_string value_str = parse_value_str(info_trees_[index].name);
+
+		auto it = work_graph_flag_str_to_value_map_.find(value_str);
+
+		if (it == work_graph_flag_str_to_value_map_.end()) {
 
 			if(is_required)
 				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
@@ -6947,7 +6976,7 @@ namespace nrhi {
 		TG_vector<F_nsl_ast_tree>& trees,
 		sz index,
 		F_nsl_error_stack* error_stack_p
-		) {
+	) {
 		auto& tree = trees[index];
 		auto& object_implementation = tree.object_implementation;
 
@@ -7015,6 +7044,105 @@ namespace nrhi {
 
 
 
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+	F_nsl_work_graph_object::F_nsl_work_graph_object(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		TKPA_valid<A_nsl_object_type> type_p,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const G_string& name
+	) :
+		A_nsl_object(
+			shader_compiler_p,
+			type_p,
+			translation_unit_p,
+			name
+		)
+	{
+	}
+	F_nsl_work_graph_object::~F_nsl_work_graph_object() {
+	}
+
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_work_graph_object::recursive_build_ast_tree(
+		F_nsl_context& context,
+		TK_valid<F_nsl_translation_unit> unit_p,
+		TG_vector<F_nsl_ast_tree>& trees,
+		sz index,
+		F_nsl_error_stack* error_stack_p
+	) {
+		auto& tree = trees[index];
+		auto& object_implementation = tree.object_implementation;
+
+		context.parent_object_p = NCPP_KTHIS().no_requirements();
+
+		auto name_manager_p = shader_compiler_p()->name_manager_p();
+		auto translation_unit_compiler_p = shader_compiler_p()->translation_unit_compiler_p();
+		auto work_graph_manager_p = shader_compiler_p()->work_graph_manager_p();
+
+		//
+		F_nsl_work_graph_info work_graph_info;
+		work_graph_info.config_map = context.current_object_config;
+
+		// include_all_available_nodes annotation
+		if(context.current_object_config.find("include_all_available_nodes") != context.current_object_config.end())
+		{
+			work_graph_info.desc.flags = flag_combine(
+				work_graph_info.desc.flags,
+				ED_work_graph_flag::INCLUDE_ALL_AVAILABLE_NODES
+			);
+		}
+
+		// register root_signature
+		name_manager_p->template T_register_name<FE_nsl_name_types::WORK_GRAPH>(tree.object_implementation.name);
+		work_graph_manager_p->register_work_graph(
+			tree.object_implementation.name,
+			work_graph_info
+		);
+
+		return TG_vector<F_nsl_ast_tree>();
+	}
+
+
+
+	F_nsl_work_graph_object_type::F_nsl_work_graph_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"work_graph",
+			true,
+			1,
+			1,
+			nsl_global_object_type_channel_mask
+		)
+	{
+	}
+	F_nsl_work_graph_object_type::~F_nsl_work_graph_object_type() {
+	}
+
+	TK<A_nsl_object> F_nsl_work_graph_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	) {
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_work_graph_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+#endif
+
+
+
 #ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
 	F_nsl_state_object_config_object::F_nsl_state_object_config_object(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
@@ -7045,46 +7173,31 @@ namespace nrhi {
 
 		F_state_object_config config;
 
-		// parse info trees
-		auto info_trees_opt = H_nsl_utilities::build_info_trees(
-			object_implementation.bodies[0].content,
-			object_implementation.bodies[0].begin_location,
-			&(unit_p->error_group_p()->stack())
-		);
-		if(!info_trees_opt) {
-
-			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-				&(unit_p->error_group_p()->stack()),
-				object_implementation.bodies[0].begin_location,
-				"can't parse state object config"
+		// allow_state_object_additions annotation
+		if(context.current_object_config.find("allow_state_object_additions") != context.current_object_config.end())
+		{
+			config.flags = flag_combine(
+				config.flags,
+				ED_state_object_flag::ALLOW_STATE_OBJECT_ADDITIONS
 			);
-			return eastl::nullopt;
 		}
 
-		auto& info_trees = info_trees_opt.value();
-		u32 info_tree_count = info_trees.size();
-
-		F_nsl_info_tree_reader info_tree_reader(
-			shader_compiler_p(),
-			info_trees,
-			object_implementation.bodies[0].begin_location,
-			&(unit_p->error_group_p()->stack())
-		);
-
-		for(u32 i = 0; i < info_tree_count; ++i)
+		// allow_external_dependencies_on_local_definitions annotation
+		if(context.current_object_config.find("allow_external_dependencies_on_local_definitions") != context.current_object_config.end())
 		{
-			auto& info_tree = info_trees[i];
+			config.flags = flag_combine(
+				config.flags,
+				ED_state_object_flag::ALLOW_EXTERNAL_DEPENDENCIES_ON_LOCAL_DEFINITIONS
+			);
+		}
 
-			if(info_tree.name == "flags")
-			{
-				auto child_info_tree_reader = info_tree_reader.read_sub("flags");
-
-				auto value_opt = child_info_tree_reader->read_state_object_flag(0);
-				if(!value_opt)
-					return eastl::nullopt;
-
-				config.flags = value_opt.value();
-			}
+		// allow_local_dependencies_on_external_definitions annotation
+		if(context.current_object_config.find("allow_local_dependencies_on_external_definitions") != context.current_object_config.end())
+		{
+			config.flags = flag_combine(
+				config.flags,
+				ED_state_object_flag::ALLOW_LOCAL_DEPENDENCIES_ON_EXTERNAL_DEFINITIONS
+			);
 		}
 
 		shader_compiler_p()->state_object_p()->set_config(config);
@@ -7101,8 +7214,8 @@ namespace nrhi {
 			shader_compiler_p,
 			"state_object_config",
 			false,
-			1,
-			1
+			0,
+			0
 		)
 	{
 	}
@@ -9061,6 +9174,11 @@ namespace nrhi {
 		);
 		register_type(
 			TU<F_nsl_local_root_signature_object_type>()(shader_compiler_p_)
+		);
+#endif
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+		register_type(
+			TU<F_nsl_work_graph_object_type>()(shader_compiler_p_)
 		);
 #endif
 #ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
@@ -12422,6 +12540,24 @@ namespace nrhi {
 
 
 
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+	F_nsl_work_graph_manager::F_nsl_work_graph_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
+		shader_compiler_p_(shader_compiler_p)
+	{
+	}
+	F_nsl_work_graph_manager::~F_nsl_work_graph_manager() {
+	}
+
+	F_nsl_work_graph_info F_nsl_work_graph_manager::process_work_graph_info(const G_string& name, const F_nsl_work_graph_info& work_graph_info) {
+
+		F_nsl_work_graph_info result = work_graph_info;
+
+		return std::move(result);
+	}
+#endif
+
+
+
 #ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
 	F_nsl_state_object::F_nsl_state_object(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
 		shader_compiler_p_(shader_compiler_p)
@@ -12462,6 +12598,9 @@ namespace nrhi {
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 		auto root_signature_manager_p = shader_compiler_p_->root_signature_manager_p();
 #endif
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+		auto work_graph_manager_p = shader_compiler_p_->work_graph_manager_p();
+#endif
 
 		auto& name_to_primitive_data_type_map = data_type_manager_p->name_to_primitive_data_type_map();
 		auto& name_to_semantic_info_map = data_type_manager_p->name_to_semantic_info_map();
@@ -12472,6 +12611,9 @@ namespace nrhi {
 		auto& name_to_resource_info_map = resource_manager_p->name_to_resource_info_map();
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 		auto& name_to_root_signature_info_map = root_signature_manager_p->name_to_root_signature_info_map();
+#endif
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+		auto& name_to_work_graph_info_map = work_graph_manager_p->name_to_work_graph_info_map();
 #endif
 
 		TG_unordered_map<G_string, u32> name_to_type_index_map;
@@ -12704,6 +12846,29 @@ namespace nrhi {
 		reflection.local_root_signature_selection = root_signature_manager_p->local_root_signature_selection();
 #endif
 
+		// work graphs
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+		{
+			u32 work_graph_count = name_to_work_graph_info_map.size();
+
+			reflection.work_graphs.resize(work_graph_count);
+
+			auto it = name_to_work_graph_info_map.begin();
+
+			for(u32 i = 0; i < work_graph_count; ++i) {
+
+				auto& work_graph_info = it->second;
+
+				reflection.work_graphs[i] = F_nsl_work_graph_reflection {
+					.name = it->first,
+					.desc = work_graph_info.desc
+				};
+
+				++it;
+			}
+		}
+#endif
+
 		// state object config
 #ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
 		reflection.state_object_config = shader_compiler_p()->state_object_p()->config();
@@ -12816,6 +12981,9 @@ namespace nrhi {
 		pipeline_state_manager_p_(customizer.pipeline_state_manager_creator(NCPP_KTHIS())),
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 		root_signature_manager_p_(customizer.root_signature_manager_creator(NCPP_KTHIS())),
+#endif
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+		work_graph_manager_p_(customizer.work_graph_manager_creator(NCPP_KTHIS())),
 #endif
 #ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
 		state_object_p_(customizer.state_object_creator(NCPP_KTHIS())),
