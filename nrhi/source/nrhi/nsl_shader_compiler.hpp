@@ -199,6 +199,15 @@ namespace nrhi {
 		LINE
 	};
 
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+	enum class E_nsl_node_launch
+	{
+		BROADCASTING,
+		COALESCING,
+		THREAD
+	};
+#endif
+
 	struct F_nsl_data_type_selection
 	{
 		G_string name;
@@ -228,6 +237,7 @@ namespace nrhi {
 		static TG_map<G_string, ED_shader_visibility> shader_visibility_str_to_value_map_;
 		static TG_map<G_string, ED_state_object_flag> state_object_flag_str_to_value_map_;
 		static TG_map<G_string, ED_work_graph_flag> work_graph_flag_str_to_value_map_;
+		static TG_map<G_string, E_nsl_node_launch> node_launch_str_to_value_map_;
 
 	public:
 		NCPP_FORCE_INLINE TKPA<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
@@ -287,8 +297,12 @@ namespace nrhi {
 		eastl::optional<E_nsl_output_topology> read_output_topology(u32 index, b8 is_required = true) const;
 		eastl::optional<ED_shader_visibility> read_shader_visibility(u32 index, b8 is_required = true) const;
 		eastl::optional<F_nsl_data_type_selection> read_data_type_selection(u32 index, b8 is_required = true) const;
+#ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
 		eastl::optional<ED_state_object_flag> read_state_object_flag(u32 index, b8 is_required = true) const;
+#endif
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
 		eastl::optional<ED_work_graph_flag> read_work_graph_flag(u32 index, b8 is_required = true) const;
+#endif
 		b8 read_configurable_elements(
 			const eastl::function<
 				b8(
@@ -3390,6 +3404,69 @@ namespace nrhi {
 
 
 
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+	class NRHI_API F_nsl_node_shader_object final : public A_nsl_shader_object
+	{
+	private:
+		E_nsl_node_launch launch_ = E_nsl_node_launch::BROADCASTING;
+		F_vector3_u32 max_dispatch_grid_ = F_vector3_u32::zero();
+
+	public:
+		NCPP_FORCE_INLINE E_nsl_node_launch launch() const noexcept { return launch_; }
+		NCPP_FORCE_INLINE PA_vector3_u32 max_dispatch_grid() const noexcept { return max_dispatch_grid_; }
+
+
+
+	public:
+		F_nsl_node_shader_object(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+			TKPA_valid<A_nsl_object_type> type_p,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+			const G_string& name = ""
+		);
+		virtual ~F_nsl_node_shader_object();
+
+	public:
+		NCPP_OBJECT(F_nsl_node_shader_object);
+
+	public:
+		virtual eastl::optional<TG_vector<F_nsl_ast_tree>> recursive_build_ast_tree(
+			F_nsl_context& context,
+			TK_valid<F_nsl_translation_unit> unit_p,
+			TG_vector<F_nsl_ast_tree>& trees,
+			sz index,
+			F_nsl_error_stack* error_stack_p
+		) override;
+		virtual eastl::optional<G_string> apply(
+			const F_nsl_ast_tree& tree
+		) override;
+
+	};
+
+
+
+	class NRHI_API F_nsl_node_shader_object_type final : public A_nsl_shader_object_type {
+
+	public:
+		F_nsl_node_shader_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_node_shader_object_type();
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+
+	public:
+		NCPP_OBJECT(F_nsl_node_shader_object_type);
+	};
+#endif
+
+
+
 	class NRHI_API F_nsl_object_manager {
 
 	private:
@@ -4749,6 +4826,9 @@ namespace nrhi {
 
 	public:
 		NCPP_OBJECT(F_nsl_output_hlsl_6_8);
+
+	private:
+		void register_data_types_internal();
 	};
 
 

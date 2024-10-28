@@ -1364,8 +1364,13 @@ namespace nrhi {
 	TG_map<G_string, ED_comparison_func> F_nsl_info_tree_reader::comparison_func_str_to_value_map_;
 	TG_map<G_string, ED_primitive_topology> F_nsl_info_tree_reader::primitive_topology_str_to_value_map_;
 	TG_map<G_string, ED_shader_visibility> F_nsl_info_tree_reader::shader_visibility_str_to_value_map_;
+#ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
 	TG_map<G_string, ED_state_object_flag> F_nsl_info_tree_reader::state_object_flag_str_to_value_map_;
+#endif
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
 	TG_map<G_string, ED_work_graph_flag> F_nsl_info_tree_reader::work_graph_flag_str_to_value_map_;
+	TG_map<G_string, E_nsl_node_launch> F_nsl_info_tree_reader::node_launch_str_to_value_map_;
+#endif
 
 	F_nsl_info_tree_reader::F_nsl_info_tree_reader(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
@@ -1567,15 +1572,24 @@ namespace nrhi {
 			shader_visibility_str_to_value_map_["AMPLIFICATION"] = ED_shader_visibility::AMPLIFICATION;
 			shader_visibility_str_to_value_map_["MESH"] = ED_shader_visibility::MESH;
 
+#ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
 			// setup state_object_flag_str_to_value_map_
 			state_object_flag_str_to_value_map_["NONE"] = ED_state_object_flag::NONE;
 			state_object_flag_str_to_value_map_["ALLOW_STATE_OBJECT_ADDITIONS"] = ED_state_object_flag::ALLOW_STATE_OBJECT_ADDITIONS;
 			state_object_flag_str_to_value_map_["ALLOW_EXTERNAL_DEPENDENCIES_ON_LOCAL_DEFINITIONS"] = ED_state_object_flag::ALLOW_EXTERNAL_DEPENDENCIES_ON_LOCAL_DEFINITIONS;
 			state_object_flag_str_to_value_map_["ALLOW_LOCAL_DEPENDENCIES_ON_EXTERNAL_DEFINITIONS"] = ED_state_object_flag::ALLOW_LOCAL_DEPENDENCIES_ON_EXTERNAL_DEFINITIONS;
+#endif
 
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
 			// setup work_graph_flag_str_to_value_map_
 			work_graph_flag_str_to_value_map_["NONE"] = ED_work_graph_flag::NONE;
 			work_graph_flag_str_to_value_map_["INCLUDE_ALL_AVAILABLE_NODES"] = ED_work_graph_flag::INCLUDE_ALL_AVAILABLE_NODES;
+
+			// setup node_launch_str_to_value_map_
+			node_launch_str_to_value_map_["BROADCASTING"] = E_nsl_node_launch::BROADCASTING;
+			node_launch_str_to_value_map_["COALESCING"] = E_nsl_node_launch::COALESCING;
+			node_launch_str_to_value_map_["THREAD"] = E_nsl_node_launch::THREAD;
+#endif
 		}
 	}
 	F_nsl_info_tree_reader::~F_nsl_info_tree_reader() {
@@ -2402,6 +2416,7 @@ namespace nrhi {
 			.childs = eastl::move(childs)
 		};
 	}
+#ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
 	eastl::optional<ED_state_object_flag> F_nsl_info_tree_reader::read_state_object_flag(u32 index, b8 is_required) const {
 
 		if(!guarantee_index(index, is_required)) {
@@ -2426,6 +2441,8 @@ namespace nrhi {
 
 		return it->second;
 	}
+#endif
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
 	eastl::optional<ED_work_graph_flag> F_nsl_info_tree_reader::read_work_graph_flag(u32 index, b8 is_required) const {
 
 		if(!guarantee_index(index, is_required)) {
@@ -2450,6 +2467,7 @@ namespace nrhi {
 
 		return it->second;
 	}
+#endif
 	b8 F_nsl_info_tree_reader::read_configurable_elements(
 		const eastl::function<
 			b8(
@@ -9039,6 +9057,227 @@ namespace nrhi {
 
 
 
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+	F_nsl_node_shader_object::F_nsl_node_shader_object(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
+		TKPA_valid<A_nsl_object_type> type_p,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p,
+		const G_string& name
+	) :
+		A_nsl_shader_object(
+			shader_compiler_p,
+			type_p,
+			translation_unit_p,
+			ED_shader_type::NODE,
+			name
+		)
+	{
+	}
+	F_nsl_node_shader_object::~F_nsl_node_shader_object() {
+	}
+
+	eastl::optional<TG_vector<F_nsl_ast_tree>> F_nsl_node_shader_object::recursive_build_ast_tree(
+		F_nsl_context& context,
+		TK_valid<F_nsl_translation_unit> unit_p,
+		TG_vector<F_nsl_ast_tree>& trees,
+		sz index,
+		F_nsl_error_stack* error_stack_p
+	) {
+		auto childs = A_nsl_shader_object::recursive_build_ast_tree(
+			context,
+			unit_p,
+			trees,
+			index,
+			error_stack_p
+		);
+
+		// @thread_group_size annotation
+		{
+			auto it = context.current_object_config.find("thread_group_size");
+			if(it != context.current_object_config.end())
+			{
+				thread_group_size_ = F_vector3_u32::one();
+				{
+					auto value_opt = it->second.read_u32(0);
+
+					if(!value_opt)
+						return eastl::nullopt;
+
+					thread_group_size_.x = value_opt.value();
+				}
+				{
+					auto value_opt = it->second.read_u32(1);
+
+					if(!value_opt)
+						return eastl::nullopt;
+
+					thread_group_size_.y = value_opt.value();
+				}
+				{
+					auto value_opt = it->second.read_u32(2);
+
+					if(!value_opt)
+						return eastl::nullopt;
+
+					thread_group_size_.z = value_opt.value();
+				}
+			}
+		}
+
+		// @max_dispatch_grid annotation
+		{
+			auto it = context.current_object_config.find("max_dispatch_grid");
+			if(it != context.current_object_config.end())
+			{
+				max_dispatch_grid_ = F_vector3_u32::one();
+				{
+					auto value_opt = it->second.read_u32(0);
+
+					if(!value_opt)
+						return eastl::nullopt;
+
+					max_dispatch_grid_.x = value_opt.value();
+				}
+				{
+					auto value_opt = it->second.read_u32(1);
+
+					if(!value_opt)
+						return eastl::nullopt;
+
+					max_dispatch_grid_.y = value_opt.value();
+				}
+				{
+					auto value_opt = it->second.read_u32(2);
+
+					if(!value_opt)
+						return eastl::nullopt;
+
+					max_dispatch_grid_.z = value_opt.value();
+				}
+			}
+		}
+
+		// @default_slot_space annotation
+		{
+			auto it = context.current_object_config.find("default_slot_space");
+			if(it != context.current_object_config.end()) {
+
+				auto value_opt = it->second.read_u32(0);
+
+				if(!value_opt)
+					return eastl::nullopt;
+
+				default_slot_space = value_opt.value();
+			}
+		}
+
+		//
+		if(
+			(thread_group_size_.x == 0)
+			|| (thread_group_size_.y == 0)
+			|| (thread_group_size_.z == 0)
+		)
+		{
+			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+				&(unit_p->error_group_p()->stack()),
+				trees[index].begin_location,
+				"invalid thread group size: ["
+				+ G_to_string(thread_group_size_.x)
+				+ ", "
+				+ G_to_string(thread_group_size_.y)
+				+ ", "
+				+ G_to_string(thread_group_size_.z)
+				+ "]"
+			);
+			return eastl::nullopt;
+		}
+
+		return std::move(childs);
+	}
+	eastl::optional<G_string> F_nsl_node_shader_object::apply(
+		const F_nsl_ast_tree& tree
+	) {
+		G_string launch_str;
+		switch (launch_)
+		{
+		case E_nsl_node_launch::BROADCASTING:
+			launch_str = "\"broadcasting\"";
+			break;
+		case E_nsl_node_launch::COALESCING:
+			launch_str = "\"coalescing\"";
+			break;
+		case E_nsl_node_launch::THREAD:
+			launch_str = "\"thread\"";
+			break;
+		}
+
+		G_string max_dispatch_grid_str;
+		if(max_dispatch_grid_ != F_vector3_u32::zero())
+		{
+			max_dispatch_grid_str = "[NodeMaxDispatchGrid("
+			+ G_to_string(max_dispatch_grid_.x)
+			+ ","
+			+ G_to_string(max_dispatch_grid_.y)
+			+ ","
+			+ G_to_string(max_dispatch_grid_.z)
+			+ ")]\n";
+		}
+
+		return apply_shader_with_customizations(
+			tree,
+			G_string("[Shader(\"node\")]\n")
+			+ "[NodeLaunch(" + launch_str + ")]\n"
+
+			+ max_dispatch_grid_str
+
+			+ "NSL_PRE_SHADER_KEYWORDS_NUM_THREADS("
+			+ G_to_string(thread_group_size_.x)
+			+ ","
+			+ G_to_string(thread_group_size_.y)
+			+ ","
+			+ G_to_string(thread_group_size_.z)
+			+ ")\n"
+		);
+	}
+
+
+
+	F_nsl_node_shader_object_type::F_nsl_node_shader_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_shader_object_type(
+			shader_compiler_p,
+			"node_shader"
+		)
+	{
+	}
+	F_nsl_node_shader_object_type::~F_nsl_node_shader_object_type() {
+	}
+
+	TK<A_nsl_object> F_nsl_node_shader_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	) {
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_node_shader_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+#endif
+
+
+
 	F_nsl_object_manager::F_nsl_object_manager(TKPA_valid<F_nsl_shader_compiler> shader_compiler_p) :
 		shader_compiler_p_(shader_compiler_p)
 	{
@@ -9142,6 +9381,11 @@ namespace nrhi {
 #ifdef NRHI_DRIVER_SUPPORT_MESH_SHADER
 		register_type(
 			TU<F_nsl_mesh_shader_object_type>()(shader_compiler_p_)
+		);
+#endif
+#ifdef NRHI_DRIVER_SUPPORT_WORK_GRAPHS
+		register_type(
+			TU<F_nsl_node_shader_object_type>()(shader_compiler_p_)
 		);
 #endif
 		register_type(
@@ -12346,8 +12590,80 @@ namespace nrhi {
 	) :
 		F_nsl_output_hlsl_6_7(shader_compiler_p, output_language_as_enum)
 	{
+		register_data_types_internal();
 	}
 	F_nsl_output_hlsl_6_8::~F_nsl_output_hlsl_6_8() {
+	}
+
+	void F_nsl_output_hlsl_6_8::register_data_types_internal()
+	{
+		auto name_manager_p = shader_compiler_p()->name_manager_p();
+		auto data_type_manager_p = shader_compiler_p()->data_type_manager_p();
+
+		name_manager_p->deregister_name("NSL_HLSL_MAJOR");
+		name_manager_p->register_name("NSL_HLSL_MAJOR", "6");
+
+		name_manager_p->deregister_name("NSL_HLSL_MINOR");
+		name_manager_p->register_name("NSL_HLSL_MINOR", "8");
+
+		name_manager_p->template T_register_name<FE_nsl_name_types::SEMANTIC>("SV_DISPATCH_GRID_3D");
+		data_type_manager_p->register_semantic(
+			"SV_DISPATCH_GRID_3D",
+			F_nsl_semantic_info{
+				.target_type = "uint3",
+				.target_binding = "SV_DispatchGrid"
+			}
+		);
+
+		name_manager_p->template T_register_name<FE_nsl_name_types::SEMANTIC>("SV_DISPATCH_GRID_2D");
+		data_type_manager_p->register_semantic(
+			"SV_DISPATCH_GRID_2D",
+			F_nsl_semantic_info{
+				.target_type = "uint2",
+				.target_binding = "SV_DispatchGrid"
+			}
+		);
+
+		name_manager_p->template T_register_name<FE_nsl_name_types::SEMANTIC>("SV_DISPATCH_GRID_1D");
+		data_type_manager_p->register_semantic(
+			"SV_DISPATCH_GRID_1D",
+			F_nsl_semantic_info{
+				.target_type = "uint",
+				.target_binding = "SV_DispatchGrid"
+			}
+		);
+
+		name_manager_p->T_register_name<FE_nsl_name_types::DATA_TYPE>("DispatchNodeInputRecord");
+		name_manager_p->T_register_name<FE_nsl_name_types::DATA_TYPE>("RWDispatchNodeInputRecord");
+		name_manager_p->T_register_name<FE_nsl_name_types::DATA_TYPE>("GroupNodeInputRecords");
+		name_manager_p->T_register_name<FE_nsl_name_types::DATA_TYPE>("RWGroupNodeInputRecords");
+		name_manager_p->T_register_name<FE_nsl_name_types::DATA_TYPE>("ThreadNodeInputRecord");
+		name_manager_p->T_register_name<FE_nsl_name_types::DATA_TYPE>("RWThreadNodeInputRecord");
+		name_manager_p->T_register_name<FE_nsl_name_types::DATA_TYPE>("EmptyNodeInput");
+
+		data_type_manager_p->register_virtual("DispatchNodeInputRecord");
+		data_type_manager_p->register_virtual("RWDispatchNodeInputRecord");
+		data_type_manager_p->register_virtual("GroupNodeInputRecords");
+		data_type_manager_p->register_virtual("RWGroupNodeInputRecords");
+		data_type_manager_p->register_virtual("ThreadNodeInputRecord");
+		data_type_manager_p->register_virtual("RWThreadNodeInputRecord");
+		data_type_manager_p->register_virtual("EmptyNodeInput");
+
+		name_manager_p->T_register_name<FE_nsl_name_types::DATA_TYPE>("NodeOutput");
+		name_manager_p->T_register_name<FE_nsl_name_types::DATA_TYPE>("NodeOutputArray");
+		name_manager_p->T_register_name<FE_nsl_name_types::DATA_TYPE>("EmptyNodeOutput");
+		name_manager_p->T_register_name<FE_nsl_name_types::DATA_TYPE>("EmptyNodeOutputArray");
+
+		data_type_manager_p->register_virtual("NodeOutput");
+		data_type_manager_p->register_virtual("NodeOutputArray");
+		data_type_manager_p->register_virtual("EmptyNodeOutput");
+		data_type_manager_p->register_virtual("EmptyNodeOutputArray");
+
+		name_manager_p->T_register_name<FE_nsl_name_types::DATA_TYPE>("ThreadNodeOutputRecords");
+		name_manager_p->T_register_name<FE_nsl_name_types::DATA_TYPE>("GroupNodeOutputRecords");
+
+		data_type_manager_p->register_virtual("ThreadNodeOutputRecords");
+		data_type_manager_p->register_virtual("GroupNodeOutputRecords");
 	}
 
 
