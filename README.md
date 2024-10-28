@@ -11,7 +11,8 @@ NCoder's Learning Aimed C++ Render Hardware Interface Library.
   + ...
 + Supported drivers:
   + DirectX 11
-  + DirectX 12
+  + DirectX 12:
+    + Work Graphs Supported
 + Shading languages:
   + HLSL
   + NSL (`NCoder's shading language`)
