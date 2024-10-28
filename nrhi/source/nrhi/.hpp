@@ -83,8 +83,6 @@ namespace nrhi { }
 #include <nrhi/device_child.hpp>
 #include <nrhi/root_signature_child.hpp>
 
-#include <nrhi/resource_heap_tier.hpp>
-
 #include <nrhi/viewport.hpp>
 
 #include <nrhi/debug_name.hpp>
