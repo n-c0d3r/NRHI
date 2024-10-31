@@ -129,6 +129,8 @@ namespace nrhi {
 
 	};
 
+#define NRHI_NSL_MAX_SV_TARGET_COUNT 8
+
 	struct F_nsl_object_implementation_body {
 
 		G_string content;

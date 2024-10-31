@@ -11248,6 +11248,11 @@ namespace nrhi {
 		result += G_string("#define SV_POSITION SV_Position\n");
 		result += G_string("#define SV_TARGET SV_Target\n");
 
+		for(u32 i = 0; i < NRHI_NSL_MAX_SV_TARGET_COUNT; ++i)
+		{
+			result += G_string("#define SV_TARGET_" + G_to_string(i) + " SV_Target" + G_to_string(i) + "\n");
+		}
+
 		result += G_string("#define SV_INSTANCE_ID SV_InstanceID\n");
 		result += G_string("#define SV_PRIMITIVE_ID SV_PrimitiveID\n");
 		result += G_string("#define SV_VERTEX_ID SV_VertexID\n");
@@ -11753,6 +11758,11 @@ namespace nrhi {
 
 		name_manager_p->register_name("SV_POSITION", "SV_Position");
 		name_manager_p->register_name("SV_TARGET", "SV_Target");
+
+		for(u32 i = 0; i < NRHI_NSL_MAX_SV_TARGET_COUNT; ++i)
+		{
+			name_manager_p->register_name("SV_TARGET_" + G_to_string(i), "SV_Target" + G_to_string(i));
+		}
 
 		name_manager_p->register_name("SV_INSTANCE_ID", "SV_InstanceID");
 		name_manager_p->register_name("SV_PRIMITIVE_ID", "SV_PrimitiveID");
