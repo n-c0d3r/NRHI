@@ -1371,6 +1371,11 @@ namespace nrhi {
 	TG_map<G_string, ED_work_graph_flag> F_nsl_info_tree_reader::work_graph_flag_str_to_value_map_;
 	TG_map<G_string, E_nsl_node_launch> F_nsl_info_tree_reader::node_launch_str_to_value_map_;
 #endif
+	TG_map<G_string, ED_blend_factor> F_nsl_info_tree_reader::blend_factor_str_to_value_map_;
+	TG_map<G_string, ED_blend_operation> F_nsl_info_tree_reader::blend_operation_str_to_value_map_;
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+	TG_map<G_string, ED_logic_operation> F_nsl_info_tree_reader::logic_operation_str_to_value_map_;
+#endif
 
 	F_nsl_info_tree_reader::F_nsl_info_tree_reader(
 		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p,
@@ -1589,6 +1594,54 @@ namespace nrhi {
 			node_launch_str_to_value_map_["BROADCASTING"] = E_nsl_node_launch::BROADCASTING;
 			node_launch_str_to_value_map_["COALESCING"] = E_nsl_node_launch::COALESCING;
 			node_launch_str_to_value_map_["THREAD"] = E_nsl_node_launch::THREAD;
+#endif
+
+			// setup blend_factor_str_to_value_map_
+			blend_factor_str_to_value_map_["ZERO"] = ED_blend_factor::ZERO;
+			blend_factor_str_to_value_map_["ONE"] = ED_blend_factor::ONE;
+			blend_factor_str_to_value_map_["SRC_COLOR"] = ED_blend_factor::SRC_COLOR;
+			blend_factor_str_to_value_map_["INV_SRC_COLOR"] = ED_blend_factor::INV_SRC_COLOR;
+			blend_factor_str_to_value_map_["SRC_ALPHA"] = ED_blend_factor::SRC_ALPHA;
+			blend_factor_str_to_value_map_["INV_SRC_ALPHA"] = ED_blend_factor::INV_SRC_ALPHA;
+			blend_factor_str_to_value_map_["DEST_ALPHA"] = ED_blend_factor::DEST_ALPHA;
+			blend_factor_str_to_value_map_["INV_DEST_ALPHA"] = ED_blend_factor::INV_DEST_ALPHA;
+			blend_factor_str_to_value_map_["DEST_COLOR"] = ED_blend_factor::DEST_COLOR;
+			blend_factor_str_to_value_map_["INV_DEST_COLOR"] = ED_blend_factor::INV_DEST_COLOR;
+			blend_factor_str_to_value_map_["SRC_ALPHA_SAT"] = ED_blend_factor::SRC_ALPHA_SAT;
+			blend_factor_str_to_value_map_["BLEND_FACTOR"] = ED_blend_factor::BLEND_FACTOR;
+			blend_factor_str_to_value_map_["INV_BLEND_FACTOR"] = ED_blend_factor::INV_BLEND_FACTOR;
+			blend_factor_str_to_value_map_["SRC1_COLOR"] = ED_blend_factor::SRC1_COLOR;
+			blend_factor_str_to_value_map_["INV_SRC1_COLOR"] = ED_blend_factor::INV_SRC1_COLOR;
+			blend_factor_str_to_value_map_["SRC1_ALPHA"] = ED_blend_factor::SRC1_ALPHA;
+			blend_factor_str_to_value_map_["INV_SRC1_ALPHA"] = ED_blend_factor::INV_SRC1_ALPHA;
+			blend_factor_str_to_value_map_["ALPHA_FACTOR"] = ED_blend_factor::ALPHA_FACTOR;
+			blend_factor_str_to_value_map_["INV_ALPHA_FACTOR"] = ED_blend_factor::INV_ALPHA_FACTOR;
+
+			// setup blend_operation_str_to_value_map_
+			blend_operation_str_to_value_map_["ADD"] = ED_blend_operation::ADD;
+			blend_operation_str_to_value_map_["SUBTRACT"] = ED_blend_operation::SUBTRACT;
+			blend_operation_str_to_value_map_["REV_SUBTRACT"] = ED_blend_operation::REV_SUBTRACT;
+			blend_operation_str_to_value_map_["MIN"] = ED_blend_operation::MIN;
+			blend_operation_str_to_value_map_["MAX"] = ED_blend_operation::MAX;
+
+			// setup logic_operation_str_to_value_map_
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+			logic_operation_str_to_value_map_["CLEAR"] = ED_logic_operation::CLEAR;
+			logic_operation_str_to_value_map_["SET"] = ED_logic_operation::SET;
+			logic_operation_str_to_value_map_["COPY"] = ED_logic_operation::COPY;
+			logic_operation_str_to_value_map_["COPY_INVERTED"] = ED_logic_operation::COPY_INVERTED;
+			logic_operation_str_to_value_map_["NOOP"] = ED_logic_operation::NOOP;
+			logic_operation_str_to_value_map_["INVERT"] = ED_logic_operation::INVERT;
+			logic_operation_str_to_value_map_["AND"] = ED_logic_operation::AND;
+			logic_operation_str_to_value_map_["NAND"] = ED_logic_operation::NAND;
+			logic_operation_str_to_value_map_["OR"] = ED_logic_operation::OR;
+			logic_operation_str_to_value_map_["NOR"] = ED_logic_operation::NOR;
+			logic_operation_str_to_value_map_["XOR"] = ED_logic_operation::XOR;
+			logic_operation_str_to_value_map_["EQUIV"] = ED_logic_operation::EQUIV;
+			logic_operation_str_to_value_map_["AND_REVERSE"] = ED_logic_operation::AND_REVERSE;
+			logic_operation_str_to_value_map_["AND_INVERTED"] = ED_logic_operation::AND_INVERTED;
+			logic_operation_str_to_value_map_["OR_REVERSE"] = ED_logic_operation::OR_REVERSE;
+			logic_operation_str_to_value_map_["OR_INVERTED"] = ED_logic_operation::OR_INVERTED;
 #endif
 		}
 	}
@@ -2415,6 +2468,112 @@ namespace nrhi {
 			.name = value_str,
 			.childs = eastl::move(childs)
 		};
+	}
+	eastl::optional<ED_blend_factor> F_nsl_info_tree_reader::read_blend_factor(u32 index, b8 is_required) const {
+
+		if(!guarantee_index(index, is_required)) {
+
+			return eastl::nullopt;
+		}
+
+		G_string value_str = parse_value_str(info_trees_[index].name);
+
+		auto it = blend_factor_str_to_value_map_.find(value_str);
+
+		if (it == blend_factor_str_to_value_map_.end()) {
+
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
+			return eastl::nullopt;
+		}
+
+		return it->second;
+	}
+	eastl::optional<ED_blend_operation> F_nsl_info_tree_reader::read_blend_operation(u32 index, b8 is_required) const {
+
+		if(!guarantee_index(index, is_required)) {
+
+			return eastl::nullopt;
+		}
+
+		G_string value_str = parse_value_str(info_trees_[index].name);
+
+		auto it = blend_operation_str_to_value_map_.find(value_str);
+
+		if (it == blend_operation_str_to_value_map_.end()) {
+
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
+			return eastl::nullopt;
+		}
+
+		return it->second;
+	}
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+	eastl::optional<ED_logic_operation> F_nsl_info_tree_reader::read_logic_operation(u32 index, b8 is_required) const {
+
+		if(!guarantee_index(index, is_required)) {
+
+			return eastl::nullopt;
+		}
+
+		G_string value_str = parse_value_str(info_trees_[index].name);
+
+		auto it = logic_operation_str_to_value_map_.find(value_str);
+
+		if (it == logic_operation_str_to_value_map_.end()) {
+
+			if(is_required)
+				NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
+					error_stack_p_,
+					info_trees_[index].begin_location,
+					"invalid value \"" + value_str + "\""
+				);
+			return eastl::nullopt;
+		}
+
+		return it->second;
+	}
+#endif
+	eastl::optional<ED_color_write_mode> F_nsl_info_tree_reader::read_color_write_mode(u32 index, b8 is_required) const {
+
+		if(!guarantee_index(index, is_required)) {
+
+			return eastl::nullopt;
+		}
+
+		G_string value_str = parse_value_str(info_trees_[index].name);
+
+		if(value_str == "RED")
+		{
+			return ED_color_write_mode::RED;
+		}
+		if(value_str == "GREEN")
+		{
+			return ED_color_write_mode::GREEN;
+		}
+		if(value_str == "BLUE")
+		{
+			return ED_color_write_mode::BLUE;
+		}
+		if(value_str == "ALPHA")
+		{
+			return ED_color_write_mode::ALPHA;
+		}
+		if(value_str == "ALL")
+		{
+			return ED_color_write_mode::ALL;
+		}
+
+		return eastl::nullopt;
 	}
 #ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
 	eastl::optional<ED_state_object_flag> F_nsl_info_tree_reader::read_state_object_flag(u32 index, b8 is_required) const {
@@ -5334,16 +5493,6 @@ namespace nrhi {
 
 		auto& child_info_trees = child_info_trees_opt.value();
 
-//		if(child_info_trees.size() == 0) {
-//
-//			NSL_PUSH_ERROR_TO_ERROR_STACK_INTERNAL(
-//				&(unit_p->error_group_p()->stack()),
-//				object_implementation.bodies[0].begin_location,
-//				"require pipeline_state shaders"
-//			);
-//			return eastl::nullopt;
-//		}
-
 		u32 shader_count = child_info_trees.size();
 
 		pipeline_state_info.shaders.resize(shader_count);
@@ -5692,6 +5841,173 @@ namespace nrhi {
 					return eastl::nullopt;
 
 				pipeline_state_info.options.graphics.primitive_topology = value_opt.value();
+			}
+		}
+
+		// check for blend annotation
+		{
+			auto it = context.current_object_config.find("blend");
+			if(it != context.current_object_config.end())
+			{
+				auto& blend_info_tree_reader = it->second;
+
+				u32 rt_index = 0;
+
+				auto& options = pipeline_state_info.options;
+
+				if(
+					!blend_info_tree_reader.read_configurable_elements(
+						[&](
+							const F_nsl_info_tree& blend_rt_info_tree,
+							const F_nsl_info_tree_reader& blend_rt_info_tree_reader,
+							TG_unordered_map<G_string, F_nsl_info_tree_reader>& config_map
+						)
+						{
+							F_blend_render_target_desc blend_rt_desc;
+
+							if(config_map.find("disable_blend") != config_map.end())
+							{
+								blend_rt_desc.enable_blend = false;
+							}
+							if(config_map.find("enable_blend") != config_map.end())
+							{
+								blend_rt_desc.enable_blend = true;
+							}
+							if(config_map.find("disable_logic_operation") != config_map.end())
+							{
+								blend_rt_desc.enable_logic_operation = false;
+							}
+							if(config_map.find("enable_logic_operation") != config_map.end())
+							{
+								blend_rt_desc.enable_logic_operation = true;
+							}
+
+							{
+								auto it = config_map.find("src_blend_factor");
+								if(it != config_map.end())
+								{
+									auto value_opt = it->second.read_blend_factor(0);
+									if(!value_opt)
+									{
+										return false;
+									}
+
+									blend_rt_desc.src_blend_factor = value_opt.value();
+								}
+							}
+
+							{
+								auto it = config_map.find("dst_blend_factor");
+								if(it != config_map.end())
+								{
+									auto value_opt = it->second.read_blend_factor(0);
+									if(!value_opt)
+									{
+										return false;
+									}
+
+									blend_rt_desc.dst_blend_factor = value_opt.value();
+								}
+							}
+
+							{
+								auto it = config_map.find("blend_operation");
+								if(it != config_map.end())
+								{
+									auto value_opt = it->second.read_blend_operation(0);
+									if(!value_opt)
+									{
+										return false;
+									}
+
+									blend_rt_desc.blend_operation = value_opt.value();
+								}
+							}
+
+							{
+								auto it = config_map.find("src_alpha_blend_factor");
+								if(it != config_map.end())
+								{
+									auto value_opt = it->second.read_blend_factor(0);
+									if(!value_opt)
+									{
+										return false;
+									}
+
+									blend_rt_desc.src_alpha_blend_factor = value_opt.value();
+								}
+							}
+
+							{
+								auto it = config_map.find("dst_alpha_blend_factor");
+								if(it != config_map.end())
+								{
+									auto value_opt = it->second.read_blend_factor(0);
+									if(!value_opt)
+									{
+										return false;
+									}
+
+									blend_rt_desc.dst_alpha_blend_factor = value_opt.value();
+								}
+							}
+
+							{
+								auto it = config_map.find("alpha_blend_operation");
+								if(it != config_map.end())
+								{
+									auto value_opt = it->second.read_blend_operation(0);
+									if(!value_opt)
+									{
+										return false;
+									}
+
+									blend_rt_desc.alpha_blend_operation = value_opt.value();
+								}
+							}
+
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+							{
+								auto it = config_map.find("logic_operation");
+								if(it != config_map.end())
+								{
+									auto value_opt = it->second.read_logic_operation(0);
+									if(!value_opt)
+									{
+										return false;
+									}
+
+									blend_rt_desc.logic_operation = value_opt.value();
+								}
+							}
+#endif
+
+							{
+								auto it = config_map.find("write_mode");
+								if(it != config_map.end())
+								{
+									auto value_opt = it->second.read_color_write_mode(0);
+									if(!value_opt)
+									{
+										return false;
+									}
+
+									blend_rt_desc.write_mode = value_opt.value();
+								}
+							}
+
+							options.graphics.blend_desc.render_targets[rt_index] = blend_rt_desc;
+
+							++rt_index;
+							return true;
+						}
+					)
+				)
+				{
+					return eastl::nullopt;
+				}
+
+				options.graphics.blend_desc.enable_independent_blend = (rt_index > 1);
 			}
 		}
 

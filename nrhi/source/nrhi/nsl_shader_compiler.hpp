@@ -238,6 +238,11 @@ namespace nrhi {
 		static TG_map<G_string, ED_state_object_flag> state_object_flag_str_to_value_map_;
 		static TG_map<G_string, ED_work_graph_flag> work_graph_flag_str_to_value_map_;
 		static TG_map<G_string, E_nsl_node_launch> node_launch_str_to_value_map_;
+		static TG_map<G_string, ED_blend_factor> blend_factor_str_to_value_map_;
+		static TG_map<G_string, ED_blend_operation> blend_operation_str_to_value_map_;
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		static TG_map<G_string, ED_logic_operation> logic_operation_str_to_value_map_;
+#endif
 
 	public:
 		NCPP_FORCE_INLINE TKPA<F_nsl_shader_compiler> shader_compiler_p() const noexcept { return shader_compiler_p_; }
@@ -297,6 +302,12 @@ namespace nrhi {
 		eastl::optional<E_nsl_output_topology> read_output_topology(u32 index, b8 is_required = true) const;
 		eastl::optional<ED_shader_visibility> read_shader_visibility(u32 index, b8 is_required = true) const;
 		eastl::optional<F_nsl_data_type_selection> read_data_type_selection(u32 index, b8 is_required = true) const;
+		eastl::optional<ED_blend_factor> read_blend_factor(u32 index, b8 is_required = true) const;
+		eastl::optional<ED_blend_operation> read_blend_operation(u32 index, b8 is_required = true) const;
+#ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
+		eastl::optional<ED_logic_operation> read_logic_operation(u32 index, b8 is_required = true) const;
+#endif
+		eastl::optional<ED_color_write_mode> read_color_write_mode(u32 index, b8 is_required = true) const;
 #ifdef NRHI_DRIVER_SUPPORT_STATE_OBJECT
 		eastl::optional<ED_state_object_flag> read_state_object_flag(u32 index, b8 is_required = true) const;
 #endif
