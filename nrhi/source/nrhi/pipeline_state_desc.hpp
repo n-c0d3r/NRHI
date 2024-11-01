@@ -137,13 +137,13 @@ namespace nrhi {
 		b8 enable_logic_operation = false;
 #endif // NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 
-		ED_blend_factor src_blend_factor;
-		ED_blend_factor dst_blend_factor;
-		ED_blend_operation blend_operation;
+		ED_blend_factor src_blend_factor = ED_blend_factor::ONE;
+		ED_blend_factor dst_blend_factor = ED_blend_factor::ONE;
+		ED_blend_operation blend_operation = ED_blend_operation::ADD;
 
-		ED_blend_factor src_alpha_blend_factor;
-		ED_blend_factor dst_alpha_blend_factor;
-		ED_blend_operation alpha_blend_operation;
+		ED_blend_factor src_alpha_blend_factor = ED_blend_factor::ONE;
+		ED_blend_factor dst_alpha_blend_factor = ED_blend_factor::ONE;
+		ED_blend_operation alpha_blend_operation = ED_blend_operation::ADD;
 
 #ifdef NRHI_DRIVER_SUPPORT_ADVANCED_RESOURCE_BINDING
 		ED_logic_operation logic_operation;
