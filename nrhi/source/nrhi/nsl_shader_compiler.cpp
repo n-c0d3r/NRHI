@@ -5866,6 +5866,7 @@ namespace nrhi {
 						)
 						{
 							F_blend_render_target_desc blend_rt_desc;
+							blend_rt_desc.enable_blend = true;
 
 							if(config_map.find("disable_blend") != config_map.end())
 							{
