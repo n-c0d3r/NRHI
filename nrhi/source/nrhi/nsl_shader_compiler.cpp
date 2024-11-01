@@ -5565,6 +5565,8 @@ namespace nrhi {
 
 				u32 color_format_count = info_tree_reader.info_trees().size();
 
+				pipeline_state_info.options.graphics.color_formats.resize(color_format_count);
+
 				for(u32 i = 0; i < color_format_count; ++i) {
 
 					auto value_opt = info_tree_reader.read_format(i);
