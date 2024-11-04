@@ -3,8 +3,8 @@
 
 
 
-namespace nrhi {
-
+namespace nrhi
+{
 	G_string F_nsl_compiled_result::build(u32 shader_index) const
 	{
 		G_string result;
@@ -8485,6 +8485,318 @@ namespace nrhi {
 
 		return object_p;
 	}
+
+
+
+	F_nsl_rasterizer_ordered_buffer_descriptor_heap_getter_object_type::F_nsl_rasterizer_ordered_buffer_descriptor_heap_getter_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"$RasterizerOrderedBuffer",
+			false,
+			2,
+			2
+		)
+	{
+	}
+
+	TK<A_nsl_object> F_nsl_rasterizer_ordered_buffer_descriptor_heap_getter_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	)
+	{
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_descriptor_heap_getter_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				ED_descriptor_heap_type::CONSTANT_BUFFER_SHADER_RESOURCE_UNORDERED_ACCESS,
+				E_nsl_resource_type::RASTERIZER_ORDERED_BUFFER,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_rasterizer_ordered_byte_address_buffer_descriptor_heap_getter_object_type::F_nsl_rasterizer_ordered_byte_address_buffer_descriptor_heap_getter_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"$RasterizerOrderedByteAddressBuffer",
+			false,
+			1,
+			1
+		)
+	{
+	}
+
+	TK<A_nsl_object> F_nsl_rasterizer_ordered_byte_address_buffer_descriptor_heap_getter_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	)
+	{
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_descriptor_heap_getter_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				ED_descriptor_heap_type::CONSTANT_BUFFER_SHADER_RESOURCE_UNORDERED_ACCESS,
+				E_nsl_resource_type::RASTERIZER_ORDERED_BYTE_ADDRESS_BUFFER,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_rasterizer_ordered_structured_buffer_descriptor_heap_getter_object_type::F_nsl_rasterizer_ordered_structured_buffer_descriptor_heap_getter_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"$RasterizerOrderedStructuredBuffer",
+			false,
+			2,
+			2
+		)
+	{
+	}
+
+	TK<A_nsl_object> F_nsl_rasterizer_ordered_structured_buffer_descriptor_heap_getter_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	)
+	{
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_descriptor_heap_getter_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				ED_descriptor_heap_type::CONSTANT_BUFFER_SHADER_RESOURCE_UNORDERED_ACCESS,
+				E_nsl_resource_type::RASTERIZER_ORDERED_STRUCTURED_BUFFER,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_rasterizer_ordered_texture_1d_descriptor_heap_getter_object_type::F_nsl_rasterizer_ordered_texture_1d_descriptor_heap_getter_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"$RasterizerOrderedTexture1D",
+			false,
+			2,
+			2
+		)
+	{
+	}
+
+	TK<A_nsl_object> F_nsl_rasterizer_ordered_texture_1d_descriptor_heap_getter_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	)
+	{
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_descriptor_heap_getter_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				ED_descriptor_heap_type::CONSTANT_BUFFER_SHADER_RESOURCE_UNORDERED_ACCESS,
+				E_nsl_resource_type::RASTERIZER_ORDERED_TEXTURE_1D,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_rasterizer_ordered_texture_1d_array_descriptor_heap_getter_object_type::F_nsl_rasterizer_ordered_texture_1d_array_descriptor_heap_getter_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"$RasterizerOrderedTexture1DArray",
+			false,
+			2,
+			2
+		)
+	{
+	}
+
+	TK<A_nsl_object> F_nsl_rasterizer_ordered_texture_1d_array_descriptor_heap_getter_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	)
+	{
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_descriptor_heap_getter_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				ED_descriptor_heap_type::CONSTANT_BUFFER_SHADER_RESOURCE_UNORDERED_ACCESS,
+				E_nsl_resource_type::RASTERIZER_ORDERED_TEXTURE_1D_ARRAY,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_rasterizer_ordered_texture_2d_descriptor_heap_getter_object_type::F_nsl_rasterizer_ordered_texture_2d_descriptor_heap_getter_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"$RasterizerOrderedTexture2D",
+			false,
+			2,
+			2
+		)
+	{
+	}
+
+	TK<A_nsl_object> F_nsl_rasterizer_ordered_texture_2d_descriptor_heap_getter_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	)
+	{
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_descriptor_heap_getter_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				ED_descriptor_heap_type::CONSTANT_BUFFER_SHADER_RESOURCE_UNORDERED_ACCESS,
+				E_nsl_resource_type::RASTERIZER_ORDERED_TEXTURE_2D,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_rasterizer_ordered_texture_2d_array_descriptor_heap_getter_object_type::F_nsl_rasterizer_ordered_texture_2d_array_descriptor_heap_getter_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"$RasterizerOrderedTexture2DArray",
+			false,
+			2,
+			2
+		)
+	{
+	}
+
+	TK<A_nsl_object> F_nsl_rasterizer_ordered_texture_2d_array_descriptor_heap_getter_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	)
+	{
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_descriptor_heap_getter_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				ED_descriptor_heap_type::CONSTANT_BUFFER_SHADER_RESOURCE_UNORDERED_ACCESS,
+				E_nsl_resource_type::RASTERIZER_ORDERED_TEXTURE_2D_ARRAY,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
+
+
+
+	F_nsl_rasterizer_ordered_texture_3d_descriptor_heap_getter_object_type::F_nsl_rasterizer_ordered_texture_3d_descriptor_heap_getter_object_type(
+		TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+	) :
+		A_nsl_object_type(
+			shader_compiler_p,
+			"$RasterizerOrderedTexture3D",
+			false,
+			2,
+			2
+		)
+	{
+	}
+
+	TK<A_nsl_object> F_nsl_rasterizer_ordered_texture_3d_descriptor_heap_getter_object_type::create_object(
+		F_nsl_ast_tree& tree,
+		F_nsl_context& context,
+		TKPA_valid<F_nsl_translation_unit> translation_unit_p
+	)
+	{
+		NCPP_ASSERT(tree.type == E_nsl_ast_tree_type::OBJECT_IMPLEMENTATION) << "invalid ast tree type";
+
+		auto object_p = register_object(
+			TU<F_nsl_descriptor_heap_getter_object>()(
+				shader_compiler_p(),
+				NCPP_KTHIS(),
+				translation_unit_p,
+				ED_descriptor_heap_type::CONSTANT_BUFFER_SHADER_RESOURCE_UNORDERED_ACCESS,
+				E_nsl_resource_type::RASTERIZER_ORDERED_TEXTURE_3D,
+				tree.object_implementation.name
+			)
+		);
+
+		tree.object_implementation.attached_object_p = object_p;
+
+		return object_p;
+	}
 #endif
 
 
@@ -9660,7 +9972,7 @@ namespace nrhi {
 		);
 		register_type(
 			TU<F_nsl_texture_cube_array_descriptor_heap_getter_object_type>()(shader_compiler_p_)
-			);
+		);
 		register_type(
 			TU<F_nsl_rw_buffer_descriptor_heap_getter_object_type>()(shader_compiler_p_)
 		);
@@ -9681,6 +9993,27 @@ namespace nrhi {
 		);
 		register_type(
 			TU<F_nsl_rw_texture_3d_descriptor_heap_getter_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_rasterizer_ordered_buffer_descriptor_heap_getter_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_rasterizer_ordered_structured_buffer_descriptor_heap_getter_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_rasterizer_ordered_texture_1d_descriptor_heap_getter_object_type>()(shader_compiler_p_)
+			);
+		register_type(
+			TU<F_nsl_rasterizer_ordered_texture_1d_array_descriptor_heap_getter_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_rasterizer_ordered_texture_2d_descriptor_heap_getter_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_rasterizer_ordered_texture_2d_array_descriptor_heap_getter_object_type>()(shader_compiler_p_)
+		);
+		register_type(
+			TU<F_nsl_rasterizer_ordered_texture_3d_descriptor_heap_getter_object_type>()(shader_compiler_p_)
 		);
 #endif
 		register_type(
@@ -13012,6 +13345,100 @@ namespace nrhi {
 			);
 			break;
 		}
+		case E_nsl_resource_type::RASTERIZER_ORDERED_BUFFER:
+		{
+			return  (
+				G_string("(")
+				+ "(RasterizerOrderedBuffer<"
+				+ tree.object_implementation.bodies[0].content
+				+ ">)"
+				+ getter
+				+ ")"
+			);
+			break;
+		}
+		case E_nsl_resource_type::RASTERIZER_ORDERED_BYTE_ADDRESS_BUFFER:
+		{
+			return  (
+				G_string("(")
+				+ "(RasterizerOrderedByteAddressBuffer)"
+				+ getter
+				+ ")"
+			);
+			break;
+		}
+		case E_nsl_resource_type::RASTERIZER_ORDERED_STRUCTURED_BUFFER:
+		{
+			return  (
+				G_string("(")
+				+ "(RasterizerOrderedStructuredBuffer<"
+				+ tree.object_implementation.bodies[0].content
+				+ ">)"
+				+ getter
+				+ ")"
+			);
+			break;
+		}
+		case E_nsl_resource_type::RASTERIZER_ORDERED_TEXTURE_1D:
+		{
+			return  (
+				G_string("(")
+				+ "(RasterizerOrderedTexture1D<"
+				+ tree.object_implementation.bodies[0].content
+				+ ">)"
+				+ getter
+				+ ")"
+			);
+			break;
+		}
+		case E_nsl_resource_type::RASTERIZER_ORDERED_TEXTURE_1D_ARRAY:
+		{
+			return  (
+				G_string("(")
+				+ "(RasterizerOrderedTexture1DArray<"
+				+ tree.object_implementation.bodies[0].content
+				+ ">)"
+				+ getter
+				+ ")"
+			);
+			break;
+		}
+		case E_nsl_resource_type::RASTERIZER_ORDERED_TEXTURE_2D:
+		{
+			return  (
+				G_string("(")
+				+ "(RasterizerOrderedTexture2D<"
+				+ tree.object_implementation.bodies[0].content
+				+ ">)"
+				+ getter
+				+ ")"
+			);
+			break;
+		}
+		case E_nsl_resource_type::RASTERIZER_ORDERED_TEXTURE_2D_ARRAY:
+		{
+			return  (
+				G_string("(")
+				+ "(RasterizerOrderedTexture2DArray<"
+				+ tree.object_implementation.bodies[0].content
+				+ ">)"
+				+ getter
+				+ ")"
+			);
+			break;
+		}
+		case E_nsl_resource_type::RASTERIZER_ORDERED_TEXTURE_3D:
+		{
+			return  (
+				G_string("(")
+				+ "(RasterizerOrderedTexture3D<"
+				+ tree.object_implementation.bodies[0].content
+				+ ">)"
+				+ getter
+				+ ")"
+			);
+			break;
+		}
 		}
 
 		return eastl::nullopt;
@@ -13182,6 +13609,14 @@ namespace nrhi {
 		name_to_resource_type_map_["RWTexture2D"] = E_nsl_resource_type::RW_TEXTURE_2D;
 		name_to_resource_type_map_["RWTexture2DArray"] = E_nsl_resource_type::RW_TEXTURE_2D_ARRAY;
 		name_to_resource_type_map_["RWTexture3D"] = E_nsl_resource_type::RW_TEXTURE_3D;
+		name_to_resource_type_map_["RasterizerOrderedBuffer"] = E_nsl_resource_type::RASTERIZER_ORDERED_BUFFER;
+		name_to_resource_type_map_["RasterizerOrderedByteAddressBuffer"] = E_nsl_resource_type::RASTERIZER_ORDERED_BYTE_ADDRESS_BUFFER;
+		name_to_resource_type_map_["RasterizerOrderedStructuredBuffer"] = E_nsl_resource_type::RASTERIZER_ORDERED_STRUCTURED_BUFFER;
+		name_to_resource_type_map_["RasterizerOrderedTexture1D"] = E_nsl_resource_type::RASTERIZER_ORDERED_TEXTURE_1D;
+		name_to_resource_type_map_["RasterizerOrderedTexture1DArray"] = E_nsl_resource_type::RASTERIZER_ORDERED_TEXTURE_1D_ARRAY;
+		name_to_resource_type_map_["RasterizerOrderedTexture2D"] = E_nsl_resource_type::RASTERIZER_ORDERED_TEXTURE_2D;
+		name_to_resource_type_map_["RasterizerOrderedTexture2DArray"] = E_nsl_resource_type::RASTERIZER_ORDERED_TEXTURE_2D_ARRAY;
+		name_to_resource_type_map_["RasterizerOrderedTexture3D"] = E_nsl_resource_type::RASTERIZER_ORDERED_TEXTURE_3D;
 	}
 	F_nsl_resource_manager::~F_nsl_resource_manager() {
 	}

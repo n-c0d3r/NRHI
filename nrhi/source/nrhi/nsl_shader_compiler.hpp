@@ -425,7 +425,15 @@ namespace nrhi {
 		RW_TEXTURE_1D_ARRAY,
 		RW_TEXTURE_2D,
 		RW_TEXTURE_2D_ARRAY,
-		RW_TEXTURE_3D
+		RW_TEXTURE_3D,
+		RASTERIZER_ORDERED_BUFFER,
+		RASTERIZER_ORDERED_BYTE_ADDRESS_BUFFER,
+		RASTERIZER_ORDERED_STRUCTURED_BUFFER,
+		RASTERIZER_ORDERED_TEXTURE_1D,
+		RASTERIZER_ORDERED_TEXTURE_1D_ARRAY,
+		RASTERIZER_ORDERED_TEXTURE_2D,
+		RASTERIZER_ORDERED_TEXTURE_2D_ARRAY,
+		RASTERIZER_ORDERED_TEXTURE_3D
 	};
 	enum class E_nsl_resource_type_class {
 		NONE,
@@ -3082,6 +3090,174 @@ namespace nrhi {
 
 	public:
 		NCPP_OBJECT(F_nsl_rw_texture_3d_descriptor_heap_getter_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_rasterizer_ordered_buffer_descriptor_heap_getter_object_type : public A_nsl_object_type
+	{
+	public:
+		F_nsl_rasterizer_ordered_buffer_descriptor_heap_getter_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_rasterizer_ordered_buffer_descriptor_heap_getter_object_type() = default;
+
+	public:
+		NCPP_OBJECT(F_nsl_rasterizer_ordered_buffer_descriptor_heap_getter_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_rasterizer_ordered_byte_address_buffer_descriptor_heap_getter_object_type : public A_nsl_object_type
+	{
+	public:
+		F_nsl_rasterizer_ordered_byte_address_buffer_descriptor_heap_getter_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_rasterizer_ordered_byte_address_buffer_descriptor_heap_getter_object_type() = default;
+
+	public:
+		NCPP_OBJECT(F_nsl_rasterizer_ordered_byte_address_buffer_descriptor_heap_getter_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_rasterizer_ordered_structured_buffer_descriptor_heap_getter_object_type : public A_nsl_object_type
+	{
+	public:
+		F_nsl_rasterizer_ordered_structured_buffer_descriptor_heap_getter_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_rasterizer_ordered_structured_buffer_descriptor_heap_getter_object_type() = default;
+
+	public:
+		NCPP_OBJECT(F_nsl_rasterizer_ordered_structured_buffer_descriptor_heap_getter_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_rasterizer_ordered_texture_1d_descriptor_heap_getter_object_type : public A_nsl_object_type
+	{
+	public:
+		F_nsl_rasterizer_ordered_texture_1d_descriptor_heap_getter_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_rasterizer_ordered_texture_1d_descriptor_heap_getter_object_type() = default;
+
+	public:
+		NCPP_OBJECT(F_nsl_rasterizer_ordered_texture_1d_descriptor_heap_getter_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_rasterizer_ordered_texture_1d_array_descriptor_heap_getter_object_type : public A_nsl_object_type
+	{
+	public:
+		F_nsl_rasterizer_ordered_texture_1d_array_descriptor_heap_getter_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_rasterizer_ordered_texture_1d_array_descriptor_heap_getter_object_type() = default;
+
+	public:
+		NCPP_OBJECT(F_nsl_rasterizer_ordered_texture_1d_array_descriptor_heap_getter_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_rasterizer_ordered_texture_2d_descriptor_heap_getter_object_type : public A_nsl_object_type
+	{
+	public:
+		F_nsl_rasterizer_ordered_texture_2d_descriptor_heap_getter_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_rasterizer_ordered_texture_2d_descriptor_heap_getter_object_type() = default;
+
+	public:
+		NCPP_OBJECT(F_nsl_rasterizer_ordered_texture_2d_descriptor_heap_getter_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_rasterizer_ordered_texture_2d_array_descriptor_heap_getter_object_type : public A_nsl_object_type
+	{
+	public:
+		F_nsl_rasterizer_ordered_texture_2d_array_descriptor_heap_getter_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_rasterizer_ordered_texture_2d_array_descriptor_heap_getter_object_type() = default;
+
+	public:
+		NCPP_OBJECT(F_nsl_rasterizer_ordered_texture_2d_array_descriptor_heap_getter_object_type);
+
+	public:
+		virtual TK<A_nsl_object> create_object(
+			F_nsl_ast_tree& tree,
+			F_nsl_context& context,
+			TKPA_valid<F_nsl_translation_unit> translation_unit_p
+		) override;
+	};
+
+
+
+	class NRHI_API F_nsl_rasterizer_ordered_texture_3d_descriptor_heap_getter_object_type : public A_nsl_object_type
+	{
+	public:
+		F_nsl_rasterizer_ordered_texture_3d_descriptor_heap_getter_object_type(
+			TKPA_valid<F_nsl_shader_compiler> shader_compiler_p
+		);
+		virtual ~F_nsl_rasterizer_ordered_texture_3d_descriptor_heap_getter_object_type() = default;
+
+	public:
+		NCPP_OBJECT(F_nsl_rasterizer_ordered_texture_3d_descriptor_heap_getter_object_type);
 
 	public:
 		virtual TK<A_nsl_object> create_object(
