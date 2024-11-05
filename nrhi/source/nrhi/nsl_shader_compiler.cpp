@@ -11635,6 +11635,14 @@ namespace nrhi
 		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("RWTexture2D");
 		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("RWTexture2DArray");
 		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("RWTexture3D");
+		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("RasterizerOrderedBuffer");
+		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("RasterizerOrderedByteAddressBuffer");
+		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("RasterizerOrderedStructuredBuffer");
+		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("RasterizerOrderedTexture1D");
+		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("RasterizerOrderedTexture1DArray");
+		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("RasterizerOrderedTexture2D");
+		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("RasterizerOrderedTexture2DArray");
+		name_manager_p->template T_register_name<FE_nsl_name_types::RESOURCE_TYPE>("RasterizerOrderedTexture3D");
 
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("bool");
 		name_manager_p->template T_register_name<FE_nsl_name_types::DATA_TYPE>("int");
