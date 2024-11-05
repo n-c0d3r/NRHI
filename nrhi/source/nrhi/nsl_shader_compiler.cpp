@@ -13596,6 +13596,14 @@ namespace nrhi
 		name_to_resource_type_class_map_["RWTexture2D"] = E_nsl_resource_type_class::UNORDERED_ACCESS;
 		name_to_resource_type_class_map_["RWTexture2DArray"] = E_nsl_resource_type_class::UNORDERED_ACCESS;
 		name_to_resource_type_class_map_["RWTexture3D"] = E_nsl_resource_type_class::UNORDERED_ACCESS;
+		name_to_resource_type_class_map_["RasterizerOrderedBuffer"] = E_nsl_resource_type_class::UNORDERED_ACCESS;
+		name_to_resource_type_class_map_["RasterizerOrderedByteAddressBuffer"] = E_nsl_resource_type_class::UNORDERED_ACCESS;
+		name_to_resource_type_class_map_["RasterizerOrderedStructuredBuffer"] = E_nsl_resource_type_class::UNORDERED_ACCESS;
+		name_to_resource_type_class_map_["RasterizerOrderedTexture1D"] = E_nsl_resource_type_class::UNORDERED_ACCESS;
+		name_to_resource_type_class_map_["RasterizerOrderedTexture1DArray"] = E_nsl_resource_type_class::UNORDERED_ACCESS;
+		name_to_resource_type_class_map_["RasterizerOrderedTexture2D"] = E_nsl_resource_type_class::UNORDERED_ACCESS;
+		name_to_resource_type_class_map_["RasterizerOrderedTexture2DArray"] = E_nsl_resource_type_class::UNORDERED_ACCESS;
+		name_to_resource_type_class_map_["RasterizerOrderedTexture3D"] = E_nsl_resource_type_class::UNORDERED_ACCESS;
 
 		// setup name_to_resource_type_map_
 		name_to_resource_type_map_["ConstantBuffer"] = E_nsl_resource_type::CONSTANT_BUFFER;
