@@ -37,6 +37,10 @@ endif()
 #   Add DirectXShaderCompiler subdirectory
 #####################################################################################
 if(NOT TARGET dxc)
+    if(MSVC)
+        set(CMAKE_VS_GLOBALS "TrackFileAccess=false")
+    endif()
+
     NCPP_SetGlobal(HLSL_DISABLE_SOURCE_GENERATION OFF)
     NCPP_SetGlobal(CLANG_INCLUDE_TESTS OFF)
     NCPP_SetGlobal(LLVM_BUILD_TESTS OFF)
