@@ -401,6 +401,7 @@ endif()
 if(MSVC)
     target_compile_options(nrhi PUBLIC /GT)
     set_source_files_properties(source/nrhi/nsl_shader_compiler.cpp PROPERTIES COMPILE_FLAGS "/bigobj")
+    set(CMAKE_VS_GLOBALS "TrackFileAccess=false")
 endif()
 
 # MacOS libs
