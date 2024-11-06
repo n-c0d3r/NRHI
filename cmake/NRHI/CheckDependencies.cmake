@@ -64,16 +64,29 @@ endif()
 #####################################################################################
 #   DirectXShaderCompiler checking
 #####################################################################################
+include(FetchContent)
 if(NOT TARGET dxc)
-    if(NOT EXISTS "${NRHI_DEPENDENCIES_DIR}/DirectXShaderCompiler")
-        file(MAKE_DIRECTORY "${NRHI_DEPENDENCIES_DIR}/DirectXShaderCompiler")
-        NCPP_GitHelper_Clone(
-            PROJECT_NAME "DirectXShaderCompiler"
-            GIT_URL "https://github.com/microsoft/DirectXShaderCompiler"
-            GIT_COMMIT "9bfbee6c44deecf28111879f8d21fa15773181ef"
-            GIT_BRANCH "main"
-            DIRECTORY "${NRHI_DEPENDENCIES_DIR}"
-        )
+#    if(NOT EXISTS "${NRHI_DEPENDENCIES_DIR}/DirectXShaderCompiler")
+#        file(MAKE_DIRECTORY "${NRHI_DEPENDENCIES_DIR}/DirectXShaderCompiler")
+#        NCPP_GitHelper_Clone(
+#            PROJECT_NAME "DirectXShaderCompiler"
+#            GIT_URL "https://github.com/microsoft/DirectXShaderCompiler"
+#            GIT_COMMIT "9bfbee6c44deecf28111879f8d21fa15773181ef"
+#            GIT_BRANCH "main"
+#            DIRECTORY "${NRHI_DEPENDENCIES_DIR}"
+#        )
+#    endif()
+    message(STATUS "Fetching DirectXShaderCompiler...")
+    FetchContent_Declare(
+        dxc
+        GIT_REPOSITORY https://github.com/microsoft/DirectXShaderCompiler.git
+        GIT_TAG ac36a797d3470e8ee906b98457a59270d01db30d
+    )
+    FetchContent_MakeAvailable(dxc)
+    if(dxc_POPULATED)
+        message(STATUS "DirectXShaderCompiler fetched and available.")
+    else()
+        message(FATAL_ERROR "Failed to fetch DirectXShaderCompiler.")
     endif()
 endif()
 

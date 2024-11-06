@@ -213,7 +213,6 @@ int main() {
 				})
 			}
 		);
-
 		compiled_result.reflection.sort_resources(
 			{
 				TG_unordered_set<G_string>({
