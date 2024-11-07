@@ -98,6 +98,10 @@ namespace nrhi {
 			L"-E", wide_entry_point_name.c_str(), // Entry point
 		};
 
+#ifndef NRHI_ENABLE_DRIVER_DEBUGGER
+		args.push_back(L"-O3");
+#endif
+
 		if(
 			(model_major > 6)
 			|| (
@@ -167,6 +171,10 @@ namespace nrhi {
 		TG_vector<const wchar_t*> args = {
 			L"-T", wide_model.c_str(), // Target profile
 		};
+
+#ifndef NRHI_ENABLE_DRIVER_DEBUGGER
+		args.push_back(L"-O3");
+#endif
 
 		if(
 			(model_major > 6)
