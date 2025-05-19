@@ -45,7 +45,7 @@ namespace nrhi {
 
 
 
-    class NRHI_API A_render_object {
+    class NRHI_API A_render_object : public A_object {
 
     private:
         F_debug_name debug_name_;
