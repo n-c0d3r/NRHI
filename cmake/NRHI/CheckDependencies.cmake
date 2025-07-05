@@ -77,6 +77,7 @@ if(NOT TARGET dxc)
 #        )
 #    endif()
     message(STATUS "Fetching DirectXShaderCompiler...")
+    NCPP_SetGlobal(LLVM_TARGETS_TO_BUILD "None")
     FetchContent_Declare(
         dxc
         GIT_REPOSITORY https://github.com/microsoft/DirectXShaderCompiler.git
